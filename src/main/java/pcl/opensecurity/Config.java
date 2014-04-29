@@ -12,8 +12,11 @@ import net.minecraftforge.common.Property;
  */
 public class Config
 {
-    private int defaultsecurityBlockID = 1980;
-    public final int securityBlockID;
+    private int defaultMagCardBlockID = 1980;
+    public final int magCardBlockID;
+    
+    private int defaultRFIDCardBlockID = 1981;
+    public final int rfidCardBlockID;
     
     private int defaultMagCardID = 19800;
     public final int magCardID;
@@ -29,9 +32,10 @@ public class Config
     public Config(Configuration config)
     {
         config.load();
-        securityBlockID = config.get("blocks", "baseSecutyID", defaultsecurityBlockID).getInt(defaultsecurityBlockID);
-        magCardID = config.get("items", "PrintedPageID", defaultMagCardID).getInt(defaultMagCardID);
-        rfidCardID = config.get("items", "PrintedPageID", defaultRFIDCardID).getInt(defaultRFIDCardID);
+        magCardBlockID = config.get("blocks", "magCardBlockID", defaultMagCardBlockID).getInt(defaultMagCardBlockID);
+        rfidCardBlockID = config.get("blocks", "rfidCardBlockID", defaultRFIDCardBlockID).getInt(defaultRFIDCardBlockID);
+        magCardID = config.get("items", "magCardID", defaultMagCardID).getInt(defaultMagCardID);
+        rfidCardID = config.get("items", "rfidCardID", defaultRFIDCardID).getInt(defaultRFIDCardID);
         render3D = config.get("options", "Render3D", true, "Should we use the 3D Model, or a block").getBoolean(true);
         enableMUD = config.get("options", "enableMUD", true, "Enable the Update Checker? Disabling this will remove all traces of the MUD.").getBoolean(true);
         if( config.hasChanged() )

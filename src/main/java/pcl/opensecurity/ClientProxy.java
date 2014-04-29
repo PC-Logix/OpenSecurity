@@ -29,11 +29,11 @@ public class ClientProxy extends CommonProxy {
 		if (OpenSecurity.render3D) {
 			TileEntitySpecialRenderer MagCardRender = new MagCardComponentRenderer();
 			ClientRegistry.bindTileEntitySpecialRenderer(MagComponent.class, MagCardRender);
-			MinecraftForgeClient.registerItemRenderer(OpenSecurity.cfg.securityBlockID, new ItemMagComponentRenderer(MagCardRender, new MagComponent()));
+			MinecraftForgeClient.registerItemRenderer(OpenSecurity.cfg.magCardBlockID, new ItemMagComponentRenderer(MagCardRender, new MagComponent()));
 			
 			TileEntitySpecialRenderer RFIDCardRender = new MagCardComponentRenderer();
 			ClientRegistry.bindTileEntitySpecialRenderer(RFIDComponent.class, RFIDCardRender);
-			MinecraftForgeClient.registerItemRenderer(OpenSecurity.cfg.securityBlockID, new ItemMagComponentRenderer(RFIDCardRender, new MagComponent()));
+			MinecraftForgeClient.registerItemRenderer(OpenSecurity.cfg.magCardBlockID, new ItemMagComponentRenderer(RFIDCardRender, new MagComponent()));
 		}
 	}
 	

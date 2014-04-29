@@ -19,8 +19,8 @@ else
 	ext.buildNumber = 0
 
 version = "RC1"
-group = "pcl.LanteaCraft"
-archivesBaseName = "LanteaCraft"
+group = "pcl.OpenSecurity"
+archivesBaseName = "OpenSecurity"
 
 minecraft {
 	version = "1.6.4-9.11.1.964"
@@ -36,15 +36,11 @@ jar.doFirst {
 }
 
 jar.classifier = "${ext.buildNumber}"
-jar.manifest = manifest { attributes(
-	"FMLCorePlugin": "pcl.common.asm.PCLCoreTransformerPlugin",
-	"FMLCorePluginContainsFMLMod": "icanhazfmlmodpweeze"
-) }
 
 processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod/info'
+        include 'mcmod.info'
                 
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version

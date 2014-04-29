@@ -81,10 +81,12 @@ public class OpenSecurity {
         	
             if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD){
                 try {
-                    Class.forName("pcl.openprinter.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null,
+                    Class.forName("pcl.openprinter.mud.ModUpdateDetector")
+                    		.getDeclaredMethod("registerMod", 
+                    		ModContainer.class, URL.class, URL.class).invoke(null,
                             FMLCommonHandler.instance().findContainerFor(this),
-                            new URL("http://PC-Logix.com/OpenPrinter/get_latest_build.php"),
-                            new URL("http://PC-Logix.com/OpenPrinter/changelog.txt")
+                            new URL("http://PC-Logix.com/OpenSecurity/get_latest_build.php"),
+                            new URL("http://PC-Logix.com/OpenSecurity/changelog.txt")
                     );
                 } catch (Throwable e) {
                     e.printStackTrace();
@@ -98,11 +100,11 @@ public class OpenSecurity {
         	GameRegistry.registerTileEntity(RFIDComponent.class, "RFIDTE");
         	
         	//Register Blocks
-        	magCardComponent = new BaseMagReaderBlock(cfg.securityBlockID, Material.iron);
+        	magCardComponent = new BaseMagReaderBlock(cfg.magCardBlockID, Material.iron);
         	GameRegistry.registerBlock(magCardComponent, MagCardComponentItemBlock.class, "opensecurity.magCardComponent");
         	magCardComponent.setCreativeTab(li.cil.oc.api.CreativeTab.Instance);
         	
-        	rfidCardComponent = new BaseMagReaderBlock(cfg.securityBlockID, Material.iron);
+        	rfidCardComponent = new BaseMagReaderBlock(cfg.rfidCardBlockID, Material.iron);
         	GameRegistry.registerBlock(rfidCardComponent, RFIDCardComponentItemBlock.class, "opensecurity.rfidCardComponent");
         	rfidCardComponent.setCreativeTab(li.cil.oc.api.CreativeTab.Instance);
         	
@@ -129,24 +131,6 @@ public class OpenSecurity {
         	ItemStack microchip		= Items.MicrochipTier1;
         	ItemStack pcb			= Items.PrintedCircuitBoard;
         	ItemStack paper			= new ItemStack(Item.paper);
-
-        	//magCardComponent
-        	GameRegistry.addRecipe( new ItemStack(magCardComponent, 1), 
-        			"IRI",
-        			"MPM",
-        			"IRI",
-        			'I', nuggetIron, 'R', redstone, 'M', microchip, 'P', pcb);
-        	
-        	//rfidCardComponent
-        	GameRegistry.addRecipe( new ItemStack(rfidCardComponent, 1), 
-        			"IRI",
-        			"MPM",
-        			"IRI",
-        			'I', nuggetIron, 'R', redstone, 'M', microchip, 'P', pcb);
-        	
-
-        			
-        	
         	
     		proxy.registerRenderers();
     	}
