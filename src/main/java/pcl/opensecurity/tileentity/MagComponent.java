@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
  * @author Caitlyn
  *
  */
-public class RFIDComponent extends TileEntity implements IInventory, ISidedInventory{
+public class MagComponent extends TileEntity implements IInventory, ISidedInventory{
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int var1) {
