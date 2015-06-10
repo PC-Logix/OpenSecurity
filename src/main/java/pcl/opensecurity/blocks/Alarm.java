@@ -34,7 +34,7 @@ public class Alarm extends BlockContainer {
 		boolean isRedstonePowered = world.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		if (isRedstonePowered) {
 			tile = (AlarmTE) world.getTileEntity(xCoord, yCoord, zCoord); //we make sure that tile is the TileEntitySpeaker thats at our blocks location (ok were not checking it is a TileEntitySpeaker, more casting it as...should be though unless something went wrong)
-            tile.setShouldStart(true);
+			world.addBlockEvent(xCoord, yCoord, zCoord, this, 0, 0);
 		} else {
 			world.addBlockEvent(xCoord, yCoord, zCoord, this, 1, 0);
 		}
@@ -42,15 +42,17 @@ public class Alarm extends BlockContainer {
 	
     @Override
     public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventPramater) {
+    	tile = (AlarmTE) world.getTileEntity(x, y, z);
         if (world.isRemote && eventId == 0) {
-            tile = (AlarmTE) world.getTileEntity(x, y, z);
+        	System.out.println("Client start");
             tile.setShouldStart(true);
         }
         if (!world.isRemote && eventId == 0) {
             //do nothing
+        	System.out.println("Server do nothing");
         }
         if (world.isRemote && eventId == 1) {
-            tile = (AlarmTE) world.getTileEntity(x, y, z);
+        	System.out.println("Client Stop");
             tile.setShouldStop(true);
         }
         return true;

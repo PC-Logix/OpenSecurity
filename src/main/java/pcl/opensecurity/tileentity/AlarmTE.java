@@ -13,7 +13,7 @@ public class AlarmTE extends TileEntity implements SimpleComponent {
 	}
 
 	private boolean isPlaying = false; //when the tile entity is created we want to have it not playing
-	private boolean shouldStart = false; //the triger we will use to start the sound
+	private boolean shouldStart = false; //the trigger we will use to start the sound
 	private boolean shouldStop = false;
 	private boolean computerOverride = false;
 
@@ -21,17 +21,18 @@ public class AlarmTE extends TileEntity implements SimpleComponent {
 		return shouldStop;
 	}
 
-	public void setShouldStart(boolean shouldStart) { //this is what we call from our block and set to true to play sound
-		System.out.println(shouldStart);
-		this.shouldStart = shouldStart;
-	}
+    public void setShouldStart(boolean shouldStart) { //this is what we call from our block and set to true to play sound
+        this.shouldStart = shouldStart;
+        System.out.println("Starting: " + shouldStart);
+    }
 
-	public void setShouldStop(boolean shouldStop) { //we call this to stop the sound..well to set it up to stop
-		if (isPlaying && !computerOverride) { //we make sure sound is playing, otherwise a bug in the way minecraft deals with block updates causes it to start and stop immediatly
-			isPlaying = false; //since were stoping it we set this to false to say the sound is no longer playing
-			this.shouldStop = shouldStop;
-		}
-	}
+    public void setShouldStop(boolean shouldStop) { //we call this to stop the sound..well to set it up to stop
+        if (isPlaying && !computerOverride) { //we make sure sound is playing, otherwise a bug in the way minecraft deals with block updates causes it to start and stop immediatly
+            isPlaying = false; //since were stopping it we set this to false to say the sound is no longer playing
+            this.shouldStop = shouldStop;
+            System.out.println("Stopping: " + shouldStop);
+        }
+    }
 
 	public boolean isPlaying() { //we use this to allow other classes to see if were playing or not
 		return isPlaying;
@@ -41,14 +42,16 @@ public class AlarmTE extends TileEntity implements SimpleComponent {
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		if (shouldStart) {
+		System.out.println(shouldStart);
+		if (!isPlaying && shouldStart) {
 			//check to see if we are not already playing (to stop infinite amounts playing) and if we should start
-			//if (this.worldObj.isRemote) {
-				this.worldObj.playSound((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D, "opensecurity:klaxon1", 5.0F, 1.0F, false);
-			//}
-			//shouldStart = false; //set should start to false to stop us trying to play more
-			//shouldStop = false; //this is so when we have played and then stopped we can play again...yeah that was a bugger to solve!
-			//isPlaying = true; //we tell it we are now playing
+			shouldStart = false; //set should start to false to stop us trying to play more
+			shouldStop = false; //this is so when we have played and then stopped we can play again...yeah that was a bugger to solve!
+			isPlaying = true; //we tell it we are now playing
+			if (!this.worldObj.isRemote) {
+				System.out.println("Trying to play sound");
+				this.worldObj.playSoundEffect((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D, "opensecurity:klaxon1", 5.0F, 1.0F);
+			}
 		}
 	}
 
