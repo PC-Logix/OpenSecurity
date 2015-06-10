@@ -42,8 +42,8 @@ public class AlarmTE extends TileEntity implements SimpleComponent {
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		System.out.println(shouldStart);
 		if (!isPlaying && shouldStart) {
+			System.out.println("k");
 			//check to see if we are not already playing (to stop infinite amounts playing) and if we should start
 			shouldStart = false; //set should start to false to stop us trying to play more
 			shouldStop = false; //this is so when we have played and then stopped we can play again...yeah that was a bugger to solve!
