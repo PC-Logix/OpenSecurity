@@ -13,6 +13,7 @@ import pcl.opensecurity.blocks.RFIDReader;
 import pcl.opensecurity.gui.SecurityGUIHandler;
 import pcl.opensecurity.items.MagCard;
 import pcl.opensecurity.items.RFIDCard;
+import pcl.opensecurity.tileentity.AlarmTE;
 import pcl.opensecurity.tileentity.MagReaderTE;
 import pcl.opensecurity.tileentity.RFIDReaderTE;
 import net.minecraftforge.common.config.Configuration;
@@ -81,6 +82,7 @@ public class OpenSecurity {
             NetworkRegistry.INSTANCE.registerGuiHandler(this, new SecurityGUIHandler());
         	GameRegistry.registerTileEntity(MagReaderTE.class, "MagCardTE");
         	GameRegistry.registerTileEntity(RFIDReaderTE.class, "RFIDTE");
+        	GameRegistry.registerTileEntity(AlarmTE.class, "AlarmTE");
         	
         	//Register Blocks
         	magCardReader = new MagReader();

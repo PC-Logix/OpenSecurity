@@ -1,6 +1,10 @@
 package pcl.opensecurity.tileentity;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import pcl.client.sounds.PCLSoundHandler;
 import li.cil.oc.api.network.SimpleComponent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -40,17 +44,17 @@ public class AlarmTE extends TileEntity implements SimpleComponent {
 
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void updateEntity() {
 		super.updateEntity();
-		if (!isPlaying && shouldStart) {
-			System.out.println("k");
-			//check to see if we are not already playing (to stop infinite amounts playing) and if we should start
-			shouldStart = false; //set should start to false to stop us trying to play more
-			shouldStop = false; //this is so when we have played and then stopped we can play again...yeah that was a bugger to solve!
-			isPlaying = true; //we tell it we are now playing
-			if (!this.worldObj.isRemote) {
-				System.out.println("Trying to play sound");
-				this.worldObj.playSoundEffect((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D, "opensecurity:klaxon1", 5.0F, 1.0F);
+		if (this.worldObj.isRemote) {
+			if (!isPlaying && shouldStart) {
+				//check to see if we are not already playing (to stop infinite amounts playing) and if we should start
+				shouldStart = false; //set should start to false to stop us trying to play more
+				shouldStop = false; //this is so when we have played and then stopped we can play again...yeah that was a bugger to solve!
+				isPlaying = true; //we tell it we are now playing
+	            PCLSoundHandler alarm = new PCLSoundHandler(worldObj.getTileEntity(xCoord, yCoord, zCoord), "klaxon1", 2.0F);
+	            Minecraft.getMinecraft().getSoundHandler().playSound(alarm);
 			}
 		}
 	}

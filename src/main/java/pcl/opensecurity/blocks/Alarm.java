@@ -44,15 +44,13 @@ public class Alarm extends BlockContainer {
     public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventPramater) {
     	tile = (AlarmTE) world.getTileEntity(x, y, z);
         if (world.isRemote && eventId == 0) {
-        	System.out.println("Client start");
             tile.setShouldStart(true);
         }
         if (!world.isRemote && eventId == 0) {
             //do nothing
-        	System.out.println("Server do nothing");
+            tile.setShouldStart(true);
         }
         if (world.isRemote && eventId == 1) {
-        	System.out.println("Client Stop");
             tile.setShouldStop(true);
         }
         return true;
