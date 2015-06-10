@@ -5,9 +5,13 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
@@ -18,12 +22,23 @@ if (System.getenv().BUILD_NUMBER != null)
 else
 	ext.buildNumber = 0
 
-version = "RC1"
+version = "0.1.0-"
 group = "pcl.OpenSecurity"
 archivesBaseName = "OpenSecurity"
 
+repositories {
+    maven {
+        name = "OC repo"
+        url = "http://maven.cil.li/"
+    }
+}
+
+dependencies {
+    compile "li.cil.oc:OpenComputers:MC1.7.10-1.4.0.7-rc.1:dev"
+}
+
 minecraft {
-	version = "1.6.4-9.11.1.964"
+	version = "1.7.10-10.13.2.1230"
 	replace "@VERSION@", project.version
 	replace "@BUILD@", project.ext.buildNumber
 }
