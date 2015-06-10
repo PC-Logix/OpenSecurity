@@ -8,6 +8,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
@@ -15,12 +16,12 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import pcl.opensecurity.CommonProxy;
 import pcl.opensecurity.containers.MagCardContainer;
 import pcl.opensecurity.renderers.MagCardComponentRenderer;
-import pcl.opensecurity.tileentity.MagComponent;
-import pcl.opensecurity.tileentity.RFIDComponent;
+import pcl.opensecurity.tileentity.MagReaderTE;
+import pcl.opensecurity.tileentity.RFIDReaderTE;
 import pcl.opensecurity.gui.SecurityGUIHandler;
 import pcl.opensecurity.renderers.ItemMagComponentRenderer;
 import pcl.opensecurity.renderers.ItemRFIDComponentRenderer;
-import pcl.opensecurity.blocks.BaseMagReaderBlock;
+import pcl.opensecurity.blocks.MagReader;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -28,32 +29,31 @@ public class ClientProxy extends CommonProxy {
 	{
 		if (OpenSecurity.render3D) {
 			TileEntitySpecialRenderer MagCardRender = new MagCardComponentRenderer();
-			ClientRegistry.bindTileEntitySpecialRenderer(MagComponent.class, MagCardRender);
-			MinecraftForgeClient.registerItemRenderer(OpenSecurity.cfg.magCardBlockID, new ItemMagComponentRenderer(MagCardRender, new MagComponent()));
+			ClientRegistry.bindTileEntitySpecialRenderer(MagReaderTE.class, MagCardRender);
+			MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(OpenSecurity.magCardReader), new ItemMagComponentRenderer(MagCardRender, new MagReaderTE()));
 			
 			TileEntitySpecialRenderer RFIDCardRender = new MagCardComponentRenderer();
-			ClientRegistry.bindTileEntitySpecialRenderer(RFIDComponent.class, RFIDCardRender);
-			MinecraftForgeClient.registerItemRenderer(OpenSecurity.cfg.magCardBlockID, new ItemMagComponentRenderer(RFIDCardRender, new MagComponent()));
+			ClientRegistry.bindTileEntitySpecialRenderer(RFIDReaderTE.class, RFIDCardRender);
+			MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(OpenSecurity.rfidCardReader), new ItemMagComponentRenderer(RFIDCardRender, new MagReaderTE()));
 		}
 	}
 	
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        TileEntity te = world.getBlockTileEntity(x, y, z);
-        if (te != null && te instanceof MagComponent)
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te != null && te instanceof MagReaderTE)
         {
-        	MagComponent icte = (MagComponent) te;
+        	MagReaderTE icte = (MagReaderTE) te;
             return new MagCardContainer(player.inventory, icte);
-        } else if (te != null && te instanceof RFIDComponent)
+        } else if (te != null && te instanceof RFIDReaderTE)
         {
-        	MagComponent icte = (MagComponent) te;
+        	MagReaderTE icte = (MagReaderTE) te;
             return new MagCardContainer(player.inventory, icte);
         }
         else
         {
             return null;
         }
-    }
-	
+    }    
 }

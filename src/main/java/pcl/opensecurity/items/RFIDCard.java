@@ -8,8 +8,8 @@ import net.minecraft.item.Item;
  */
 public class RFIDCard extends Item {
 
-	public RFIDCard(int par1) {
-		super(par1);
+	public RFIDCard() {
+		super();
 		// TODO Auto-generated constructor stub
 	}
 

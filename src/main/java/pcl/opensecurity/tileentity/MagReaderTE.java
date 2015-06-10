@@ -1,5 +1,6 @@
 package pcl.opensecurity.tileentity;
 
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -10,22 +11,24 @@ import net.minecraft.tileentity.TileEntity;
  * @author Caitlyn
  *
  */
-public class RFIDComponent extends TileEntity implements IInventory, ISidedInventory{
+public class MagReaderTE extends TileEntity implements SimpleComponent, IInventory, ISidedInventory{
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int var1) {
+	public int[] getAccessibleSlotsFromSide(int p_94128_1_) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j) {
+	public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_,
+			int p_102007_3_) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j) {
+	public boolean canExtractItem(int p_102008_1_, ItemStack p_102008_2_,
+			int p_102008_3_) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -37,37 +40,37 @@ public class RFIDComponent extends TileEntity implements IInventory, ISidedInven
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i) {
+	public ItemStack getStackInSlot(int p_70301_1_) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j) {
+	public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i) {
+	public ItemStack getStackInSlotOnClosing(int p_70304_1_) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {
+	public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public String getInvName() {
+	public String getInventoryName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean isInvNameLocalized() {
+	public boolean hasCustomInventoryName() {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -79,27 +82,34 @@ public class RFIDComponent extends TileEntity implements IInventory, ISidedInven
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUseableByPlayer(EntityPlayer p_70300_1_) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void openChest() {
+	public void openInventory() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void closeChest() {
+	public void closeInventory() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public String getComponentName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

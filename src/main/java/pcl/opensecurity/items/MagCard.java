@@ -8,8 +8,8 @@ import net.minecraft.item.Item;
  */
 public class MagCard extends Item {
 
-	public MagCard(int par1) {
-		super(par1);
+	public MagCard() {
+		super();
 		// TODO Auto-generated constructor stub
 	}
 

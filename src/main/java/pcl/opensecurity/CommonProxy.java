@@ -5,8 +5,8 @@ package pcl.opensecurity;
 
 import pcl.opensecurity.containers.MagCardContainer;
 import pcl.opensecurity.containers.RFIDCardContainer;
-import pcl.opensecurity.tileentity.MagComponent;
-import pcl.opensecurity.tileentity.RFIDComponent;
+import pcl.opensecurity.tileentity.MagReaderTE;
+import pcl.opensecurity.tileentity.RFIDReaderTE;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -33,10 +33,10 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        TileEntity te = world.getBlockTileEntity(x, y, z);
-        if (te != null && te instanceof RFIDComponent)
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te != null && te instanceof RFIDReaderTE)
         {
-        	RFIDComponent icte = (RFIDComponent) te;
+        	RFIDReaderTE icte = (RFIDReaderTE) te;
             return new RFIDCardContainer(player.inventory, icte);
         }
         else

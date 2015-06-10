@@ -1,5 +1,6 @@
 package pcl.opensecurity.tileentity;
 
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -10,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
  * @author Caitlyn
  *
  */
-public class MagComponent extends TileEntity implements IInventory, ISidedInventory{
+public class RFIDReaderTE extends TileEntity implements SimpleComponent, IInventory, ISidedInventory{
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int var1) {
@@ -61,18 +62,6 @@ public class MagComponent extends TileEntity implements IInventory, ISidedInvent
 	}
 
 	@Override
-	public String getInvName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isInvNameLocalized() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public int getInventoryStackLimit() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -85,21 +74,39 @@ public class MagComponent extends TileEntity implements IInventory, ISidedInvent
 	}
 
 	@Override
-	public void openChest() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closeChest() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String getInventoryName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasCustomInventoryName() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void openInventory() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closeInventory() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getComponentName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -5,33 +5,20 @@ package pcl.opensecurity;
  *
  */
 import java.net.URL;
-import java.util.logging.Logger;
-
-
-
-
-
-
-
 
 import pcl.opensecurity.BuildInfo;
-import pcl.opensecurity.blocks.BaseMagReaderBlock;
+import pcl.opensecurity.blocks.Alarm;
+import pcl.opensecurity.blocks.MagReader;
+import pcl.opensecurity.blocks.RFIDReader;
 import pcl.opensecurity.gui.SecurityGUIHandler;
-import pcl.opensecurity.items.MagCardComponentItemBlock;
-import pcl.opensecurity.items.RFIDCardComponentItemBlock;
 import pcl.opensecurity.items.MagCard;
 import pcl.opensecurity.items.RFIDCard;
-import pcl.opensecurity.tileentity.MagComponent;
-import pcl.opensecurity.tileentity.RFIDComponent;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.oredict.OreDictionary;
+import pcl.opensecurity.tileentity.MagReaderTE;
+import pcl.opensecurity.tileentity.RFIDReaderTE;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -39,24 +26,19 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import li.cil.oc.api.Blocks;
-import li.cil.oc.api.CreativeTab;
-import li.cil.oc.api.Items;
 
 @Mod(modid=OpenSecurity.MODID, name="OpenSecurity", version=BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "after:OpenComputers")
-@NetworkMod(clientSideRequired=true)
+//@NetworkMod(clientSideRequired=true)
 public class OpenSecurity {
 	
 	public static final String MODID = "opensecurity";
 	
-		public static Block magCardComponent;
-		public static Block rfidCardComponent;
+		public static Block magCardReader;
+		public static Block rfidCardReader;
+		public static Block Alarm;
 		public static Item  magCard;
 		public static Item  rfidCard;
 		public static ItemBlock  securityitemBlock;
@@ -70,7 +52,7 @@ public class OpenSecurity {
         public static boolean render3D = true;
         
         private static boolean debug = true;
-        public static Logger logger;
+        public static org.apache.logging.log4j.Logger logger;
         
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) {
@@ -78,7 +60,7 @@ public class OpenSecurity {
         	
         	cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
         	render3D = cfg.render3D;
-        	
+        	/*
             if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD){
                 try {
                     Class.forName("pcl.openprinter.mud.ModUpdateDetector")
@@ -92,45 +74,47 @@ public class OpenSecurity {
                     e.printStackTrace();
                 }
             }
+            */
             logger = event.getModLog();
         	
         	
-        	NetworkRegistry.instance().registerGuiHandler(this, new SecurityGUIHandler());
-        	GameRegistry.registerTileEntity(MagComponent.class, "MagCardTE");
-        	GameRegistry.registerTileEntity(RFIDComponent.class, "RFIDTE");
+            NetworkRegistry.INSTANCE.registerGuiHandler(this, new SecurityGUIHandler());
+        	GameRegistry.registerTileEntity(MagReaderTE.class, "MagCardTE");
+        	GameRegistry.registerTileEntity(RFIDReaderTE.class, "RFIDTE");
         	
         	//Register Blocks
-        	magCardComponent = new BaseMagReaderBlock(cfg.magCardBlockID, Material.iron);
-        	GameRegistry.registerBlock(magCardComponent, MagCardComponentItemBlock.class, "opensecurity.magCardComponent");
-        	magCardComponent.setCreativeTab(li.cil.oc.api.CreativeTab.Instance);
+        	magCardReader = new MagReader();
+        	GameRegistry.registerBlock(magCardReader, "magreader");
+        	magCardReader.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
         	
-        	rfidCardComponent = new BaseMagReaderBlock(cfg.rfidCardBlockID, Material.iron);
-        	GameRegistry.registerBlock(rfidCardComponent, RFIDCardComponentItemBlock.class, "opensecurity.rfidCardComponent");
-        	rfidCardComponent.setCreativeTab(li.cil.oc.api.CreativeTab.Instance);
+        	rfidCardReader = new RFIDReader();
+        	GameRegistry.registerBlock(rfidCardReader, "rfidreader");
+        	rfidCardReader.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
+
+        	Alarm = new Alarm();
+        	GameRegistry.registerBlock(Alarm, "alarm");
+        	Alarm.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
+        	
+        	
         	
         	//Register Items
-        	magCard = new MagCard(cfg.magCardID);
+        	magCard = new MagCard();
     		GameRegistry.registerItem(magCard, "opensecurity.magCard");
     		magCard.setUnlocalizedName("magCard");
     		magCard.setTextureName("minecraft:paper");
-    		magCard.setCreativeTab(li.cil.oc.api.CreativeTab.Instance);
+    		magCard.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
     		
-        	rfidCard = new RFIDCard(cfg.rfidCardID);
+        	rfidCard = new RFIDCard();
     		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
-    		rfidCard.setUnlocalizedName("printerPaperRoll");
+    		rfidCard.setUnlocalizedName("rfidCard");
     		rfidCard.setTextureName("opensecurity:rfidCard");
-    		rfidCard.setCreativeTab(li.cil.oc.api.CreativeTab.Instance);
+    		rfidCard.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
         	
         }
         
         @EventHandler
     	public void load(FMLInitializationEvent event)
     	{
-        	ItemStack nuggetIron	= Items.IronNugget;
-        	ItemStack redstone		= new ItemStack(Item.redstone);
-        	ItemStack microchip		= Items.MicrochipTier1;
-        	ItemStack pcb			= Items.PrintedCircuitBoard;
-        	ItemStack paper			= new ItemStack(Item.paper);
         	
     		proxy.registerRenderers();
     	}

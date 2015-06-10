@@ -6,7 +6,7 @@ package pcl.opensecurity.containers;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import pcl.opensecurity.tileentity.MagComponent;
+import pcl.opensecurity.tileentity.MagReaderTE;
 
 /**
  * @author Caitlyn
@@ -14,7 +14,7 @@ import pcl.opensecurity.tileentity.MagComponent;
  */
 public class MagCardContainer extends Container {
 
-	public MagCardContainer(InventoryPlayer inventory, MagComponent icte) {
+	public MagCardContainer(InventoryPlayer inventory, MagReaderTE icte) {
 		// TODO Auto-generated constructor stub
 	}
 

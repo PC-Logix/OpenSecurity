@@ -34,11 +34,11 @@ repositories {
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC1.7.10-1.4.0.7-rc.1:dev"
+    compile "li.cil.oc:OpenComputers:MC1.7.10-1.5.11.25:dev"
 }
 
 minecraft {
-	version = "1.7.10-10.13.2.1230"
+	version = "1.7.10-10.13.3.1408-1.7.10"
 	replace "@VERSION@", project.version
 	replace "@BUILD@", project.ext.buildNumber
 }
