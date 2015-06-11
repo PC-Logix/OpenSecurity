@@ -4,7 +4,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.sounds.AlarmSoundHandler;
+import pcl.opensecurity.client.sounds.LoopingSound;
 import pcl.opensecurity.client.sounds.IShouldLoop;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.client.Minecraft;
@@ -24,7 +24,7 @@ public class TileEntityAlarm extends TileEntity implements IShouldLoop, SimpleCo
 	private boolean shouldStart = false;
 	private boolean shouldStop = false;
 	private boolean computerOverride = false;
-	private AlarmSoundHandler alarm = null;
+	private LoopingSound alarm = null;
 	public boolean isShouldStop() {
 		return shouldStop;
 	}
@@ -55,7 +55,7 @@ public class TileEntityAlarm extends TileEntity implements IShouldLoop, SimpleCo
 				shouldStart = false;
 				shouldStop = false;
 				isPlaying = true;
-				alarm = new AlarmSoundHandler(new ResourceLocation(OpenSecurity.MODID + ":" + "klaxon1"), this);
+				alarm = new LoopingSound(new ResourceLocation(OpenSecurity.MODID + ":" + "klaxon1"), this);
 				playSound();
 			}
 		}
@@ -87,4 +87,16 @@ public class TileEntityAlarm extends TileEntity implements IShouldLoop, SimpleCo
 	public boolean continueLoopingAudio() {
 		return true;
 	}  
+	
+	
+	@Override
+	public void validate() {
+		super.validate();
+	}
+	
+	@Override
+	public void invalidate() {
+		super.invalidate();
+	}
+	
 }

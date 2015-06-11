@@ -6,12 +6,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class AlarmSoundHandler extends PositionedSound implements ITickableSound {
+public class LoopingSound extends PositionedSound implements ITickableSound {
 	
 	private int x,y,z;
 	public boolean shouldBePlaying = true;
 
-	public AlarmSoundHandler(ResourceLocation resource, TileEntity parent) {
+	public LoopingSound(ResourceLocation resource, TileEntity parent) {
 		super(resource);
 		repeat = true;
 		xPosF = parent.xCoord+0.5f;
