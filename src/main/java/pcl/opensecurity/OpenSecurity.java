@@ -5,6 +5,8 @@ package pcl.opensecurity;
  *
  */
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import pcl.opensecurity.BuildInfo;
 import pcl.opensecurity.blocks.BlockAlarm;
@@ -54,6 +56,8 @@ public class OpenSecurity {
         
         private static boolean debug = true;
         public static org.apache.logging.log4j.Logger logger;
+
+		public static List<String> alarmList;
         
         @EventHandler
         public void preInit(FMLPreInitializationEvent event) {
@@ -61,6 +65,7 @@ public class OpenSecurity {
         	
         	cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
         	render3D = cfg.render3D;
+        	alarmList = cfg.alarmsConfigList;
         	/*
             if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD){
                 try {

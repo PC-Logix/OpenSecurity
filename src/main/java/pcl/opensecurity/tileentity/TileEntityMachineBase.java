@@ -1,5 +1,8 @@
 package pcl.opensecurity.tileentity;
 
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.MachineSound;
@@ -13,7 +16,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityMachineBase extends TileEntity implements SimpleComponent {
 	
 	protected String componentName;
-	
 	public TileEntityMachineBase(String name) {
 		super();
 		this.componentName = name;
@@ -84,7 +86,6 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 
 	@Override
 	public String getComponentName() {
-		// TODO Auto-generated method stub
 		return this.componentName;
 	}
 	
@@ -98,6 +99,5 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-	}
-	
+	}	
 }

@@ -1,16 +1,14 @@
 package pcl.opensecurity.tileentity;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.sounds.MachineSound;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
 public class TileEntityAlarm extends TileEntityMachineBase {
 	public String cName;
 	public Boolean shouldPlay = false;
+	public String alarmName1 = "klaxon1";
 	public TileEntityAlarm(String componentName) {
 		super(componentName);
 		cName = componentName;
@@ -34,7 +32,7 @@ public class TileEntityAlarm extends TileEntityMachineBase {
 
 	@Override
 	public String getSoundName() {
-		return "klaxon1";
+		return alarmName1;
 	}
 
 	public void setShouldStart(boolean b) {
@@ -44,6 +42,27 @@ public class TileEntityAlarm extends TileEntityMachineBase {
 
 	public void setShouldStop(boolean b) {
 		shouldPlay = false;
+	}
+	
+	
+	//OC Methods.
+	
+	@Callback
+	public Object[] greet(Context context, Arguments args) {
+		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
+	}
+	
+	@Callback
+	public Object[] setAlarm(Context context, Arguments args) {
+		String alarm = args.checkString(0);
+		System.out.println(OpenSecurity.alarmList);
+		System.out.println(alarm);
+		if (OpenSecurity.alarmList.contains(alarm)) {
+			alarmName1 = alarm;
+			return new Object[] { "Success" };
+		} else {
+			return new Object[] { "Fail" };
+		}
 	}
 	
 }

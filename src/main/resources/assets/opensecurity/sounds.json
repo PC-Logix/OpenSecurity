@@ -1,3 +1,3 @@
 {
-    "klaxon1": {"category": "master","sounds": [{"name": "klaxon1","stream": true}]}
+    "klaxon1": {"category": "master","sounds": [{"name": "klaxon1","stream": false}]}
 }
