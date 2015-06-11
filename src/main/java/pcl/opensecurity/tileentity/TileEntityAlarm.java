@@ -4,99 +4,46 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.sounds.LoopingSound;
-import pcl.opensecurity.client.sounds.IShouldLoop;
-import li.cil.oc.api.network.SimpleComponent;
-import net.minecraft.client.Minecraft;
+import pcl.opensecurity.client.sounds.MachineSound;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
-public class TileEntityAlarm extends TileEntity implements IShouldLoop, SimpleComponent {
+public class TileEntityAlarm extends TileEntityMachineBase {
+	public String cName;
+	public Boolean shouldPlay = false;
+	public TileEntityAlarm(String componentName) {
+		super(componentName);
+		cName = componentName;
+	}
 
 	@Override
 	public String getComponentName() {
 		return "OSAlarm";
 	}
 	
-	private boolean isPlaying = false;
-	private boolean shouldStart = false;
-	private boolean shouldStop = false;
-	private boolean computerOverride = false;
-	private LoopingSound alarm = null;
-	public boolean isShouldStop() {
-		return shouldStop;
-	}
-
-	public void setShouldStart(boolean shouldStart) {
-		this.shouldStart = shouldStart;
-		System.out.println("Starting: " + this.shouldStart);
-	}
-
-	public void setShouldStop(boolean shouldStop) {
-		if (isPlaying && !computerOverride) {
-			isPlaying = false;
-			this.shouldStop = shouldStop;
-			isDonePlaying();
-			System.out.println("Stopping: " + shouldStop);
-		}
-	}
-
-	public boolean isPlaying() {
-		return isPlaying;
-	}
-	
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		if (worldObj.isRemote) {
-			if (!isPlaying && shouldStart) {
-				shouldStart = false;
-				shouldStop = false;
-				isPlaying = true;
-				alarm = new LoopingSound(new ResourceLocation(OpenSecurity.MODID + ":" + "klaxon1"), this);
-				playSound();
-			}
-		}
 	}
-
-	@SideOnly(Side.CLIENT)
-	private void playSound() {
-		FMLClientHandler.instance().getClient().getSoundHandler().playSound(alarm);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void isDonePlaying() {
-		alarm.shouldBePlaying = false;
-	}  
-	
-	@Override
-	public void writeToNBT(NBTTagCompound par1nbtTagCompound)
-	{
-		super.writeToNBT(par1nbtTagCompound);
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound par1nbtTagCompound)
-	{
-		super.readFromNBT(par1nbtTagCompound);
-	}
-
-	@Override
-	public boolean continueLoopingAudio() {
-		return true;
-	}  
 	
 	
 	@Override
-	public void validate() {
-		super.validate();
+	public boolean shouldPlaySound() {
+		return shouldPlay;
 	}
-	
+
 	@Override
-	public void invalidate() {
-		super.invalidate();
+	public String getSoundName() {
+		return "klaxon1";
+	}
+
+	public void setShouldStart(boolean b) {
+		shouldPlay = true;
+		
+	}
+
+	public void setShouldStop(boolean b) {
+		shouldPlay = false;
 	}
 	
 }
