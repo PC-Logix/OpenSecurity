@@ -8,7 +8,7 @@ import pcl.opensecurity.OpenSecurity;
 public class TileEntityAlarm extends TileEntityMachineBase {
 	public String cName;
 	public Boolean shouldPlay = false;
-	public String alarmName1 = "klaxon1";
+	public String alarmName = "klaxon1";
 	public TileEntityAlarm(String componentName) {
 		super(componentName);
 		cName = componentName;
@@ -32,7 +32,9 @@ public class TileEntityAlarm extends TileEntityMachineBase {
 
 	@Override
 	public String getSoundName() {
-		return alarmName1;
+		System.out.println("Fak " + this.alarmName);
+		return this.alarmName;
+		
 	}
 
 	public void setShouldStart(boolean b) {
@@ -55,10 +57,8 @@ public class TileEntityAlarm extends TileEntityMachineBase {
 	@Callback
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
-		System.out.println(OpenSecurity.alarmList);
-		System.out.println(alarm);
 		if (OpenSecurity.alarmList.contains(alarm)) {
-			alarmName1 = alarm;
+			this.alarmName = alarm;
 			return new Object[] { "Success" };
 		} else {
 			return new Object[] { "Fail" };
