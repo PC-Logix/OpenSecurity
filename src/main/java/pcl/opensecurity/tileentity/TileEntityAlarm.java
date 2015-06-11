@@ -2,7 +2,7 @@ package pcl.opensecurity.tileentity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import pcl.client.sounds.AlarmSoundHandler;
+import pcl.opensecurity.client.sounds.AlarmSoundHandler;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,7 +12,6 @@ public class TileEntityAlarm extends TileEntity implements SimpleComponent {
 
 	@Override
 	public String getComponentName() {
-		// TODO Auto-generated method stub
 		return "OSAlarm";
 	}
 

@@ -3,7 +3,7 @@ package pcl.opensecurity.renderers;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
-public class MagCardComponentRenderer extends TileEntitySpecialRenderer {
+public class BlockMagCardRenderer extends TileEntitySpecialRenderer {
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileentity, double d0, double d1,

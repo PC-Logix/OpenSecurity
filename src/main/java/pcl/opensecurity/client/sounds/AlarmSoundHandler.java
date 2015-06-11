@@ -1,9 +1,7 @@
-package pcl.client.sounds;
+package pcl.opensecurity.client.sounds;
 
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
