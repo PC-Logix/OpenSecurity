@@ -1,12 +1,15 @@
 package pcl.opensecurity.tileentity;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.AlarmSoundHandler;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
 public class TileEntityAlarm extends TileEntity implements SimpleComponent {
 
@@ -19,7 +22,7 @@ public class TileEntityAlarm extends TileEntity implements SimpleComponent {
 	private boolean shouldStart = false; //the trigger we will use to start the sound
 	private boolean shouldStop = false;
 	private boolean computerOverride = false;
-
+	private AlarmSoundHandler alarm = null;
 	public boolean isShouldStop() { //so we can see if we should stop this method allows checking for it
 		return shouldStop;
 	}
@@ -46,18 +49,23 @@ public class TileEntityAlarm extends TileEntity implements SimpleComponent {
 	@SideOnly(Side.CLIENT)
 	public void updateEntity() {
 		super.updateEntity();
-		if (!this.worldObj.isRemote) {
+		if (worldObj.isRemote) {
 			if (!isPlaying && shouldStart) {
-				//check to see if we are not already playing (to stop infinite amounts playing) and if we should start
 				shouldStart = false; //set should start to false to stop us trying to play more
-				shouldStop = false; //this is so when we have played and then stopped we can play again...yeah that was a bugger to solve!
-				isPlaying = true; //we tell it we are now playing
-	            AlarmSoundHandler alarm = new AlarmSoundHandler(worldObj.getTileEntity(xCoord, yCoord, zCoord), "klaxon1", 2.0F);
-	            Minecraft.getMinecraft().getSoundHandler().playSound(alarm);
+				shouldStop = false;
+				isPlaying = true;
+				ResourceLocation sound = new ResourceLocation(OpenSecurity.MODID + ":" + "klaxon1");
+	            alarm = new AlarmSoundHandler(sound, (float)this.xCoord, (float)this.yCoord, (float)this.zCoord, 2.0F, 1.0F);
+	            playSound();
 			}
 		}
 	}
 
+	  @SideOnly(Side.CLIENT)
+	  private void playSound() {
+	    FMLClientHandler.instance().getClient().getSoundHandler().playSound(alarm);
+	  }
+	
 	@Override
 	public void writeToNBT(NBTTagCompound par1nbtTagCompound)
 	{

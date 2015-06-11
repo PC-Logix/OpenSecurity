@@ -1,67 +1,37 @@
 package pcl.opensecurity.client.sounds;
-
-import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.tileentity.TileEntityAlarm;
-import net.minecraft.client.audio.MovingSound;
-import net.minecraft.tileentity.TileEntity;
+//TODO Using the MachineSound from EnderIO for now, I'll rewrite this ASAP
+import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.util.ResourceLocation;
 
-public class AlarmSoundHandler extends MovingSound {
-    private final TileEntity tileentity;
-    private TileEntityAlarm tileAlarm;
-    protected boolean repeat = true;
-    protected int repeatDelay = 0;
+public class AlarmSoundHandler extends PositionedSound implements ITickableSound {
+	  private boolean donePlaying;
 
-    
-    public AlarmSoundHandler(TileEntity tile, String Soundname, float volume) {
-        super(new ResourceLocation(OpenSecurity.MODID + ":" + Soundname));
-        this.tileentity = tile;
-        this.repeat = true;
-        this.xPosF = tileentity.xCoord;
-        this.yPosF = tileentity.yCoord;
-        this.zPosF = tileentity.zCoord;
-        tileAlarm = (TileEntityAlarm) tileentity;
-    }
+	  public AlarmSoundHandler(ResourceLocation sound, float x, float y, float z, float volume, float pitch) {
+	    super(sound);
+	    this.xPosF = x;
+	    this.yPosF = y;
+	    this.zPosF = z;
+	    this.volume = volume;
+	    this.field_147663_c = pitch;
+	    this.repeat = true;
+	  }
 
-    public void setDonePlaying()
-    {
-        this.repeat = false;
-        this.donePlaying = true;
-        this.repeatDelay = 0;
-    }
+	  @Override
+	  public void update() {
+	    ;
+	  }
 
-    @Override
-    public boolean isDonePlaying()
-    {
-        return this.donePlaying;
-    }
-    
-    public void update() {
-    	System.out.println(this.donePlaying);
-        if (tileAlarm.isShouldStop()) {
-        	System.out.println("Stop");
-        	setDonePlaying();
-        }
-    }
+	  @Override
+	  public boolean isDonePlaying() {
+	    return donePlaying;
+	  }
 
-    @Override
-    public boolean canRepeat()
-    {
-        return this.repeat;
-    }
+	  public void endPlaying() {
+	    donePlaying = true;
+	  }
 
-    @Override
-    public float getVolume()
-    {
-        return this.volume;
-    }
-
-    @Override
-    public int getRepeatDelay(){ return this.repeatDelay; }
-
-    @Override
-    public AttenuationType getAttenuationType()
-    {
-        return AttenuationType.LINEAR;
-    }
+	  public void startPlaying() {
+	    donePlaying = false;
+	  }
 }
