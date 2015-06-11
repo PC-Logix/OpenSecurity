@@ -30,9 +30,26 @@ public class BlockAlarm extends BlockContainer {
 		boolean isRedstonePowered = world.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		tile = (TileEntityAlarm) world.getTileEntity(xCoord, yCoord, zCoord);
 		if (isRedstonePowered) {
-			tile.setShouldStart(true);
+			world.addBlockEvent(xCoord, yCoord, zCoord, this, 0, 0);
 		} else {
-			tile.setShouldStop(true);
+			world.addBlockEvent(xCoord, yCoord, zCoord, this, 1, 0);
 		}
 	}
+	
+    @Override
+    public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventPramater) {
+    	tile = (TileEntityAlarm) world.getTileEntity(x, y, z);
+        if (world.isRemote && eventId == 0) {
+            tile.setShouldStart(true);
+        }
+        if (!world.isRemote && eventId == 0) {
+            //do nothing
+            tile.setShouldStart(true);
+        }
+        if (world.isRemote && eventId == 1) {
+            tile.setShouldStop(true);
+            //tile.isDonePlaying();
+        }
+        return true;
+    }
 }
