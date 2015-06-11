@@ -6,9 +6,9 @@ import net.minecraft.item.Item;
  * @author Caitlyn
  *
  */
-public class MagCard extends Item {
+public class ItemMagCard extends Item {
 
-	public MagCard() {
+	public ItemMagCard() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

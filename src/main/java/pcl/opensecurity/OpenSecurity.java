@@ -7,15 +7,15 @@ package pcl.opensecurity;
 import java.net.URL;
 
 import pcl.opensecurity.BuildInfo;
-import pcl.opensecurity.blocks.Alarm;
-import pcl.opensecurity.blocks.MagReader;
-import pcl.opensecurity.blocks.RFIDReader;
+import pcl.opensecurity.blocks.BlockAlarm;
+import pcl.opensecurity.blocks.BlockMagReader;
+import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.gui.SecurityGUIHandler;
-import pcl.opensecurity.items.MagCard;
-import pcl.opensecurity.items.RFIDCard;
-import pcl.opensecurity.tileentity.AlarmTE;
-import pcl.opensecurity.tileentity.MagReaderTE;
-import pcl.opensecurity.tileentity.RFIDReaderTE;
+import pcl.opensecurity.items.ItemMagCard;
+import pcl.opensecurity.items.ItemRFIDCard;
+import pcl.opensecurity.tileentity.TileEntityAlarm;
+import pcl.opensecurity.tileentity.TileEntityMagReader;
+import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -80,33 +80,33 @@ public class OpenSecurity {
         	
         	
             NetworkRegistry.INSTANCE.registerGuiHandler(this, new SecurityGUIHandler());
-        	GameRegistry.registerTileEntity(MagReaderTE.class, "MagCardTE");
-        	GameRegistry.registerTileEntity(RFIDReaderTE.class, "RFIDTE");
-        	GameRegistry.registerTileEntity(AlarmTE.class, "AlarmTE");
+        	GameRegistry.registerTileEntity(TileEntityMagReader.class, "MagCardTE");
+        	GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "RFIDTE");
+        	GameRegistry.registerTileEntity(TileEntityAlarm.class, "AlarmTE");
         	
         	//Register Blocks
-        	magCardReader = new MagReader();
+        	magCardReader = new BlockMagReader();
         	GameRegistry.registerBlock(magCardReader, "magreader");
         	magCardReader.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
         	
-        	rfidCardReader = new RFIDReader();
+        	rfidCardReader = new BlockRFIDReader();
         	GameRegistry.registerBlock(rfidCardReader, "rfidreader");
         	rfidCardReader.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
 
-        	Alarm = new Alarm();
+        	Alarm = new BlockAlarm();
         	GameRegistry.registerBlock(Alarm, "alarm");
         	Alarm.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
         	
         	
         	
         	//Register Items
-        	magCard = new MagCard();
+        	magCard = new ItemMagCard();
     		GameRegistry.registerItem(magCard, "opensecurity.magCard");
     		magCard.setUnlocalizedName("magCard");
     		magCard.setTextureName("minecraft:paper");
     		magCard.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
     		
-        	rfidCard = new RFIDCard();
+        	rfidCard = new ItemRFIDCard();
     		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
     		rfidCard.setUnlocalizedName("rfidCard");
     		rfidCard.setTextureName("opensecurity:rfidCard");

@@ -3,12 +3,12 @@ package pcl.opensecurity.renderers;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import pcl.opensecurity.tileentity.MagReaderTE;
+import pcl.opensecurity.tileentity.TileEntityMagReader;
 
 public class ItemMagComponentRenderer implements IItemRenderer {
 
 	public ItemMagComponentRenderer(TileEntitySpecialRenderer render,
-			MagReaderTE magCardComponent) {
+			TileEntityMagReader magCardComponent) {
 		// TODO Auto-generated constructor stub
 	}
 

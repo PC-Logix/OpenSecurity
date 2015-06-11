@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
  * @author Caitlyn
  *
  */
-public class RFIDReaderTE extends TileEntity implements SimpleComponent, IInventory, ISidedInventory{
+public class TileEntityRFIDReader extends TileEntity implements SimpleComponent, IInventory, ISidedInventory{
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int var1) {

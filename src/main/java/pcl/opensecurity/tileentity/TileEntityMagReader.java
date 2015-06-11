@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
  * @author Caitlyn
  *
  */
-public class MagReaderTE extends TileEntity implements SimpleComponent, IInventory, ISidedInventory{
+public class TileEntityMagReader extends TileEntity implements SimpleComponent, IInventory, ISidedInventory{
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int p_94128_1_) {

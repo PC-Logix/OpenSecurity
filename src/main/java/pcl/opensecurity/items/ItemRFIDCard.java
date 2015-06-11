@@ -6,9 +6,9 @@ import net.minecraft.item.Item;
  * @author Caitlyn
  *
  */
-public class RFIDCard extends Item {
+public class ItemRFIDCard extends Item {
 
-	public RFIDCard() {
+	public ItemRFIDCard() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

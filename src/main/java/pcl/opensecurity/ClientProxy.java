@@ -16,12 +16,12 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import pcl.opensecurity.CommonProxy;
 import pcl.opensecurity.containers.MagCardContainer;
 import pcl.opensecurity.renderers.MagCardComponentRenderer;
-import pcl.opensecurity.tileentity.MagReaderTE;
-import pcl.opensecurity.tileentity.RFIDReaderTE;
+import pcl.opensecurity.tileentity.TileEntityMagReader;
+import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.gui.SecurityGUIHandler;
 import pcl.opensecurity.renderers.ItemMagComponentRenderer;
 import pcl.opensecurity.renderers.ItemRFIDComponentRenderer;
-import pcl.opensecurity.blocks.MagReader;
+import pcl.opensecurity.blocks.BlockMagReader;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -29,12 +29,12 @@ public class ClientProxy extends CommonProxy {
 	{
 		if (OpenSecurity.render3D) {
 			TileEntitySpecialRenderer MagCardRender = new MagCardComponentRenderer();
-			ClientRegistry.bindTileEntitySpecialRenderer(MagReaderTE.class, MagCardRender);
-			MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(OpenSecurity.magCardReader), new ItemMagComponentRenderer(MagCardRender, new MagReaderTE()));
+			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagReader.class, MagCardRender);
+			MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(OpenSecurity.magCardReader), new ItemMagComponentRenderer(MagCardRender, new TileEntityMagReader()));
 			
 			TileEntitySpecialRenderer RFIDCardRender = new MagCardComponentRenderer();
-			ClientRegistry.bindTileEntitySpecialRenderer(RFIDReaderTE.class, RFIDCardRender);
-			MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(OpenSecurity.rfidCardReader), new ItemMagComponentRenderer(RFIDCardRender, new MagReaderTE()));
+			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRFIDReader.class, RFIDCardRender);
+			MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(OpenSecurity.rfidCardReader), new ItemMagComponentRenderer(RFIDCardRender, new TileEntityMagReader()));
 		}
 	}
 	
@@ -42,13 +42,13 @@ public class ClientProxy extends CommonProxy {
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
         TileEntity te = world.getTileEntity(x, y, z);
-        if (te != null && te instanceof MagReaderTE)
+        if (te != null && te instanceof TileEntityMagReader)
         {
-        	MagReaderTE icte = (MagReaderTE) te;
+        	TileEntityMagReader icte = (TileEntityMagReader) te;
             return new MagCardContainer(player.inventory, icte);
-        } else if (te != null && te instanceof RFIDReaderTE)
+        } else if (te != null && te instanceof TileEntityRFIDReader)
         {
-        	MagReaderTE icte = (MagReaderTE) te;
+        	TileEntityMagReader icte = (TileEntityMagReader) te;
             return new MagCardContainer(player.inventory, icte);
         }
         else

@@ -2,13 +2,13 @@ package pcl.opensecurity.tileentity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import pcl.client.sounds.PCLSoundHandler;
+import pcl.client.sounds.AlarmSoundHandler;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class AlarmTE extends TileEntity implements SimpleComponent {
+public class TileEntityAlarm extends TileEntity implements SimpleComponent {
 
 	@Override
 	public String getComponentName() {
@@ -47,13 +47,13 @@ public class AlarmTE extends TileEntity implements SimpleComponent {
 	@SideOnly(Side.CLIENT)
 	public void updateEntity() {
 		super.updateEntity();
-		if (this.worldObj.isRemote) {
+		if (!this.worldObj.isRemote) {
 			if (!isPlaying && shouldStart) {
 				//check to see if we are not already playing (to stop infinite amounts playing) and if we should start
 				shouldStart = false; //set should start to false to stop us trying to play more
 				shouldStop = false; //this is so when we have played and then stopped we can play again...yeah that was a bugger to solve!
 				isPlaying = true; //we tell it we are now playing
-	            PCLSoundHandler alarm = new PCLSoundHandler(worldObj.getTileEntity(xCoord, yCoord, zCoord), "klaxon1", 2.0F);
+	            AlarmSoundHandler alarm = new AlarmSoundHandler(worldObj.getTileEntity(xCoord, yCoord, zCoord), "klaxon1", 2.0F);
 	            Minecraft.getMinecraft().getSoundHandler().playSound(alarm);
 			}
 		}
