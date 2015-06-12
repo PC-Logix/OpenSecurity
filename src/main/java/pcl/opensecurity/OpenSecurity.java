@@ -1,5 +1,6 @@
 package pcl.opensecurity;
 
+import java.net.URL;
 import java.util.List;
 
 import pcl.opensecurity.BuildInfo;
@@ -16,9 +17,11 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -45,6 +48,7 @@ public class OpenSecurity {
         public static CommonProxy proxy;
         public static Config cfg = null;
         public static boolean render3D = true;
+        public static boolean debug = false;
 
         public static org.apache.logging.log4j.Logger logger;
 
@@ -55,7 +59,7 @@ public class OpenSecurity {
         	cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
         	render3D = cfg.render3D;
         	alarmList = cfg.alarmsConfigList;
-        	/*
+        	        	
             if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD){
                 try {
                     Class.forName("pcl.openprinter.mud.ModUpdateDetector")
@@ -69,7 +73,7 @@ public class OpenSecurity {
                     e.printStackTrace();
                 }
             }
-            */
+            
             logger = event.getModLog();
         	
         	
