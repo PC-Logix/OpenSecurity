@@ -22,7 +22,7 @@ if (System.getenv().BUILD_NUMBER != null)
 else
 	ext.buildNumber = 0
 
-version = "0.1.0-"
+version = "0.1.0"
 group = "pcl.OpenSecurity"
 archivesBaseName = "OpenSecurity"
 
