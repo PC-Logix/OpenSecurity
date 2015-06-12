@@ -1,11 +1,5 @@
 package pcl.opensecurity;
 
-/**
- * @author Caitlyn
- *
- */
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import pcl.opensecurity.BuildInfo;
@@ -22,11 +16,9 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -34,7 +26,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid=OpenSecurity.MODID, name="OpenSecurity", version=BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "after:OpenComputers")
-//@NetworkMod(clientSideRequired=true)
+
 public class OpenSecurity {
 	
 	public static final String MODID = "opensecurity";
@@ -53,16 +45,13 @@ public class OpenSecurity {
         public static CommonProxy proxy;
         public static Config cfg = null;
         public static boolean render3D = true;
-        
-        private static boolean debug = true;
+
         public static org.apache.logging.log4j.Logger logger;
 
 		public static List<String> alarmList;
         
         @EventHandler
-        public void preInit(FMLPreInitializationEvent event) {
-        	
-        	
+        public void preInit(FMLPreInitializationEvent event) {      	
         	cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
         	render3D = cfg.render3D;
         	alarmList = cfg.alarmsConfigList;
