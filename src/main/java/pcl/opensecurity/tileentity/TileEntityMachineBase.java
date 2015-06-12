@@ -1,8 +1,5 @@
 package pcl.opensecurity.tileentity;
 
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.MachineSound;
@@ -19,7 +16,6 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 	public TileEntityMachineBase(String name) {
 		super();
 		this.componentName = name;
-		soundRes = getSoundFor(getSoundName());
 	}
 	
 	@Override
@@ -37,12 +33,16 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 
 	private ResourceLocation soundRes;
 
-	protected static ResourceLocation getSoundFor(String sound) {
-		return sound == null ? null : new ResourceLocation(OpenSecurity.MODID + ":" + sound);
-	}
-
+	public String SoundTest;
+	
 	public String getSoundName() {
 		return null;
+	}
+	
+	public ResourceLocation setSound(String sound) {
+		soundRes = null;
+		soundRes = new ResourceLocation(OpenSecurity.MODID + ":" + sound);
+		return soundRes;
 	}
 
 	public ResourceLocation getSoundRes() {

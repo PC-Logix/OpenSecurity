@@ -1,9 +1,4 @@
 package pcl.opensecurity.client.sounds;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import pcl.opensecurity.Config;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.util.ResourceLocation;

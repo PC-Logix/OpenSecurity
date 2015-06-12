@@ -22,7 +22,7 @@ public class BlockAlarm extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) {
-		return new TileEntityAlarm("OSAlarm");
+		return new TileEntityAlarm();
 	}
 
 	@Override

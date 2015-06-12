@@ -6,12 +6,13 @@ import li.cil.oc.api.machine.Context;
 import pcl.opensecurity.OpenSecurity;
 
 public class TileEntityAlarm extends TileEntityMachineBase {
-	public String cName;
+	public static String cName = "OSAlarm";
 	public Boolean shouldPlay = false;
 	public String alarmName = "klaxon1";
-	public TileEntityAlarm(String componentName) {
-		super(componentName);
-		cName = componentName;
+
+	public TileEntityAlarm() {
+		super(cName);
+		setSound(alarmName);
 	}
 
 	@Override
@@ -29,11 +30,10 @@ public class TileEntityAlarm extends TileEntityMachineBase {
 	public boolean shouldPlaySound() {
 		return shouldPlay;
 	}
-
+	
 	@Override
 	public String getSoundName() {
-		System.out.println("Fak " + this.alarmName);
-		return this.alarmName;
+		return alarmName;
 		
 	}
 
@@ -58,7 +58,8 @@ public class TileEntityAlarm extends TileEntityMachineBase {
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
 		if (OpenSecurity.alarmList.contains(alarm)) {
-			this.alarmName = alarm;
+			alarmName = alarm;
+			setSound(alarm);
 			return new Object[] { "Success" };
 		} else {
 			return new Object[] { "Fail" };
