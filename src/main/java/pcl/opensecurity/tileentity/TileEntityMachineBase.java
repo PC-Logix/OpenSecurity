@@ -1,6 +1,5 @@
 package pcl.opensecurity.tileentity;
 
-import li.cil.oc.api.network.SimpleComponent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.MachineSound;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,12 +9,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMachineBase extends TileEntity implements SimpleComponent {
-	
-	protected String componentName;
-	public TileEntityMachineBase(String name) {
+public class TileEntityMachineBase extends TileEntity {
+
+	public TileEntityMachineBase() {
 		super();
-		this.componentName = name;
 	}
 	
 	@Override
@@ -33,16 +30,12 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 
 	private ResourceLocation soundRes;
 
-	public String SoundTest;
-	
 	public String getSoundName() {
 		return null;
 	}
 	
 	public ResourceLocation setSound(String sound) {
-		soundRes = null;
-		soundRes = new ResourceLocation(OpenSecurity.MODID + ":" + sound);
-		return soundRes;
+		return null;
 	}
 
 	public ResourceLocation getSoundRes() {
@@ -70,7 +63,7 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void updateSound() {
+	public void updateSound() {
 		if(hasSound()) {
 			if(shouldPlaySound() && !isInvalid()) {
 				if(sound == null) {
@@ -83,11 +76,6 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 			}
 		}
 	}
-
-	@Override
-	public String getComponentName() {
-		return this.componentName;
-	}
 	
 	
 	@Override
@@ -99,5 +87,10 @@ public class TileEntityMachineBase extends TileEntity implements SimpleComponent
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-	}	
+	}
+
+	public void setSoundRes(ResourceLocation soundRes) {
+		this.soundRes = soundRes;
+	}
+
 }
