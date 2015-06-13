@@ -193,7 +193,7 @@ public class TileEntityRFIDWriter extends TileEntityMachineBase implements Simpl
 							RFIDWriterItemStacks[x] = new ItemStack(OpenSecurity.rfidCard);
 							RFIDWriterItemStacks[x].setTagCompound(new NBTTagCompound());
 
-							RFIDWriterItemStacks[x].stackTagCompound.setString("data", args.checkString(0));
+							RFIDWriterItemStacks[x].stackTagCompound.setString("data", args.checkString(0).substring(0, 64));
 
 							if(args.checkBoolean(1)) {
 								RFIDWriterItemStacks[x].stackTagCompound.setBoolean("locked", args.checkBoolean(1));
