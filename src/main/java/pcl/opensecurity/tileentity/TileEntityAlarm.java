@@ -17,7 +17,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 	public static String cName = "OSAlarm";
 	public Boolean shouldPlay = false;
 	public String soundName = "klaxon1";
-
+	public float volume = 1.0F;
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
@@ -41,6 +41,10 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 	@Override
 	public String getSoundName() {
 		return soundName;
+	}
+	
+	public float getVolume() {
+		return volume;
 	}
 
 	@Override
@@ -70,7 +74,18 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
 	}
 
-	@Callback
+	@Callback(doc = "function(range:integer):string; Sets the range in blocks of the alarm", direct = true)
+	public Object[] setRange(Context context, Arguments args) {
+		Float newVolume = (float) args.checkInteger(0);
+		if (newVolume >= 15 && newVolume <= 150) {
+			volume = newVolume / 15 + 0.5F;
+			return new Object[] { "Success"};
+		} else {
+			return new Object[] { "Error, range should be between 15-150" };
+		}
+	}
+	
+	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
 		if (OpenSecurity.alarmList.contains(alarm)) {
@@ -84,14 +99,14 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 		}
 	}
 
-	@Callback(direct = true)
+	@Callback(doc = "function():string; Activates the alarm", direct = true)
 	public Object[] activate(Context context, Arguments args) {
 		this.setShouldStart(true);
 
 		return new Object[] { "Ok" };
 	}
 
-	@Callback(direct = true)
+	@Callback(doc = "function():string; Deactivates the alarm", direct = true)
 	public Object[] deactivate(Context context, Arguments args) {
 		this.setShouldStop(true);
 
@@ -128,12 +143,13 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 	private void readSyncableDataFromNBT(NBTTagCompound tag) {
 		shouldPlay = tag.getBoolean("isPlayingSound");
 		soundName = tag.getString("alarmName");
-		System.out.println(soundName);
+		volume = tag.getFloat("volume");
 	}
 
 	private void writeSyncableDataToNBT(NBTTagCompound tag) {
 		tag.setBoolean("isPlayingSound", shouldPlay);
 		tag.setString("alarmName", soundName);
+		tag.setFloat("volume", volume);
 	}
 
 	@Override
