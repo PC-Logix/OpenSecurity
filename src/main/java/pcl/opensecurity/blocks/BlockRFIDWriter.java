@@ -16,11 +16,11 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 public class BlockRFIDWriter extends BlockContainer {
-	private Random random;
+
 	public BlockRFIDWriter() {
 		super(Material.iron);
 		setBlockName("rfidwriter");
-		// TODO Auto-generated constructor stub
+		setBlockTextureName("opensecurity:rfidwriter");
 	}
 	
 	@Override
@@ -49,7 +49,7 @@ public class BlockRFIDWriter extends BlockContainer {
     public void dropContent(IInventory chest, World world, int xCoord, int yCoord, int zCoord) {
         if (chest == null)
             return;
-
+        Random random = new Random();
         for (int i1 = 0; i1 < chest.getSizeInventory(); ++i1) {
             ItemStack itemstack = chest.getStackInSlot(i1);
 

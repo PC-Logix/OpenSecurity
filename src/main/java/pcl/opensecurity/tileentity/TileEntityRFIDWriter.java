@@ -185,18 +185,23 @@ public class TileEntityRFIDWriter extends TileEntityMachineBase implements Simpl
 	
 	@Callback(doc = "function(string: data, boolean: locked):string; writes data to the RFID, upto 64 characters, the rest is silently discarded, if you pass true to the 2nd argument you will not be able to erase, or rewrite data.", direct = true)
 	public Object[] write(Context context, Arguments args) {
-		if (args.checkString(0) != null) {
+		String data = args.checkString(0);
+		Boolean locked = args.optBoolean(1, false);
+		if (data != null) {
 			if (getStackInSlot(0) != null) {
 					for (int x = 3; x <= 12; x++) { //Loop the 9 output slots checking for a empty one
 						if (getStackInSlot(x) == null) { //The slot is empty lets make us a NameTag
 
 							RFIDWriterItemStacks[x] = new ItemStack(OpenSecurity.rfidCard);
 							RFIDWriterItemStacks[x].setTagCompound(new NBTTagCompound());
+							if (data.length() > 64) {
+								data = data.substring(0, 64);
+							}
+							System.out.println(data.length());
+							RFIDWriterItemStacks[x].stackTagCompound.setString("data", data);
 
-							RFIDWriterItemStacks[x].stackTagCompound.setString("data", args.checkString(0).substring(0, 64));
-
-							if(args.checkBoolean(1)) {
-								RFIDWriterItemStacks[x].stackTagCompound.setBoolean("locked", args.checkBoolean(1));
+							if(locked) {
+								RFIDWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);
 							}
 							decrStackSize(0, 1);
 							return new Object[]{true};
