@@ -12,7 +12,6 @@ public class ItemMagCard extends Item {
 		super();
 		setUnlocalizedName("magCard");
 		setTextureName("opensecurity:magCard");
-		setCreativeTab(li.cil.oc.api.CreativeTab.instance);
 	}
 
 }

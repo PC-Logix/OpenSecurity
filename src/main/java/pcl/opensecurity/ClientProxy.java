@@ -1,9 +1,11 @@
 package pcl.opensecurity;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import pcl.opensecurity.CommonProxy;
+import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.containers.MagCardContainer;
 import pcl.opensecurity.containers.RFIDCardContainer;
 import pcl.opensecurity.tileentity.TileEntityMagReader;

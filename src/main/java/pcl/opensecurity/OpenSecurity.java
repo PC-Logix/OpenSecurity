@@ -7,6 +7,7 @@ import pcl.opensecurity.BuildInfo;
 import pcl.opensecurity.blocks.BlockAlarm;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
+import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.gui.SecurityGUIHandler;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
@@ -15,6 +16,7 @@ import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -54,6 +56,8 @@ public class OpenSecurity {
 
 	public static List<String> alarmList;
 
+	private CreativeTabs CreativeTab;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		cfg = new Config(new Configuration(
@@ -61,27 +65,19 @@ public class OpenSecurity {
 		render3D = cfg.render3D;
 		alarmList = cfg.alarmsConfigList;
 
-		if ((event.getSourceFile().getName().endsWith(".jar") || debug)
-				&& event.getSide().isClient() && cfg.enableMUD) {
+		if ((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD) {
 			try {
-				Class.forName("pcl.openprinter.mud.ModUpdateDetector")
-						.getDeclaredMethod("registerMod", ModContainer.class,
-								URL.class, URL.class)
-						.invoke(null,
-								FMLCommonHandler.instance().findContainerFor(
-										this),
+				Class.forName("pcl.openprinter.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null, FMLCommonHandler.instance().findContainerFor(this),
 								new URL("http://PC-Logix.com/OpenSecurity/get_latest_build.php"),
-								new URL(
-										"http://PC-Logix.com/OpenSecurity/changelog.txt"));
+								new URL("http://PC-Logix.com/OpenSecurity/changelog.txt"));
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
-
+	    CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
 		logger = event.getModLog();
 
-		NetworkRegistry.INSTANCE.registerGuiHandler(this,
-				new SecurityGUIHandler());
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new SecurityGUIHandler());
 		GameRegistry.registerTileEntity(TileEntityMagReader.class, "MagCardTE");
 		GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "RFIDTE");
 		GameRegistry.registerTileEntity(TileEntityAlarm.class, "AlarmTE");
@@ -89,22 +85,24 @@ public class OpenSecurity {
 		// Register Blocks
 		magCardReader = new BlockMagReader();
 		GameRegistry.registerBlock(magCardReader, "magreader");
-		magCardReader.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
+		magCardReader.setCreativeTab(CreativeTab);
 
 		rfidCardReader = new BlockRFIDReader();
 		GameRegistry.registerBlock(rfidCardReader, "rfidreader");
-		rfidCardReader.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
+		rfidCardReader.setCreativeTab(CreativeTab);
 
 		Alarm = new BlockAlarm();
 		GameRegistry.registerBlock(Alarm, "alarm");
-		Alarm.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
+		Alarm.setCreativeTab(CreativeTab);
 
 		// Register Items
 		magCard = new ItemMagCard();
 		GameRegistry.registerItem(magCard, "opensecurity.magCard");
+		magCard.setCreativeTab(CreativeTab);
 
 		rfidCard = new ItemRFIDCard();
 		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
+		rfidCard.setCreativeTab(CreativeTab);
 	}
 
 	@EventHandler

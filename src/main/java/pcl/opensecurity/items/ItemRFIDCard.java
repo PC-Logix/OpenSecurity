@@ -12,7 +12,6 @@ public class ItemRFIDCard extends Item {
 		super();
 		setUnlocalizedName("rfidCard");
 		setTextureName("opensecurity:rfidCard");
-		setCreativeTab(li.cil.oc.api.CreativeTab.instance);
 	}
 
 }
