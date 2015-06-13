@@ -12,8 +12,7 @@ import li.cil.oc.api.network.SimpleComponent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
-public class TileEntityAlarm extends TileEntityMachineBase implements
-		SimpleComponent, ISoundTile {
+public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent, ISoundTile {
 	public static String cName = "OSAlarm";
 	public Boolean shouldPlay = false;
 	public String soundName = "klaxon1";
