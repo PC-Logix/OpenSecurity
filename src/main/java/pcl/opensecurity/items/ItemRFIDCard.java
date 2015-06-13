@@ -10,7 +10,9 @@ public class ItemRFIDCard extends Item {
 
 	public ItemRFIDCard() {
 		super();
-		// TODO Auto-generated constructor stub
+		setUnlocalizedName("rfidCard");
+		setTextureName("opensecurity:rfidCard");
+		setCreativeTab(li.cil.oc.api.CreativeTab.instance);
 	}
 
 }

@@ -10,7 +10,9 @@ public class ItemMagCard extends Item {
 
 	public ItemMagCard() {
 		super();
-		// TODO Auto-generated constructor stub
+		setUnlocalizedName("magCard");
+		setTextureName("opensecurity:magCard");
+		setCreativeTab(li.cil.oc.api.CreativeTab.instance);
 	}
 
 }

@@ -70,8 +70,7 @@ public class OpenSecurity {
 						.invoke(null,
 								FMLCommonHandler.instance().findContainerFor(
 										this),
-								new URL(
-										"http://PC-Logix.com/OpenSecurity/get_latest_build.php"),
+								new URL("http://PC-Logix.com/OpenSecurity/get_latest_build.php"),
 								new URL(
 										"http://PC-Logix.com/OpenSecurity/changelog.txt"));
 			} catch (Throwable e) {
@@ -103,16 +102,9 @@ public class OpenSecurity {
 		// Register Items
 		magCard = new ItemMagCard();
 		GameRegistry.registerItem(magCard, "opensecurity.magCard");
-		magCard.setUnlocalizedName("magCard");
-		magCard.setTextureName("opensecurity:magCard");
-		magCard.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
 
 		rfidCard = new ItemRFIDCard();
 		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
-		rfidCard.setUnlocalizedName("rfidCard");
-		rfidCard.setTextureName("opensecurity:rfidCard");
-		rfidCard.setCreativeTab(li.cil.oc.api.CreativeTab.instance);
-
 	}
 
 	@EventHandler
