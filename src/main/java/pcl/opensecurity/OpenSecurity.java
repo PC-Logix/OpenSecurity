@@ -7,6 +7,7 @@ import pcl.opensecurity.BuildInfo;
 import pcl.opensecurity.blocks.BlockAlarm;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
+import pcl.opensecurity.blocks.BlockRFIDWriter;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.gui.SecurityGUIHandler;
 import pcl.opensecurity.items.ItemMagCard;
@@ -14,6 +15,7 @@ import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
+import pcl.opensecurity.tileentity.TileEntityRFIDWriter;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -38,6 +40,7 @@ public class OpenSecurity {
 
 	public static Block magCardReader;
 	public static Block rfidCardReader;
+	public static Block rfidCardWriter;
 	public static Block Alarm;
 	public static Item magCard;
 	public static Item rfidCard;
@@ -78,22 +81,31 @@ public class OpenSecurity {
 		logger = event.getModLog();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new SecurityGUIHandler());
-		GameRegistry.registerTileEntity(TileEntityMagReader.class, "MagCardTE");
-		GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "RFIDTE");
-		GameRegistry.registerTileEntity(TileEntityAlarm.class, "AlarmTE");
+		
+		
+		
+
 
 		// Register Blocks
 		magCardReader = new BlockMagReader();
 		GameRegistry.registerBlock(magCardReader, "magreader");
 		magCardReader.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityMagReader.class, "MagCardTE");
 
 		rfidCardReader = new BlockRFIDReader();
 		GameRegistry.registerBlock(rfidCardReader, "rfidreader");
 		rfidCardReader.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "RFIDTE");
+		
+		rfidCardWriter = new BlockRFIDWriter();
+		GameRegistry.registerBlock(rfidCardWriter, "rfidwriter");
+		rfidCardWriter.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityRFIDWriter.class, "RFIDWriterTE");
 
 		Alarm = new BlockAlarm();
 		GameRegistry.registerBlock(Alarm, "alarm");
 		Alarm.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityAlarm.class, "AlarmTE");
 
 		// Register Items
 		magCard = new ItemMagCard();
