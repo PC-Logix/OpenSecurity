@@ -5,24 +5,24 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import pcl.opensecurity.gui.RFIDSlot;
-import pcl.opensecurity.tileentity.TileEntityRFIDWriter;
+import pcl.opensecurity.gui.CardSlot;
+import pcl.opensecurity.tileentity.TileEntityCardWriter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RFIDWriterContainer extends Container {
-	protected TileEntityRFIDWriter tileEntity;
+	protected TileEntityCardWriter tileEntity;
 	private Slot RFIDSlot;
 	private List<Slot> specialSlots;
     private List<Slot> outputSlots;
     private List<Slot> playerSlots;
     private List<Slot> hotbarSlots;
     
-	public RFIDWriterContainer(InventoryPlayer inventory, TileEntityRFIDWriter te) {
+	public RFIDWriterContainer(InventoryPlayer inventory, TileEntityCardWriter te) {
         tileEntity = te;
         //RFID Input
-        RFIDSlot = addSlotToContainer(new RFIDSlot(tileEntity, 0, 80, 21));
+        RFIDSlot = addSlotToContainer(new CardSlot(tileEntity, 0, 80, 21));
 
         specialSlots = new ArrayList<Slot>();
         specialSlots.add(RFIDSlot);

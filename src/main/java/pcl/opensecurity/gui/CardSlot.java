@@ -1,21 +1,22 @@
 package pcl.opensecurity.gui;
 
+import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class RFIDSlot extends Slot {
+public class CardSlot extends Slot {
 
-	public RFIDSlot(IInventory par1iInventory, int par2, int par3, int par4) {
+	public CardSlot(IInventory par1iInventory, int par2, int par3, int par4) {
 		super(par1iInventory, par2, par3, par4);
 		// TODO Auto-generated constructor stub
 	}
 	
     public boolean isItemValid(ItemStack itemstack)
     {
-            if (itemstack.getItem() instanceof ItemRFIDCard) {
+            if (itemstack.getItem() instanceof ItemRFIDCard || itemstack.getItem() instanceof ItemMagCard) {
             	if(itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("locked")) {
                 	return true;
             	} else {

@@ -1,12 +1,12 @@
 //Blocks
 tile.alarm.name=Alarm
 tile.rfidreader.name=RFID Reader
-tile.rfidwriter.name=RFID Writer
+tile.cardwriter.name=Card Writer
 tile.magreader.name=Magnetic Card Reader
 //items
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
 itemGroup.OpenSecurity=OpenSecurity
 //guis
-gui.string.rfidwriter=RFID Writer
-gui.string.rfidslot=RFID
+gui.string.cardwriter=Card Writer
+gui.string.cardslot=Card Slot

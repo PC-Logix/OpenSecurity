@@ -8,7 +8,7 @@ import pcl.opensecurity.containers.MagCardContainer;
 import pcl.opensecurity.containers.RFIDWriterContainer;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
-import pcl.opensecurity.tileentity.TileEntityRFIDWriter;
+import pcl.opensecurity.tileentity.TileEntityCardWriter;
 
 public class ClientProxy extends CommonProxy {
 
@@ -26,7 +26,7 @@ public class ClientProxy extends CommonProxy {
 			TileEntityMagReader icte = (TileEntityMagReader) te;
 			return new MagCardContainer(player.inventory, icte);
 		} else if (te != null && te instanceof TileEntityRFIDReader) {
-			TileEntityRFIDWriter icte = (TileEntityRFIDWriter) te;
+			TileEntityCardWriter icte = (TileEntityCardWriter) te;
 			return new RFIDWriterContainer(player.inventory, icte);
 		} else {
 			return null;

@@ -1,7 +1,7 @@
 package pcl.opensecurity.blocks;
 
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.tileentity.TileEntityRFIDWriter;
+import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -15,17 +15,17 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class BlockRFIDWriter extends BlockContainer {
+public class BlockCardWriter extends BlockContainer {
 
-	public BlockRFIDWriter() {
+	public BlockCardWriter() {
 		super(Material.iron);
-		setBlockName("rfidwriter");
-		setBlockTextureName("opensecurity:rfidwriter");
+		setBlockName("cardwriter");
+		setBlockTextureName("opensecurity:cardwriter");
 	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) {
-		return new TileEntityRFIDWriter();
+		return new TileEntityCardWriter();
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class BlockRFIDWriter extends BlockContainer {
 	
     @Override
     public void breakBlock (World world, int x, int y, int z, Block block, int meta) {
-    	TileEntityRFIDWriter tileEntity = (TileEntityRFIDWriter) world.getTileEntity(x, y, z);
+    	TileEntityCardWriter tileEntity = (TileEntityCardWriter) world.getTileEntity(x, y, z);
         dropContent(tileEntity, world, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
         super.breakBlock(world, x, y, z, block, meta);
     }

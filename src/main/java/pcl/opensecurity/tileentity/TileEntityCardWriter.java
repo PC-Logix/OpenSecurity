@@ -1,6 +1,7 @@
 package pcl.opensecurity.tileentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -15,9 +16,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
-public class TileEntityRFIDWriter extends TileEntityMachineBase implements SimpleComponent, IInventory, ISidedInventory  {
+public class TileEntityCardWriter extends TileEntityMachineBase implements SimpleComponent, IInventory, ISidedInventory  {
 
-	public TileEntityRFIDWriter() { }
+	public TileEntityCardWriter() { }
 
 	private static final int[] slots_top = new int[] {2};
 	private static final int[] slots_bottom = new int[] {3,4,5,6,7,8,9};
@@ -133,7 +134,7 @@ public class TileEntityRFIDWriter extends TileEntityMachineBase implements Simpl
 
 	@Override
 	public String getComponentName() {
-		return "OSRFIDWriter";
+		return "OSCardWriter";
 	}
 
 	@Override
@@ -183,22 +184,27 @@ public class TileEntityRFIDWriter extends TileEntityMachineBase implements Simpl
 		readFromNBT(packet.func_148857_g());
 	}
 	
-	@Callback(doc = "function(string: data, boolean: locked):string; writes data to the RFID, upto 64 characters, the rest is silently discarded, if you pass true to the 2nd argument you will not be able to erase, or rewrite data.", direct = true)
+	@Callback(doc = "function(string: data, boolean: locked):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, if you pass true to the 2nd argument you will not be able to erase, or rewrite data.", direct = true)
 	public Object[] write(Context context, Arguments args) {
 		String data = args.checkString(0);
 		Boolean locked = args.optBoolean(1, false);
 		if (data != null) {
 			if (getStackInSlot(0) != null) {
 					for (int x = 3; x <= 12; x++) { //Loop the 9 output slots checking for a empty one
-						if (getStackInSlot(x) == null) { //The slot is empty lets make us a NameTag
-
-							RFIDWriterItemStacks[x] = new ItemStack(OpenSecurity.rfidCard);
-							RFIDWriterItemStacks[x].setTagCompound(new NBTTagCompound());
-							if (data.length() > 64) {
-								data = data.substring(0, 64);
+						if (getStackInSlot(x) == null) { //The slot is empty lets make us a RFID
+							if (getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
+								RFIDWriterItemStacks[x] = new ItemStack(OpenSecurity.rfidCard);
+								if (data.length() > 64) {
+									data = data.substring(0, 64);
+								}
+							} else if (getStackInSlot(0).getItem() instanceof ItemMagCard) {
+								RFIDWriterItemStacks[x] = new ItemStack(OpenSecurity.magCard);
+								if (data.length() > 128) {
+									data = data.substring(0, 128);
+								}
 							}
-							System.out.println(data.length());
 							RFIDWriterItemStacks[x].stackTagCompound.setString("data", data);
+							RFIDWriterItemStacks[x].setTagCompound(new NBTTagCompound());
 
 							if(locked) {
 								RFIDWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);
@@ -207,7 +213,7 @@ public class TileEntityRFIDWriter extends TileEntityMachineBase implements Simpl
 							return new Object[]{true};
 						}
 					} return new Object[]{false + " No Empty Slots"};
-			} return new Object[]{false + " No RFID in slot"};
+			} return new Object[]{false + " No card in slot"};
 		}  return new Object[]{false + " Data is Null"};
 	}
 	

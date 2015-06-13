@@ -7,7 +7,7 @@ import pcl.opensecurity.BuildInfo;
 import pcl.opensecurity.blocks.BlockAlarm;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
-import pcl.opensecurity.blocks.BlockRFIDWriter;
+import pcl.opensecurity.blocks.BlockCardWriter;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.gui.OSGUIHandler;
 import pcl.opensecurity.items.ItemMagCard;
@@ -15,7 +15,7 @@ import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
-import pcl.opensecurity.tileentity.TileEntityRFIDWriter;
+import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -97,10 +97,10 @@ public class OpenSecurity {
 		rfidCardReader.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "RFIDTE");
 		
-		rfidCardWriter = new BlockRFIDWriter();
+		rfidCardWriter = new BlockCardWriter();
 		GameRegistry.registerBlock(rfidCardWriter, "rfidwriter");
 		rfidCardWriter.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityRFIDWriter.class, "RFIDWriterTE");
+		GameRegistry.registerTileEntity(TileEntityCardWriter.class, "RFIDWriterTE");
 
 		Alarm = new BlockAlarm();
 		GameRegistry.registerBlock(Alarm, "alarm");
