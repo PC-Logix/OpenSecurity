@@ -16,6 +16,7 @@ public class BlockAlarm extends BlockContainer {
 	public BlockAlarm() {
 		super(Material.iron);
 		setBlockName("alarm");
+		setBlockTextureName("opensecurity:alarm");
 	}
 
 	private TileEntityAlarm tile;
