@@ -4,7 +4,8 @@ package pcl.opensecurity;
  * This file is automatically updated by Jenkins as part of the CI build script
  * in Ant. Don't put any pre-set values here.
  * 
- * @author AfterLifeLochie, stolen from LanteaCraft, another fine PC-Logix Minecraft mod.
+ * @author AfterLifeLochie, stolen from LanteaCraft, another fine PC-Logix
+ *         Minecraft mod.
  */
 public class BuildInfo {
 	public static final String modName = "OpenSecurity";

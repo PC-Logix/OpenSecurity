@@ -16,7 +16,8 @@ import cpw.mods.fml.common.network.IGuiHandler;
  */
 public class CommonProxy implements IGuiHandler {
 
-	public void registerRenderers() {}
+	public void registerRenderers() {
+	}
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
@@ -26,16 +27,14 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        TileEntity te = world.getTileEntity(x, y, z);
-        if (te != null && te instanceof TileEntityRFIDReader)
-        {
-        	TileEntityRFIDReader icte = (TileEntityRFIDReader) te;
-            return new RFIDCardContainer(player.inventory, icte);
-        }
-        else
-        {
-            return null;
-        }
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
+			int x, int y, int z) {
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te != null && te instanceof TileEntityRFIDReader) {
+			TileEntityRFIDReader icte = (TileEntityRFIDReader) te;
+			return new RFIDCardContainer(player.inventory, icte);
+		} else {
+			return null;
+		}
 	}
 }

@@ -5,7 +5,8 @@ import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 
 public class RFIDCardContainer {
 
-	public RFIDCardContainer(InventoryPlayer inventory, TileEntityRFIDReader icte) {
+	public RFIDCardContainer(InventoryPlayer inventory,
+			TileEntityRFIDReader icte) {
 		// TODO Auto-generated constructor stub
 	}
 

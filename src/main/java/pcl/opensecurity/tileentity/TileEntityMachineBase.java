@@ -15,15 +15,15 @@ public class TileEntityMachineBase extends TileEntity {
 	public TileEntityMachineBase() {
 		super();
 	}
-	
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		if(worldObj.isRemote && hasSound()) {
+		if (worldObj.isRemote && hasSound()) {
 			updateSound();
 		}
 	}
-	
+
 	// Sound related, thanks to EnderIO code for this!
 
 	@SideOnly(Side.CLIENT)
@@ -34,7 +34,7 @@ public class TileEntityMachineBase extends TileEntity {
 	public String getSoundName() {
 		return null;
 	}
-	
+
 	public ResourceLocation setSound(String sound) {
 		return null;
 	}
@@ -65,23 +65,27 @@ public class TileEntityMachineBase extends TileEntity {
 
 	@SideOnly(Side.CLIENT)
 	public void updateSound() {
-		if(hasSound()) {
-			if(shouldPlaySound() && !isInvalid()) {
-				if(sound == null) {
+		if (hasSound()) {
+			if (shouldPlaySound() && !isInvalid()) {
+				if (sound == null) {
 					if (this instanceof ISoundTile) {
 						ISoundTile tile = (ISoundTile) this;
-						sound = new MachineSound(new ResourceLocation(OpenSecurity.MODID + ":" + tile.getSoundName()), xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, getVolume(), getPitch(), shouldRepeat());
-						FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
+						sound = new MachineSound(
+								new ResourceLocation(OpenSecurity.MODID + ":"
+										+ tile.getSoundName()), xCoord + 0.5f,
+								yCoord + 0.5f, zCoord + 0.5f, getVolume(),
+								getPitch(), shouldRepeat());
+						FMLClientHandler.instance().getClient()
+								.getSoundHandler().playSound(sound);
 					}
 				}
-			} else if(sound != null) {
+			} else if (sound != null) {
 				sound.endPlaying();
 				sound = null;
 			}
 		}
 	}
-	
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);

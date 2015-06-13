@@ -19,7 +19,8 @@ public class ItemMagComponentRenderer implements IItemRenderer {
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
+	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
+			ItemRendererHelper helper) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -27,7 +28,7 @@ public class ItemMagComponentRenderer implements IItemRenderer {
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

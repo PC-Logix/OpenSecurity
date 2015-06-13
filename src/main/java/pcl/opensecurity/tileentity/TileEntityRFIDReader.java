@@ -5,13 +5,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * @author Caitlyn
  *
  */
-public class TileEntityRFIDReader extends TileEntity implements SimpleComponent, IInventory, ISidedInventory{
+public class TileEntityRFIDReader extends TileEntityMachineBase implements
+		SimpleComponent, IInventory, ISidedInventory {
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int var1) {
@@ -58,7 +58,7 @@ public class TileEntityRFIDReader extends TileEntity implements SimpleComponent,
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -94,13 +94,13 @@ public class TileEntityRFIDReader extends TileEntity implements SimpleComponent,
 	@Override
 	public void openInventory() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void closeInventory() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

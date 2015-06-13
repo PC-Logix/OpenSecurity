@@ -26,8 +26,10 @@ public class BlockAlarm extends BlockContainer {
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int xCoord, int yCoord, int zCoord, Block neighbourBlock) {
-		boolean isRedstonePowered = world.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+	public void onNeighborBlockChange(World world, int xCoord, int yCoord,
+			int zCoord, Block neighbourBlock) {
+		boolean isRedstonePowered = world.isBlockIndirectlyGettingPowered(
+				xCoord, yCoord, zCoord);
 		tile = (TileEntityAlarm) world.getTileEntity(xCoord, yCoord, zCoord);
 		if (isRedstonePowered) {
 			world.addBlockEvent(xCoord, yCoord, zCoord, this, 0, 0);
@@ -37,7 +39,8 @@ public class BlockAlarm extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventPramater) {
+	public boolean onBlockEventReceived(World world, int x, int y, int z,
+			int eventId, int eventPramater) {
 		tile = (TileEntityAlarm) world.getTileEntity(x, y, z);
 		if (eventId == 0) {
 			tile.setShouldStart(true);
