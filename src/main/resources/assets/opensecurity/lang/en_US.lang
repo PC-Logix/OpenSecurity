@@ -1,3 +1,5 @@
 tile.alarm.name=OS Alarm
 tile.rfidreader.name=OS RFID Reader
 tile.magreader.name=OS Mag Card Reader
+item.rfidCard.name=RFID Card
+item.magCard.name=Magnetic Strip Card
