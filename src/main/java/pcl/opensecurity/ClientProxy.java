@@ -1,15 +1,14 @@
 package pcl.opensecurity;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import pcl.opensecurity.CommonProxy;
-import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.containers.MagCardContainer;
-import pcl.opensecurity.containers.RFIDCardContainer;
+import pcl.opensecurity.containers.RFIDWriterContainer;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
+import pcl.opensecurity.tileentity.TileEntityRFIDWriter;
 
 public class ClientProxy extends CommonProxy {
 
@@ -27,8 +26,8 @@ public class ClientProxy extends CommonProxy {
 			TileEntityMagReader icte = (TileEntityMagReader) te;
 			return new MagCardContainer(player.inventory, icte);
 		} else if (te != null && te instanceof TileEntityRFIDReader) {
-			TileEntityRFIDReader icte = (TileEntityRFIDReader) te;
-			return new RFIDCardContainer(player.inventory, icte);
+			TileEntityRFIDWriter icte = (TileEntityRFIDWriter) te;
+			return new RFIDWriterContainer(player.inventory, icte);
 		} else {
 			return null;
 		}

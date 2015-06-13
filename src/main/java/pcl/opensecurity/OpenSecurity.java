@@ -9,7 +9,7 @@ import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockRFIDWriter;
 import pcl.opensecurity.client.CreativeTab;
-import pcl.opensecurity.gui.SecurityGUIHandler;
+import pcl.opensecurity.gui.OSGUIHandler;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
@@ -80,7 +80,7 @@ public class OpenSecurity {
 	    CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
 		logger = event.getModLog();
 
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new SecurityGUIHandler());
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
 		
 		
 		
