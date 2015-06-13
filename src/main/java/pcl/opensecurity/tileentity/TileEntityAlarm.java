@@ -18,6 +18,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 	public Boolean shouldPlay = false;
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
+	public Boolean computerPlaying = false;
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
@@ -54,7 +55,6 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 	}
 
 	public void setShouldStart(boolean b) {
-		System.out.println("setShouldStart");
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		getDescriptionPacket();
 		shouldPlay = true;
@@ -102,14 +102,14 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 	@Callback(doc = "function():string; Activates the alarm", direct = true)
 	public Object[] activate(Context context, Arguments args) {
 		this.setShouldStart(true);
-
+		computerPlaying = true;
 		return new Object[] { "Ok" };
 	}
 
 	@Callback(doc = "function():string; Deactivates the alarm", direct = true)
 	public Object[] deactivate(Context context, Arguments args) {
 		this.setShouldStop(true);
-
+		computerPlaying = false;
 		return new Object[] { "Ok" };
 	}
 
@@ -144,12 +144,14 @@ public class TileEntityAlarm extends TileEntityMachineBase implements
 		shouldPlay = tag.getBoolean("isPlayingSound");
 		soundName = tag.getString("alarmName");
 		volume = tag.getFloat("volume");
+		computerPlaying = tag.getBoolean("computerPlaying");
 	}
 
 	private void writeSyncableDataToNBT(NBTTagCompound tag) {
 		tag.setBoolean("isPlayingSound", shouldPlay);
 		tag.setString("alarmName", soundName);
 		tag.setFloat("volume", volume);
+		tag.setBoolean("computerPlaying", computerPlaying);
 	}
 
 	@Override
