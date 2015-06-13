@@ -122,7 +122,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
 	}
 
-	@Callback(doc = "function():string; pushes a signal \"rfidData\" for each found rfid on the closest player.", direct = true)
+	@Callback(doc = "function():string; pushes a signal \"rfidData\" for each found rfid on all players in range.", direct = true)
 	public Object[] scan(Context context, Arguments args) {
 		scan();
 		return new Object[] { "completed" };
