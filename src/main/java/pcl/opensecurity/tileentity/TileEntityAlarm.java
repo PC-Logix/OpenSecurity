@@ -10,15 +10,16 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.client.sounds.ISoundTile;
 
-public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent  {
+public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent, ISoundTile  {
 	public static String cName = "OSAlarm";
 	public Boolean shouldPlay = false;
-	public String alarmName = "klaxon1";
+	public String soundName = "klaxon1";
 
 	public TileEntityAlarm() {
 		super();
-		setSound(alarmName);
+		setSound(soundName);
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	
 	@Override
 	public String getSoundName() {
-		return alarmName;
+		return soundName;
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
 		if (OpenSecurity.alarmList.contains(alarm)) {
-			alarmName = alarm;
+			soundName = alarm;
 			setSound(alarm);
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			getDescriptionPacket();
@@ -124,13 +125,19 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	
 	private void readSyncableDataFromNBT(NBTTagCompound tag) {
 		shouldPlay = tag.getBoolean("isPlayingSound");
-		alarmName = tag.getString("alarmName");
-		System.out.println(alarmName);
+		soundName = tag.getString("alarmName");
+		System.out.println(soundName);
 	}
 
 	private void writeSyncableDataToNBT(NBTTagCompound tag) {
 		tag.setBoolean("isPlayingSound", shouldPlay);
-		tag.setString("alarmName", alarmName);
+		tag.setString("alarmName", soundName);
+	}
+
+	@Override
+	public boolean playSoundNow() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

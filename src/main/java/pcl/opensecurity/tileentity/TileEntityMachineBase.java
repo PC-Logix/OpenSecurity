@@ -1,6 +1,7 @@
 package pcl.opensecurity.tileentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.client.sounds.MachineSound;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -67,8 +68,8 @@ public class TileEntityMachineBase extends TileEntity {
 		if(hasSound()) {
 			if(shouldPlaySound() && !isInvalid()) {
 				if(sound == null) {
-					TileEntityAlarm tile = (TileEntityAlarm) worldObj.getTileEntity(xCoord, yCoord, zCoord);
-					sound = new MachineSound(new ResourceLocation(OpenSecurity.MODID + ":" + tile.alarmName), xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, getVolume(), getPitch(), shouldRepeat());
+					ISoundTile tile = (ISoundTile) worldObj.getTileEntity(xCoord, yCoord, zCoord);
+					sound = new MachineSound(new ResourceLocation(OpenSecurity.MODID + ":" + tile.getSoundName()), xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, getVolume(), getPitch(), shouldRepeat());
 					FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
 				}
 			} else if(sound != null) {
