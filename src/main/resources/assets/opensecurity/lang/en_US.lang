@@ -1,5 +1,6 @@
 tile.alarm.name=Alarm
 tile.rfidreader.name=RFID Reader
+tile.rfidwriter.name=RFID Writer
 tile.magreader.name=Magnetic Card Reader
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
