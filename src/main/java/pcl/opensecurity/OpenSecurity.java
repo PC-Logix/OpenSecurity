@@ -21,8 +21,11 @@ import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -42,7 +45,7 @@ public class OpenSecurity {
 
 	public static Block magCardReader;
 	public static Block rfidCardReader;
-	public static Block rfidCardWriter;
+	public static Block cardWriter;
 	public static Block Alarm;
 	public static Item magCard;
 	public static Item rfidCard;
@@ -96,9 +99,9 @@ public class OpenSecurity {
 		rfidCardReader.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "RFIDTE");
 		
-		rfidCardWriter = new BlockCardWriter();
-		GameRegistry.registerBlock(rfidCardWriter, "rfidwriter");
-		rfidCardWriter.setCreativeTab(CreativeTab);
+		cardWriter = new BlockCardWriter();
+		GameRegistry.registerBlock(cardWriter, "rfidwriter");
+		cardWriter.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityCardWriter.class, "RFIDWriterTE");
 
 		Alarm = new BlockAlarm();
@@ -124,6 +127,61 @@ public class OpenSecurity {
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
 
-		proxy.registerRenderers();
+		//proxy.registerRenderers();
+		ItemStack redstone      = new ItemStack(Items.redstone);
+		ItemStack obsidian      = new ItemStack(Blocks.obsidian);
+		ItemStack paper         = new ItemStack(Items.paper);
+		ItemStack noteblock     = new ItemStack(Blocks.noteblock);
+		ItemStack t2microchip   = li.cil.oc.api.Items.get("chip2").createItemStack(1);
+		ItemStack t1microchip   = li.cil.oc.api.Items.get("chip1").createItemStack(1);
+    	ItemStack t1ram    		= li.cil.oc.api.Items.get("ram1").createItemStack(1);
+    	ItemStack pcb		   	= li.cil.oc.api.Items.get("printedCircuitBoard").createItemStack(1);
+    	ItemStack controlunit	= li.cil.oc.api.Items.get("cu").createItemStack(1);
+    	ItemStack wlancard		= li.cil.oc.api.Items.get("wlanCard").createItemStack(1);
+    	ItemStack cardbase		= li.cil.oc.api.Items.get("card").createItemStack(1);
+    	ItemStack cable			= li.cil.oc.api.Items.get("cable").createItemStack(1);
+    	ItemStack transistor	= li.cil.oc.api.Items.get("transistor").createItemStack(1);
+    	
+		GameRegistry.addRecipe( new ItemStack(rfidReaderCard, 1), 
+				"MRM",
+				" N ",
+				"BC ",
+				'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit);
+		
+		GameRegistry.addRecipe( new ItemStack(rfidCardReader, 1),
+				" R ",
+				"PFT",
+				" C ",
+				'F', rfidReaderCard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
+		
+		GameRegistry.addRecipe( new ItemStack(Alarm, 1),
+				" R ",
+				"PNC",
+				" T ",
+				'N', noteblock, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
+		
+		GameRegistry.addRecipe( new ItemStack(cardWriter, 1),
+				"TRT",
+				"SUS",
+				"PC ",
+				'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor, 'U', controlunit, 'R', t1ram);
+		
+		GameRegistry.addRecipe( new ItemStack(magCardReader, 1),
+				"T T",
+				"S S",
+				"PC ",
+				'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor);
+		
+		GameRegistry.addRecipe( new ItemStack(rfidCard, 1),
+				"P P",
+				" S ",
+				"PTP",
+				'P', paper, 'S', transistor, 'T', t1microchip);
+		
+		GameRegistry.addRecipe( new ItemStack(magCard, 1),
+				"P P",
+				" S ",
+				"P P",
+				'P', paper, 'S', transistor);
 	}
 }
