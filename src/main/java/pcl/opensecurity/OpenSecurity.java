@@ -66,8 +66,6 @@ public class OpenSecurity {
 
 	public static List<String> alarmList;
 
-	private CreativeTabs CreativeTab;
-
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		cfg = new Config(new Configuration(
@@ -131,7 +129,6 @@ public class OpenSecurity {
 
 		//proxy.registerRenderers();
 		ItemStack redstone      = new ItemStack(Items.redstone);
-		ItemStack obsidian      = new ItemStack(Blocks.obsidian);
 		ItemStack paper         = new ItemStack(Items.paper);
 		ItemStack noteblock     = new ItemStack(Blocks.noteblock);
 		ItemStack t2microchip   = li.cil.oc.api.Items.get("chip2").createItemStack(1);

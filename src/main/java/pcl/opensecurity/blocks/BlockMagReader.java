@@ -4,10 +4,7 @@
 package pcl.opensecurity.blocks;
 
 import pcl.opensecurity.items.ItemMagCard;
-import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
-import pcl.opensecurity.tileentity.TileEntityRFIDReader;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
