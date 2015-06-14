@@ -13,8 +13,6 @@ public class CreativeTab extends CreativeTabs {
     
     @SideOnly(Side.CLIENT)
     public Item getTabIconItem() {
- 
-        //return Item.getItemFromBlock(Blocks.chest);
-        return OpenSecurity.magCard;
+        return Item.getItemFromBlock(OpenSecurity.cardWriter);
     }
 }
