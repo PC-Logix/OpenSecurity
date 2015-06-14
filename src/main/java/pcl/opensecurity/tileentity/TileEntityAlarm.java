@@ -104,6 +104,17 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		computerPlaying = true;
 		return new Object[] { "Ok" };
 	}
+	
+	@Callback(doc = "function(int:x, int:y, int:z, string:sound, float:range(1-10 recommended)):string; Plays sound at x y z", direct = true)
+	public Object[] playSoundAt(Context context, Arguments args) {
+		int x = args.checkInteger(0);
+		int y = args.checkInteger(1);
+		int z = args.checkInteger(2);
+		String sound = args.checkString(3);
+		float range = args.checkInteger(4);
+		worldObj.playSoundEffect(x, y, z, sound, (float) range, 1.0F);
+		return new Object[] { "Ok" };
+	}
 
 	@Callback(doc = "function():string; Deactivates the alarm", direct = true)
 	public Object[] deactivate(Context context, Arguments args) {
