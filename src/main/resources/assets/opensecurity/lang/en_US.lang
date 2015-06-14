@@ -6,7 +6,7 @@ tile.magreader.name=Magnetic Card Reader
 //items
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
-item.rfidReaderCard=RFID Reader Card
+item.rfidReaderCard.name=RFID Reader Card
 itemGroup.OpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer

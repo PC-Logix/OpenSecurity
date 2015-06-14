@@ -81,7 +81,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 				EntityPlayer entityplayer = container.world().getClosestPlayer(container.xPosition(), container.yPosition(), container.zPosition(), 1.63D);
 				Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
 				if (!container.world().isRemote) {
-					if (equipped != null && equipped instanceof li.cil.oc.common.item.Tablet.) {
+					if (equipped != null && equipped instanceof Tablet) {
 						
 					}
 				}
