@@ -24,7 +24,7 @@ import net.minecraft.util.AxisAlignedBB;
 public class TileEntityRFIDReader extends TileEntityMachineBase implements Environment {
 
 	public String data;
-
+	public int range = 16;
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
@@ -91,7 +91,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 	public void scan() {
 		data = null;
 		if (anyPlayerInRange()) {
-			List e = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(this.xCoord - 16, this.yCoord - 16, this.zCoord - 16, this.xCoord + 16, this.yCoord + 16, this.zCoord + 16));
+			List e = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(this.xCoord - range, this.yCoord - range, this.zCoord - range, this.xCoord + range, this.yCoord + range, this.zCoord + range));
 			if (e.size() > 0) {
 				for (int i = 0; i <= e.size() - 1; i++) {
 					EntityPlayer em = (EntityPlayer) e.get(i);
@@ -101,7 +101,8 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 						ItemStack st = em.inventory.getStackInSlot(k);
 						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
 							data = st.stackTagCompound.getString("data");
-							node.sendToReachable("computer.signal", "rfidData", data);
+							double rangeToPlayer = em.getDistance(this.xCoord, this.yCoord, this.zCoord);
+							node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
 						}
 					}
 				}
@@ -122,8 +123,9 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
 	}
 
-	@Callback(doc = "function():string; pushes a signal \"rfidData\" for each found rfid on all players in range.", direct = true)
+	@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.", direct = true)
 	public Object[] scan(Context context, Arguments args) {
+		range = args.optInteger(0, range);
 		scan();
 		return new Object[] { "completed" };
 	}
