@@ -83,7 +83,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 
 	public boolean anyPlayerInRange()
 	{
-		return this.worldObj.getClosestPlayer((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D, 16D) != null;
+		return this.worldObj.getClosestPlayer((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D, (double)range) != null;
 	}
 
 
