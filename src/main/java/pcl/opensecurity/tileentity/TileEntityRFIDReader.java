@@ -2,6 +2,7 @@ package pcl.opensecurity.tileentity;
 
 import java.util.List;
 
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemRFIDCard;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
@@ -24,7 +25,7 @@ import net.minecraft.util.AxisAlignedBB;
 public class TileEntityRFIDReader extends TileEntityMachineBase implements Environment {
 
 	public String data;
-	public int range = 16;
+	public int range = OpenSecurity.rfidRange;
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 

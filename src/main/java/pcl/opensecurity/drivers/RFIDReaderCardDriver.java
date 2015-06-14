@@ -3,15 +3,11 @@ package pcl.opensecurity.drivers;
 import java.util.List;
 
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
-import pcl.opensecurity.tileentity.TileEntityMagReader;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import li.cil.oc.api.Items;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.EnvironmentHost;
 import li.cil.oc.api.driver.item.Slot;
@@ -48,7 +44,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 	}
 
 	public class Environment extends li.cil.oc.api.prefab.ManagedEnvironment {
-		public double range = 16D;
+		public double range = OpenSecurity.rfidRange;
 		public String data = null;
 		protected EnvironmentHost container = null;
 		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("RFIDReaderCard").withConnector(32).create();

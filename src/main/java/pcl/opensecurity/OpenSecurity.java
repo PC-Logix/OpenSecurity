@@ -60,6 +60,7 @@ public class OpenSecurity {
 	public static Config cfg = null;
 	public static boolean render3D = true;
 	public static boolean debug = false;
+	public static int rfidRange;
 
 	public static org.apache.logging.log4j.Logger logger;
 
@@ -73,6 +74,7 @@ public class OpenSecurity {
 				event.getSuggestedConfigurationFile()));
 		render3D = cfg.render3D;
 		alarmList = cfg.alarmsConfigList;
+		rfidRange = cfg.rfidMaxRange;
 
 		if ((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD) {
 			try {

@@ -18,21 +18,15 @@ public class Config {
 	public final boolean render3D;
 	public final boolean enableMUD;
 	public final String alarms;
+	public final int rfidMaxRange;
 
 	public Config(Configuration config) {
 		config.load();
-		render3D = config.get("options", "Render3D", true,
-				"Should we use 3D Models, or a block").getBoolean(true);
-		enableMUD = config
-				.get("options", "enableMUD", true,
-						"Enable the Update Checker? Disabling this will remove all traces of the MUD.")
-				.getBoolean(true);
-		alarms = config
-				.get("options", "customAlarms", "klaxon1,klaxon2",
-						"A comma seperated list of custom alarm sounds eg: \"alarm1,alarm2,alarm3\"")
-				.getString();
+		render3D = config.get("options", "Render3D", true, "Should we use 3D Models, or a block").getBoolean(true);
+		enableMUD = config.get("options", "enableMUD", true, "Enable the Update Checker? Disabling this will remove all traces of the MUD.").getBoolean(true);
+		alarms = config.get("options", "customAlarms", "klaxon1,klaxon2", "A comma seperated list of custom alarm sounds eg: \"alarm1,alarm2,alarm3\"").getString();
 		alarmsConfigList = Arrays.asList(alarms.split("\\s*,\\s*"));
-		// System.out.println(alarmsConfigList);
+		rfidMaxRange = config.getInt("rfidMaxRange", "options", 16, 16, 64, "The maximum range of the RFID Reader in blocks");
 		if (config.hasChanged()) {
 			config.save();
 		}
