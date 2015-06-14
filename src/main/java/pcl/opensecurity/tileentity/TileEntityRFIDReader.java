@@ -127,6 +127,9 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 	@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.", direct = true)
 	public Object[] scan(Context context, Arguments args) {
 		range = args.optInteger(0, range);
+		if (range > OpenSecurity.rfidRange) {
+			range = OpenSecurity.rfidRange;
+		}
 		scan();
 		return new Object[] { "completed" };
 	}
