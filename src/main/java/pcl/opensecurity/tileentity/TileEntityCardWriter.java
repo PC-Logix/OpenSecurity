@@ -198,13 +198,14 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 									data = data.substring(0, 64);
 								}
 							} else if (getStackInSlot(0).getItem() instanceof ItemMagCard) {
+								System.out.println("Fak2");
 								RFIDWriterItemStacks[x] = new ItemStack(OpenSecurity.magCard);
 								if (data.length() > 128) {
 									data = data.substring(0, 128);
 								}
 							}
-							RFIDWriterItemStacks[x].stackTagCompound.setString("data", data);
 							RFIDWriterItemStacks[x].setTagCompound(new NBTTagCompound());
+							RFIDWriterItemStacks[x].stackTagCompound.setString("data", data);
 
 							if(locked) {
 								RFIDWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);

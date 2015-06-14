@@ -9,9 +9,11 @@ import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockCardWriter;
 import pcl.opensecurity.client.CreativeTab;
+import pcl.opensecurity.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.gui.OSGUIHandler;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
+import pcl.opensecurity.items.ItemRFIDReaderCard;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
@@ -44,6 +46,7 @@ public class OpenSecurity {
 	public static Block Alarm;
 	public static Item magCard;
 	public static Item rfidCard;
+	public static Item rfidReaderCard;
 	public static ItemBlock securityitemBlock;
 
 	@Instance(value = MODID)
@@ -81,10 +84,6 @@ public class OpenSecurity {
 		logger = event.getModLog();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
-		
-		
-		
-
 
 		// Register Blocks
 		magCardReader = new BlockMagReader();
@@ -115,6 +114,11 @@ public class OpenSecurity {
 		rfidCard = new ItemRFIDCard();
 		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
 		rfidCard.setCreativeTab(CreativeTab);
+		
+		rfidReaderCard = new ItemRFIDReaderCard();
+		GameRegistry.registerItem(rfidReaderCard, "opensecurity.rfidReaderCard");
+		rfidReaderCard.setCreativeTab(CreativeTab);
+		li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
 	}
 
 	@EventHandler

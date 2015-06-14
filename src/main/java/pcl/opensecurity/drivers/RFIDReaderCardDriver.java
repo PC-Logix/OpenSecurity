@@ -1,15 +1,26 @@
 package pcl.opensecurity.drivers;
 
+import java.util.List;
+
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.items.ItemMagCard;
+import pcl.opensecurity.items.ItemRFIDCard;
+import pcl.opensecurity.tileentity.TileEntityMagReader;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import li.cil.oc.api.Items;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.EnvironmentHost;
 import li.cil.oc.api.driver.item.Slot;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.ManagedEnvironment;
+import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.DriverItem;
 import li.cil.oc.common.item.TabletWrapper;
@@ -24,9 +35,9 @@ public class RFIDReaderCardDriver extends DriverItem {
 	public ManagedEnvironment createEnvironment(ItemStack stack, EnvironmentHost container)
 	{
 		if (container instanceof TileEntity)
-			return new Environment((TileEntity) container);
+			return new Environment(container);
 		if (container instanceof TabletWrapper)
-			return new Environment((TabletWrapper) container);
+			return new Environment(container);
 		return null;
 	}
 
@@ -37,32 +48,67 @@ public class RFIDReaderCardDriver extends DriverItem {
 	}
 
 	public class Environment extends li.cil.oc.api.prefab.ManagedEnvironment {
-		protected TileEntity container = null;
-		protected TabletWrapper container2 = null;
-		
-		public Environment(TileEntity container) {
-			this.container = container;
-			this.setNode(Network.newNode(this, Visibility.Neighbors).withComponent("RFIDReaderCard").create());
+		public double range = 16D;
+		public String data = null;
+		protected EnvironmentHost container = null;
+		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("RFIDReaderCard").withConnector(32).create();
+		@Override
+		public Node node() {
+			return (Node) node;
 		}
 
-
-		public Environment(TabletWrapper container) {
-			this.container2 = container;
-			this.setNode(Network.newNode(this, Visibility.Neighbors).withComponent("RFIDReaderCard").create());
+		public Environment(EnvironmentHost container3) {
+			this.container = container3;
+			this.setNode(node);
 		}
-
 
 		@Callback
-		public Object[] scan(Context context, Arguments args)
-		{
-			System.out.println("Hai");
+		public Object[] greet(Context context, Arguments args) {
+			return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
+		}
+
+		@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.", direct = true)
+		public Object[] scan(Context context, Arguments args) {
+			range = args.optDouble(0, range);
+			scan();
 			return new Object[] { "completed" };
 		}
-		
+/*
 		@Callback
-		public Object[] send(Context context, Arguments args)
+		public Object[] write(Context context, Arguments args)
 		{
+			if (container instanceof TabletWrapper) {
+				EntityPlayer entityplayer = container.world().getClosestPlayer(container.xPosition(), container.yPosition(), container.zPosition(), 1.63D);
+				Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
+				if (!container.world().isRemote) {
+					if (equipped != null && equipped instanceof li.cil.oc.common.item.Tablet.) {
+						
+					}
+				}
+			}
 			return new Object[] { "completed" };
+		}
+*/
+		@SuppressWarnings("rawtypes")
+		public void scan() {
+			data = null;
+			List e = container.world().getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(container.xPosition() - range, container.yPosition() - range, container.zPosition() - range, container.xPosition() + range, container.yPosition() + range, container.zPosition() + range));
+			if (e.size() > 0) {
+				for (int i = 0; i <= e.size() - 1; i++) {
+					EntityPlayer em = (EntityPlayer) e.get(i);
+					ItemStack[] playerInventory = em.inventory.mainInventory;
+					int size = playerInventory.length;
+					for(int k = 0; k < size; k++) {
+						ItemStack st = em.inventory.getStackInSlot(k);
+						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
+							data = st.stackTagCompound.getString("data");
+							System.out.println(data);
+							double rangeToPlayer = em.getDistance(container.xPosition(), container.yPosition(), container.zPosition());
+							node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
+						}
+					}
+				}
+			}  
 		}
 	}
 }
