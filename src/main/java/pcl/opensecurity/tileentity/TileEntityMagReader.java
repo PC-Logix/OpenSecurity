@@ -7,6 +7,7 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -72,10 +73,10 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 		node.save(par1NBTTagCompound);
 	}
 
-	public void doRead(ItemStack itemStack) {
+	public void doRead(ItemStack itemStack, EntityPlayer em) {
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("data")) {
 			String data = itemStack.stackTagCompound.getString("data");
-			node.sendToReachable("computer.signal", "magData", data);
+			node.sendToReachable("computer.signal", em.getDisplayName(), "magData", data);
 		}
 	}
 
