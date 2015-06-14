@@ -47,7 +47,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 		public double range = OpenSecurity.rfidRange;
 		public String data = null;
 		protected EnvironmentHost container = null;
-		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("RFIDReaderCard").withConnector(32).create();
+		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("OSRFIDReader").withConnector(32).create();
 		@Override
 		public Node node() {
 			return (Node) node;
