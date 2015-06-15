@@ -105,6 +105,11 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		return new Object[] { "Ok" };
 	}
 	
+	@Callback(doc = "function():table; Returns a table of Alarm Sounds", direct = true)
+	public Object[] listSounds(Context context, Arguments args) {
+		return new Object[] { OpenSecurity.alarmList };
+	}
+	
 	@Callback(doc = "function(int:x, int:y, int:z, string:sound, float:range(1-10 recommended)):string; Plays sound at x y z", direct = true)
 	public Object[] playSoundAt(Context context, Arguments args) {
 		int x = args.checkInteger(0);
