@@ -117,7 +117,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		int z = args.checkInteger(2);
 		String sound = args.checkString(3);
 		float range = args.checkInteger(4);
-		worldObj.playSoundEffect(x, y, z, sound, (float) range, 1.0F);
+		worldObj.playSoundEffect(x, y, z, sound, (float) range / 15 + 0.5F, 1.0F);
 		return new Object[] { "Ok" };
 	}
 
