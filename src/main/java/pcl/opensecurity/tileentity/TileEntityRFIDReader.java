@@ -132,6 +132,12 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 								node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
 							}
 						}
+						NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
+						if(tag.hasKey("data")) {
+							String data = tag.getString("data");
+							double rangeToPlayer = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
+							node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);			
+						}
 				} else {
 					NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
 					if(tag.hasKey("data")) {

@@ -112,6 +112,12 @@ public class RFIDReaderCardDriver extends DriverItem {
 									node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
 								}
 							}
+							NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
+							if(tag.hasKey("data")) {
+								String data = tag.getString("data");
+								double rangeToPlayer = entity.getDistance(container.xPosition(), container.yPosition(), container.zPosition());
+								node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);			
+							}
 					} else {
 						NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
 						if(tag.hasKey("data")) {
