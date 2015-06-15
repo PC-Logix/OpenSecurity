@@ -37,8 +37,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber
-		+ "." + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers")
+@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers")
 public class OpenSecurity {
 
 	public static final String MODID = "opensecurity";
@@ -58,9 +57,10 @@ public class OpenSecurity {
 	@SidedProxy(clientSide = "pcl.opensecurity.ClientProxy", serverSide = "pcl.opensecurity.CommonProxy")
 	public static CommonProxy proxy;
 	public static Config cfg = null;
-	public static boolean render3D = true;
+	//public static boolean render3D = true;
 	public static boolean debug = false;
 	public static int rfidRange;
+	public static boolean enableplaySoundAt = false;
 
 	public static org.apache.logging.log4j.Logger logger;
 
@@ -70,9 +70,10 @@ public class OpenSecurity {
 	public void preInit(FMLPreInitializationEvent event) {
 		cfg = new Config(new Configuration(
 				event.getSuggestedConfigurationFile()));
-		render3D = cfg.render3D;
+		//render3D = cfg.render3D;
 		alarmList = cfg.alarmsConfigList;
 		rfidRange = cfg.rfidMaxRange;
+		enableplaySoundAt = cfg.enableplaySoundAt;
 
 		if ((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD) {
 			try {

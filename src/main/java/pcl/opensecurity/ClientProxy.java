@@ -12,12 +12,6 @@ import pcl.opensecurity.tileentity.TileEntityCardWriter;
 
 public class ClientProxy extends CommonProxy {
 
-	public void registerRenderers() {
-		if (OpenSecurity.render3D) {
-
-		}
-	}
-
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
