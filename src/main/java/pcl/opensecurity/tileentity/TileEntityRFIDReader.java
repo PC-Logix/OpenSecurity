@@ -1,5 +1,6 @@
 package pcl.opensecurity.tileentity;
 
+import java.util.Iterator;
 import java.util.List;
 
 import pcl.opensecurity.OpenSecurity;
@@ -13,7 +14,13 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -45,7 +52,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		super.invalidate();
 		if (node != null) node.remove();
 	}
-	
+
 	private String getComponentName() {
 		// TODO Auto-generated method stub
 		return "OSRFIDReader";
@@ -82,34 +89,61 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		node.save(par1NBTTagCompound);
 	}
 
-	public boolean anyPlayerInRange()
-	{
-		return this.worldObj.getClosestPlayer((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D, (double)range) != null;
-	}
-
+	/*
+	@SuppressWarnings("rawtypes")
+	public void scan() {
+		data = null;
+		List e = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(this.xCoord - range, this.yCoord - range, this.zCoord - range, this.xCoord + range, this.yCoord + range, this.zCoord + range));
+		if (e.size() > 0) {
+			for (int i = 0; i <= e.size() - 1; i++) {
+				EntityPlayer em = (EntityPlayer) e.get(i);
+				ItemStack[] playerInventory = em.inventory.mainInventory;
+				int size = playerInventory.length;
+				for(int k = 0; k < size; k++) {
+					ItemStack st = em.inventory.getStackInSlot(k);
+					if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
+						data = st.stackTagCompound.getString("data");
+						double rangeToPlayer = em.getDistance(this.xCoord, this.yCoord, this.zCoord);
+						node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
+					}
+				}
+			} 
+		}
+	}*/
 
 	@SuppressWarnings("rawtypes")
 	public void scan() {
 		data = null;
-		if (anyPlayerInRange()) {
-			List e = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(this.xCoord - range, this.yCoord - range, this.zCoord - range, this.xCoord + range, this.yCoord + range, this.zCoord + range));
-			if (e.size() > 0) {
-				for (int i = 0; i <= e.size() - 1; i++) {
-					EntityPlayer em = (EntityPlayer) e.get(i);
-					ItemStack[] playerInventory = em.inventory.mainInventory;
-					int size = playerInventory.length;
-					for(int k = 0; k < size; k++) {
-						ItemStack st = em.inventory.getStackInSlot(k);
-						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-							data = st.stackTagCompound.getString("data");
-							double rangeToPlayer = em.getDistance(this.xCoord, this.yCoord, this.zCoord);
-							node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
+		Entity entity;
+		double rangeToEntity;
+		List e = this.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(this.xCoord - range, this.yCoord - range, this.zCoord - range, this.xCoord + range, this.yCoord + range, this.zCoord + range));
+		if (!e.isEmpty()) {
+			for (int i = 0; i <= e.size() - 1; i++) {
+				entity = (Entity) e.get(i);
+				if (entity instanceof EntityPlayerMP) {
+						EntityPlayer em = (EntityPlayer) entity;
+						ItemStack[] playerInventory = em.inventory.mainInventory;
+						int size = playerInventory.length;
+						for(int k = 0; k < size; k++) {
+							ItemStack st = em.inventory.getStackInSlot(k);
+							if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
+								data = st.stackTagCompound.getString("data");
+								double rangeToPlayer = em.getDistance(this.xCoord, this.yCoord, this.zCoord);
+								node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
+							}
 						}
+				} else {
+					NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
+					if(tag.hasKey("data")) {
+						String data = tag.getString("data");
+						rangeToEntity = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
+						node.sendToReachable("computer.signal", "rfidData", entity.getCommandSenderName(), rangeToEntity, data);			
 					}
 				}
-			}  
+			}
 		}
 	}
+
 
 	@Override
 	public void updateEntity() {

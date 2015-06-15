@@ -4,8 +4,11 @@ import java.util.List;
 
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemRFIDCard;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import li.cil.oc.api.Network;
@@ -91,23 +94,34 @@ public class RFIDReaderCardDriver extends DriverItem {
 		@SuppressWarnings("rawtypes")
 		public void scan() {
 			data = null;
+			Entity entity;
+			double rangeToEntity;
 			List e = container.world().getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(container.xPosition() - range, container.yPosition() - range, container.zPosition() - range, container.xPosition() + range, container.yPosition() + range, container.zPosition() + range));
-			if (e.size() > 0) {
+			if (!e.isEmpty()) {
 				for (int i = 0; i <= e.size() - 1; i++) {
-					EntityPlayer em = (EntityPlayer) e.get(i);
-					ItemStack[] playerInventory = em.inventory.mainInventory;
-					int size = playerInventory.length;
-					for(int k = 0; k < size; k++) {
-						ItemStack st = em.inventory.getStackInSlot(k);
-						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-							data = st.stackTagCompound.getString("data");
-							System.out.println(data);
-							double rangeToPlayer = em.getDistance(container.xPosition(), container.yPosition(), container.zPosition());
-							node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
+					entity = (Entity) e.get(i);
+					if (entity instanceof EntityPlayerMP) {
+							EntityPlayer em = (EntityPlayer) entity;
+							ItemStack[] playerInventory = em.inventory.mainInventory;
+							int size = playerInventory.length;
+							for(int k = 0; k < size; k++) {
+								ItemStack st = em.inventory.getStackInSlot(k);
+								if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
+									data = st.stackTagCompound.getString("data");
+									double rangeToPlayer = em.getDistance(container.xPosition(), container.yPosition(), container.zPosition());
+									node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
+								}
+							}
+					} else {
+						NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
+						if(tag.hasKey("data")) {
+							String data = tag.getString("data");
+							rangeToEntity = entity.getDistance(container.xPosition(), container.yPosition(), container.zPosition());
+							node.sendToReachable("computer.signal", "rfidData", entity.getCommandSenderName(), rangeToEntity, data);			
 						}
 					}
 				}
-			}  
+			} 
 		}
 	}
 }
