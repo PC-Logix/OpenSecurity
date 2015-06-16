@@ -71,7 +71,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 
 	@Override
 	public void onDisconnect(final Node node) {
-		node.remove();
+
 	}
 
 	@Override

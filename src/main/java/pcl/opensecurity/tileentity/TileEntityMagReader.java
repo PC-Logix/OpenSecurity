@@ -50,7 +50,7 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 
 	@Override
 	public void onDisconnect(final Node node) {
-		node.remove();
+
 	}
 
 	@Override

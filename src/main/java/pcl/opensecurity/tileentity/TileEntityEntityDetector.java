@@ -68,7 +68,7 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 
 	@Override
 	public void onDisconnect(final Node node) {
-		node.remove();
+
 	}
 
 	@Override
