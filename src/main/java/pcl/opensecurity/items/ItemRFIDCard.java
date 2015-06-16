@@ -26,10 +26,17 @@ public class ItemRFIDCard extends Item {
 			return false;
 		}
 		else if (entity instanceof EntityLiving)
-		{
-			EntityLiving entityliving = (EntityLiving)entity;
-			NBTTagCompound tag = entityliving.getEntityData().getCompoundTag("rfidData");
-			tag.setString("data", itemStack.stackTagCompound.getString("data"));
+		{			
+			NBTTagCompound entityData = entity.getEntityData();
+			NBTTagCompound rfidData;
+			if (!entityData.hasKey("rfidData")) {
+			    entityData.setTag("rfidData", (rfidData = new NBTTagCompound()));
+			} else {
+				rfidData = entityData.getCompoundTag("rfidData");
+			}
+
+			rfidData.setString("data", itemStack.stackTagCompound.getString("data"));
+			rfidData.setString("uuid", itemStack.stackTagCompound.getString("uuid"));
 			--itemStack.stackSize;
 			return true;
 		}
