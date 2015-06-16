@@ -108,7 +108,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 			value.put("name", name);
 			value.put("range", (Double)rangeToEntity);
 			value.put("data", data);
-			value.put("uuid", uuid); // I don't know how UUID's work
+			value.put("uuid", uuid);
 
 			return value;
 		}
