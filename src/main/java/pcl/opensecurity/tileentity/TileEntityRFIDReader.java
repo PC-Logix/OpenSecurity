@@ -1,7 +1,11 @@
 package pcl.opensecurity.tileentity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemRFIDCard;
@@ -32,6 +36,7 @@ import net.minecraft.util.AxisAlignedBB;
 public class TileEntityRFIDReader extends TileEntityMachineBase implements Environment {
 
 	public String data;
+	public UUID uuid;
 	public int range = OpenSecurity.rfidRange;
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
@@ -89,67 +94,54 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		node.save(par1NBTTagCompound);
 	}
 
-	/*
-	@SuppressWarnings("rawtypes")
-	public void scan() {
-		data = null;
-		List e = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(this.xCoord - range, this.yCoord - range, this.zCoord - range, this.xCoord + range, this.yCoord + range, this.zCoord + range));
-		if (e.size() > 0) {
-			for (int i = 0; i <= e.size() - 1; i++) {
-				EntityPlayer em = (EntityPlayer) e.get(i);
-				ItemStack[] playerInventory = em.inventory.mainInventory;
-				int size = playerInventory.length;
-				for(int k = 0; k < size; k++) {
-					ItemStack st = em.inventory.getStackInSlot(k);
-					if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-						data = st.stackTagCompound.getString("data");
-						double rangeToPlayer = em.getDistance(this.xCoord, this.yCoord, this.zCoord);
-						node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
-					}
-				}
-			} 
-		}
-	}*/
+	//Thanks gamax92 from #oc for the following 2 methods...
+	private HashMap<String, Object> info(Entity entity, String data, String uuid)
+	{
+		HashMap<String, Object> value = new HashMap<String, Object>();
 
-	@SuppressWarnings("rawtypes")
-	public void scan() {
-		data = null;
+		double rangeToEntity = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
+		String name;
+		if (entity instanceof EntityPlayerMP)
+			name = ((EntityPlayer) entity).getDisplayName();
+		else
+			name = entity.getCommandSenderName();
+		node.sendToReachable("computer.signal", "rfidData", name, rangeToEntity, data, uuid);
+		value.put("name", name);
+		value.put("range", (Double)rangeToEntity);
+		value.put("data", data);
+		value.put("uuid", uuid); // I don't know how UUID's work
+
+		return value;
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	public HashMap<Integer, HashMap<String, Object>> scan() {
 		Entity entity;
-		double rangeToEntity;
+		HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
+		int index = 1;
 		List e = this.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(this.xCoord - range, this.yCoord - range, this.zCoord - range, this.xCoord + range, this.yCoord + range, this.zCoord + range));
 		if (!e.isEmpty()) {
 			for (int i = 0; i <= e.size() - 1; i++) {
 				entity = (Entity) e.get(i);
 				if (entity instanceof EntityPlayerMP) {
-						EntityPlayer em = (EntityPlayer) entity;
-						ItemStack[] playerInventory = em.inventory.mainInventory;
-						int size = playerInventory.length;
-						for(int k = 0; k < size; k++) {
-							ItemStack st = em.inventory.getStackInSlot(k);
-							if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-								data = st.stackTagCompound.getString("data");
-								double rangeToPlayer = em.getDistance(this.xCoord, this.yCoord, this.zCoord);
-								node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);
-							}
+					EntityPlayer em = (EntityPlayer) entity;
+					ItemStack[] playerInventory = em.inventory.mainInventory;
+					int size = playerInventory.length;
+					for(int k = 0; k < size; k++) {
+						ItemStack st = em.inventory.getStackInSlot(k);
+						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
+							output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid")));
 						}
-						NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
-						if(tag.hasKey("data")) {
-							String data = tag.getString("data");
-							double rangeToPlayer = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
-							node.sendToReachable("computer.signal", "rfidData", em.getDisplayName(), rangeToPlayer, data);			
-						}
-				} else {
-					NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
-					if(tag.hasKey("data")) {
-						String data = tag.getString("data");
-						rangeToEntity = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
-						node.sendToReachable("computer.signal", "rfidData", entity.getCommandSenderName(), rangeToEntity, data);			
 					}
+				}
+				NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
+				if(tag.hasKey("data")) {
+					output.put(index++, info(entity, tag.getString("data"), tag.getString("uuid")));
 				}
 			}
 		}
+		return output;
 	}
-
 
 	@Override
 	public void updateEntity() {
@@ -170,7 +162,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
 		}
-		scan();
-		return new Object[] { "completed" };
+		range = range / 2;
+		return new Object[] { scan() };
 	}
 }
