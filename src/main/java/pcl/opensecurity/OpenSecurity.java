@@ -5,6 +5,7 @@ import java.util.List;
 
 import pcl.opensecurity.BuildInfo;
 import pcl.opensecurity.blocks.BlockAlarm;
+import pcl.opensecurity.blocks.BlockEntityDetector;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockCardWriter;
@@ -15,6 +16,7 @@ import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.items.ItemRFIDReaderCard;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
+import pcl.opensecurity.tileentity.TileEntityEntityDetector;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
@@ -46,6 +48,7 @@ public class OpenSecurity {
 	public static Block rfidCardReader;
 	public static Block cardWriter;
 	public static Block Alarm;
+	public static Block EntityDetector;
 	public static Item magCard;
 	public static Item rfidCard;
 	public static Item rfidReaderCard;
@@ -109,6 +112,11 @@ public class OpenSecurity {
 		GameRegistry.registerBlock(Alarm, "alarm");
 		Alarm.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityAlarm.class, "AlarmTE");
+		
+		EntityDetector = new BlockEntityDetector();
+		GameRegistry.registerBlock(EntityDetector, "entitydetector");
+		EntityDetector.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityEntityDetector.class, "EntityDetectorTE");
 
 		// Register Items
 		magCard = new ItemMagCard();
