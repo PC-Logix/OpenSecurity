@@ -156,6 +156,12 @@ public class OpenSecurity {
 				"BC ",
 				'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit);
 		
+		GameRegistry.addRecipe( new ItemStack(EntityDetector, 1), 
+				"MRM",
+				"   ",
+				"BC ",
+				'M', t2microchip, 'R', t1ram, 'B', cardbase, 'C', controlunit);
+		
 		GameRegistry.addRecipe( new ItemStack(rfidCardReader, 1),
 				" R ",
 				"PFT",
