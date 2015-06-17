@@ -125,10 +125,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		if (i == 0) {
 			if (itemstack.getItem() instanceof ItemRFIDCard) {
-				if (itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("locked")) {
-					return true;
-				}
-				return false;
+				return true;
 			}
 		}
 		return false;
@@ -186,11 +183,10 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 		readFromNBT(packet.func_148857_g());
 	}
 
-	@Callback(doc = "function(string: data, boolean: locked):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, if you pass true to the 2nd argument you will not be able to erase, or rewrite data.", direct = true)
+	@Callback(doc = "function(string: data):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded.", direct = true)
 	public Object[] write(Context context, Arguments args) {
 		String data = args.checkString(0);
 		String title = args.optString(1, "");
-		Boolean locked = args.optBoolean(2, false);
 		if (data != null) {
 			if (getStackInSlot(0) != null) {
 				for (int x = 3; x <= 12; x++) { //Loop the 9 output slots checking for a empty one
@@ -216,9 +212,6 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 							CardWriterItemStacks[x].stackTagCompound.setString("uuid", UUID.randomUUID().toString());	
 						}
 
-						if(locked) {
-							CardWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);
-						}
 						decrStackSize(0, 1);
 						return new Object[]{true};
 					}
