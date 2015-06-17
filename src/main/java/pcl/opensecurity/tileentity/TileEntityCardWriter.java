@@ -186,7 +186,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 		readFromNBT(packet.func_148857_g());
 	}
 
-	@Callback(doc = "function(string: data, boolean: locked):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, if you pass true to the 2nd argument you will not be able to erase, or rewrite data.", direct = true)
+	@Callback(doc = "function(string: data, string: displayName. boolean: locked):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data.", direct = true)
 	public Object[] write(Context context, Arguments args) {
 		String data = args.checkString(0);
 		String title = args.optString(1, "");
