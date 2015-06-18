@@ -186,13 +186,13 @@ public class OpenSecurity {
 				"PC ",
 				'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor);
 		
-		GameRegistry.addRecipe( new ItemStack(rfidCard, 6),
+		GameRegistry.addRecipe( new ItemStack(rfidCard, 1),
 				"P P",
 				" S ",
 				"PTP",
 				'P', paper, 'S', transistor, 'T', t1microchip);
 		
-		GameRegistry.addRecipe( new ItemStack(magCard, 6),
+		GameRegistry.addRecipe( new ItemStack(magCard, 1),
 				"P P",
 				" S ",
 				"P P",
