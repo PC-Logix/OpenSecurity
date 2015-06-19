@@ -64,11 +64,9 @@ curse {
 	projectId = "231687"
 	releaseType = "release"
 	changelog = 'default'
-  
-	def changelogFile = file('changelog.txt')
-  
+
 	if (changelogFile.exists()) {
-		changelog = changelogFile.text
+		changelog = "http://jenkins.pc-logix.com/job/OpenSecurity/changes"
   	}
 	addGameVersion project.minecraft.version
 }
