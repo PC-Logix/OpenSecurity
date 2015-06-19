@@ -52,6 +52,27 @@ jar.doFirst {
 
 jar.classifier = "${ext.buildNumber}"
 
+def curseforge_key = 0
+
+if (project.hasProperty('opensecurity_curseforge_key')) {
+	curseforge_key = project.opensecurity_curseforge_key
+}
+
+apply plugin: 'curseforge'
+curse {
+	apiKey = curseforge_key
+	projectId = "231687"
+	releaseType = "release"
+	changelog = 'default'
+  
+	def changelogFile = file('changelog.txt')
+  
+	if (changelogFile.exists()) {
+		changelog = changelogFile.text
+  	}
+	addGameVersion project.minecraft.version
+}
+
 processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
