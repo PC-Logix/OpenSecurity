@@ -63,11 +63,7 @@ curse {
 	apiKey = curseforge_key
 	projectId = "231687"
 	releaseType = "release"
-	changelog = 'default'
-
-	if (changelogFile.exists()) {
-		changelog = "http://jenkins.pc-logix.com/job/OpenSecurity/changes"
-  	}
+	changelog = "http://jenkins.pc-logix.com/job/OpenSecurity/changes"
 	addGameVersion project.minecraft.version
 }
 
