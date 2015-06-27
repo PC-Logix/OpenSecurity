@@ -2,7 +2,9 @@ package pcl.opensecurity;
 
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import li.cil.oc.api.fs.FileSystem;
 import pcl.opensecurity.BuildInfo;
 import pcl.opensecurity.blocks.BlockAlarm;
 import pcl.opensecurity.blocks.BlockEntityDetector;
@@ -53,6 +55,7 @@ public class OpenSecurity {
 	public static Item rfidCard;
 	public static Item rfidReaderCard;
 	public static ItemBlock securityitemBlock;
+	public static ItemStack secureOS_disk;
 
 	@Instance(value = MODID)
 	public static OpenSecurity instance;
@@ -135,7 +138,13 @@ public class OpenSecurity {
 
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
-
+		Callable<FileSystem> factory = new Callable<FileSystem>() {
+			public FileSystem call() {
+				return li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/SecureOS/");
+			}
+		};
+		secureOS_disk = li.cil.oc.api.Items.registerFloppy("SecureOS", 1, factory);
+		
 		//proxy.registerRenderers();
 		ItemStack redstone      = new ItemStack(Items.redstone);
 		ItemStack paper         = new ItemStack(Items.paper);
@@ -149,6 +158,7 @@ public class OpenSecurity {
     	ItemStack cardbase		= li.cil.oc.api.Items.get("card").createItemStack(1);
     	ItemStack cable			= li.cil.oc.api.Items.get("cable").createItemStack(1);
     	ItemStack transistor	= li.cil.oc.api.Items.get("transistor").createItemStack(1);
+    	ItemStack floppy		= li.cil.oc.api.Items.get("floppy").createItemStack(1);
     	
 		GameRegistry.addRecipe( new ItemStack(rfidReaderCard, 1), 
 				"MRM",
@@ -197,5 +207,7 @@ public class OpenSecurity {
 				" S ",
 				"P P",
 				'P', paper, 'S', transistor);
+		
+		GameRegistry.addShapelessRecipe( secureOS_disk, new Object[] { floppy, magCard });
 	}
 }

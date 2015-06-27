@@ -1,0 +1,20 @@
+NAME
+  update - Update SecurOS's files.
+
+SYNOPSIS
+  update [OPTION]... [TREE]...
+
+DESCRIPTION
+  Ensures the latest and most secure version of SecureOS is installed. Ran without options or a specified tree to pull from, the contents of /etc/update.cfg will be used.
+  Available trees are dev and release, the latter being the default.
+
+OPTIONS
+  -a
+    Allows the program to remember your choice for next update.
+
+EXAMPLES
+  update
+    Updates the software from the specified tree in /etc/update.cfg
+
+  update dev
+    Updates the software with the most recent development version.

@@ -1,0 +1,12 @@
+blacklist = {
+  "/root/sudo.lua",
+  "/boot/99_login.lua",
+  "/bin/edit.lua",
+  "/bin/filesystem.lua",
+  "/bin/adduser.lua",
+  "/bin/deluser.lua",
+  "/bin/rm.lua",
+  "/lib/auth.lua",
+  "/root/.root.lua",
+  "/root/blacklist"
+}
