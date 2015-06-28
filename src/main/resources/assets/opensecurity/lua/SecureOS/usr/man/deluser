@@ -1,0 +1,15 @@
+NAME
+    deluser - Removes users from the system.
+
+SYNOPSIS
+    deluser [USERNAME]...
+
+DESCRIPTION
+    Removes user accounts from the computers system, no longer allowing them to login using their accounts. Ran without arguments, a UI will be displayed.
+
+EXAMPLES
+    deluser
+        Displays a UI for removing user accounts.
+
+    deluser foo
+        Removes the user account 'foo' from the system.
