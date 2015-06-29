@@ -1,5 +1,6 @@
 package pcl.opensecurity.tileentity;
 
+import li.cil.oc.api.prefab.TileEntityEnvironment;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.client.sounds.MachineSound;
@@ -10,7 +11,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMachineBase extends TileEntity {
+public class TileEntityMachineBase extends TileEntityEnvironment {
 
 	public TileEntityMachineBase() {
 		super();

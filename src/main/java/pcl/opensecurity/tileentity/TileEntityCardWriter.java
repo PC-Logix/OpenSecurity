@@ -8,7 +8,11 @@ import pcl.opensecurity.items.ItemRFIDCard;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
+import li.cil.oc.api.network.Component;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
+import li.cil.oc.server.network.Network;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -18,10 +22,57 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
-public class TileEntityCardWriter extends TileEntityMachineBase implements SimpleComponent, IInventory, ISidedInventory  {
+public class TileEntityCardWriter extends TileEntityMachineBase implements Environment, IInventory, ISidedInventory  {
+	
+	public TileEntityCardWriter() { 	
+		node = Network.newNode(this, Visibility.Neighbors).withComponent(getComponentName()).create();
+		if(this.node() != null) {
+			initOCFilesystem();
+		}
+	}
 
-	public TileEntityCardWriter() { }
+	private li.cil.oc.api.network.ManagedEnvironment oc_fs;
 
+	private void initOCFilesystem() {
+		oc_fs = li.cil.oc.api.FileSystem.asManagedEnvironment(li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/cardwriter/"),"cardwriter");
+		((Component) oc_fs.node()).setVisibility(Visibility.Neighbors);
+	}
+	
+	
+    @Override
+    public void onConnect(final Node node) {
+        if (node.host() instanceof Context) {
+            node.connect(oc_fs.node());
+        }
+    }
+
+    @Override
+    public void onDisconnect(final Node node) {
+        if (node.host() instanceof Context) {
+            node.disconnect(oc_fs.node());
+        } else if (node == this.node) {
+        	oc_fs.node().remove();
+        }
+    }
+	
+	
+	@Override
+	public Node node() {
+		return (Node) node;
+	}
+
+	@Override
+	public void onChunkUnload() {
+		super.onChunkUnload();
+		if (node != null) node.remove();
+	}
+
+	@Override
+	public void invalidate() {
+		super.invalidate();
+		if (node != null) node.remove();
+	}
+	
 	private static final int[] slots_top = new int[] {2};
 	private static final int[] slots_bottom = new int[] {3,4,5,6,7,8,9};
 	private static final int[] slots_sides = new int[] {0,1};
@@ -98,7 +149,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 
 	@Override
 	public String getInventoryName() {
-		return "OSRFIDWriter";
+		return "OSCardWriter";
 	}
 
 	@Override
@@ -134,15 +185,29 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 		return false;
 	}
 
-	@Override
 	public String getComponentName() {
 		return "OSCardWriter";
 	}
 
+	
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		if (node != null && node.network() == null) {
+			Network.joinOrCreateNetwork(this);
+		}
+	}
+	
+	
 	@Override
 	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
 	{
 		super.readFromNBT(par1NBTTagCompound);
+		
+		if(oc_fs != null && oc_fs.node() != null) {
+			oc_fs.node().load(par1NBTTagCompound.getCompoundTag("oc:fs"));
+		}
+		
 		NBTTagList var2 = par1NBTTagCompound.getTagList("Items",par1NBTTagCompound.getId());
 		this.CardWriterItemStacks = new ItemStack[this.getSizeInventory()];
 		for (int var3 = 0; var3 < var2.tagCount(); ++var3)
@@ -160,6 +225,13 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Simpl
 	public void writeToNBT(NBTTagCompound par1NBTTagCompound)
 	{
 		super.writeToNBT(par1NBTTagCompound);
+		
+		if(oc_fs != null && oc_fs.node() != null) {
+			final NBTTagCompound fsNbt = new NBTTagCompound();
+			oc_fs.node().save(fsNbt);
+			par1NBTTagCompound.setTag("oc:fs", fsNbt);
+		}
+		
 		NBTTagList var2 = new NBTTagList();
 		for (int var3 = 0; var3 < this.CardWriterItemStacks.length; ++var3)
 		{
