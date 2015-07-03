@@ -5,22 +5,54 @@ import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import java.util.Random;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCardWriter extends BlockContainer {
 
 	public BlockCardWriter() {
 		super(Material.iron);
 		setBlockName("cardwriter");
-		setBlockTextureName("opensecurity:cardwriter");
+		//setBlockTextureName("opensecurity:cardwriter");
+	}
+	
+	
+	@SideOnly(Side.CLIENT)
+	public static IIcon topIcon;
+	@SideOnly(Side.CLIENT)
+	public static IIcon bottomIcon;
+	@SideOnly(Side.CLIENT)
+	public static IIcon sideIcon;
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerBlockIcons(IIconRegister icon) {
+		topIcon = icon.registerIcon("opensecurity:cardwriter_top");
+		bottomIcon = icon.registerIcon("opensecurity:machine_bottom");
+		sideIcon = icon.registerIcon("opensecurity:machine_side");
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int metadata) {
+		if(side == 0) {
+			return bottomIcon;
+		} else if(side == 1) {
+			return topIcon;
+		} else {
+			return sideIcon;
+		}
 	}
 	
 	@Override
@@ -33,8 +65,7 @@ public class BlockCardWriter extends BlockContainer {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity == null || player.isSneaking()) {
 			return false;
-		}
-		// code to open gui explained later		
+		}	
 		player.openGui(OpenSecurity.instance, 0, world, x, y, z);
 		return true;
 	}

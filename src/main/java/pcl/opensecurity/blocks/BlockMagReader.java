@@ -3,13 +3,17 @@
  */
 package pcl.opensecurity.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 /**
@@ -21,8 +25,36 @@ public class BlockMagReader extends BlockContainer {
 	public BlockMagReader() {
 		super(Material.iron);
 		setBlockName("magreader");
-		setBlockTextureName("opensecurity:magreader");
+		//setBlockTextureName("opensecurity:magreader");
 	}
+	
+	
+	@SideOnly(Side.CLIENT)
+	public static IIcon topIcon;
+	@SideOnly(Side.CLIENT)
+	public static IIcon bottomIcon;
+	@SideOnly(Side.CLIENT)
+	public static IIcon sideIcon;
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerBlockIcons(IIconRegister icon) {
+		topIcon = icon.registerIcon("opensecurity:machine_bottom");
+		bottomIcon = icon.registerIcon("opensecurity:machine_bottom");
+		sideIcon = icon.registerIcon("opensecurity:magreader");
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int metadata) {
+		if(side == 0) {
+			return bottomIcon;
+		} else if(side == 1) {
+			return topIcon;
+		} else {
+			return sideIcon;
+		}
+	}
+	
 	
 	private TileEntityMagReader tile;
 	
@@ -37,6 +69,7 @@ public class BlockMagReader extends BlockContainer {
 		}
 		return true;
 	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
 		return new TileEntityMagReader();
