@@ -4,6 +4,8 @@ local fs = require("filesystem")
 local shell = require("shell")
 local text = require("text")
 
+local args, options = shell.parse(...)
+
 local function round(num, idp)
  local mult = 10^(idp or 0)
  return math.floor(num * mult + 0.5) / mult
@@ -15,7 +17,7 @@ local freeMem = round(computer.freeMemory() / 1048576, 2)
 print("Date/Time: " .. os.date())
 print("Up Time: " .. round(computer.uptime() / 60, 2) .. " Minutes")
 
-if component.isAvailable("tablet") then
+if component.isAvailable("tablet") or component.isAvailable("robot") or options.p then
  print("Power: " .. round(computer.energy(), 2) .. "/" .. round(computer.maxEnergy(), 2))
 end
 
@@ -36,8 +38,6 @@ if usedMemory >= 85 then
  else
   print("Used Memory: " .. round(usedMemory, 2) * 100 .. "%")
 end
-
-local args, options = shell.parse(...)
 
 local function formatSize(size)
   if not options.h then

@@ -5,7 +5,7 @@ SYNOPSIS
   sh
 
 DESCRIPTION
-  This is the basic, built-in standard shell of OpenOS. It provides basic functionality and does the job for getting started. To run a command, enter it and press enter. The first token in a command will usually be a program. Any additional parameters will be passed along to the program.
+  This is the basic, built-in standard shell of SecureOS. It provides basic functionality and does the job for getting started. To run a command, enter it and press enter. The first token in a command will usually be a program. Any additional parameters will be passed along to the program.
 
   Arguments to programs can be quoted, to provide strings with multiple spaces in them, for example:
     echo "a   b"

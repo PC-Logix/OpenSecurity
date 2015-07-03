@@ -1,0 +1,5 @@
+require("shell").execute("/bin/adduser.lua")
+shell.execute("/bin/deluser.lua root")
+print("User root has been removed from the system, logging out.")
+os.sleep(2.5)
+shell.execute("/bin/logout.lua")

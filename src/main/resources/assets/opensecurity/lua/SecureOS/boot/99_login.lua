@@ -17,16 +17,6 @@ local function check() -- Prevents "ctrl+alt+c" and "ctrl+c".
 end
 event.listen("key_down", check)
 
-local function userLog(username, aug)
-  if fs.get("/etc/").isReadOnly() then
-    return
-  else
-  userw = io.open("/etc/userlog", "a")
-   userw:write(username .. "|" .. os.date("%F %T") .. "|" .. aug .. "\n")
-    userw:close()
-  end
-end
-
 while running do
   if fs.exists("/installer.lua") then -- Auto deletes the installer at first boot.
     fs.remove("/installer.lua")
@@ -47,7 +37,7 @@ while running do
   login = auth.validate(username, password)
 
   if login then
-    userLog(username, "pass")
+    auth.userLog(username, "pass")
     if fs.get("/tmp/").isReadOnly() then
       return
     else
@@ -61,25 +51,22 @@ while running do
     os.sleep(1.5)
     term.clear()
     term.setCursor(1,1)
-    shell.setAlias("usage", "/bin/usage.lua")
-    shell.setAlias("logout", "/bin/logout.lua")
-    shell.setAlias("update", "/bin/update.lua")
-    shell.setAlias("adduser", "/bin/adduser.lua")
-    shell.setAlias("deluser", "/bin/deluser.lua")
-    shell.setAlias("passwd", "/bin/passwd.lua")
     os.setenv("PS1", username .. "@" .. username .. "# ") -- Sets the user environment.
     shell.setWorkingDirectory("/home/" .. username .. "/")
     if not fs.get("/").isReadOnly() then
       shell.execute("/root/.root.lua/") -- Starts the root check program.
     end
     username, password = "" -- This is just a "bandaid fix" till I find a better way of doing it.
+    if fs.isAutorunEnabled() == false then
+      fs.setAutorunEnabled(true)
+    end
     event.ignore("key_down", check)
     running = false
   else
-    userLog(username, "fail")
+    auth.userLog(username, "fail")
     term.clear()
     term.setCursor(1,1)
-    io.stderr:write("Password incorrect...")
+    io.stderr:write("Login failed: Invalid information.")
     os.sleep(2.5)
   end
 end

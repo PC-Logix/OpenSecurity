@@ -26,18 +26,18 @@ local function buildDB()
     local users = {}
     u = io.open(passwdfile, "r")
     raw = u:read("*a")
-    
+
     if raw ~= nil then
-    
+
     local temp = split(raw, "\n")
-    
+
     for _,data in pairs(temp) do
       t = split(data, ":")
       users[t[1]] = {password=t[2], su=t[3]}
     end
 
     end
-    
+
     return users
 end
 
@@ -53,7 +53,7 @@ end
 
 function auth.addUser(username, password, su)
   local users = buildDB()
-  if su == true then sub = "1" end 
+  if su == true then sub = "1" end
   if su == false then sub = "0" end
 
   users[username] = {password=sha.sha256(password), su=sub}
@@ -70,9 +70,9 @@ function auth.rmUser(username)
   saveDB(users)
 end
 
-function auth.validate(username, password) 
+function auth.validate(username, password)
     local users = buildDB()
-  
+
     validated = false
     superuser = false
 
@@ -87,6 +87,14 @@ function auth.validate(username, password)
         end
     end
     return validated, superuser
+end
+
+function auth.userLog(username, arg)
+  if not fs.get("/etc/").isReadOnly() then
+  userw = io.open("/etc/userlog", "a")
+   userw:write(username .. "|" .. os.date("%F %T") .. "|" .. arg .. "\n")
+    userw:close()
+  end
 end
 
 return auth

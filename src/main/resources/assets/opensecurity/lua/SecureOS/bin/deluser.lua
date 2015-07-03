@@ -2,6 +2,23 @@ local fs = require("filesystem")
 local term = require("term")
 local auth = require("auth")
 
+local function root()
+  local root = false
+  if require("filesystem").exists("/tmp/.root") then
+    local r = io.open("/tmp/.root", "r")
+     root = r:read()
+      r:close()
+  end
+  return root
+end
+
+local root = root()
+
+if not root then
+  io.stderr:write("not authorized")
+  return
+end
+
 local args = {...}
 
 if #args == 0 then

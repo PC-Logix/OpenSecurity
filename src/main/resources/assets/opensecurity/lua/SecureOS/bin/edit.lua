@@ -21,35 +21,6 @@ local filename = shell.resolve(args[1])
 
 local readonly = options.r or fs.get(filename) == nil or fs.get(filename).isReadOnly()
 
-local function blackList()
-  local env = {}
-  local config = loadfile("/root/blacklist", nil, env)
-  if config then
-    pcall(config)
-  end
-  return env
-end
-
-local function root()
-  if not fs.exists("/tmp/.root") then
-    root = false
-  else
-    r = io.open("/tmp/.root", "r")
-     root = r:read()
-      r:close()
-  end
-  return root
-end
-
-local blacklist = blackList()
-local root = root()
-
-if filename == blacklist and not root then
-  if options == nil then
-    options = options.r
-  end
-end
-
 if not fs.exists(filename) then
   if fs.isDirectory(filename) then
     io.stderr:write("file is a directory")

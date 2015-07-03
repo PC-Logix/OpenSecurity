@@ -9,7 +9,7 @@ DESCRIPTION
 
   Note that symbolic links can lead to cycles (recursion) in the file system structure.
 
-  Symbolic links in OpenOS are 'virtual'. They are not stored on any file system, and as such will not persist across a reboot of the computer. This also means that the can be created in virtual folders, and even on read-only file systems.
+  Symbolic links in SecureOS are 'virtual'. They are not stored on any file system, and as such will not persist across a reboot of the computer. This also means that the can be created in virtual folders, and even on read-only file systems.
 
 EXAMPLES
   ln /bin/ls.lua

@@ -7,7 +7,7 @@ SYNOPSIS
   mount ADDRESS PATH
 
 DESCRIPTION
-  All files accessible in OpenOS are arranged in one big tree, starting with the root node, '/'. The files are the leaves of the tree, directories are inner nodes of the tree. Files can be distributed across several devices (file system components, such as hard drives and floppies). The `mount` command is used to attach a file system to this tree. The `umount` command can be used to remove a mounted file system from the tree (note that `rm` works for this, too).
+  All files accessible in SecureOS are arranged in one big tree, starting with the root node, '/'. The files are the leaves of the tree, directories are inner nodes of the tree. Files can be distributed across several devices (file system components, such as hard drives and floppies). The `mount` command is used to attach a file system to this tree. The `umount` command can be used to remove a mounted file system from the tree (note that `rm` works for this, too).
 
 EXAMPLES
   mount
