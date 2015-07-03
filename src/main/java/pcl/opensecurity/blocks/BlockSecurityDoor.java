@@ -5,24 +5,30 @@ import java.util.Random;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.IconFlipped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDoor extends BlockDoor
+public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
 {
 	public Item placerItem;
-	public IIcon topDoorIcon;
-	public IIcon[] flippedIcons = new IIcon[2];
+
+	@SideOnly(Side.CLIENT)
+	private IIcon[] iconsUpper;
+	@SideOnly(Side.CLIENT)
+	private IIcon[] iconsLower;
 
 	public BlockSecurityDoor()
 	{
@@ -30,123 +36,140 @@ public class BlockSecurityDoor extends BlockDoor
 		float f = 0.5F;
 		float f1 = 1.0F;
 		this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f1, 0.5F + f);
-		this.setHardness(50F);
+		this.setHardness(5F);
 		this.setResistance(6000F);
 		this.setBlockName("securityDoor");
+		this.setBlockTextureName(OpenSecurity.MODID + ":door_secure_upper");
 	}
 
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int par5)
 	{
-		if (par5 == 1 || par5 == 0)
+		if (par5 != 1 && par5 != 0)
 		{
-			return this.blockIcon;
-		}
-		int meta = par1IBlockAccess.getBlockMetadata(par2, par3, par4);
-		boolean flag = (meta & 4) != 0;
-		int halfMeta = meta & 3;
-		boolean flipped = false;
+			int blockMeta = this.func_150012_g(blockAccess, x, y, z);
+			int j1 = blockMeta & 3;
+			boolean flag = (blockMeta & 4) != 0;
+			boolean flipped = false;
+			boolean flag2 = (blockMeta & 8) != 0;
 
-		if (flag)
-		{
-			if (halfMeta == 0 && par5 == 2) flipped = !flipped;
-			else if (halfMeta == 1 && par5 == 5) flipped = !flipped;
-			else if (halfMeta == 2 && par5 == 3) flipped = !flipped;
-			else if (halfMeta == 3 && par5 == 4) flipped = !flipped;
+			if (flag)
+			{
+				if (j1 == 0 && par5 == 2) flipped = !flipped;
+				else if (j1 == 1 && par5 == 5) flipped = !flipped;
+				else if (j1 == 2 && par5 == 3) flipped = !flipped;
+				else if (j1 == 3 && par5 == 4) flipped = !flipped;
+			}
+			else
+			{
+				if (j1 == 0 && par5 == 5) flipped = !flipped;
+				else if (j1 == 1 && par5 == 3) flipped = !flipped;
+				else if (j1 == 2 && par5 == 4) flipped = !flipped;
+				else if (j1 == 3 && par5 == 2) flipped = !flipped;
+
+				if ((blockMeta & 16) != 0)
+				{
+					flipped = !flipped;
+				}
+			}
+
+			return flag2 ? this.iconsUpper[flipped?1:0] : this.iconsLower[flipped?1:0];
 		}
 		else
 		{
-			if (halfMeta == 0 && par5 == 5) flipped = !flipped;
-			else if (halfMeta == 1 && par5 == 3) flipped = !flipped;
-			else if (halfMeta == 2 && par5 == 4) flipped = !flipped;
-			else if (halfMeta == 3 && par5 == 2)flipped = !flipped;
-			if ((meta & 16) != 0)flipped = !flipped;
+			return this.iconsLower[0];
 		}
-
-		if (flipped) return flippedIcons[(meta & 8) != 0 ? 1 : 0];
-		else return (meta & 8) != 0 ? this.topDoorIcon : this.blockIcon;
 	}
-    
-    @SideOnly(Side.CLIENT)
+
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int par1, int par2)
 	{
 		return this.blockIcon;
 	}
 
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void registerBlockIcons(IIconRegister iconRegister)
+	public void registerBlockIcons(IIconRegister p_149651_1_)
 	{
-		this.blockIcon = iconRegister.registerIcon(OpenSecurity.MODID + ":door_secure_lower");
-		this.topDoorIcon = iconRegister.registerIcon(OpenSecurity.MODID + ":door_secure_upper");
-		this.flippedIcons[0] = new IconFlipped(blockIcon, true, false);
-		this.flippedIcons[1] = new IconFlipped(topDoorIcon, true, false);
+		this.iconsUpper = new IIcon[2];
+		this.iconsLower = new IIcon[2];
+		this.iconsUpper[0] = p_149651_1_.registerIcon(OpenSecurity.MODID + ":door_secure_upper");
+		this.iconsLower[0] = p_149651_1_.registerIcon(OpenSecurity.MODID + ":door_secure_lower");
+		this.iconsUpper[1] = new IconFlipped(this.iconsUpper[0], true, false);
+		this.iconsLower[1] = new IconFlipped(this.iconsLower[0], true, false);
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
+	public boolean onBlockActivated(World world, int par2, int par3, int par4, EntityPlayer player, int par6, float par7, float par8, float par9)
 	{
 		return false;
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	@Override
-    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-    {
-        return OpenSecurity.securityDoor;
-    }
-	
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
+	{
+		return OpenSecurity.securityDoor;
+	}
+
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
 		return new ItemStack(OpenSecurity.securityDoor);
-		
+
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+
+		if ((meta & 8) == 0) //Top door block
+		{
+			boolean breakBlock = false;
+
+			if (world.getBlock(x, y + 1, z) != this)
+			{
+				world.setBlockToAir(x, y, z);
+				breakBlock = true;
+			}
+
+			if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z))
+			{
+				world.setBlockToAir(x, y, z);
+				breakBlock = true;
+
+				if (world.getBlock(x, y + 1, z) == this)
+				{
+					world.setBlockToAir(x, y + 1, z);
+				}
+			}
+
+			if (breakBlock)
+			{
+				if (!world.isRemote)
+				{
+					this.dropBlockAsItem(world, x, y, z, meta, 0);
+				}
+			}
+		}
+		else //Bottom door block
+		{
+			if (world.getBlock(x, y - 1, z) != this)
+			{
+				world.setBlockToAir(x, y, z);
+			}
+
+			if (block != this)
+			{
+				this.onNeighborBlockChange(world, x, y - 1, z, block);
+			}
+		}
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+		return new TileEntitySecureDoor();
 	}
 	
-	@Override
-	public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_, Block p_149695_5_)
-    {
-        int l = p_149695_1_.getBlockMetadata(p_149695_2_, p_149695_3_, p_149695_4_);
-
-        if ((l & 8) == 0)
-        {
-            boolean flag = false;
-
-            if (p_149695_1_.getBlock(p_149695_2_, p_149695_3_ + 1, p_149695_4_) != this)
-            {
-                p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_);
-                flag = true;
-            }
-
-            if (!World.doesBlockHaveSolidTopSurface(p_149695_1_, p_149695_2_, p_149695_3_ - 1, p_149695_4_))
-            {
-                p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_);
-                flag = true;
-
-                if (p_149695_1_.getBlock(p_149695_2_, p_149695_3_ + 1, p_149695_4_) == this)
-                {
-                    p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_ + 1, p_149695_4_);
-                }
-            }
-
-            if (flag)
-            {
-                if (!p_149695_1_.isRemote)
-                {
-                    this.dropBlockAsItem(p_149695_1_, p_149695_2_, p_149695_3_, p_149695_4_, l, 0);
-                }
-            }
-        }
-        else
-        {
-            if (p_149695_1_.getBlock(p_149695_2_, p_149695_3_ - 1, p_149695_4_) != this)
-            {
-                p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_);
-            }
-
-            if (p_149695_5_ != this)
-            {
-                this.onNeighborBlockChange(p_149695_1_, p_149695_2_, p_149695_3_ - 1, p_149695_4_, p_149695_5_);
-            }
-        }
-    }
+	
 }

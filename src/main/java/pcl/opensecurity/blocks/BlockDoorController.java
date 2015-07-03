@@ -16,7 +16,7 @@ public class BlockDoorController extends BlockContainer {
 		super(Material.iron);
 		setBlockName("doorController");
 		setBlockTextureName("opensecurity:door_controller");
-		this.setHardness(50F);
+		this.setHardness(5F);
 		this.setResistance(6000F);
 	}
 

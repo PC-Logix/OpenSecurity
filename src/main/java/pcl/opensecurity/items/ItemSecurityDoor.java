@@ -1,11 +1,13 @@
 package pcl.opensecurity.items;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -48,7 +50,7 @@ public class ItemSecurityDoor extends ItemDoor {
                 else
                 {
                     int i1 = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
-                    placeDoorBlock(par3World, par4, par5, par6, i1, block);
+                    placeDoorBlock(par3World, par4, par5, par6, i1, block, par2EntityPlayer);
                     --par1ItemStack.stackSize;
                     return true;
                 }
@@ -60,35 +62,35 @@ public class ItemSecurityDoor extends ItemDoor {
         }
     }
 
-    public static void placeDoorBlock(World p_150924_0_, int p_150924_1_, int p_150924_2_, int p_150924_3_, int p_150924_4_, Block p_150924_5_)
+    public static void placeDoorBlock(World world, int x, int y, int z, int direction, Block block, EntityPlayer entityPlayer)
     {
         byte b0 = 0;
         byte b1 = 0;
 
-        if (p_150924_4_ == 0)
+        if (direction == 0)
         {
             b1 = 1;
         }
 
-        if (p_150924_4_ == 1)
+        if (direction == 1)
         {
             b0 = -1;
         }
 
-        if (p_150924_4_ == 2)
+        if (direction == 2)
         {
             b1 = -1;
         }
 
-        if (p_150924_4_ == 3)
+        if (direction == 3)
         {
             b0 = 1;
         }
 
-        int i1 = (p_150924_0_.getBlock(p_150924_1_ - b0, p_150924_2_, p_150924_3_ - b1).isNormalCube() ? 1 : 0) + (p_150924_0_.getBlock(p_150924_1_ - b0, p_150924_2_ + 1, p_150924_3_ - b1).isNormalCube() ? 1 : 0);
-        int j1 = (p_150924_0_.getBlock(p_150924_1_ + b0, p_150924_2_, p_150924_3_ + b1).isNormalCube() ? 1 : 0) + (p_150924_0_.getBlock(p_150924_1_ + b0, p_150924_2_ + 1, p_150924_3_ + b1).isNormalCube() ? 1 : 0);
-        boolean flag = p_150924_0_.getBlock(p_150924_1_ - b0, p_150924_2_, p_150924_3_ - b1) == p_150924_5_ || p_150924_0_.getBlock(p_150924_1_ - b0, p_150924_2_ + 1, p_150924_3_ - b1) == p_150924_5_;
-        boolean flag1 = p_150924_0_.getBlock(p_150924_1_ + b0, p_150924_2_, p_150924_3_ + b1) == p_150924_5_ || p_150924_0_.getBlock(p_150924_1_ + b0, p_150924_2_ + 1, p_150924_3_ + b1) == p_150924_5_;
+        int i1 = (world.getBlock(x - b0, y, z - b1).isNormalCube() ? 1 : 0) + (world.getBlock(x - b0, y + 1, z - b1).isNormalCube() ? 1 : 0);
+        int j1 = (world.getBlock(x + b0, y, z + b1).isNormalCube() ? 1 : 0) + (world.getBlock(x + b0, y + 1, z + b1).isNormalCube() ? 1 : 0);
+        boolean flag = world.getBlock(x - b0, y, z - b1) == block || world.getBlock(x - b0, y + 1, z - b1) == block;
+        boolean flag1 = world.getBlock(x + b0, y, z + b1) == block || world.getBlock(x + b0, y + 1, z + b1) == block;
         boolean flag2 = false;
 
         if (flag && !flag1)
@@ -100,9 +102,11 @@ public class ItemSecurityDoor extends ItemDoor {
             flag2 = true;
         }
 
-        p_150924_0_.setBlock(p_150924_1_, p_150924_2_, p_150924_3_, p_150924_5_, p_150924_4_, 2);
-        p_150924_0_.setBlock(p_150924_1_, p_150924_2_ + 1, p_150924_3_, p_150924_5_, 8 | (flag2 ? 1 : 0), 2);
-        p_150924_0_.notifyBlocksOfNeighborChange(p_150924_1_, p_150924_2_, p_150924_3_, p_150924_5_);
-        p_150924_0_.notifyBlocksOfNeighborChange(p_150924_1_, p_150924_2_ + 1, p_150924_3_, p_150924_5_);
+        world.setBlock(x, y, z, block, direction, 2);
+        world.setBlock(x, y + 1, z, block, 8 | (flag2 ? 1 : 0), 2);
+        TileEntitySecureDoor tile = (TileEntitySecureDoor) world.getTileEntity(x, y, z);
+        tile.setOwner(entityPlayer.getUniqueID().toString());
+        world.notifyBlocksOfNeighborChange(x, y, z, block);
+        world.notifyBlocksOfNeighborChange(x, y + 1, z, block);
     }
 }

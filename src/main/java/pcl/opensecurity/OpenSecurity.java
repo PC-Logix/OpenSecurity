@@ -29,6 +29,9 @@ import pcl.opensecurity.tileentity.TileEntityEntityDetector;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
+import pcl.opensecurity.tileentity.TileEntitySecureDoor;
+import pcl.opensecurity.util.SecurityDoorBreakEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -136,6 +139,7 @@ public class OpenSecurity {
 		
 		SecurityDoor = new BlockSecurityDoor();
 		GameRegistry.registerBlock(SecurityDoor, "SecurityDoor");
+		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "SecureDoorTE");
 		
 		// Register Items
 		magCard = new ItemMagCard();
@@ -155,6 +159,8 @@ public class OpenSecurity {
 		GameRegistry.registerItem(securityDoor, "opensecurity.securityDoor");
 		securityDoor.setCreativeTab(CreativeTab);
 		
+		//register events
+		MinecraftForge.EVENT_BUS.register(new SecurityDoorBreakEvent());
 	}
 
 	@EventHandler
