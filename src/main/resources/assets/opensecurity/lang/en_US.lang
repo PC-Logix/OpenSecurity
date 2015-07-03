@@ -4,10 +4,12 @@ tile.rfidreader.name=RFID Reader
 tile.cardwriter.name=Card Writer
 tile.magreader.name=Magnetic Card Reader
 tile.entitydetector.name=Entity Detector
+tile.doorController.name=Door Controller
 //items
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
 item.rfidReaderCard.name=RFID Reader Card
+item.securityDoor.name=SecurityDoor
 itemGroup.OpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer

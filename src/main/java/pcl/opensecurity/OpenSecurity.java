@@ -4,20 +4,27 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import li.cil.oc.api.fs.FileSystem;
 import pcl.opensecurity.BuildInfo;
 import pcl.opensecurity.blocks.BlockAlarm;
+import pcl.opensecurity.blocks.BlockDoorController;
 import pcl.opensecurity.blocks.BlockEntityDetector;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockCardWriter;
+import pcl.opensecurity.blocks.BlockSecurityDoor;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.gui.OSGUIHandler;
 import pcl.opensecurity.items.ItemMagCard;
+import pcl.opensecurity.items.ItemSecurityDoor;
 import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.items.ItemRFIDReaderCard;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
+import pcl.opensecurity.tileentity.TileEntityDoorController;
 import pcl.opensecurity.tileentity.TileEntityEntityDetector;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
@@ -51,8 +58,11 @@ public class OpenSecurity {
 	public static Block cardWriter;
 	public static Block Alarm;
 	public static Block EntityDetector;
+	public static Block SecurityDoor;
+	public static Block DoorController;
 	public static Item magCard;
 	public static Item rfidCard;
+	public static Item securityDoor;
 	public static Item rfidReaderCard;
 	public static ItemBlock securityitemBlock;
 	public static ItemStack secureOS_disk;
@@ -63,36 +73,34 @@ public class OpenSecurity {
 	@SidedProxy(clientSide = "pcl.opensecurity.ClientProxy", serverSide = "pcl.opensecurity.CommonProxy")
 	public static CommonProxy proxy;
 	public static Config cfg = null;
-	//public static boolean render3D = true;
+
 	public static boolean debug = false;
 	public static int rfidRange;
 	public static boolean enableplaySoundAt = false;
 
-	public static org.apache.logging.log4j.Logger logger;
+	private static final Logger  logger  = LogManager.getFormatterLogger(MODID);
 
 	public static List<String> alarmList;
 
+	public static CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		cfg = new Config(new Configuration(
-				event.getSuggestedConfigurationFile()));
-		//render3D = cfg.render3D;
+		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
+
 		alarmList = cfg.alarmsConfigList;
 		rfidRange = cfg.rfidMaxRange;
 		enableplaySoundAt = cfg.enableplaySoundAt;
 
 		if ((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD) {
 			try {
-				Class.forName("pcl.openprinter.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null, FMLCommonHandler.instance().findContainerFor(this),
+				Class.forName("pcl.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null, FMLCommonHandler.instance().findContainerFor(this),
 								new URL("http://PC-Logix.com/OpenSecurity/get_latest_build.php"),
 								new URL("http://PC-Logix.com/OpenSecurity/changelog.txt"));
 			} catch (Throwable e) {
-				e.printStackTrace();
+				logger.info("PC-Logix Update checker is missing, not registering.");
 			}
 		}
-	    CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
-		logger = event.getModLog();
-
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
 
 		// Register Blocks
@@ -121,6 +129,14 @@ public class OpenSecurity {
 		EntityDetector.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityEntityDetector.class, "EntityDetectorTE");
 
+		DoorController = new BlockDoorController();
+		GameRegistry.registerBlock(DoorController, "doorcontroller");
+		DoorController.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityDoorController.class, "DoorControllerTE");
+		
+		SecurityDoor = new BlockSecurityDoor();
+		GameRegistry.registerBlock(SecurityDoor, "SecurityDoor");
+		
 		// Register Items
 		magCard = new ItemMagCard();
 		GameRegistry.registerItem(magCard, "opensecurity.magCard");
@@ -134,6 +150,11 @@ public class OpenSecurity {
 		GameRegistry.registerItem(rfidReaderCard, "opensecurity.rfidReaderCard");
 		rfidReaderCard.setCreativeTab(CreativeTab);
 		li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
+		
+		securityDoor = new ItemSecurityDoor(SecurityDoor);
+		GameRegistry.registerItem(securityDoor, "opensecurity.securityDoor");
+		securityDoor.setCreativeTab(CreativeTab);
+		
 	}
 
 	@EventHandler
@@ -145,7 +166,6 @@ public class OpenSecurity {
 		};
 		secureOS_disk = li.cil.oc.api.Items.registerFloppy("SecureOS", 1, factory);
 		
-		//proxy.registerRenderers();
 		ItemStack redstone      = new ItemStack(Items.redstone);
 		ItemStack paper         = new ItemStack(Items.paper);
 		ItemStack noteblock     = new ItemStack(Blocks.noteblock);
