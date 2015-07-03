@@ -18,17 +18,19 @@ public class SecurityDoorBreakEvent {
 		if(entity instanceof TileEntitySecureDoor){
 			TileEntitySecureDoor xEntity = (TileEntitySecureDoor) entity;
 			if(xEntity.getOwner()!=null){
-				System.out.println(xEntity.getOwner().toString().equals(event.getPlayer().getUniqueID().toString()));
 				if(!xEntity.getOwner().equals(event.getPlayer().getUniqueID().toString()) && !event.getPlayer().capabilities.isCreativeMode) {
-					event.setCanceled(true);
+					if(!xEntity.getOwner().isEmpty()) {
+						event.setCanceled(true);						
+					}
 				}
 			}
 		} else if(entity instanceof TileEntityDoorController){
 			TileEntityDoorController xEntity = (TileEntityDoorController) entity;
 			if(xEntity.getOwner()!=null){
-				System.out.println(xEntity.getOwner().toString().equals(event.getPlayer().getUniqueID().toString()));
 				if(!xEntity.getOwner().equals(event.getPlayer().getUniqueID().toString()) && !event.getPlayer().capabilities.isCreativeMode) {
-					event.setCanceled(true);
+					if(!xEntity.getOwner().isEmpty()) {
+						event.setCanceled(true);						
+					}
 				}
 			}
 		}
