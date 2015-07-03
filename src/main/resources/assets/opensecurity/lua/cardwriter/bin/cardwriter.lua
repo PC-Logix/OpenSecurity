@@ -30,3 +30,5 @@ else
 end
 
 writer.write(data, name, doLock)
+term.clear()
+term.setCursor(1,1)
