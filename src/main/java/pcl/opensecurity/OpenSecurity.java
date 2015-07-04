@@ -175,6 +175,7 @@ public class OpenSecurity {
 		ItemStack redstone      = new ItemStack(Items.redstone);
 		ItemStack paper         = new ItemStack(Items.paper);
 		ItemStack noteblock     = new ItemStack(Blocks.noteblock);
+		ItemStack door			= new ItemStack(Items.iron_door);
 		ItemStack t2microchip   = li.cil.oc.api.Items.get("chip2").createItemStack(1);
 		ItemStack t1microchip   = li.cil.oc.api.Items.get("chip1").createItemStack(1);
     	ItemStack t1ram    		= li.cil.oc.api.Items.get("ram1").createItemStack(1);
@@ -233,6 +234,18 @@ public class OpenSecurity {
 				" S ",
 				"P P",
 				'P', paper, 'S', transistor);
+		
+		GameRegistry.addRecipe( new ItemStack(securityDoor, 1),
+				"T T",
+				" D ",
+				"S S",
+				'D', door, 'S', transistor, 'T', t2microchip);
+		
+		GameRegistry.addRecipe( new ItemStack(DoorController, 1),
+				"T T",
+				" C ",
+				"SBS",
+				'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip);
 		
 		GameRegistry.addShapelessRecipe( secureOS_disk, new Object[] { floppy, magCard });
 	}

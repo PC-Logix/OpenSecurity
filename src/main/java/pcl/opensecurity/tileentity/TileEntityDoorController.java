@@ -25,7 +25,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 	public Block block = null;
 
-	private BlockSecurityDoor door = null;
+	public BlockSecurityDoor door;
 
 	int doorCoordX;
 	int doorCoordY;
@@ -130,41 +130,20 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		return ((door.func_150012_g(loc.blockAccess, loc.x, loc.y, loc.z) & 16) != 0);
 	}
 
+	@Callback
+	public Object[] isOpen(Context context, Arguments args) {
+		BlockSecurityDoor door = (BlockSecurityDoor)OpenSecurity.SecurityDoor;
+		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
+		return new Object[] { isDoorOpen(door, loc) };
+	}
 
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
-		/*int i1 = worldObj.getBlockMetadata(doorCoordX, doorCoordY, doorCoordZ);
-        int j2;
-
-        if ((i1 & 8) == 0)
-        {
-            int doorBottomMeta = worldObj.getBlockMetadata(doorCoordX, doorCoordY, doorCoordZ);
-            j2 = doorBottomMeta & 7;
-            j2 ^= 4;
-    		worldObj.setBlockMetadataWithNotify(doorCoordX, doorCoordY, doorCoordZ, j2, 2);
-    		worldObj.markBlockRangeForRenderUpdate(doorCoordX, doorCoordY, doorCoordZ, doorCoordX, doorCoordY, doorCoordZ);
-        }
-        else
-        {
-            int doorTopMeta = worldObj.getBlockMetadata(doorCoordX, doorCoordY - 1, doorCoordZ);
-            j2 = doorTopMeta & 7;
-            j2 ^= 4;
-    		worldObj.setBlockMetadataWithNotify(doorCoordX, doorCoordY - 1, doorCoordZ, j2, 2);
-    		worldObj.markBlockRangeForRenderUpdate(doorCoordX, doorCoordY - 1, doorCoordZ, doorCoordX, doorCoordY - 1, doorCoordZ);
-        }
-        boolean status;
-        if (j2 == 4) {
-        	status = true;
-        } else {
-        	status = false;
-        }*/
-
-
 		BlockSecurityDoor door = (BlockSecurityDoor)OpenSecurity.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 
 		int direction = getDoorOrientation(door, loc);
-		boolean isOpen = isDoorOpen(door, loc);
+		//boolean isOpen = isDoorOpen(door, loc);
 		boolean isMirrored = isDoorMirrored(door, loc);
 
 		int i = (isMirrored ? -1 : 1);

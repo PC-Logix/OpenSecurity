@@ -86,6 +86,7 @@ public class BlockLocation {
 	
 	/** Gets the tile entity of the block at this location.
 	 *  Returns null if the tile entity is not the correct type. */
+	@SuppressWarnings("unchecked")
 	public <T extends TileEntity> T getTileEntity(Class<T> tileEntityClass) {
 		TileEntity tileEntity = getTileEntity();
 		return (tileEntityClass.isInstance(tileEntity) ? (T)tileEntity : null);
@@ -93,6 +94,7 @@ public class BlockLocation {
 	
 	/** Gets the tile entity of the block at this location.
 	 *  Throws an error if there is no tile entity or it's not the correct type. */
+	@SuppressWarnings("unchecked")
 	public <T extends TileEntity> T getTileEntityStrict(Class<T> tileEntityClass) {
 		TileEntity tileEntity = getTileEntity();
 		if (tileEntity == null)
