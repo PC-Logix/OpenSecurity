@@ -136,13 +136,11 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public Packet getDescriptionPacket() {
 		NBTTagCompound tagCom = new NBTTagCompound();
 		this.writeToNBT(tagCom);
-		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord,
-				this.zCoord, this.blockMetadata, tagCom);
+		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata, tagCom);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net,
-			S35PacketUpdateTileEntity packet) {
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
 		NBTTagCompound tagCom = packet.func_148857_g();
 		this.readFromNBT(tagCom);
 	}
@@ -178,5 +176,4 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }

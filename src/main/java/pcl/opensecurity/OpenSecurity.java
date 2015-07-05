@@ -30,7 +30,7 @@ import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
-import pcl.opensecurity.util.SecurityDoorBreakEvent;
+import pcl.opensecurity.util.OSBreakEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraft.block.Block;
@@ -81,7 +81,7 @@ public class OpenSecurity {
 	public static int rfidRange;
 	public static boolean enableplaySoundAt = false;
 
-	private static final Logger  logger  = LogManager.getFormatterLogger(MODID);
+	public static final Logger  logger  = LogManager.getFormatterLogger(MODID);
 
 	public static List<String> alarmList;
 
@@ -106,6 +106,35 @@ public class OpenSecurity {
 		}
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
 
+		registerBlocks();
+		registerItems();
+		registerEvents();
+	}
+
+	private void registerEvents() {
+		MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
+	}
+
+	private void registerItems() {
+		magCard = new ItemMagCard();
+		GameRegistry.registerItem(magCard, "opensecurity.magCard");
+		magCard.setCreativeTab(CreativeTab);
+
+		rfidCard = new ItemRFIDCard();
+		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
+		rfidCard.setCreativeTab(CreativeTab);
+		
+		rfidReaderCard = new ItemRFIDReaderCard();
+		GameRegistry.registerItem(rfidReaderCard, "opensecurity.rfidReaderCard");
+		rfidReaderCard.setCreativeTab(CreativeTab);
+		li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
+		
+		securityDoor = new ItemSecurityDoor(SecurityDoor);
+		GameRegistry.registerItem(securityDoor, "opensecurity.securityDoor");
+		securityDoor.setCreativeTab(CreativeTab);
+	}
+
+	private void registerBlocks() {
 		// Register Blocks
 		magCardReader = new BlockMagReader();
 		GameRegistry.registerBlock(magCardReader, "magreader");
@@ -140,31 +169,15 @@ public class OpenSecurity {
 		SecurityDoor = new BlockSecurityDoor();
 		GameRegistry.registerBlock(SecurityDoor, "SecurityDoor");
 		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "SecureDoorTE");
-		
-		// Register Items
-		magCard = new ItemMagCard();
-		GameRegistry.registerItem(magCard, "opensecurity.magCard");
-		magCard.setCreativeTab(CreativeTab);
-
-		rfidCard = new ItemRFIDCard();
-		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
-		rfidCard.setCreativeTab(CreativeTab);
-		
-		rfidReaderCard = new ItemRFIDReaderCard();
-		GameRegistry.registerItem(rfidReaderCard, "opensecurity.rfidReaderCard");
-		rfidReaderCard.setCreativeTab(CreativeTab);
-		li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
-		
-		securityDoor = new ItemSecurityDoor(SecurityDoor);
-		GameRegistry.registerItem(securityDoor, "opensecurity.securityDoor");
-		securityDoor.setCreativeTab(CreativeTab);
-		
-		//register events
-		MinecraftForge.EVENT_BUS.register(new SecurityDoorBreakEvent());
+		logger.info("Registered Blocks");
 	}
 
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
+		registerRecipes();
+	}
+
+	private void registerRecipes() {
 		Callable<FileSystem> factory = new Callable<FileSystem>() {
 			public FileSystem call() {
 				return li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/SecureOS/");
@@ -176,6 +189,7 @@ public class OpenSecurity {
 		ItemStack paper         = new ItemStack(Items.paper);
 		ItemStack noteblock     = new ItemStack(Blocks.noteblock);
 		ItemStack door			= new ItemStack(Items.iron_door);
+		ItemStack obsidian		= new ItemStack(Blocks.obsidian);
 		ItemStack t2microchip   = li.cil.oc.api.Items.get("chip2").createItemStack(1);
 		ItemStack t1microchip   = li.cil.oc.api.Items.get("chip1").createItemStack(1);
     	ItemStack t1ram    		= li.cil.oc.api.Items.get("ram1").createItemStack(1);
@@ -236,17 +250,18 @@ public class OpenSecurity {
 				'P', paper, 'S', transistor);
 		
 		GameRegistry.addRecipe( new ItemStack(securityDoor, 1),
-				"T T",
-				" D ",
-				"S S",
-				'D', door, 'S', transistor, 'T', t2microchip);
+				"TOT",
+				"ODO",
+				"SOS",
+				'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian);
 		
 		GameRegistry.addRecipe( new ItemStack(DoorController, 1),
-				"T T",
-				" C ",
+				"TOT",
+				"OCO",
 				"SBS",
-				'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip);
+				'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip, 'O', obsidian);
 		
 		GameRegistry.addShapelessRecipe( secureOS_disk, new Object[] { floppy, magCard });
+		logger.info("Registered Recipes");
 	}
 }

@@ -101,7 +101,6 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 			Network.joinOrCreateNetwork(this);
 		}
 		for(ForgeDirection direction: ForgeDirection.VALID_DIRECTIONS){
-			//if (!(this.door instanceof BlockSecurityDoor)) {
 			block = worldObj.getBlock(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
 			if(block instanceof BlockSecurityDoor){
 				this.door = (BlockSecurityDoor) block;
@@ -109,16 +108,13 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 				doorCoordY = yCoord + direction.offsetY;
 				doorCoordZ = zCoord + direction.offsetZ;
 			}
-			//}
 		}
-
 	}
 
 	@Callback
 	public Object[] greet(Context context, Arguments args) {
 		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
 	}
-
 
 	private int getDoorOrientation(BlockDoor door, BlockLocation loc) {
 		return door.func_150013_e(loc.blockAccess, loc.x, loc.y, loc.z);
@@ -185,8 +181,6 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 		return new Object[] { !isDoorOpen(door, loc) };
 	}
-
-
 
 	public void setOwner(String UUID) {
 		this.ownerUUID = UUID;

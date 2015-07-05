@@ -49,11 +49,11 @@ public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
 		{
 			int blockMeta = this.func_150012_g(blockAccess, x, y, z);
 			int j1 = blockMeta & 3;
-			boolean flag = (blockMeta & 4) != 0;
+			boolean isLowerPanel = (blockMeta & 4) != 0;
 			boolean flipped = false;
-			boolean flag2 = (blockMeta & 8) != 0;
+			boolean isUpperPanel = (blockMeta & 8) != 0;
 
-			if (flag)
+			if (isLowerPanel)
 			{
 				if (j1 == 0 && par5 == 2) flipped = !flipped;
 				else if (j1 == 1 && par5 == 5) flipped = !flipped;
@@ -73,7 +73,7 @@ public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
 				}
 			}
 
-			return flag2 ? this.iconsUpper[flipped?1:0] : this.iconsLower[flipped?1:0];
+			return isUpperPanel ? this.iconsUpper[flipped?1:0] : this.iconsLower[flipped?1:0];
 		}
 		else
 		{

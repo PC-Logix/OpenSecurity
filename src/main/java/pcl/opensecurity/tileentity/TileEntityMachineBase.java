@@ -81,11 +81,10 @@ public class TileEntityMachineBase extends TileEntityEnvironment {
 			}
 		}
 	}
-
+	
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-
 	}
 
 	@Override
