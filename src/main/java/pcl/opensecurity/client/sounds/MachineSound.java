@@ -42,5 +42,4 @@ public class MachineSound extends PositionedSound implements ITickableSound {
 	public boolean isDonePlaying() {
 		return donePlaying;
 	}
-
 }

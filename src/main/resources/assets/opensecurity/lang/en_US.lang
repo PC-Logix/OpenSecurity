@@ -9,7 +9,7 @@ tile.doorController.name=Door Controller
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
 item.rfidReaderCard.name=RFID Reader Card
-item.securityDoor.name=SecurityDoor
+item.securityDoor.name=Security Door
 itemGroup.OpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer

@@ -3,8 +3,11 @@
  */
 package pcl.opensecurity.blocks;
 
+import java.util.Random;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import net.minecraft.block.BlockContainer;
@@ -34,14 +37,23 @@ public class BlockMagReader extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public static IIcon bottomIcon;
 	@SideOnly(Side.CLIENT)
-	public static IIcon sideIcon;
+	public static IIcon sideIcon_idle;
+	@SideOnly(Side.CLIENT)
+	public static IIcon sideIcon_activated;
+	@SideOnly(Side.CLIENT)
+	public static IIcon sideIcon_error;
+	@SideOnly(Side.CLIENT)
+	public static IIcon sideIcon_success;
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister icon) {
 		topIcon = icon.registerIcon("opensecurity:machine_bottom");
 		bottomIcon = icon.registerIcon("opensecurity:machine_bottom");
-		sideIcon = icon.registerIcon("opensecurity:magreader");
+		sideIcon_idle = icon.registerIcon("opensecurity:magreader");
+		sideIcon_activated = icon.registerIcon("opensecurity:magreader_active");
+		sideIcon_error = icon.registerIcon("opensecurity:magreader_error");
+		sideIcon_success = icon.registerIcon("opensecurity:magreader_success");
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -51,20 +63,37 @@ public class BlockMagReader extends BlockContainer {
 		} else if(side == 1) {
 			return topIcon;
 		} else {
-			return sideIcon;
+			switch(metadata) {
+			case 1:
+				return sideIcon_activated;
+			case 2:
+				return sideIcon_error;
+			case 3:
+				return sideIcon_success;
+			default:
+				return sideIcon_idle;
+			}
 		}
 	}
 	
-	
-	private TileEntityMagReader tile;
+	@Override
+	public void updateTick(World world, int xCoord, int yCoord, int zCoord, Random rand) {
+		world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3);
+	}
 	
 	@Override
 	public boolean onBlockActivated(World world, int xCoord, int yCoord, int zCoord, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {
 		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
-		tile = (TileEntityMagReader) world.getTileEntity(xCoord, yCoord, zCoord);
+		TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(xCoord, yCoord, zCoord);
 		if (!world.isRemote) {
 			if (equipped instanceof ItemMagCard){
-				tile.doRead(entityplayer.getCurrentEquippedItem(), entityplayer);
+				world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 1);
+				if(tile.doRead(entityplayer.getCurrentEquippedItem(), entityplayer)) {
+					world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 3, 1);
+				} else {
+					world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 2, 1);
+				}
+				world.scheduleBlockUpdate(xCoord, yCoord, zCoord, this, 30);
 			}
 		}
 		return true;
