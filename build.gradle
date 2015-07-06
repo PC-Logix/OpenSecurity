@@ -63,7 +63,7 @@ curse {
 	apiKey = curseforge_key
 	projectId = "231687"
 	releaseType = "release"
-	changelog = "http://jenkins.pc-logix.com/job/OpenSecurity/changes"
+	changelog = project.changelog
 	addGameVersion project.minecraft.version
 }
 
