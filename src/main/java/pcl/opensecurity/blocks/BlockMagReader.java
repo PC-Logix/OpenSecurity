@@ -87,7 +87,6 @@ public class BlockMagReader extends BlockContainer {
 		TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(xCoord, yCoord, zCoord);
 		if (!world.isRemote) {
 			if (equipped instanceof ItemMagCard){
-				world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 1);
 				if(tile.doRead(entityplayer.getCurrentEquippedItem(), entityplayer)) {
 					world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 3, 1);
 				} else {
