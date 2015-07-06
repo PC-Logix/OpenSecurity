@@ -15,6 +15,7 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -109,6 +110,10 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 
 	@SuppressWarnings({ "rawtypes" })
 	public HashMap<Integer, HashMap<String, Object>> scan() {
+		boolean found = false;
+		worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
+		Block block = worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
+		worldObj.scheduleBlockUpdate(this.xCoord, this.yCoord, this.zCoord, block, 20);
 		Entity entity;
 		HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 		int index = 1;
@@ -117,6 +122,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 			for (int i = 0; i <= e.size() - 1; i++) {
 				entity = (Entity) e.get(i);
 				if (entity instanceof EntityPlayerMP) {
+					found = true;
 					EntityPlayer em = (EntityPlayer) entity;
 					ItemStack[] playerInventory = em.inventory.mainInventory;
 					int size = playerInventory.length;
@@ -129,10 +135,18 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 				}
 				NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
 				if(tag.hasKey("data")) {
+					found = true;
 					output.put(index++, info(entity, tag.getString("data"), tag.getString("uuid")));
 				}
 			}
 		}
+		
+		if (found) {
+			worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
+		} else {
+			worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 3, 3);
+		}
+		
 		return output;
 	}
 
