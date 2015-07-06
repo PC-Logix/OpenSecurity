@@ -1,5 +1,6 @@
 package pcl.opensecurity.tileentity;
 
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 import pcl.opensecurity.OpenSecurity;
@@ -12,6 +13,7 @@ import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import li.cil.oc.common.item.EEPROM;
 import li.cil.oc.server.network.Network;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -172,6 +174,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 
 	}
 
+	/*
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		if (i == 0) {
@@ -183,7 +186,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 			}
 		}
 		return false;
-	}
+	}*/
 
 	public String getComponentName() {
 		return "OSCardWriter";
@@ -258,6 +261,36 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 		readFromNBT(packet.func_148857_g());
 	}
 
+	
+	@Callback
+	public Object[] flash(Context context, Arguments args) {
+		byte[] code = args.checkString(0).getBytes(Charset.forName("UTF-8"));
+		String title = args.checkString(1);
+		Boolean locked = args.checkBoolean(2);
+		ItemStack eepromItem= li.cil.oc.api.Items.get("eeprom").createItemStack(1);
+		if (code != null) {
+			if (getStackInSlot(0) != null) {
+				for (int x = 3; x <= 12; x++) { //Loop the 9 output slots checking for a empty one
+					if (getStackInSlot(x) == null) { //The slot is empty lets make us a RFID
+						if (getStackInSlot(0).getItem() instanceof EEPROM) {
+							CardWriterItemStacks[x] = eepromItem;
+							NBTTagCompound oc_data = new NBTTagCompound();
+							NBTTagCompound our_data = new NBTTagCompound();
+							our_data.setByteArray("oc:eeprom", code);
+							our_data.setString("oc:label", title);
+							our_data.setBoolean("oc:readonly", locked);
+							oc_data.setTag("oc:data", our_data);
+							CardWriterItemStacks[x].setTagCompound(oc_data);
+							decrStackSize(0, 1);
+							return new Object[]{true};
+						} return new Object[]{false, "Item is not EEPROM"};
+					}
+				} return new Object[]{false, "No Empty Slots"};
+			} return new Object[]{false, "No EEPROM in slot"};
+		}  return new Object[]{false, "Data is Null"};
+	}
+	
+	
 	@Callback(doc = "function(string: data, string: displayName. boolean: locked):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data.", direct = true)
 	public Object[] write(Context context, Arguments args) {
 		String data = args.checkString(0);
