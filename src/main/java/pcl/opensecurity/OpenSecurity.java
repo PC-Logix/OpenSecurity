@@ -1,5 +1,6 @@
 package pcl.opensecurity;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -30,6 +31,7 @@ import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
+import pcl.opensecurity.util.HttpDownloadUtility;
 import pcl.opensecurity.util.OSBreakEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -89,6 +91,7 @@ public class OpenSecurity {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 
 		alarmList = cfg.alarmsConfigList;
@@ -96,12 +99,13 @@ public class OpenSecurity {
 		enableplaySoundAt = cfg.enableplaySoundAt;
 
 		if ((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD) {
+			logger.info("Registering mod with OpenUpdater");
 			try {
-				Class.forName("pcl.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null, FMLCommonHandler.instance().findContainerFor(this),
-								new URL("http://PC-Logix.com/OpenSecurity/get_latest_build.php"),
-								new URL("http://PC-Logix.com/OpenSecurity/changelog.txt"));
+				Class.forName("pcl.mud.OpenUpdater").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null, FMLCommonHandler.instance().findContainerFor(this),
+								new URL("http://PC-Logix.com/OpenSecurity/get_latest_build.php?mcver=1.7.10"),
+								new URL("http://PC-Logix.com/OpenSecurity/changelog.php?mcver=1.7.10"));
 			} catch (Throwable e) {
-				logger.info("PC-Logix Update checker is missing, not registering.");
+				logger.info("OpenUpdate is not installed, not registering.");
 			}
 		}
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
@@ -135,7 +139,6 @@ public class OpenSecurity {
 	}
 
 	private void registerBlocks() {
-		// Register Blocks
 		magCardReader = new BlockMagReader();
 		GameRegistry.registerBlock(magCardReader, "magreader");
 		magCardReader.setCreativeTab(CreativeTab);
