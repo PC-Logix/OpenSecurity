@@ -19,6 +19,12 @@ public class BuildInfo {
 			return 0;
 		return Integer.parseInt(buildNumber);
 	}
+	
+	public static int getVersionNumber() {
+		if (versionNumber.equals("@" + "VERSION" + "@"))
+			return 0;
+		return Integer.parseInt(versionNumber);
+	}
 
 	public static boolean isDevelopmentEnvironment() {
 		return getBuildNumber() == 0;
