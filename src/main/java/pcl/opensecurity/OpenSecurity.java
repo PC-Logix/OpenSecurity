@@ -105,7 +105,7 @@ public class OpenSecurity {
 								new URL("http://PC-Logix.com/OpenSecurity/get_latest_build.php?mcver=1.7.10"),
 								new URL("http://PC-Logix.com/OpenSecurity/changelog.php?mcver=1.7.10"));
 			} catch (Throwable e) {
-				logger.info("OpenUpdate is not installed, not registering.");
+				logger.info("OpenUpdater is not installed, not registering.");
 			}
 		}
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
