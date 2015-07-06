@@ -14,3 +14,7 @@ itemGroup.OpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer
 gui.string.cardslot=Card Slot
+
+//OpenUpdater
+opensecurity.uptodate=OpenSecurity is up to date
+opensecurity.outdated=OpenSecurity is out dated
