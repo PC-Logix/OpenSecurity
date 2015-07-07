@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC1.7.10-1.5.11.25:dev"
+    compile "li.cil.oc:OpenComputers:MC1.7.10-1.5.13.28:dev"
 }
 
 minecraft {
@@ -53,9 +53,10 @@ jar.doFirst {
 jar.classifier = "${ext.buildNumber}"
 
 def curseforge_key = 0
-
+def curse_changlog = "default"
 if (project.hasProperty('opensecurity_curseforge_key')) {
 	curseforge_key = project.opensecurity_curseforge_key
+	curse_changlog = project.changelog
 }
 
 apply plugin: 'curseforge'
@@ -63,7 +64,7 @@ curse {
 	apiKey = curseforge_key
 	projectId = "231687"
 	releaseType = "release"
-	changelog = project.changelog
+	changelog = curse_changlog
 	addGameVersion project.minecraft.version
 }
 
