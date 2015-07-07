@@ -1,7 +1,7 @@
 local string = require("string")
 local term = require("term")
 local c = require("component")
-local writer = c.OSCardWriter
+local writer = c.os_cardwriter
 
 local data
 local name
