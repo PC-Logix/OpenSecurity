@@ -19,18 +19,14 @@ public class ItemRFIDCard extends Item {
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase entity)
-	{
-		if (!itemStack.stackTagCompound.hasKey("data"))
-		{
+	public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase entity) {
+		if (!itemStack.stackTagCompound.hasKey("data")) {
 			return false;
-		}
-		else if (entity instanceof EntityLiving)
-		{			
+		} else if (entity instanceof EntityLiving) {
 			NBTTagCompound entityData = entity.getEntityData();
 			NBTTagCompound rfidData;
 			if (!entityData.hasKey("rfidData")) {
-			    entityData.setTag("rfidData", (rfidData = new NBTTagCompound()));
+				entityData.setTag("rfidData", (rfidData = new NBTTagCompound()));
 			} else {
 				rfidData = entityData.getCompoundTag("rfidData");
 			}
@@ -39,9 +35,7 @@ public class ItemRFIDCard extends Item {
 			rfidData.setString("uuid", itemStack.stackTagCompound.getString("uuid"));
 			--itemStack.stackSize;
 			return true;
-		}
-		else
-		{
+		} else {
 			return super.itemInteractionForEntity(itemStack, player, entity);
 		}
 	}

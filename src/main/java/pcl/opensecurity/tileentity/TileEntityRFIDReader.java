@@ -13,6 +13,7 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import li.cil.oc.common.inventory.Inventory;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -127,6 +128,17 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 					int size = playerInventory.length;
 					for (int k = 0; k < size; k++) {
 						ItemStack st = em.inventory.getStackInSlot(k);
+						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
+							output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid")));
+						}
+					}
+				} else if (entity instanceof li.cil.oc.common.entity.Drone) {
+					found = true;
+					li.cil.oc.common.entity.Drone em = (li.cil.oc.common.entity.Drone) entity;
+					Inventory droneInventory = em.mainInventory();
+					int size = em.inventorySize();
+					for (int k = 0; k < size; k++) {
+						ItemStack st = droneInventory.getStackInSlot(k);
 						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
 							output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid")));
 						}
