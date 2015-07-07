@@ -1,14 +1,14 @@
 package pcl.opensecurity.tileentity;
 
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.ResourceLocation;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
@@ -18,6 +18,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
 	public Boolean computerPlaying = false;
+
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
@@ -25,7 +26,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 
 	@Override
 	public String getComponentName() {
-		return "OSAlarm";
+		return "os_alarm";
 	}
 
 	@Override
@@ -42,7 +43,8 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public String getSoundName() {
 		return soundName;
 	}
-	
+
+	@Override
 	public float getVolume() {
 		return volume;
 	}
@@ -78,12 +80,12 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		Float newVolume = (float) args.checkInteger(0);
 		if (newVolume >= 15 && newVolume <= 150) {
 			volume = newVolume / 15 + 0.5F;
-			return new Object[] { "Success"};
+			return new Object[] { "Success" };
 		} else {
 			return new Object[] { "Error, range should be between 15-150" };
 		}
 	}
-	
+
 	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
@@ -104,12 +106,12 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		computerPlaying = true;
 		return new Object[] { "Ok" };
 	}
-	
+
 	@Callback(doc = "function():table; Returns a table of Alarm Sounds", direct = true)
 	public Object[] listSounds(Context context, Arguments args) {
 		return new Object[] { OpenSecurity.alarmList };
 	}
-	
+
 	@Callback(doc = "function(int:x, int:y, int:z, string:sound, float:range(1-10 recommended)):string; Plays sound at x y z", direct = true)
 	public Object[] playSoundAt(Context context, Arguments args) {
 		if (OpenSecurity.enableplaySoundAt) {
@@ -118,7 +120,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 			int z = args.checkInteger(2);
 			String sound = args.checkString(3);
 			float range = args.checkInteger(4);
-			worldObj.playSoundEffect(x, y, z, sound, (float) range / 15 + 0.5F, 1.0F);
+			worldObj.playSoundEffect(x, y, z, sound, range / 15 + 0.5F, 1.0F);
 			return new Object[] { "Ok" };
 		} else {
 			return new Object[] { "Disabled" };

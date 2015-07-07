@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.items.ItemRFIDCard;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -22,6 +20,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.items.ItemRFIDCard;
 
 /**
  * @author Caitlyn
@@ -37,24 +37,26 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 
 	@Override
 	public Node node() {
-		return (Node) node;
+		return node;
 	}
 
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
-		if (node != null) node.remove();
+		if (node != null)
+			node.remove();
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (node != null) node.remove();
+		if (node != null)
+			node.remove();
 	}
 
 	private String getComponentName() {
 		// TODO Auto-generated method stub
-		return "OSRFIDReader";
+		return "os_rfidreader";
 	}
 
 	@Override
@@ -75,22 +77,19 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
-	{
+	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
 		super.readFromNBT(par1NBTTagCompound);
 		node.load(par1NBTTagCompound);
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound)
-	{
+	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
 		super.writeToNBT(par1NBTTagCompound);
 		node.save(par1NBTTagCompound);
 	}
 
-	//Thanks gamax92 from #oc for the following 2 methods...
-	private HashMap<String, Object> info(Entity entity, String data, String uuid)
-	{
+	// Thanks gamax92 from #oc for the following 2 methods...
+	private HashMap<String, Object> info(Entity entity, String data, String uuid) {
 		HashMap<String, Object> value = new HashMap<String, Object>();
 
 		double rangeToEntity = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
@@ -101,7 +100,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 			name = entity.getCommandSenderName();
 		node.sendToReachable("computer.signal", "rfidData", name, rangeToEntity, data, uuid);
 		value.put("name", name);
-		value.put("range", (Double)rangeToEntity);
+		value.put("range", rangeToEntity);
 		value.put("data", data);
 		value.put("uuid", uuid);
 
@@ -126,7 +125,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 					EntityPlayer em = (EntityPlayer) entity;
 					ItemStack[] playerInventory = em.inventory.mainInventory;
 					int size = playerInventory.length;
-					for(int k = 0; k < size; k++) {
+					for (int k = 0; k < size; k++) {
 						ItemStack st = em.inventory.getStackInSlot(k);
 						if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
 							output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid")));
@@ -134,19 +133,19 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 					}
 				}
 				NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
-				if(tag.hasKey("data")) {
+				if (tag.hasKey("data")) {
 					found = true;
 					output.put(index++, info(entity, tag.getString("data"), tag.getString("uuid")));
 				}
 			}
 		}
-		
+
 		if (found) {
 			worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
 		} else {
 			worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 3, 3);
 		}
-		
+
 		return output;
 	}
 

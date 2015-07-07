@@ -1,6 +1,5 @@
 package pcl.opensecurity.tileentity;
 
-import pcl.opensecurity.items.ItemMagCard;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Environment;
@@ -10,12 +9,13 @@ import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import pcl.opensecurity.items.ItemMagCard;
 
 /**
  * @author Caitlyn
  *
  */
-public class TileEntityMagReader extends TileEntityMachineBase implements Environment{
+public class TileEntityMagReader extends TileEntityMachineBase implements Environment {
 
 	public String data;
 
@@ -23,23 +23,25 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 
 	@Override
 	public Node node() {
-		return (Node) node;
+		return node;
 	}
 
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
-		if (node != null) node.remove();
+		if (node != null)
+			node.remove();
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (node != null) node.remove();
+		if (node != null)
+			node.remove();
 	}
-	
+
 	private String getComponentName() {
-		return "OSMagReader";
+		return "os_magreader";
 	}
 
 	@Override
@@ -60,15 +62,13 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
-	{
+	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
 		super.readFromNBT(par1NBTTagCompound);
 		node.load(par1NBTTagCompound);
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound)
-	{
+	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
 		super.writeToNBT(par1NBTTagCompound);
 		node.save(par1NBTTagCompound);
 	}

@@ -3,7 +3,6 @@ package pcl.opensecurity.tileentity;
 import java.util.HashMap;
 import java.util.List;
 
-import pcl.opensecurity.OpenSecurity;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -19,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import pcl.opensecurity.OpenSecurity;
 
 /**
  * @author Caitlyn
@@ -32,24 +32,26 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 
 	@Override
 	public Node node() {
-		return (Node) node;
+		return node;
 	}
 
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
-		if (node != null) node.remove();
+		if (node != null)
+			node.remove();
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (node != null) node.remove();
+		if (node != null)
+			node.remove();
 	}
 
 	private String getComponentName() {
 		// TODO Auto-generated method stub
-		return "OSEntityDetector";
+		return "os_entdetector";
 	}
 
 	@Override
@@ -70,22 +72,19 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
-	{
+	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
 		super.readFromNBT(par1NBTTagCompound);
 		node.load(par1NBTTagCompound);
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound)
-	{
+	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
 		super.writeToNBT(par1NBTTagCompound);
 		node.save(par1NBTTagCompound);
 	}
 
-	//Thanks gamax92 from #oc for the following 2 methods...
-	private HashMap<String, Object> info(Entity entity)
-	{
+	// Thanks gamax92 from #oc for the following 2 methods...
+	private HashMap<String, Object> info(Entity entity) {
 		HashMap<String, Object> value = new HashMap<String, Object>();
 
 		double rangeToEntity = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
@@ -96,13 +95,13 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 			name = entity.getCommandSenderName();
 		node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity);
 		value.put("name", name);
-		value.put("range", (Double)rangeToEntity);
+		value.put("range", rangeToEntity);
 		value.put("x", entity.posX);
 		value.put("y", entity.posY);
 		value.put("z", entity.posZ);
 		return value;
 	}
-	
+
 	@SuppressWarnings({ "rawtypes" })
 	public HashMap<Integer, HashMap<String, Object>> scan(boolean players) {
 		worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
@@ -116,16 +115,16 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 			for (int i = 0; i <= e.size() - 1; i++) {
 				entity = (Entity) e.get(i);
 				if (players && entity instanceof EntityPlayerMP) {
-						output.put(index++, info(entity));
-						worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
-					} else if (!players) {
-						output.put(index++, info(entity));
-						worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
-					}
+					output.put(index++, info(entity));
+					worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
+				} else if (!players) {
+					output.put(index++, info(entity));
+					worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
 				}
-			} else {
-				worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 3, 3);
 			}
+		} else {
+			worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 3, 3);
+		}
 		return output;
 	}
 
@@ -161,6 +160,5 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 		range = range / 2;
 		return new Object[] { scan(false) };
 	}
-	
 
 }
