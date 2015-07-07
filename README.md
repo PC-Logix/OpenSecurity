@@ -13,3 +13,5 @@ Credit:
 Flawedspirit for the Block Textures (Serisouly the old ones suuuuuucked.)
 
 gamax92 for the Mag and RFID Card textures, and helping me deal with stupid code.
+
+Kodos for the DataBlock side textures, and the Sine panel on the front
