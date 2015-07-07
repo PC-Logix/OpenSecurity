@@ -3,7 +3,6 @@ package pcl.opensecurity.util;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import cpw.mods.fml.common.eventhandler.EventPriority;
