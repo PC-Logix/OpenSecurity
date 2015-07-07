@@ -1,24 +1,20 @@
 package pcl.opensecurity.blocks;
 
-import pcl.opensecurity.tileentity.TileEntityAlarm;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import pcl.opensecurity.tileentity.TileEntityAlarm;
 
 /**
  * @author Caitlyn
  *
  */
-public class BlockAlarm extends BlockContainer {
+public class BlockAlarm extends BlockOSBase {
 
 	public BlockAlarm() {
-		super(Material.iron);
 		setBlockName("alarm");
 		setBlockTextureName("opensecurity:alarm");
 	}
-
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) {
@@ -27,11 +23,11 @@ public class BlockAlarm extends BlockContainer {
 
 	@Override
 	public void onNeighborBlockChange(World world, int xCoord, int yCoord, int zCoord, Block neighbourBlock) {
-		boolean isRedstonePowered = world.isBlockIndirectlyGettingPowered( xCoord, yCoord, zCoord);
+		boolean isRedstonePowered = world.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		if (isRedstonePowered) {
-			//world.addBlockEvent(xCoord, yCoord, zCoord, this, 0, 0);
+			// world.addBlockEvent(xCoord, yCoord, zCoord, this, 0, 0);
 		} else {
-			//world.addBlockEvent(xCoord, yCoord, zCoord, this, 1, 0);
+			// world.addBlockEvent(xCoord, yCoord, zCoord, this, 1, 0);
 		}
 	}
 
@@ -39,7 +35,7 @@ public class BlockAlarm extends BlockContainer {
 	public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventPramater) {
 		TileEntityAlarm tile = (TileEntityAlarm) world.getTileEntity(x, y, z);
 		if (eventId == 0) {
-			if(!tile.computerPlaying) {
+			if (!tile.computerPlaying) {
 				tile.setShouldStart(true);
 			}
 		}
