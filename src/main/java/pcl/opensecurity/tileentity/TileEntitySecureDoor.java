@@ -1,19 +1,20 @@
 package pcl.opensecurity.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
-public class TileEntitySecureDoor extends TileEntityMachineBase {
+public class TileEntitySecureDoor extends TileEntity {
 
 	String ownerUUID = "";
-	
+
 	public TileEntitySecureDoor() {
-		
+
 	}
-	
+
 	public void setOwner(String UUID) {
 		this.ownerUUID = UUID;
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
