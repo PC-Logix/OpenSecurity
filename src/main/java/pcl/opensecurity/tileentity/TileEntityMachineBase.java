@@ -1,16 +1,15 @@
 package pcl.opensecurity.tileentity;
 
-import li.cil.oc.api.prefab.TileEntityEnvironment;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.client.sounds.MachineSound;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMachineBase extends TileEntityEnvironment {
+public class TileEntityMachineBase extends TileEntity {
 
 	public TileEntityMachineBase() {
 		super();
@@ -80,16 +79,6 @@ public class TileEntityMachineBase extends TileEntityEnvironment {
 				sound = null;
 			}
 		}
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound tag) {
-		super.readFromNBT(tag);
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
 	}
 
 	public void setSoundRes(ResourceLocation soundRes) {

@@ -9,6 +9,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.common.item.EEPROM;
@@ -27,7 +28,7 @@ import pcl.opensecurity.items.ItemRFIDCard;
 
 public class TileEntityCardWriter extends TileEntityMachineBase implements Environment, IInventory, ISidedInventory {
 
-	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	public ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
 	public TileEntityCardWriter() {
 		if (this.node() != null) {
@@ -199,14 +200,16 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-		super.readFromNBT(par1NBTTagCompound);
-
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		if (node != null && node.host() == this) {
+			node.load(nbt.getCompoundTag("oc:node"));
+		}
 		if (oc_fs != null && oc_fs.node() != null) {
-			oc_fs.node().load(par1NBTTagCompound.getCompoundTag("oc:fs"));
+			oc_fs.node().load(nbt.getCompoundTag("oc:fs"));
 		}
 
-		NBTTagList var2 = par1NBTTagCompound.getTagList("Items", par1NBTTagCompound.getId());
+		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
 		this.CardWriterItemStacks = new ItemStack[this.getSizeInventory()];
 		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
 			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
@@ -218,13 +221,17 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		super.writeToNBT(par1NBTTagCompound);
-
+	public void writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		if (node != null && node.host() == this) {
+			final NBTTagCompound nodeNbt = new NBTTagCompound();
+			node.save(nodeNbt);
+			nbt.setTag("oc:node", nodeNbt);
+		}
 		if (oc_fs != null && oc_fs.node() != null) {
 			final NBTTagCompound fsNbt = new NBTTagCompound();
 			oc_fs.node().save(fsNbt);
-			par1NBTTagCompound.setTag("oc:fs", fsNbt);
+			nbt.setTag("oc:fs", fsNbt);
 		}
 
 		NBTTagList var2 = new NBTTagList();
@@ -236,7 +243,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 				var2.appendTag(var4);
 			}
 		}
-		par1NBTTagCompound.setTag("Items", var2);
+		nbt.setTag("Items", var2);
 	}
 
 	@Override
@@ -329,5 +336,11 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 			return new Object[] { false, "No card in slot" };
 		}
 		return new Object[] { false, "Data is Null" };
+	}
+
+	@Override
+	public void onMessage(Message arg0) {
+		// TODO Auto-generated method stub
+
 	}
 }
