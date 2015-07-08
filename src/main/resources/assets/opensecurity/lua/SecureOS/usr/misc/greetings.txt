@@ -28,3 +28,4 @@ Please report bugs on the Github issue tracker, thank you!
 Beware of cycles when building networks, or you may get duplicate messages!
 Pressing 'ctrl' during a login prompt will reboot the computer.
 UFCK
+Help! It's dark and I can hear laughing!

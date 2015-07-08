@@ -92,7 +92,7 @@ end
 function auth.userLog(username, arg)
   if not fs.get("/etc/").isReadOnly() then
   userw = io.open("/etc/userlog", "a")
-   userw:write(username .. "|" .. os.date("%F %T") .. "|" .. arg .. "\n")
+   userw:write(username .. "|" .. os.date("%F %X") .. "|" .. arg .. "\n")
     userw:close()
   end
 end

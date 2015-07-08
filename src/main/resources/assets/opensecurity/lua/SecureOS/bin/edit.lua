@@ -484,6 +484,7 @@ local keyBindHandlers = {
   end,
   close = function()
     -- TODO ask to save if changed
+    component.gpu.setForeground(0xFFFFFF)
     running = false
   end,
   find = function()
@@ -533,6 +534,7 @@ local function onKeyDown(char, code)
   if handler then
     handler()
   elseif readonly and code == keyboard.keys.q then
+    component.gpu.setForeground(0xFFFFFF)
     running = false
   elseif not readonly then
     if not keyboard.isControl(char) then
@@ -575,6 +577,7 @@ end
 do
   local f = io.open(filename)
   if f then
+    component.gpu.setForeground(0x66CCFF)
     local w, h = getSize()
     local chars = 0
     for line in f:lines() do

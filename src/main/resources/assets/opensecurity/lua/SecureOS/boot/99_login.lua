@@ -24,7 +24,7 @@ while running do
 
   term.clear()
   term.setCursor(1,1)
-  print(_OSVERSION .. " " .. os.date("%F %T"))
+  print(_OSVERSION .. " " .. os.date("%F %X"))
   term.write("User: ")
   username = term.read()
   username = string.gsub(username, "\n", "")
@@ -38,12 +38,12 @@ while running do
 
   if login then
     auth.userLog(username, "pass")
-    if fs.get("/tmp/").isReadOnly() then
-      return
-    else
-    hn = io.open("/tmp/.hostname.dat", "w") -- Writes the user inputted username to file for future use.
-     hn:write(username)
-      hn:close()
+    if not fs.get("/tmp/").isReadOnly() then
+      hn = io.open("/tmp/.hostname.dat", "w") -- Writes the user inputted username to file for future use.
+       hn:write(username)
+        hn:close()
+      os.setenv("HOME", "/home/" .. username)
+      os.setenv("USER", "/home/" .. username)
     end
     term.clear()
     term.setCursor(1,1)
@@ -53,9 +53,9 @@ while running do
     term.setCursor(1,1)
     os.setenv("PS1", username .. "@" .. username .. "# ") -- Sets the user environment.
     shell.setWorkingDirectory("/home/" .. username .. "/")
-    if not fs.get("/").isReadOnly() then
+    --[[if not fs.get("/").isReadOnly() then -- Depreciated
       shell.execute("/root/.root.lua/") -- Starts the root check program.
-    end
+    end]]
     username, password = "" -- This is just a "bandaid fix" till I find a better way of doing it.
     if fs.isAutorunEnabled() == false then
       fs.setAutorunEnabled(true)

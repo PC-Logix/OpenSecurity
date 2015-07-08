@@ -14,7 +14,7 @@ end
 local usedMemory = round(computer.totalMemory() / 1048576 - computer.freeMemory() / 1048576, 2)
 local freeMem = round(computer.freeMemory() / 1048576, 2)
 
-print("Date/Time: " .. os.date())
+print("Date/Time: " .. os.date("%F %X"))
 print("Up Time: " .. round(computer.uptime() / 60, 2) .. " Minutes")
 
 if component.isAvailable("tablet") or component.isAvailable("robot") or options.p then
