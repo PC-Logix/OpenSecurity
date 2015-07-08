@@ -7,6 +7,7 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Component;
+import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
@@ -26,8 +27,9 @@ import pcl.opensecurity.items.ItemRFIDCard;
 
 public class TileEntityCardWriter extends TileEntityMachineBase implements Environment, IInventory, ISidedInventory {
 
+	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+
 	public TileEntityCardWriter() {
-		node = Network.newNode(this, Visibility.Neighbors).withComponent(getComponentName()).create();
 		if (this.node() != null) {
 			initOCFilesystem();
 		}

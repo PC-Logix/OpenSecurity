@@ -32,10 +32,9 @@ import com.google.common.hash.Hashing;
  */
 public class TileEntityDataBlock extends TileEntityMachineBase implements Environment {
 
-	ComponentConnector node;
+	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
 	public TileEntityDataBlock() {
-		node = Network.newNode(this, Visibility.Neighbors).withComponent(getComponentName()).withConnector(32).create();
 		if (this.node() != null) {
 			initOCFilesystem();
 		}
