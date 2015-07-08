@@ -3,7 +3,7 @@
  */
 package pcl.opensecurity;
 
-import pcl.opensecurity.containers.RFIDWriterContainer;
+import pcl.opensecurity.containers.CardWriterContainer;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +33,7 @@ public class CommonProxy implements IGuiHandler {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te != null && te instanceof TileEntityRFIDReader) {
 			TileEntityCardWriter icte = (TileEntityCardWriter) te;
-			return new RFIDWriterContainer(player.inventory, icte);
+			return new CardWriterContainer(player.inventory, icte);
 		} else {
 			return null;
 		}
