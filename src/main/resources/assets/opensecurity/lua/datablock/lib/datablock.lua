@@ -5,14 +5,14 @@ local datablock = {}
 -------------------------------------------------------------------------------
 -- Converts binary data into hexadecimal string.
 function datablock.toHex(data)
-  return (datablock:gsub('.', function (c)
+  return (data:gsub('.', function (c)
     return string.format('%02X', string.byte(c))
     end))
 end
 
 -- Converts hexadecimal string into binary data.
 function datablock.fromHex(hex)
-  return (datablock:gsub('..', function (cc)
+  return (data:gsub('..', function (cc)
     return string.char(tonumber(cc, 16))
     end))
 end
