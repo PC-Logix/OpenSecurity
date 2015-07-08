@@ -40,6 +40,9 @@ public class BlockData extends BlockOSBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int metadata) {
+		if (side == 4 && metadata == 0) {
+			return this.faceIcon;
+		}
 		if (metadata == 1 && side == 1)
 			return this.faceIcon;
 		else if (metadata == 0 && side == 0)
