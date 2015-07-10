@@ -26,6 +26,7 @@ import pcl.opensecurity.blocks.BlockEntityDetector;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockSecurityDoor;
+import pcl.opensecurity.blocks.BlockSwitchableHub;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.gui.OSGUIHandler;
@@ -41,6 +42,7 @@ import pcl.opensecurity.tileentity.TileEntityEntityDetector;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
+import pcl.opensecurity.tileentity.TileEntitySwitchableHub;
 import pcl.opensecurity.util.OSBreakEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -66,6 +68,7 @@ public class OpenSecurity {
 	public static Block SecurityDoor;
 	public static Block DoorController;
 	public static Block DataBlock;
+	public static Block SwitchableHub;
 	public static Item magCard;
 	public static Item rfidCard;
 	public static Item securityDoor;
@@ -176,6 +179,11 @@ public class OpenSecurity {
 		GameRegistry.registerBlock(DataBlock, MODID + ".DataBlock");
 		DataBlock.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityDataBlock.class, MODID + ".DataBlockTE");
+
+		SwitchableHub = new BlockSwitchableHub();
+		GameRegistry.registerBlock(SwitchableHub, MODID + ".SwitchableHub");
+		SwitchableHub.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntitySwitchableHub.class, MODID + ".SwitchableHubTE");
 
 		logger.info("Registered Blocks");
 	}

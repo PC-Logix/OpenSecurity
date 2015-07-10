@@ -6,6 +6,7 @@ tile.magreader.name=Magnetic Card Reader
 tile.entitydetector.name=Entity Detector
 tile.doorController.name=Door Controller
 tile.datablock.name=Data Block
+tile.switchablehub.name=Switchable Hub
 //items
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
