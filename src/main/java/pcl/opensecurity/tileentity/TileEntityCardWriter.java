@@ -175,8 +175,6 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		System.out.println(i);
-		System.out.println(itemstack.stackTagCompound.hasKey("locked"));
 		if (i == 0) {
 			if (itemstack.getItem() instanceof ItemRFIDCard || itemstack.getItem() instanceof ItemMagCard || itemstack.getItem() instanceof EEPROM) {
 				if (itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("locked") && !itemstack.stackTagCompound.hasKey("oc:readonly")) {
