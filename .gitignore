@@ -76,7 +76,7 @@ pip-log.txt
 .mr.developer.cfg
 
 # Gradle
-/.gradle
+/.gradle/
 /build/
 /run/
 /eclipse/
