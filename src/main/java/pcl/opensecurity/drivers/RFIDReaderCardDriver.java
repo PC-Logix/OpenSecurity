@@ -78,7 +78,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 		}
 
 		// Thanks gamax92 from #oc for the following 2 methods...
-		private HashMap<String, Object> info(Entity entity, String data, String uuid) {
+		private HashMap<String, Object> info(Entity entity, String data, String uuid, boolean locked) {
 			HashMap<String, Object> value = new HashMap<String, Object>();
 
 			double rangeToEntity = entity.getDistance(container.xPosition(), container.yPosition(), container.zPosition());
@@ -92,6 +92,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 			value.put("range", rangeToEntity);
 			value.put("data", data);
 			value.put("uuid", uuid);
+			value.put("locked", locked);
 
 			return value;
 		}
@@ -112,7 +113,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 						for (int k = 0; k < size; k++) {
 							ItemStack st = em.inventory.getStackInSlot(k);
 							if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-								output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid")));
+								output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid"), st.stackTagCompound.getBoolean("locked")));
 							}
 						}
 					} else if (entity instanceof li.cil.oc.common.entity.Drone) {
@@ -122,13 +123,13 @@ public class RFIDReaderCardDriver extends DriverItem {
 						for (int k = 0; k < size; k++) {
 							ItemStack st = droneInventory.getStackInSlot(k);
 							if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-								output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid")));
+								output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid"), st.stackTagCompound.getBoolean("locked")));
 							}
 						}
 					}
 					NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
 					if (tag.hasKey("data")) {
-						output.put(index++, info(entity, tag.getString("data"), tag.getString("uuid")));
+						output.put(index++, info(entity, tag.getString("data"), tag.getString("uuid"), tag.getBoolean("locked")));
 					}
 				}
 			}

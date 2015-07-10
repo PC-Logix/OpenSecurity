@@ -83,7 +83,8 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("data")) {
 			data = itemStack.stackTagCompound.getString("data");
 			String uuid = itemStack.stackTagCompound.getString("uuid");
-			node.sendToReachable("computer.signal", "magData", em.getDisplayName(), data, uuid);
+			boolean locked = itemStack.stackTagCompound.getBoolean("locked");
+			node.sendToReachable("computer.signal", "magData", em.getDisplayName(), data, uuid, locked);
 			return true;
 		} else {
 			return false;
