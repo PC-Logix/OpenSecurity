@@ -63,7 +63,7 @@ apply plugin: 'curseforge'
 curse {
 	apiKey = curseforge_key
 	projectId = "231687"
-	releaseType = "beta"
+	releaseType = "release"
 	changelog = curse_changlog
 	addGameVersion project.minecraft.version
 }
