@@ -18,6 +18,7 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import pcl.opensecurity.OSPacketHandler.PacketHandler;
 import pcl.opensecurity.blocks.BlockAlarm;
 import pcl.opensecurity.blocks.BlockCardWriter;
 import pcl.opensecurity.blocks.BlockData;
@@ -27,6 +28,7 @@ import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockSecurityDoor;
 import pcl.opensecurity.blocks.BlockSwitchableHub;
+import pcl.opensecurity.blocks.BlockKVM;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.gui.OSGUIHandler;
@@ -39,6 +41,7 @@ import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntityDataBlock;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
 import pcl.opensecurity.tileentity.TileEntityEntityDetector;
+import pcl.opensecurity.tileentity.TileEntityKVM;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
@@ -53,7 +56,9 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers")
 public class OpenSecurity {
@@ -69,6 +74,7 @@ public class OpenSecurity {
 	public static Block DoorController;
 	public static Block DataBlock;
 	public static Block SwitchableHub;
+	public static Block BlockKVM;
 	public static Item magCard;
 	public static Item rfidCard;
 	public static Item securityDoor;
@@ -92,7 +98,9 @@ public class OpenSecurity {
 	public static List<String> alarmList;
 
 	public static CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
-
+	
+	public static SimpleNetworkWrapper network;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 
@@ -111,7 +119,8 @@ public class OpenSecurity {
 			}
 		}
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
-
+	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
+	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, 0, Side.SERVER);
 		registerBlocks();
 		registerItems();
 		registerEvents();
@@ -184,6 +193,11 @@ public class OpenSecurity {
 		GameRegistry.registerBlock(SwitchableHub, MODID + ".SwitchableHub");
 		SwitchableHub.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntitySwitchableHub.class, MODID + ".SwitchableHubTE");
+		
+		BlockKVM = new BlockKVM();
+		GameRegistry.registerBlock(BlockKVM, MODID + ".BlockKVM");
+		BlockKVM.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityKVM.class, MODID + ".KVMTE");
 
 		logger.info("Registered Blocks");
 	}

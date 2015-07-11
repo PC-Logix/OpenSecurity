@@ -7,7 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import pcl.opensecurity.containers.CardWriterContainer;
+import pcl.opensecurity.containers.KVMContainer;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
+import pcl.opensecurity.tileentity.TileEntityKVM;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 /**
@@ -23,6 +25,12 @@ public class OSGUIHandler implements IGuiHandler {
 			if (tileEntity instanceof TileEntityCardWriter) {
 				return new CardWriterContainer(player.inventory, (TileEntityCardWriter) tileEntity);
 			}
+		} else if (id == 1) {
+			/*TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if (tileEntity instanceof TileEntityKVM) {
+				return new KVMContainer(player.inventory, (TileEntityKVM) tileEntity);
+			}*/
+			return null;
 		}
 		return null;
 	}
@@ -33,6 +41,11 @@ public class OSGUIHandler implements IGuiHandler {
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			if (tileEntity instanceof TileEntityCardWriter) {
 				return new CardWriterGUI(player.inventory, (TileEntityCardWriter) tileEntity);
+			}
+		} else if (id == 1) {
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if (tileEntity instanceof TileEntityKVM) {
+				return new KVMGUI(player.inventory, (TileEntityKVM) tileEntity);
 			}
 		}
 		return null;

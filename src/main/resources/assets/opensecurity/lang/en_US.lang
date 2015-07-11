@@ -7,6 +7,7 @@ tile.entitydetector.name=Entity Detector
 tile.doorController.name=Door Controller
 tile.datablock.name=Data Block
 tile.switchablehub.name=Switchable Hub
+tile.kvm.name=KVM Switch
 //items
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
@@ -16,6 +17,7 @@ itemGroup.OpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer
 gui.string.cardslot=Card Slot
+gui.string.kvm=KVM Switch Control
 
 //OpenUpdater
 opensecurity.uptodate=OpenSecurity is up to date
