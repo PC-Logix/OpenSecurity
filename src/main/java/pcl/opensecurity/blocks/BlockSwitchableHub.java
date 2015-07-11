@@ -49,20 +49,6 @@ public class BlockSwitchableHub extends BlockOSBase {
 		if (side == 4 && metadata == 0) {
 			return this.inputCon;
 		}
-		
-		if (metadata == 0 && side == 0)
-			return this.inputCon;
-		else if (metadata == 1 && side == 1)
-			return this.inputCon;
-		else if (metadata == 2 && side == 2)
-			return this.inputCon;
-		else if (metadata == 3 && side == 3)
-			return this.inputCon;
-		else if (metadata == 4 && side == 4)
-			return this.inputCon;
-		else if (metadata == 5 && side == 5)
-			return this.inputCon;
-		
 		return this.outputNoCon;
 	}
 	
@@ -76,11 +62,7 @@ public class BlockSwitchableHub extends BlockOSBase {
 	public IIcon getIcon(IBlockAccess block, int x, int y, int z, int side) {
 		int metadata = block.getBlockMetadata(x, y, z);
 		TileEntitySwitchableHub switchTE = (TileEntitySwitchableHub) block.getTileEntity(x, y, z);
-
-		if (side == 4 && metadata == 0) {
-			return this.inputCon;
-		}
-		
+	
 		if (metadata == 0 && side == 0)
 			return this.inputCon;
 		else if (metadata == 1 && side == 1)

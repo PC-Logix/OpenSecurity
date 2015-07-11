@@ -1,8 +1,6 @@
 package pcl.opensecurity.tileentity;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import pcl.opensecurity.OpenSecurity;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -31,7 +29,14 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 	public boolean west = false;
 	public boolean up = false;
 	public boolean down = false;
-
+	
+	public static ForgeDirection sideBack;
+	public static ForgeDirection sideLeft;
+	public static ForgeDirection sideRight;
+	public static ForgeDirection sideFront;
+	public static ForgeDirection sideUp;
+	public static ForgeDirection sideDown;
+	
 	public int Texture;
 	
 	@SideOnly(Side.CLIENT)
@@ -167,22 +172,34 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 
 	@Callback
 	public Object[] setSide(Context context, Arguments args) {
-		String side = args.checkString(0);
-		Boolean enabled = args.checkBoolean(1);
+		int side = args.checkInteger(0);
+		Boolean isEnabled = args.checkBoolean(1);
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		ForgeDirection facing = getWorldSide(ForgeDirection.getOrientation(side).name(), ForgeDirection.getOrientation(meta));
 
-		if (side.equalsIgnoreCase("south"))
-			south = enabled;
-		else if (side.equalsIgnoreCase("north"))
-			north = enabled;
-		else if (side.equalsIgnoreCase("east"))
-			east = enabled;
-		else if (side.equalsIgnoreCase("west"))
-			west = enabled;
-		else if (side.equalsIgnoreCase("up"))
-			up = enabled;
-		else if (side.equalsIgnoreCase("down"))
-			down = enabled;
-
+		switch (facing) {
+			case NORTH:
+				north = isEnabled;
+				break;
+			case SOUTH:
+				south = isEnabled;
+				break;
+			case EAST:
+				east = isEnabled;
+				break;
+			case WEST:
+				west = isEnabled;
+				break;
+			case UP:
+				up = isEnabled;
+				break;
+			case DOWN:
+				down = isEnabled;
+				break;
+		default:
+			break;
+		}
+				
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
 		getDescriptionPacket();
@@ -210,4 +227,61 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 		this.readFromNBT(tagCom);
 	}
 
+	public static ForgeDirection getWorldSide(String localSide, ForgeDirection facing) {
+		if ("up".equalsIgnoreCase(localSide))
+			return ForgeDirection.UP;
+		if ("down".equalsIgnoreCase(localSide))
+			return ForgeDirection.DOWN;
+
+		ForgeDirection front = facing;
+
+		switch (front) {
+			case NORTH:
+				sideBack = ForgeDirection.SOUTH;
+				sideLeft = ForgeDirection.WEST;
+				sideRight = ForgeDirection.EAST;
+				break;
+			case SOUTH:
+				sideBack = ForgeDirection.NORTH;
+				sideLeft = ForgeDirection.EAST;
+				sideRight = ForgeDirection.WEST;
+				break;
+			case WEST:
+				sideBack = ForgeDirection.EAST;
+				sideLeft = ForgeDirection.SOUTH;
+				sideRight = ForgeDirection.NORTH;
+				break;
+			case EAST:
+				sideBack = ForgeDirection.WEST;
+				sideLeft = ForgeDirection.NORTH;
+				sideRight = ForgeDirection.SOUTH;
+				break;
+			case UP:
+				sideBack = ForgeDirection.NORTH;
+				sideLeft = ForgeDirection.EAST;
+				sideRight = ForgeDirection.WEST;
+				sideFront = ForgeDirection.SOUTH;
+				break;
+			case DOWN:
+				sideBack = ForgeDirection.NORTH;
+				sideLeft = ForgeDirection.EAST;
+				sideRight = ForgeDirection.WEST;
+				sideFront = ForgeDirection.SOUTH;
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid side");
+		}
+
+		if ("south".equalsIgnoreCase(localSide))
+			return sideFront;
+		if ("north".equalsIgnoreCase(localSide))
+			return sideBack;
+		if ("east".equalsIgnoreCase(localSide))
+			return sideLeft;
+		if ("west".equalsIgnoreCase(localSide))
+			return sideRight;
+		throw new IllegalArgumentException("Invalid side");
+	}
+	
+	
 }
