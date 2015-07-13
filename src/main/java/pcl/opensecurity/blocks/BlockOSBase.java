@@ -26,6 +26,7 @@ public class BlockOSBase extends BlockContainer {
 	 */
 	@Override
 	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
+		super.onBlockPlacedBy(par1World, x, y, z, par5EntityLivingBase, par6ItemStack);
 		int whichDirectionFacing = 0;
 		if (par5EntityLivingBase.rotationPitch >= 70) {
 			whichDirectionFacing = 0;// down

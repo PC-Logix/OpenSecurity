@@ -11,7 +11,13 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.blocks.BlockSecurityDoor;
@@ -22,7 +28,7 @@ import pcl.opensecurity.util.BlockLocation;
  *
  */
 public class TileEntityDoorController extends TileEntityMachineBase implements Environment {
-
+	
 	public Block block = null;
 
 	public BlockSecurityDoor door;
@@ -37,13 +43,19 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 	}
 
+	public ItemStack[] DoorControllerCamo = new ItemStack[1];
+	
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+
+	private String texture;
+
+	public IIcon[] blockTextures = new IIcon[6];
 
 	@Override
 	public Node node() {
 		return node;
 	}
-
+	
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
@@ -80,17 +92,45 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-		super.readFromNBT(par1NBTTagCompound);
-		node.load(par1NBTTagCompound);
-		this.ownerUUID = par1NBTTagCompound.getString("owner");
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		if (node != null && node.host() == this) {
+			final NBTTagCompound nodeNbt = new NBTTagCompound();
+			node.save(nodeNbt);
+			nbt.setTag("oc:node", nodeNbt);
+		}
+		this.ownerUUID = nbt.getString("owner");
+		
+		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
+		this.DoorControllerCamo = new ItemStack[1];
+		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
+			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
+			byte var5 = var4.getByte("Slot");
+			if (var5 >= 0 && var5 < this.DoorControllerCamo.length) {
+				this.DoorControllerCamo[var5] = ItemStack.loadItemStackFromNBT(var4);
+			}
+		}
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		super.writeToNBT(par1NBTTagCompound);
-		node.save(par1NBTTagCompound);
-		par1NBTTagCompound.setString("owner", this.ownerUUID);
+	public void writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		if (node != null && node.host() == this) {
+			final NBTTagCompound nodeNbt = new NBTTagCompound();
+			node.save(nodeNbt);
+			nbt.setTag("oc:node", nodeNbt);
+		}
+		nbt.setString("owner", this.ownerUUID);
+		NBTTagList var2 = new NBTTagList();
+		for (int var3 = 0; var3 < this.DoorControllerCamo.length; ++var3) {
+			if (this.DoorControllerCamo[var3] != null) {
+				NBTTagCompound var4 = new NBTTagCompound();
+				var4.setByte("Slot", (byte) var3);
+				this.DoorControllerCamo[var3].writeToNBT(var4);
+				var2.appendTag(var4);
+			}
+		}
+		nbt.setTag("Items", var2);
 	}
 
 	@Override
@@ -192,6 +232,20 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		return new Object[] { !isDoorOpen(door, loc) };
 	}
 
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound tagCom = new NBTTagCompound();
+		this.writeToNBT(tagCom);
+		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata, tagCom);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+		NBTTagCompound tagCom = packet.func_148857_g();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		this.readFromNBT(tagCom);
+	}
+	
 	public void setOwner(String UUID) {
 		this.ownerUUID = UUID;
 	}
@@ -199,4 +253,34 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	public String getOwner() {
 		return this.ownerUUID;
 	}
+
+	public IIcon[] overrideTexture(Block theBlock, ItemStack theItem, ForgeDirection forgeDirection) {
+
+		DoorControllerCamo[0] = theItem;
+		
+		for (int getSide = 0; getSide < blockTextures.length; getSide++)
+		{
+			this.blockTextures[getSide] = theBlock.getIcon(getSide, theItem.getItem().getDamage(theItem));
+		}
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		getDescriptionPacket();
+		return this.blockTextures;
+		
+	}
+	
+	public IIcon[] overrideTexture(ItemStack theItem) {
+
+		DoorControllerCamo[0] = theItem;
+		Block theBlock = Block.getBlockFromItem(theItem.getItem());
+		
+		for (int getSide = 0; getSide < blockTextures.length; getSide++)
+		{
+			this.blockTextures[getSide] = theBlock.getIcon(getSide, theItem.getItem().getDamage(theItem));
+		}
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		getDescriptionPacket();
+		return this.blockTextures;
+		
+	}
+	
 }
