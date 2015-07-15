@@ -254,32 +254,34 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		return this.ownerUUID;
 	}
 
-	public IIcon[] overrideTexture(Block theBlock, ItemStack theItem, ForgeDirection forgeDirection) {
+	public void overrideTexture(Block theBlock, ItemStack theItem, ForgeDirection forgeDirection) {
 
 		DoorControllerCamo[0] = theItem;
 		
 		for (int getSide = 0; getSide < blockTextures.length; getSide++)
 		{
-			this.blockTextures[getSide] = theBlock.getIcon(getSide, theItem.getItem().getDamage(theItem));
+			if (worldObj.isRemote) {
+				this.blockTextures[getSide] = theBlock.getIcon(getSide, theItem.getItem().getDamage(theItem));
+			}
 		}
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		getDescriptionPacket();
-		return this.blockTextures;
 		
 	}
 	
-	public IIcon[] overrideTexture(ItemStack theItem) {
+	public void overrideTexture(ItemStack theItem) {
 
 		DoorControllerCamo[0] = theItem;
 		Block theBlock = Block.getBlockFromItem(theItem.getItem());
 		
 		for (int getSide = 0; getSide < blockTextures.length; getSide++)
 		{
-			this.blockTextures[getSide] = theBlock.getIcon(getSide, theItem.getItem().getDamage(theItem));
+			if (worldObj.isRemote) {
+				this.blockTextures[getSide] = theBlock.getIcon(getSide, theItem.getItem().getDamage(theItem));
+			}
 		}
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		getDescriptionPacket();
-		return this.blockTextures;
 		
 	}
 	
