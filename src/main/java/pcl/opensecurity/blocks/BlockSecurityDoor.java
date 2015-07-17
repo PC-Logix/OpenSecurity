@@ -147,7 +147,7 @@ public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
 			{
 				if (!world.isRemote)
 				{
-					this.dropBlockAsItem(world, x, y, z, meta, 0);
+					//this.dropBlockAsItem(world, x, y, z, meta, 0);
 				}
 			}
 		}
