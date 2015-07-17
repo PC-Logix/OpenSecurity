@@ -30,4 +30,15 @@ public class TileEntitySecureDoor extends TileEntity {
 	public String getOwner() {
 		return this.ownerUUID;
 	}
+	
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		if (worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof TileEntitySecureDoor) {
+			TileEntitySecureDoor lowerDoor = (TileEntitySecureDoor) worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+			if (ownerUUID == null) {
+				ownerUUID = lowerDoor.ownerUUID;
+			}
+		}
+	}
 }
