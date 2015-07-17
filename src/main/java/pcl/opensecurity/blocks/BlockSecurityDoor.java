@@ -105,7 +105,6 @@ public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
 	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
 	{
