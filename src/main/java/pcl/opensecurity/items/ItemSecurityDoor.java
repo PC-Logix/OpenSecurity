@@ -105,6 +105,8 @@ public class ItemSecurityDoor extends ItemDoor {
         world.setBlock(x, y + 1, z, block, 8 | (flag2 ? 1 : 0), 2);
         TileEntitySecureDoor tile = (TileEntitySecureDoor) world.getTileEntity(x, y, z);
         tile.setOwner(entityPlayer.getUniqueID().toString());
+        TileEntitySecureDoor tileTop = (TileEntitySecureDoor) world.getTileEntity(x, y + 1, z);
+        tileTop.setOwner(entityPlayer.getUniqueID().toString());
         world.notifyBlocksOfNeighborChange(x, y, z, block);
         world.notifyBlocksOfNeighborChange(x, y + 1, z, block);
     }
