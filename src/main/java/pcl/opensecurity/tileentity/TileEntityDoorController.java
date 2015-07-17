@@ -95,9 +95,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		if (node != null && node.host() == this) {
-			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
-			nbt.setTag("oc:node", nodeNbt);
+			node.load(nbt.getCompoundTag("oc:node"));
 		}
 		this.ownerUUID = nbt.getString("owner");
 		
