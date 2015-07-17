@@ -21,7 +21,6 @@ public class BlockCardWriter extends BlockOSBase {
 
 	public BlockCardWriter() {
 		setBlockName("cardwriter");
-		// setBlockTextureName("opensecurity:cardwriter");
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -16,10 +16,9 @@ import net.minecraft.world.World;
  * @author Caitlyn
  *
  */
-public class BlockRFIDReader extends BlockContainer {
+public class BlockRFIDReader extends BlockOSBase {
 
 	public BlockRFIDReader() {
-		super(Material.iron);
 		setBlockName("rfidreader");
 		setBlockTextureName("opensecurity:rfidreader");
 	}

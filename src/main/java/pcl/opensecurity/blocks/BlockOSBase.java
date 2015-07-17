@@ -13,11 +13,12 @@ public class BlockOSBase extends BlockContainer {
 
 	protected BlockOSBase() {
 		super(Material.iron);
+		this.setHardness(5F);
+		this.setResistance(30F);
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
