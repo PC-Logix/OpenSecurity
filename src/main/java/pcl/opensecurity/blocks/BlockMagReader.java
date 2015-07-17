@@ -22,10 +22,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author Caitlyn
  *
  */
-public class BlockMagReader extends BlockContainer {
+public class BlockMagReader extends BlockOSBase {
 
 	public BlockMagReader() {
-		super(Material.iron);
 		setBlockName("magreader");
 		// setBlockTextureName("opensecurity:magreader");
 	}
