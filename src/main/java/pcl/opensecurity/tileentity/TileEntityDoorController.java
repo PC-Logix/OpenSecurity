@@ -173,7 +173,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	}
 
 	@Callback
-	public Object[] toggle(Context context, Arguments args) {
+	public Object[] toggle(Context context, Arguments args) throws Exception {
 		BlockSecurityDoor door = (BlockSecurityDoor) OpenSecurity.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 
@@ -227,7 +227,11 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 			}
 		}
 
-		return new Object[] { !isDoorOpen(door, loc) };
+		if (node.changeBuffer(-5) == 0) {
+			return new Object[] { !isDoorOpen(door, loc) };
+		} else {
+			throw new Exception("Not enough power in OC Network.");
+		}
 	}
 
 	@Override

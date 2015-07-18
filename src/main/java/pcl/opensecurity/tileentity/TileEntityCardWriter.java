@@ -293,49 +293,53 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 	}
 
 	@Callback(doc = "function(string: data, string: displayName. boolean: locked):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data.", direct = true)
-	public Object[] write(Context context, Arguments args) {
+	public Object[] write(Context context, Arguments args) throws Exception {
 		String data = args.checkString(0);
 		String title = args.optString(1, "");
 		Boolean locked = args.optBoolean(2, false);
-		if (data != null) {
-			if (getStackInSlot(0) != null) {
-				for (int x = 3; x <= 12; x++) { // Loop the 9 output slots
-												// checking for a empty one
-					if (getStackInSlot(x) == null) { // The slot is empty lets
-														// make us a RFID
-						if (getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
-							CardWriterItemStacks[x] = new ItemStack(OpenSecurity.rfidCard);
-							if (data.length() > 64) {
-								data = data.substring(0, 64);
+		if (node.changeBuffer(-5) == 0) {
+			if (data != null) {
+				if (getStackInSlot(0) != null) {
+					for (int x = 3; x <= 12; x++) { // Loop the 9 output slots
+													// checking for a empty one
+						if (getStackInSlot(x) == null) { // The slot is empty lets
+															// make us a RFID
+							if (getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
+								CardWriterItemStacks[x] = new ItemStack(OpenSecurity.rfidCard);
+								if (data.length() > 64) {
+									data = data.substring(0, 64);
+								}
+							} else if (getStackInSlot(0).getItem() instanceof ItemMagCard) {
+								CardWriterItemStacks[x] = new ItemStack(OpenSecurity.magCard);
+								if (data.length() > 128) {
+									data = data.substring(0, 128);
+								}
 							}
-						} else if (getStackInSlot(0).getItem() instanceof ItemMagCard) {
-							CardWriterItemStacks[x] = new ItemStack(OpenSecurity.magCard);
-							if (data.length() > 128) {
-								data = data.substring(0, 128);
+							CardWriterItemStacks[x].setTagCompound(new NBTTagCompound());
+							CardWriterItemStacks[x].stackTagCompound.setString("data", data);
+							if (!title.isEmpty()) {
+								CardWriterItemStacks[x].setStackDisplayName(title);
 							}
-						}
-						CardWriterItemStacks[x].setTagCompound(new NBTTagCompound());
-						CardWriterItemStacks[x].stackTagCompound.setString("data", data);
-						if (!title.isEmpty()) {
-							CardWriterItemStacks[x].setStackDisplayName(title);
-						}
-						System.out.println(CardWriterItemStacks[x].stackTagCompound.getString("uuid"));
-						if (CardWriterItemStacks[x].stackTagCompound.getString("uuid").isEmpty()) {
-							CardWriterItemStacks[x].stackTagCompound.setString("uuid", UUID.randomUUID().toString());
-						}
+							System.out.println(CardWriterItemStacks[x].stackTagCompound.getString("uuid"));
+							if (CardWriterItemStacks[x].stackTagCompound.getString("uuid").isEmpty()) {
+								CardWriterItemStacks[x].stackTagCompound.setString("uuid", UUID.randomUUID().toString());
+							}
 
-						if (locked) {
-							CardWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);
+							if (locked) {
+								CardWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);
+							}
+							decrStackSize(0, 1);
+							return new Object[] { true };
 						}
-						decrStackSize(0, 1);
-						return new Object[] { true };
 					}
+					return new Object[] { false, "No Empty Slots" };
 				}
-				return new Object[] { false, "No Empty Slots" };
+				return new Object[] { false, "No card in slot" };
 			}
-			return new Object[] { false, "No card in slot" };
+			return new Object[] { false, "Data is Null" };
+		} else {
+			throw new Exception("Not enough power in OC Network.");
 		}
-		return new Object[] { false, "Data is Null" };
 	}
 
 	@Override

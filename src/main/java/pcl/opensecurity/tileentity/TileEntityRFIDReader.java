@@ -32,7 +32,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 
 	public String data;
 	public UUID uuid;
-	public int range = OpenSecurity.rfidRange;
+	//public int range = OpenSecurity.rfidRange;
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
@@ -116,7 +116,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public HashMap<Integer, HashMap<String, Object>> scan() {
+	public HashMap<Integer, HashMap<String, Object>> scan(int range) {
 		boolean found = false;
 		worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
 		Block block = worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
@@ -182,12 +182,17 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 	}
 
 	@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.", direct = true)
-	public Object[] scan(Context context, Arguments args) {
-		range = args.optInteger(0, range);
+	public Object[] scan(Context context, Arguments args) throws Exception {
+		int range = args.optInteger(0, OpenSecurity.rfidRange);
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
 		}
 		range = range / 2;
-		return new Object[] { scan() };
+		
+		if (node.changeBuffer(-5 * range) == 0) {
+			return new Object[]{ scan(range) };
+		} else {
+			throw new Exception("Not enough power in OC Network.");
+		}
 	}
 }

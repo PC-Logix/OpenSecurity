@@ -47,7 +47,6 @@ public class RFIDReaderCardDriver extends DriverItem {
 	}
 
 	public class Environment extends li.cil.oc.api.prefab.ManagedEnvironment {
-		public double range = OpenSecurity.rfidRange;
 		public String data = null;
 		protected EnvironmentHost container = null;
 		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("OSRFIDReader").withConnector(32).create();
@@ -68,13 +67,18 @@ public class RFIDReaderCardDriver extends DriverItem {
 		}
 
 		@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.", direct = true)
-		public Object[] scan(Context context, Arguments args) {
-			range = args.optDouble(0, range);
+		public Object[] scan(Context context, Arguments args) throws Exception {
+			double range = args.optDouble(0, OpenSecurity.rfidRange);
 			if (range > OpenSecurity.rfidRange) {
 				range = OpenSecurity.rfidRange;
 			}
 			range = range / 2;
-			return new Object[] { scan() };
+			
+			if (node.changeBuffer(-5 * range) == 0) {
+				return new Object[]{ scan(range) };
+			} else {
+				throw new Exception("Not enough power in OC Network.");
+			}
 		}
 
 		// Thanks gamax92 from #oc for the following 2 methods...
@@ -98,7 +102,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 		}
 
 		@SuppressWarnings({ "rawtypes" })
-		public HashMap<Integer, HashMap<String, Object>> scan() {
+		public HashMap<Integer, HashMap<String, Object>> scan(double range) {
 			Entity entity;
 			HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 			int index = 1;
