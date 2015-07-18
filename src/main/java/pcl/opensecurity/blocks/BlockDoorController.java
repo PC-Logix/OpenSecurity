@@ -3,7 +3,6 @@ package pcl.opensecurity.blocks;
 import li.cil.oc.common.item.Wrench;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -145,7 +144,7 @@ public class BlockDoorController extends BlockOSBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess block, int x, int y, int z, int side) {
-		int metadata = block.getBlockMetadata(x, y, z);
+		//int metadata = block.getBlockMetadata(x, y, z);
 		TileEntityDoorController te = (TileEntityDoorController) block.getTileEntity(x, y, z);
 		IIcon thisBlockTextures[] = new IIcon[6];
 

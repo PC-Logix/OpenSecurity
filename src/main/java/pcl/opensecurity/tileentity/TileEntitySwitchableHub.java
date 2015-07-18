@@ -1,6 +1,5 @@
 package pcl.opensecurity.tileentity;
 
-import pcl.opensecurity.OpenSecurity;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;

@@ -47,8 +47,6 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
-	private String texture;
-
 	public IIcon[] blockTextures = new IIcon[6];
 
 	@Override
