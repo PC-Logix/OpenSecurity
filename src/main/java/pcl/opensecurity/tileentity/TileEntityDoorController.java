@@ -221,7 +221,6 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 			int j2;
 
 			if ((i1 & 8) == 0) {
-				OpenSecurity.logger.info("Test");
 				int doorBottomMeta = worldObj.getBlockMetadata(doorCoordX, doorCoordY, doorCoordZ);
 				j2 = doorBottomMeta & 7;
 				j2 ^= 4;
@@ -232,7 +231,6 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 					worldObj.markBlockRangeForRenderUpdate(loc.x, loc.y, loc.z, loc.x, loc.y, loc.z);
 				}
 			} else {
-				OpenSecurity.logger.info("Test2");
 				int doorBottomMeta = worldObj.getBlockMetadata(doorCoordX, doorCoordY - 1, doorCoordZ);
 				j2 = doorBottomMeta & 7;
 				j2 ^= 4;
