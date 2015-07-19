@@ -4,6 +4,7 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Connector;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
@@ -35,6 +36,8 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 	public static ForgeDirection sideFront;
 	public static ForgeDirection sideUp;
 	public static ForgeDirection sideDown;
+	
+	private String password = "";
 	
 	public int Texture;
 	
@@ -137,6 +140,7 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 		east = nbt.getBoolean("east");
 		up = nbt.getBoolean("up");
 		down = nbt.getBoolean("down");
+		password = nbt.getString("password");
 
 	}
 
@@ -154,6 +158,7 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 		nbt.setBoolean("west", west);
 		nbt.setBoolean("up", up);
 		nbt.setBoolean("down", down);
+		nbt.setString("password", password);
 	}
 
 	@Override
@@ -170,12 +175,31 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 	}
 
 	@Callback
-	public Object[] setSide(Context context, Arguments args) {
+	public Object[] setPassword(Context context, Arguments args) {
+		if (password.isEmpty()) {
+			password = args.checkString(0);
+			return new Object[] { "Password set" };
+		} else {
+			if (args.checkString(0).equals(password)) {
+				password = args.checkString(1);
+				return new Object[] { "Password Changed" };
+			} else {
+				return new Object[] { "Password was not changed" };
+			}
+		}
+	}
+	
+	@Callback
+	public Object[] setSide(Context context, Arguments args) throws Exception {
 		int side = args.checkInteger(0);
 		Boolean isEnabled = args.checkBoolean(1);
 		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		ForgeDirection facing = getWorldSide(ForgeDirection.getOrientation(side).name(), ForgeDirection.getOrientation(meta));
 
+		if (!password.isEmpty() && !password.equals(args.checkString(2))) {
+			return new Object[] { "Password Incorrect" };
+		}
+		
 		switch (facing) {
 			case NORTH:
 				north = isEnabled;
@@ -209,7 +233,11 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 		if (node != null && node.network() == null) {
 			Network.joinOrCreateNetwork(this);
 		}
-		return new Object[] { "ok" };
+		if (((Connector) node).changeBuffer(-5) == 0) {
+			return new Object[]{ "ok" };
+		} else {
+			throw new Exception("Not enough power in OC Network.");
+		}
 	}
 
 	@Override
