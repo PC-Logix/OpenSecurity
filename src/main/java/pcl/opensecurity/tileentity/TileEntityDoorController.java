@@ -32,6 +32,8 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	public Block block = null;
 
 	public BlockSecurityDoor door;
+	
+	private String password = "";
 
 	int doorCoordX;
 	int doorCoordY;
@@ -96,7 +98,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 			node.load(nbt.getCompoundTag("oc:node"));
 		}
 		this.ownerUUID = nbt.getString("owner");
-		
+		this.password = nbt.getString("password");
 		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
 		this.DoorControllerCamo = new ItemStack[1];
 		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
@@ -127,6 +129,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 			}
 		}
 		nbt.setTag("Items", var2);
+		nbt.setString("password", password);
 	}
 
 	@Override
@@ -146,6 +149,21 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		}
 	}
 
+	@Callback
+	public Object[] setPassword(Context context, Arguments args) {
+		if (password.isEmpty()) {
+			password = args.checkString(0);
+			return new Object[] { "Password set" };
+		} else {
+			if (args.checkString(0).equals(password)) {
+				password = args.checkString(1);
+				return new Object[] { "Password Changed" };
+			} else {
+				return new Object[] { "Password was not changed" };
+			}
+		}
+	}
+	
 	@Callback
 	public Object[] greet(Context context, Arguments args) {
 		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
@@ -174,7 +192,9 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	public Object[] toggle(Context context, Arguments args) throws Exception {
 		BlockSecurityDoor door = (BlockSecurityDoor) OpenSecurity.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
-
+		if (!password.isEmpty() && !password.equals(args.checkString(0))) {
+			return new Object[] { "Password Incorrect" };
+		}
 		int direction = getDoorOrientation(door, loc);
 		// boolean isOpen = isDoorOpen(door, loc);
 		boolean isMirrored = isDoorMirrored(door, loc);
