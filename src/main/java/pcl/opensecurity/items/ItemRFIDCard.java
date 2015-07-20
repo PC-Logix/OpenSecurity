@@ -1,5 +1,7 @@
 package pcl.opensecurity.items;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +20,17 @@ public class ItemRFIDCard extends Item {
 		setTextureName("opensecurity:rfidCard");
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getColorFromItemStack(ItemStack stack, int par2)
+	{
+		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("color")) {
+			return stack.getTagCompound().getInteger("color");	
+		} else {
+			return 0xFFFFFF;
+		}
+	}
+	
 	@Override
 	public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase entity) {
 		if (!itemStack.stackTagCompound.hasKey("data")) {

@@ -292,11 +292,36 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 		return new Object[] { false, "Data is Null" };
 	}
 
-	@Callback(doc = "function(string: data, string: displayName. boolean: locked):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data.", direct = true)
+	@Callback(doc = "function(string: data, string: displayName, boolean: locked, int: color):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data, the 3rd argument will set the color of the card, use OC's sides api.", direct = true)
 	public Object[] write(Context context, Arguments args) throws Exception {
 		String data = args.checkString(0);
 		String title = args.optString(1, "");
 		Boolean locked = args.optBoolean(2, false);
+		int colorIn = args.optInteger(3, 0);
+		int color = Integer.parseInt("FFFFFF", 16);
+	
+		if (colorIn > 0 && colorIn < 15) {
+			switch(colorIn) {
+				case 0: color = Integer.parseInt("FFFFFF", 16); break;
+				case 1: color = Integer.parseInt("FFA500", 16); break;
+				case 2: color = Integer.parseInt("FF00FF", 16); break;
+				case 3: color = Integer.parseInt("ADD8E6", 16); break;
+				case 4: color = Integer.parseInt("FFFF00", 16); break;
+				case 5: color = Integer.parseInt("00FF00", 16); break;
+				case 6: color = Integer.parseInt("FFC0CB", 16); break;
+				case 7: color = Integer.parseInt("808080", 16); break;
+				case 8: color = Integer.parseInt("C0C0C0", 16); break;
+				case 9: color = Integer.parseInt("00FFFF", 16); break;
+				case 10: color = Integer.parseInt("800080", 16); break;
+				case 11: color = Integer.parseInt("0000FF", 16); break;
+				case 12: color = Integer.parseInt("A52A2A", 16); break;
+				case 13: color = Integer.parseInt("008000", 16); break;
+				case 14: color = Integer.parseInt("FF0000", 16); break;
+				case 15: color = Integer.parseInt("000000", 16); break;
+				default: color = Integer.parseInt("FFFFFF", 16); break;
+			}
+		}
+
 		if (node.changeBuffer(-5) == 0) {
 			if (data != null) {
 				if (getStackInSlot(0) != null) {
@@ -328,6 +353,9 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 							if (locked) {
 								CardWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);
 							}
+							
+							CardWriterItemStacks[x].stackTagCompound.setInteger("color", color);
+							
 							decrStackSize(0, 1);
 							return new Object[] { true };
 						}
