@@ -6,6 +6,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -54,6 +56,12 @@ public class BlockRFIDReader extends BlockOSBase {
 			default:
 				return texture;
 			}
+	}
+	
+	//No rotation stuff...
+	@Override
+	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
+		
 	}
 	
 	@Override

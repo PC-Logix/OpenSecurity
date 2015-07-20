@@ -6,8 +6,10 @@ package pcl.opensecurity.blocks;
 import java.util.Random;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -72,6 +74,13 @@ public class BlockMagReader extends BlockOSBase {
 		}
 	}
 
+	
+	//No rotation stuff...
+	@Override
+	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
+		
+	}
+	
 	@Override
 	public void updateTick(World world, int xCoord, int yCoord, int zCoord, Random rand) {
 		world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3);
