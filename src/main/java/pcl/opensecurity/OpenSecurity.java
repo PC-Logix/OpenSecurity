@@ -231,7 +231,13 @@ public class OpenSecurity {
 		ItemStack cable = li.cil.oc.api.Items.get("cable").createItemStack(1);
 		ItemStack transistor = li.cil.oc.api.Items.get("transistor").createItemStack(1);
 		ItemStack floppy = li.cil.oc.api.Items.get("floppy").createItemStack(1);
-		ItemStack datacard = li.cil.oc.api.Items.get("dataCard").createItemStack(1);
+		ItemStack datacard;
+		if (li.cil.oc.api.Items.get("dataCard").createItemStack(1) != null) {
+			datacard = li.cil.oc.api.Items.get("dataCard").createItemStack(1);
+		} else {
+			datacard = li.cil.oc.api.Items.get("dataCard1").createItemStack(1);
+		}
+		
 		ItemStack oc_switch = li.cil.oc.api.Items.get("switch").createItemStack(1);
 
 		GameRegistry.addRecipe(new ItemStack(rfidReaderCard, 1), "MRM", " N ", "BC ", 'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit);
