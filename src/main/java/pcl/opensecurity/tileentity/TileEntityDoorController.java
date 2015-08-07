@@ -152,10 +152,9 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 	@Callback
 	public Object[] setPassword(Context context, Arguments args) {
+		TileEntity te = worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
 		if (password.isEmpty()) {
 			password = args.checkString(0);
-			
-			TileEntity te = worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
 			if (te instanceof TileEntitySecureDoor) {
 				((TileEntitySecureDoor) te).setPassword(password);
 			}
@@ -164,7 +163,6 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		} else {
 			if (args.checkString(0).equals(password)) {
 				password = args.checkString(1);
-				TileEntity te = worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
 				if (te instanceof TileEntitySecureDoor) {
 					((TileEntitySecureDoor) te).setPassword(password);
 				}
