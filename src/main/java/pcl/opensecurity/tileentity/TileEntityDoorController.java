@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import pcl.opensecurity.OpenSecurity;
@@ -153,10 +154,20 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	public Object[] setPassword(Context context, Arguments args) {
 		if (password.isEmpty()) {
 			password = args.checkString(0);
-			return new Object[] { "Password set" };
+			
+			TileEntity te = worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
+			if (te instanceof TileEntitySecureDoor) {
+				((TileEntitySecureDoor) te).setPassword(password);
+			}
+			
+			return new Object[] { "Password set" };			
 		} else {
 			if (args.checkString(0).equals(password)) {
 				password = args.checkString(1);
+				TileEntity te = worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
+				if (te instanceof TileEntitySecureDoor) {
+					((TileEntitySecureDoor) te).setPassword(password);
+				}
 				return new Object[] { "Password Changed" };
 			} else {
 				return new Object[] { "Password was not changed" };
@@ -192,7 +203,8 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	public Object[] toggle(Context context, Arguments args) throws Exception {
 		BlockSecurityDoor door = (BlockSecurityDoor) OpenSecurity.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
-		if (!password.isEmpty() && !password.equals(args.checkString(0))) {
+		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
+		if (!password.isEmpty() && !password.equals(args.checkString(0)) && !password.equals(te.getPass())) {
 			return new Object[] { "Password Incorrect" };
 		}
 		int direction = getDoorOrientation(door, loc);
@@ -218,6 +230,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		if ((loc.getBlock() == door) && (getDoorOrientation(door, loc) == direction) && (isDoorMirrored(door, loc) != isMirrored) || worldObj.getBlock(doorCoordX, doorCoordY, doorCoordZ) instanceof BlockSecurityDoor) {
 
 			int i1 = worldObj.getBlockMetadata(doorCoordX, doorCoordY, doorCoordZ);
+
 			int j2;
 
 			if ((i1 & 8) == 0) {

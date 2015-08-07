@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 public class TileEntitySecureDoor extends TileEntity {
 
 	String ownerUUID = "";
+	String password = "";
 
 	public TileEntitySecureDoor() {
 
@@ -13,6 +14,10 @@ public class TileEntitySecureDoor extends TileEntity {
 
 	public void setOwner(String UUID) {
 		this.ownerUUID = UUID;
+	}
+	
+	public void setPassword(String pass) {
+		this.password = pass;
 	}
 
 	@Override
@@ -31,6 +36,10 @@ public class TileEntitySecureDoor extends TileEntity {
 		return this.ownerUUID;
 	}
 	
+	public String getPass() {
+		return this.password;
+	}
+	
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
@@ -38,6 +47,9 @@ public class TileEntitySecureDoor extends TileEntity {
 			TileEntitySecureDoor lowerDoor = (TileEntitySecureDoor) worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
 			if (ownerUUID == null) {
 				ownerUUID = lowerDoor.ownerUUID;
+			}
+			if (password == null) {
+				password = lowerDoor.password;
 			}
 		}
 	}
