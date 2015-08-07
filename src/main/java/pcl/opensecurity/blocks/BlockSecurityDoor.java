@@ -21,7 +21,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
+public class BlockSecurityDoor extends BlockDoor
 {
 	public Item placerItem;
 
@@ -32,7 +32,7 @@ public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
 
 	public BlockSecurityDoor()
 	{
-		super(Material.iron);
+		super(Material.anvil);
 		float f = 0.5F;
 		float f1 = 1.0F;
 		this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f1, 0.5F + f);
@@ -166,8 +166,18 @@ public class BlockSecurityDoor extends BlockDoor implements ITileEntityProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+	public boolean hasTileEntity(int metadata) {
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World p_149915_1_, int p_149915_2_) {
 		return new TileEntitySecureDoor();
+	}
+	
+	@Override
+	public int getMobilityFlag() {
+		return 2;
 	}
 	
 	
