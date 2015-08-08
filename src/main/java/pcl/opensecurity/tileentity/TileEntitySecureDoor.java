@@ -24,7 +24,7 @@ public class TileEntitySecureDoor extends TileEntity {
 			TileEntity te = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
 			if (te instanceof TileEntitySecureDoor) {
 				if (((TileEntitySecureDoor) te).getOwner().equals(this.ownerUUID)) {
-					if (((TileEntitySecureDoor) te).getPass().isEmpty()) {
+					if (((TileEntitySecureDoor) te).getPass().isEmpty() && !this.password.isEmpty()) {
 						((TileEntitySecureDoor) te).setPassword(this.password);	
 					}
 				}
