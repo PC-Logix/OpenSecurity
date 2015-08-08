@@ -130,7 +130,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 			}
 		}
 		nbt.setTag("Items", var2);
-		nbt.setString("password", password);
+		//nbt.setString("password", password);
 	}
 
 	@Override
@@ -152,24 +152,27 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 	@Callback
 	public Object[] setPassword(Context context, Arguments args) {
-		TileEntity te = worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
-		if (password.isEmpty()) {
-			password = args.checkString(0);
-			if (te instanceof TileEntitySecureDoor) {
-				((TileEntitySecureDoor) te).setPassword(password);
-			}
-			
-			return new Object[] { "Password set" };			
-		} else {
-			if (args.checkString(0).equals(password)) {
-				password = args.checkString(1);
+		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
+		if (ownerUUID.equals(te.getOwner())) {
+			if (te.getPass().isEmpty()) {
+				//password = args.checkString(0);
 				if (te instanceof TileEntitySecureDoor) {
-					((TileEntitySecureDoor) te).setPassword(password);
+					((TileEntitySecureDoor) te).setPassword(args.checkString(0));
 				}
-				return new Object[] { "Password Changed" };
+				
+				return new Object[] { "Password set" };			
 			} else {
-				return new Object[] { "Password was not changed" };
-			}
+				if (args.checkString(0).equals(te.getPass())) {
+					if (te instanceof TileEntitySecureDoor) {
+						((TileEntitySecureDoor) te).setPassword(args.checkString(1));
+					}
+					return new Object[] { "Password Changed" };
+				} else {
+					return new Object[] { "Password was not changed" };
+				}
+			}	
+		} else {
+			return new Object[] { "Owner of Controller and Door do not match." };
 		}
 	}
 	
@@ -202,7 +205,8 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		BlockSecurityDoor door = (BlockSecurityDoor) OpenSecurity.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
-		if (!password.isEmpty() && !password.equals(args.checkString(0)) && !password.equals(te.getPass())) {
+
+		if (te.getPass().isEmpty() || !te.getPass().equals(args.checkString(0))) {
 			return new Object[] { "Password Incorrect" };
 		}
 		int direction = getDoorOrientation(door, loc);

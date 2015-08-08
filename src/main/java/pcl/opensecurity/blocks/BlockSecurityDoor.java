@@ -124,30 +124,19 @@ public class BlockSecurityDoor extends BlockDoor
 
 		if ((meta & 8) == 0) //Top door block
 		{
-			boolean breakBlock = false;
 
 			if (world.getBlock(x, y + 1, z) != this)
 			{
 				world.setBlockToAir(x, y, z);
-				breakBlock = true;
 			}
 
 			if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z))
 			{
 				world.setBlockToAir(x, y, z);
-				breakBlock = true;
 
 				if (world.getBlock(x, y + 1, z) == this)
 				{
 					world.setBlockToAir(x, y + 1, z);
-				}
-			}
-
-			if (breakBlock)
-			{
-				if (!world.isRemote)
-				{
-					//this.dropBlockAsItem(world, x, y, z, meta, 0);
 				}
 			}
 		}
