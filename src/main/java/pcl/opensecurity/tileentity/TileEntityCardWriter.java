@@ -14,6 +14,7 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.common.item.EEPROM;
 import li.cil.oc.server.network.Network;
+import li.cil.oc.Settings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -25,6 +26,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
+import scala.actors.threadpool.Arrays;
 
 public class TileEntityCardWriter extends TileEntityMachineBase implements Environment, IInventory, ISidedInventory {
 
@@ -274,6 +276,12 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 							CardWriterItemStacks[x] = eepromItem;
 							NBTTagCompound oc_data = new NBTTagCompound();
 							NBTTagCompound our_data = new NBTTagCompound();
+							if(code.length > Settings.get().eepromSize()) {
+								code = Arrays.copyOfRange(code, 0, 4096);
+							}
+							if(title.length() > Settings.get().eepromDataSize()) {
+								title = title.substring(0, Settings.get().eepromDataSize());
+							}
 							our_data.setByteArray("oc:eeprom", code);
 							our_data.setString("oc:label", title);
 							our_data.setBoolean("oc:readonly", locked);
