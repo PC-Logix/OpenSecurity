@@ -238,7 +238,7 @@ public class OpenSecurity {
 			datacard = li.cil.oc.api.Items.get("dataCard1").createItemStack(1);
 		}
 		
-		ItemStack oc_switch = li.cil.oc.api.Items.get("switch").createItemStack(1);
+		ItemStack oc_relay = li.cil.oc.api.Items.get("relay").createItemStack(1);
 
 		GameRegistry.addRecipe(new ItemStack(rfidReaderCard, 1), "MRM", " N ", "BC ", 'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit);
 
@@ -262,9 +262,9 @@ public class OpenSecurity {
 
 		GameRegistry.addRecipe(new ItemStack(DoorController, 1), "TOT", "OCO", "SBS", 'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip, 'O', obsidian);
 
-		GameRegistry.addRecipe(new ItemStack(SwitchableHub, 1), "TBT", "BSB", "RBR", 'B', cable, 'S', oc_switch, 'R', transistor, 'T', t2microchip, 'O', obsidian);
+		GameRegistry.addRecipe(new ItemStack(SwitchableHub, 1), "TBT", "BSB", "RBR", 'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
 		
-		GameRegistry.addRecipe(new ItemStack(BlockKVM, 1), " B ", "BSB", "RBR", 'B', cable, 'S', oc_switch, 'R', transistor, 'T', t2microchip, 'O', obsidian);
+		GameRegistry.addRecipe(new ItemStack(BlockKVM, 1), " B ", "BSB", "RBR", 'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
 		
 		GameRegistry.addShapelessRecipe(secureOS_disk, new Object[] { floppy, magCard });
 		logger.info("Registered Recipes");
