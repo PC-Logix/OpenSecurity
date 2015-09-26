@@ -40,7 +40,7 @@ public class KVMGUI extends GuiContainer {
 		this.buttonList.add(new GuiButton(6, (width / 2) + 30, (height / 2) + 50, 50, 20, "Close"));
 		this.buttonList.add(backBttn);
 		this.buttonList.add(leftBttn);
-		this.buttonList.add(frontBttn);
+		//this.buttonList.add(frontBttn);
 		this.buttonList.add(rightBttn);
 		this.buttonList.add(topBttn);
 		this.buttonList.add(bottomBttn);
