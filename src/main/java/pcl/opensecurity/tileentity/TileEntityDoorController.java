@@ -213,7 +213,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
 
 		if (ownerUUID.equals(te.getOwner())) {
-			if (te.getPass().isEmpty() || !te.getPass().equals(args.checkString(0))) {
+			if (!te.getPass().isEmpty() && !te.getPass().equals(args.checkString(0))) {
 				return new Object[] { "Password Incorrect" };
 			}
 			int direction = getDoorOrientation(door, loc);
