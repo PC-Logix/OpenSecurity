@@ -1,5 +1,6 @@
 package pcl.opensecurity.tileentity;
 
+import pcl.opensecurity.OpenSecurity;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
@@ -68,7 +69,6 @@ public class TileEntityKVM extends TileEntitySidedEnvironment implements SidedEn
 	@Override
 	public Node sidedNode(ForgeDirection side) {
 		int meta = this.worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-
 		if (meta == side.ordinal()) {
 			return node;
 		} else if (side.ordinal() == ForgeDirection.NORTH.ordinal() && north) {
@@ -166,12 +166,7 @@ public class TileEntityKVM extends TileEntitySidedEnvironment implements SidedEn
 		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		ForgeDirection facing = getWorldSide(ForgeDirection.getOrientation(side).name(), ForgeDirection.getOrientation(meta));
 		if(facing != null) {
-			north = false;
-			south = false;
-			east = false;
-			west = false;
-			up = false;
-			down = false;
+			north = south = east = west = up = down = false;
 			switch (facing) {
 			case NORTH:
 				north = isEnabled;
@@ -223,10 +218,10 @@ public class TileEntityKVM extends TileEntitySidedEnvironment implements SidedEn
 	}
 
 	public ForgeDirection getWorldSide(String localSide, ForgeDirection facing) {
-		if ("up".equalsIgnoreCase(localSide))
-			return ForgeDirection.UP;
-		if ("down".equalsIgnoreCase(localSide))
-			return ForgeDirection.DOWN;
+		//if ("up".equalsIgnoreCase(localSide))
+			//return ForgeDirection.UP;
+		//if ("down".equalsIgnoreCase(localSide))
+			//return ForgeDirection.DOWN;
 
 		ForgeDirection front = facing;
 
@@ -252,16 +247,20 @@ public class TileEntityKVM extends TileEntitySidedEnvironment implements SidedEn
 			sideRight = ForgeDirection.SOUTH;
 			break;
 		case UP:
-			sideBack = ForgeDirection.NORTH;
+			sideBack = ForgeDirection.DOWN;
 			sideLeft = ForgeDirection.EAST;
 			sideRight = ForgeDirection.WEST;
-			sideFront = ForgeDirection.SOUTH;
+			sideFront = ForgeDirection.UP;
+			sideDown = ForgeDirection.SOUTH;
+			sideUp = ForgeDirection.NORTH;
 			break;
 		case DOWN:
-			sideBack = ForgeDirection.NORTH;
+			sideBack = ForgeDirection.UP;
 			sideLeft = ForgeDirection.EAST;
 			sideRight = ForgeDirection.WEST;
-			sideFront = ForgeDirection.SOUTH;
+			sideFront = ForgeDirection.DOWN;
+			sideDown = ForgeDirection.SOUTH;
+			sideUp = ForgeDirection.NORTH;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid side");
@@ -275,6 +274,10 @@ public class TileEntityKVM extends TileEntitySidedEnvironment implements SidedEn
 			return sideLeft;
 		if ("west".equalsIgnoreCase(localSide))
 			return sideRight;
+		if ("up".equalsIgnoreCase(localSide))
+			return sideUp;
+		if ("down".equalsIgnoreCase(localSide))
+			return sideDown;
 		throw new IllegalArgumentException("Invalid side");
 	}
 

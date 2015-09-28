@@ -40,7 +40,7 @@ public class KVMGUI extends GuiContainer {
 		this.buttonList.add(new GuiButton(6, (width / 2) + 30, (height / 2) + 50, 50, 20, "Close"));
 		this.buttonList.add(backBttn);
 		this.buttonList.add(leftBttn);
-		//this.buttonList.add(frontBttn);
+		this.buttonList.add(frontBttn);
 		this.buttonList.add(rightBttn);
 		this.buttonList.add(topBttn);
 		this.buttonList.add(bottomBttn);
@@ -134,18 +134,18 @@ public class KVMGUI extends GuiContainer {
 		case UP:
 			this.rightBttn.enabled = !te.west;
 			this.leftBttn.enabled = !te.east;
-			this.backBttn.enabled = !te.north;
-			this.frontBttn.enabled = !te.south;
-			this.topBttn.enabled = !te.up;
-			this.bottomBttn.enabled = !te.down;
+			this.backBttn.enabled = !te.down;
+			this.frontBttn.enabled = !te.up;
+			this.topBttn.enabled = !te.north;
+			this.bottomBttn.enabled = !te.south;
 			break;
 		case DOWN:
 			this.rightBttn.enabled = !te.west;
 			this.leftBttn.enabled = !te.east;
-			this.backBttn.enabled = !te.north;
-			this.frontBttn.enabled = !te.south;
-			this.topBttn.enabled = !te.up;
-			this.bottomBttn.enabled = !te.down;
+			this.backBttn.enabled = !te.up;
+			this.frontBttn.enabled = !te.down;
+			this.topBttn.enabled = !te.north;
+			this.bottomBttn.enabled = !te.south;
 			break;
 		default:
 			break;

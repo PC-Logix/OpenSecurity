@@ -42,9 +42,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 	String ownerUUID = "";
 
-	public TileEntityDoorController() {
-
-	}
+	public TileEntityDoorController() {}
 
 	public ItemStack[] DoorControllerCamo = new ItemStack[1];
 
@@ -272,7 +270,6 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		} else {
 			return new Object[] { "Owner of Controller and Door do not match." };
 		}
-
 	}
 
 	@Override
@@ -298,9 +295,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	}
 
 	public void overrideTexture(Block theBlock, ItemStack theItem, ForgeDirection forgeDirection) {
-
 		DoorControllerCamo[0] = theItem;
-
 		for (int getSide = 0; getSide < blockTextures.length; getSide++)
 		{
 			if (worldObj.isRemote) {
@@ -309,14 +304,11 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		}
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		getDescriptionPacket();
-
 	}
 
 	public void overrideTexture(ItemStack theItem) {
-
 		DoorControllerCamo[0] = theItem;
 		Block theBlock = Block.getBlockFromItem(theItem.getItem());
-
 		for (int getSide = 0; getSide < blockTextures.length; getSide++)
 		{
 			if (worldObj.isRemote) {
@@ -325,7 +317,5 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		}
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		getDescriptionPacket();
-
 	}
-
 }
