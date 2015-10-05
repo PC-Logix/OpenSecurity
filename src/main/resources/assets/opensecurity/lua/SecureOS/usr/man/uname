@@ -1,0 +1,19 @@
+NAME
+  uname - outputs basic system information.
+
+SYNOPSIS
+  uname [-a]
+
+DESCRIPTION
+  Outputs basic system information such as the operating system version and 'kernel' version.
+
+OPTIONS
+  -a
+    outputs 'kernel' version along with operating system version
+
+EXAMPLES
+  uname
+    outputs the current version of the operating system
+
+  uname -a
+    outputs the current operating system and 'kernel' versions

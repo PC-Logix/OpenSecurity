@@ -471,6 +471,17 @@ if #args == 0 and (io.input() == io.stdin or options.i) and not options.c then
       end
       command = text.trim(command)
       if command == "exit" then
+        local hn = io.open("/tmp/.hostname.dat", "r") -- Reads the hostname file.
+         texthn = hn:read()
+          hn:close()
+
+          shell.setWorkingDirectory("/home/" .. texthn .. "/")
+          os.setenv("HOME", "/home/" .. texthn)
+          os.setenv("USER", texthn)
+          if fs.exists("/tmp/.root") then
+            fs.remove("/tmp/.root")
+            os.setenv("PS1", texthn .. "@" .. texthn .. "# ") -- Sets the user environment.
+          end
         return
       elseif command ~= "" then
         local result, reason = os.execute(command)
@@ -492,6 +503,17 @@ elseif #args == 0 and (io.input() ~= io.stdin) then
     end
     command = text.trim(command)
     if command == "exit" then
+      local hn = io.open("/tmp/.hostname.dat", "r") -- Reads the hostname file.
+       texthn = hn:read()
+        hn:close()
+
+        shell.setWorkingDirectory("/home/" .. texthn .. "/")
+        os.setenv("HOME", "/home/" .. texthn)
+        os.setenv("USER", texthn)
+        if fs.exists("/tmp/.root") then
+          fs.remove("/tmp/.root")
+          os.setenv("PS1", texthn .. "@" .. texthn .. "# ") -- Sets the user environment.
+        end
       return
     elseif command ~= "" then
       local result, reason = os.execute(command)

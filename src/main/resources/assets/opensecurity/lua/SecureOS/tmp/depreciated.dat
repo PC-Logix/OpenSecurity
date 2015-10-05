@@ -1,0 +1,7 @@
+depreciated = {
+"/bin/usage.lua",
+"/boot/99_login.lua",
+"/root/.root.lua",
+"/bin/reboot.lua",
+"/root/blacklist"
+}

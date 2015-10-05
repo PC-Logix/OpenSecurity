@@ -7,7 +7,6 @@ if args[1] then
     file:write(args[1])
     file:close()
     os.setenv("HOSTNAME", args[1])
-    os.setenv("PS1", "$HOSTNAME:$PWD# ")
   end
 else
   local file = io.open("/etc/hostname")

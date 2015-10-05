@@ -1,5 +1,5 @@
 do
-  _G._OSVERSION = "SecureOS 0.66"
+  _G._OSVERSION = "SecureOS 0.69"
 
   local component = component
   local computer = computer
@@ -28,8 +28,8 @@ do
   function rom.inits() return ipairs(rom.invoke("list", "boot")) end
   function rom.isDirectory(path) return rom.invoke("isDirectory", path) end
 
-  local screen = component.list('screen')()
-  for address in component.list('screen') do
+  local screen = component.list('screen', true)()
+  for address in component.list('screen', true) do
     if #component.invoke(address, 'getKeyboards') > 0 then
       screen = address
     end
@@ -184,7 +184,7 @@ while true do
   motd()
   local result, reason = os.execute(os.getenv("SHELL"))
   if not result then
-    io.stderr:write((tostring(reason) or "unknown error") .. "\n")
+    io.stderr:write((reason ~= nil and tostring(reason) or "unknown error") .. "\n")
     io.write("Press any key to continue.\n")
     os.sleep(0.5)
     require("event").pull("key")

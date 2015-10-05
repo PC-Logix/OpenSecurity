@@ -83,6 +83,18 @@ function os.tmpname()
   end
 end
 
+function os.dateRL(format)
+  if not fs.get("/").isReadOnly() then
+    local time = io.open("/tmp/.time", "w")
+      time:write()
+        time:close()
+        os.sleep(0.01)
+      return os.date(format, fs.lastModified("/tmp/.time") / 1000)
+  else
+    return os.date(format)
+  end
+end
+
 os.setenv("EDITOR", "/bin/edit")
 os.setenv("HISTSIZE", "10")
 os.setenv("HOME", "/home")

@@ -2,7 +2,7 @@ local string = require("string")
 local auth = require("auth")
 local term = require("term")
 
-hn = io.open("/tmp/.hostname.dat", "r")
+local hn = io.open("/tmp/.hostname.dat", "r")
  texthn = hn:read()
   hn:close()
 
@@ -33,6 +33,7 @@ term.setCursor(1,5)
 if auth.validate(texthn, passwordOld) == true and passwordNew1 == passwordNew2 then
   auth.addUser(texthn, passwordNew2, su)
   term.write("passwd: password updated successfully \n")
+  auth.userLog(username, "pw_change")
   return
 else
   term.write("passwd: password not successfully updated \n")

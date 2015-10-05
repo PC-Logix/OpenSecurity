@@ -1,8 +1,44 @@
+local component = require("component")
+local computer = require("computer")
 local fs = require("filesystem")
 local shell = require("shell")
 local text = require("text")
 
 local args, options = shell.parse(...)
+
+local function round(num, idp)
+ local mult = 10^(idp or 0)
+ return math.floor(num * mult + 0.5) / mult
+end
+
+local totalMemory = computer.totalMemory() / 1048576;
+local usedMemory = round(totalMemory - computer.freeMemory() / 1048576, 2)
+local freeMem = round(computer.freeMemory() / 1048576, 2)
+
+print("Date/Time: " .. os.date("%F %X"))
+print("Up Time: " .. round(computer.uptime() / 60, 2) .. " Minutes")
+
+if component.isAvailable("tablet") or component.isAvailable("robot") or options.p then
+ print("Power: " .. round(computer.energy(), 2) .. "/" .. round(computer.maxEnergy(), 2))
+end
+
+print("Total Memory: " .. round(totalMemory, 2) .. " MB")
+
+if freeMem * 100 <= 15 then
+ component.gpu.setForeground(0xFF0000)
+  print("Free Memory: " .. round(freeMem, 2) .. " MB")
+ component.gpu.setForeground(0xFFFFFF)
+ else
+  print("Free Memory: " .. round(freeMem, 2) .. " MB")
+end
+
+if usedMemory >= 85 then
+ component.gpu.setForeground(0xFF0000)
+  print("Used Memory: " .. round(usedMemory, 2) .. " MB (" .. round(usedMemory / totalMemory, 2) * 100 .. "%)")
+ component.gpu.setForeground(0xFFFFFF)
+ else
+  print("Used Memory: " .. round(usedMemory, 2) .. " MB (" .. round(usedMemory / totalMemory, 2) * 100 .. "%)")
+end
 
 local function formatSize(size)
   if not options.h then
