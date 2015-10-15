@@ -4,6 +4,7 @@ import java.util.Random;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import net.minecraft.block.Block;
@@ -108,12 +109,12 @@ public class BlockSecurityDoor extends BlockDoor
 	@Override
 	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
 	{
-		return OpenSecurity.securityDoor;
+		return ContentRegistry.securityDoor;
 	}
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-		return new ItemStack(OpenSecurity.securityDoor);
+		return new ItemStack(ContentRegistry.securityDoor);
 
 	}
 

@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
 import cpw.mods.fml.relauncher.Side;
@@ -37,7 +38,7 @@ public class BlockDoorController extends BlockOSBase {
 	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
 		TileEntity te = par1World.getTileEntity(x, y, z);
 		((TileEntityDoorController) te).setOwner(par5EntityLivingBase.getUniqueID().toString());
-		((TileEntityDoorController) te).overrideTexture(OpenSecurity.DoorController, new ItemStack(Item.getItemFromBlock(OpenSecurity.DoorController)), ForgeDirection.getOrientation(1));
+		((TileEntityDoorController) te).overrideTexture(ContentRegistry.DoorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.DoorController)), ForgeDirection.getOrientation(1));
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class BlockDoorController extends BlockOSBase {
 					world.scheduleBlockUpdate(x, y, z, tileEntity.block, 5);
 					if (!world.isRemote) {
 						ItemStack testAgainst = new ItemStack(oldBlock);
-						if (!testAgainst.getItem().equals(Item.getItemFromBlock(OpenSecurity.DoorController))) {
+						if (!testAgainst.getItem().equals(Item.getItemFromBlock(ContentRegistry.DoorController))) {
 							EntityItem myItemEntity = new EntityItem(world, x, y, z, testAgainst);
 							world.spawnEntityInWorld(myItemEntity);
 						}
@@ -75,12 +76,12 @@ public class BlockDoorController extends BlockOSBase {
 			//Remove the block texture with the scrench
 		} else if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof Wrench) {
 			if (!world.isRemote) {
-				if (!tileEntity.DoorControllerCamo[0].getItem().equals(Item.getItemFromBlock(OpenSecurity.DoorController))) {
+				if (!tileEntity.DoorControllerCamo[0].getItem().equals(Item.getItemFromBlock(ContentRegistry.DoorController))) {
 					EntityItem myItemEntity = new EntityItem(world, x, y, z, tileEntity.DoorControllerCamo[0]);
 					world.spawnEntityInWorld(myItemEntity);
 				}
 			}
-			tileEntity.overrideTexture(OpenSecurity.DoorController, new ItemStack(Item.getItemFromBlock(OpenSecurity.DoorController)), ForgeDirection.getOrientation(side));
+			tileEntity.overrideTexture(ContentRegistry.DoorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.DoorController)), ForgeDirection.getOrientation(side));
 			world.scheduleBlockUpdate(x, y, z, tileEntity.block, 5);
 		}
 

@@ -65,22 +65,7 @@ public class OpenSecurity {
 
 	public static final String MODID = "opensecurity";
 
-	public static Block magCardReader;
-	public static Block rfidCardReader;
-	public static Block cardWriter;
-	public static Block Alarm;
-	public static Block EntityDetector;
-	public static Block SecurityDoor;
-	public static Block DoorController;
-	public static Block DataBlock;
-	public static Block SwitchableHub;
-	public static Block BlockKVM;
-	public static Item magCard;
-	public static Item rfidCard;
-	public static Item securityDoor;
-	public static Item rfidReaderCard;
-	public static ItemBlock securityitemBlock;
-	public static ItemStack secureOS_disk;
+
 
 	@Instance(value = MODID)
 	public static OpenSecurity instance;
@@ -97,7 +82,7 @@ public class OpenSecurity {
 
 	public static List<String> alarmList;
 
-	public static CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
+	
 	
 	public static SimpleNetworkWrapper network;
 	
@@ -121,85 +106,7 @@ public class OpenSecurity {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, 0, Side.SERVER);
-		registerBlocks();
-		registerItems();
-		registerEvents();
-	}
-
-	private void registerEvents() {
-		MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
-	}
-
-	private void registerItems() {
-		magCard = new ItemMagCard();
-		GameRegistry.registerItem(magCard, "opensecurity.magCard");
-		magCard.setCreativeTab(CreativeTab);
-
-		rfidCard = new ItemRFIDCard();
-		GameRegistry.registerItem(rfidCard, "opensecurity.rfidCard");
-		rfidCard.setCreativeTab(CreativeTab);
-
-		rfidReaderCard = new ItemRFIDReaderCard();
-		GameRegistry.registerItem(rfidReaderCard, "opensecurity.rfidReaderCard");
-		rfidReaderCard.setCreativeTab(CreativeTab);
-		li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
-
-		securityDoor = new ItemSecurityDoor(SecurityDoor);
-		GameRegistry.registerItem(securityDoor, "opensecurity.securityDoor");
-		securityDoor.setCreativeTab(CreativeTab);
-	}
-
-	private void registerBlocks() {
-		magCardReader = new BlockMagReader();
-		GameRegistry.registerBlock(magCardReader, "magreader");
-		magCardReader.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityMagReader.class, "MagCardTE");
-
-		rfidCardReader = new BlockRFIDReader();
-		GameRegistry.registerBlock(rfidCardReader, "rfidreader");
-		rfidCardReader.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "RFIDTE");
-
-		cardWriter = new BlockCardWriter();
-		GameRegistry.registerBlock(cardWriter, "rfidwriter");
-		cardWriter.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityCardWriter.class, "RFIDWriterTE");
-
-		Alarm = new BlockAlarm();
-		GameRegistry.registerBlock(Alarm, "alarm");
-		Alarm.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityAlarm.class, "AlarmTE");
-
-		EntityDetector = new BlockEntityDetector();
-		GameRegistry.registerBlock(EntityDetector, "entitydetector");
-		EntityDetector.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityEntityDetector.class, "EntityDetectorTE");
-
-		DoorController = new BlockDoorController();
-		GameRegistry.registerBlock(DoorController, "doorcontroller");
-		DoorController.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityDoorController.class, "DoorControllerTE");
-
-		SecurityDoor = new BlockSecurityDoor();
-		GameRegistry.registerBlock(SecurityDoor, "SecurityDoor");
-		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "SecureDoorTE");
-
-		DataBlock = new BlockData();
-		GameRegistry.registerBlock(DataBlock, MODID + ".DataBlock");
-		DataBlock.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityDataBlock.class, MODID + ".DataBlockTE");
-
-		SwitchableHub = new BlockSwitchableHub();
-		GameRegistry.registerBlock(SwitchableHub, MODID + ".SwitchableHub");
-		SwitchableHub.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntitySwitchableHub.class, MODID + ".SwitchableHubTE");
-		
-		BlockKVM = new BlockKVM();
-		GameRegistry.registerBlock(BlockKVM, MODID + ".BlockKVM");
-		BlockKVM.setCreativeTab(CreativeTab);
-		GameRegistry.registerTileEntity(TileEntityKVM.class, MODID + ".KVMTE");
-
-		logger.info("Registered Blocks");
+	    ContentRegistry.init();
 	}
 
 	@EventHandler
@@ -208,65 +115,6 @@ public class OpenSecurity {
 	}
 
 	private void registerRecipes() {
-		Callable<FileSystem> factory = new Callable<FileSystem>() {
-			@Override
-			public FileSystem call() {
-				return li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/SecureOS/");
-			}
-		};
-		secureOS_disk = li.cil.oc.api.Items.registerFloppy("SecureOS", 1, factory);
 
-		ItemStack redstone = new ItemStack(Items.redstone);
-		ItemStack paper = new ItemStack(Items.paper);
-		ItemStack noteblock = new ItemStack(Blocks.noteblock);
-		ItemStack door = new ItemStack(Items.iron_door);
-		ItemStack obsidian = new ItemStack(Blocks.obsidian);
-		ItemStack t2microchip = li.cil.oc.api.Items.get("chip2").createItemStack(1);
-		ItemStack t1microchip = li.cil.oc.api.Items.get("chip1").createItemStack(1);
-		ItemStack t1ram = li.cil.oc.api.Items.get("ram1").createItemStack(1);
-		ItemStack pcb = li.cil.oc.api.Items.get("printedCircuitBoard").createItemStack(1);
-		ItemStack controlunit = li.cil.oc.api.Items.get("cu").createItemStack(1);
-		ItemStack wlancard = li.cil.oc.api.Items.get("wlanCard").createItemStack(1);
-		ItemStack cardbase = li.cil.oc.api.Items.get("card").createItemStack(1);
-		ItemStack cable = li.cil.oc.api.Items.get("cable").createItemStack(1);
-		ItemStack transistor = li.cil.oc.api.Items.get("transistor").createItemStack(1);
-		ItemStack floppy = li.cil.oc.api.Items.get("floppy").createItemStack(1);
-		ItemStack datacard;
-		if (li.cil.oc.api.Items.get("dataCard").createItemStack(1) != null) {
-			datacard = li.cil.oc.api.Items.get("dataCard").createItemStack(1);
-		} else {
-			datacard = li.cil.oc.api.Items.get("dataCard1").createItemStack(1);
-		}
-		
-		ItemStack oc_relay = li.cil.oc.api.Items.get("relay").createItemStack(1);
-
-		GameRegistry.addRecipe(new ItemStack(rfidReaderCard, 1), "MRM", " N ", "BC ", 'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit);
-
-		GameRegistry.addRecipe(new ItemStack(EntityDetector, 1), "MRM", "   ", "BC ", 'M', t2microchip, 'R', t1ram, 'B', cardbase, 'C', controlunit);
-
-		GameRegistry.addRecipe(new ItemStack(rfidCardReader, 1), " R ", "PFT", " C ", 'F', rfidReaderCard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
-
-		GameRegistry.addRecipe(new ItemStack(DataBlock, 1), " D ", "PFT", " C ", 'D', datacard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
-
-		GameRegistry.addRecipe(new ItemStack(Alarm, 1), " R ", "PNC", " T ", 'N', noteblock, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
-
-		GameRegistry.addRecipe(new ItemStack(cardWriter, 1), "TRT", "SUS", "PC ", 'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor, 'U', controlunit, 'R', t1ram);
-
-		GameRegistry.addRecipe(new ItemStack(magCardReader, 1), "T T", "S S", "PC ", 'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor);
-
-		GameRegistry.addRecipe(new ItemStack(rfidCard, 6), "P P", " S ", "PTP", 'P', paper, 'S', transistor, 'T', t1microchip);
-
-		GameRegistry.addRecipe(new ItemStack(magCard, 6), "P P", " S ", "P P", 'P', paper, 'S', transistor);
-
-		GameRegistry.addRecipe(new ItemStack(securityDoor, 1), "TOT", "ODO", "SOS", 'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian);
-
-		GameRegistry.addRecipe(new ItemStack(DoorController, 1), "TOT", "OCO", "SBS", 'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip, 'O', obsidian);
-
-		GameRegistry.addRecipe(new ItemStack(SwitchableHub, 1), "TBT", "BSB", "RBR", 'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
-		
-		GameRegistry.addRecipe(new ItemStack(BlockKVM, 1), " B ", "BSB", "RBR", 'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
-		
-		GameRegistry.addShapelessRecipe(secureOS_disk, new Object[] { floppy, magCard });
-		logger.info("Registered Recipes");
 	}
 }

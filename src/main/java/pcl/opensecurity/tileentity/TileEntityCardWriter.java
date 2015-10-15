@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
@@ -338,12 +339,12 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 						if (getStackInSlot(x) == null) { // The slot is empty lets
 															// make us a RFID
 							if (getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
-								CardWriterItemStacks[x] = new ItemStack(OpenSecurity.rfidCard);
+								CardWriterItemStacks[x] = new ItemStack(ContentRegistry.rfidCard);
 								if (data.length() > 64) {
 									data = data.substring(0, 64);
 								}
 							} else if (getStackInSlot(0).getItem() instanceof ItemMagCard) {
-								CardWriterItemStacks[x] = new ItemStack(OpenSecurity.magCard);
+								CardWriterItemStacks[x] = new ItemStack(ContentRegistry.magCard);
 								if (data.length() > 128) {
 									data = data.substring(0, 128);
 								}

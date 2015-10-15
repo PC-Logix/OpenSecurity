@@ -1,5 +1,6 @@
 package pcl.opensecurity.items;
 
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import net.minecraft.block.Block;
@@ -19,7 +20,7 @@ public class ItemSecurityDoor extends ItemDoor {
 		this.maxStackSize = 16;
 		this.setUnlocalizedName("securityDoor");
 		this.setTextureName("opensecurity:door_secure");
-		this.setCreativeTab(OpenSecurity.CreativeTab);
+		this.setCreativeTab(ContentRegistry.CreativeTab);
 	}
 
 
@@ -38,7 +39,7 @@ public class ItemSecurityDoor extends ItemDoor {
             ++par5;
             Block block;
 
-            block = OpenSecurity.SecurityDoor;
+            block = ContentRegistry.SecurityDoor;
 
             if (par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack))
             {

@@ -23,13 +23,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemRFIDCard;
 
 public class RFIDReaderCardDriver extends DriverItem {
 
 	public RFIDReaderCardDriver() {
-		super(new ItemStack(OpenSecurity.rfidReaderCard));
+		super(new ItemStack(ContentRegistry.rfidReaderCard));
 	}
 
 	@Override

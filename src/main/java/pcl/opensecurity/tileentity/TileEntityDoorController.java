@@ -20,6 +20,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.blocks.BlockSecurityDoor;
 import pcl.opensecurity.util.BlockLocation;
@@ -199,7 +200,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 	@Callback
 	public Object[] isOpen(Context context, Arguments args) {
-		BlockSecurityDoor door = (BlockSecurityDoor) OpenSecurity.SecurityDoor;
+		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 		return new Object[] { isDoorOpen(door, loc) };
 	}
@@ -207,7 +208,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	@Callback
 	public Object[] toggle(Context context, Arguments args) throws Exception {
 		if (node.changeBuffer(-5) == 0) {
-			BlockSecurityDoor door = (BlockSecurityDoor) OpenSecurity.SecurityDoor;
+			BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
 			BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 			TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
 
