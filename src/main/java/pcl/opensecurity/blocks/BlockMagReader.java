@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import cpw.mods.fml.relauncher.Side;
@@ -87,9 +88,10 @@ public class BlockMagReader extends BlockOSBase {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int xCoord, int yCoord, int zCoord, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {
+	public boolean onBlockActivated(World world, int xCoord, int yCoord, int zCoord, EntityPlayer entityplayer, int side, float clickedX, float clickedY, float clickedZ) {
 		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
 		TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(xCoord, yCoord, zCoord);
+		OpenSecurity.logger.info(side);
 		if (!world.isRemote) {
 			if (equipped instanceof ItemMagCard) {
 				if (tile.doRead(entityplayer.getCurrentEquippedItem(), entityplayer)) {

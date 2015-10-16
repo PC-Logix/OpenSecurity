@@ -90,13 +90,13 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 		nbt.setString("eventName", eventName);
 	}
 
-	public boolean doRead(ItemStack itemStack, EntityPlayer em) {
+	public boolean doRead(ItemStack itemStack, EntityPlayer em, int side) {
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("data")) {
 			data = itemStack.stackTagCompound.getString("data");
 			String uuid = itemStack.stackTagCompound.getString("uuid");
 			boolean locked = itemStack.stackTagCompound.getBoolean("locked");
 			if (node.changeBuffer(-5) == 0) {
-				node.sendToReachable("computer.signal", eventName, em.getDisplayName(), data, uuid, locked);
+				node.sendToReachable("computer.signal", eventName, em.getDisplayName(), data, uuid, locked, side);
 			}
 			return true;
 		} else {
