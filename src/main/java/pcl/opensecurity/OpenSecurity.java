@@ -112,6 +112,7 @@ public class OpenSecurity {
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
 		registerRecipes();
+		proxy.registerRenderers();
 	}
 
 	private void registerRecipes() {
