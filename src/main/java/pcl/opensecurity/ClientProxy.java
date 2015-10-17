@@ -12,19 +12,6 @@ import pcl.opensecurity.tileentity.TileEntityCardWriter;
 
 public class ClientProxy extends CommonProxy {
 
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
-			int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te != null && te instanceof TileEntityMagReader) {
-			TileEntityMagReader icte = (TileEntityMagReader) te;
-			return new MagCardContainer(player.inventory, icte);
-		} else if (te != null && te instanceof TileEntityRFIDReader) {
-			TileEntityCardWriter icte = (TileEntityCardWriter) te;
-			return new CardWriterContainer(player.inventory, icte);
-		} else {
-			return null;
-		}
-	}
+
 
 }

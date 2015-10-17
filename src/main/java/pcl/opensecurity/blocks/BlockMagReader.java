@@ -91,10 +91,9 @@ public class BlockMagReader extends BlockOSBase {
 	public boolean onBlockActivated(World world, int xCoord, int yCoord, int zCoord, EntityPlayer entityplayer, int side, float clickedX, float clickedY, float clickedZ) {
 		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
 		TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(xCoord, yCoord, zCoord);
-		OpenSecurity.logger.info(side);
 		if (!world.isRemote) {
 			if (equipped instanceof ItemMagCard) {
-				if (tile.doRead(entityplayer.getCurrentEquippedItem(), entityplayer)) {
+				if (tile.doRead(entityplayer.getCurrentEquippedItem(), entityplayer, side)) {
 					world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 3, 1);
 				} else {
 					world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 2, 1);
