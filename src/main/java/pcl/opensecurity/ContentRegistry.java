@@ -15,6 +15,7 @@ import pcl.opensecurity.blocks.BlockKVM;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockSecurityDoor;
+import pcl.opensecurity.blocks.BlockSecurityDoorPrivate;
 import pcl.opensecurity.blocks.BlockSwitchableHub;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.drivers.RFIDReaderCardDriver;
@@ -22,6 +23,7 @@ import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.items.ItemRFIDReaderCard;
 import pcl.opensecurity.items.ItemSecurityDoor;
+import pcl.opensecurity.items.ItemSecurityDoorPrivate;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntityDataBlock;
@@ -59,9 +61,11 @@ public class ContentRegistry {
 	public static Block DataBlock;
 	public static Block SwitchableHub;
 	public static Block BlockKVM;
+	public static Block SecurityDoorPrivate;
 	public static Item magCard;
 	public static Item rfidCard;
 	public static Item securityDoor;
+	public static Item securityDoorPrivate;
 	public static Item rfidReaderCard;
 	public static ItemBlock securityitemBlock;
 	public static ItemStack secureOS_disk;
@@ -99,6 +103,11 @@ public class ContentRegistry {
 		securityDoor = new ItemSecurityDoor(SecurityDoor);
 		GameRegistry.registerItem(securityDoor, "opensecurity.securityDoor");
 		securityDoor.setCreativeTab(CreativeTab);
+		
+		securityDoorPrivate = new ItemSecurityDoorPrivate(SecurityDoor);
+		GameRegistry.registerItem(securityDoorPrivate, "opensecurity.securityDoorPrivate");
+		securityDoor.setCreativeTab(CreativeTab);
+		
 		OpenSecurity.logger.info("Registered Items");
 	}
 
@@ -137,6 +146,9 @@ public class ContentRegistry {
 		GameRegistry.registerBlock(SecurityDoor, "SecurityDoor");
 		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "SecureDoorTE");
 
+		SecurityDoorPrivate = new BlockSecurityDoorPrivate();
+		GameRegistry.registerBlock(SecurityDoorPrivate, "SecurityDoorPrivate");
+		
 		DataBlock = new BlockData();
 		GameRegistry.registerBlock(DataBlock, OpenSecurity.MODID + ".DataBlock");
 		DataBlock.setCreativeTab(CreativeTab);

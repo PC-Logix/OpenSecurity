@@ -22,14 +22,13 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDoor extends BlockDoor
-{
+public class BlockSecurityDoor extends BlockDoor {
 	public Item placerItem;
 
 	@SideOnly(Side.CLIENT)
-	private IIcon[] iconsUpper;
+	private IIcon[] iconsUpper= new IIcon[2];
 	@SideOnly(Side.CLIENT)
-	private IIcon[] iconsLower;
+	private IIcon[] iconsLower= new IIcon[2];
 
 	public BlockSecurityDoor()
 	{
@@ -92,8 +91,6 @@ public class BlockSecurityDoor extends BlockDoor
 	@Override
 	public void registerBlockIcons(IIconRegister p_149651_1_)
 	{
-		this.iconsUpper = new IIcon[2];
-		this.iconsLower = new IIcon[2];
 		this.iconsUpper[0] = p_149651_1_.registerIcon(OpenSecurity.MODID + ":door_secure_upper");
 		this.iconsLower[0] = p_149651_1_.registerIcon(OpenSecurity.MODID + ":door_secure_lower");
 		this.iconsUpper[1] = new IconFlipped(this.iconsUpper[0], true, false);

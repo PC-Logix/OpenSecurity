@@ -13,6 +13,7 @@ item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card
 item.rfidReaderCard.name=RFID Reader Card
 item.securityDoor.name=Security Door
+item.securityDoorPrivate.name=Private Security Door
 itemGroup.OpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer
