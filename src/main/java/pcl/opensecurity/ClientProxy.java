@@ -34,6 +34,7 @@ public class ClientProxy extends CommonProxy {
 	{
 		TileEntitySpecialRenderer panelDisplayPanel = new RenderDisplayPanel();
 		ClientRegistry.bindTileEntitySpecialRenderer(pcl.opensecurity.tileentity.TileEntityDisplayPanel.class, panelDisplayPanel);
+		OpenSecurity.logger.info("Registered TESRs");
 	}
 	
 }

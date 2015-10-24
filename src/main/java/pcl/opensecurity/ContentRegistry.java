@@ -9,6 +9,7 @@ import li.cil.oc.api.fs.FileSystem;
 import pcl.opensecurity.blocks.BlockAlarm;
 import pcl.opensecurity.blocks.BlockCardWriter;
 import pcl.opensecurity.blocks.BlockData;
+import pcl.opensecurity.blocks.BlockDisplayPanel;
 import pcl.opensecurity.blocks.BlockDoorController;
 import pcl.opensecurity.blocks.BlockEntityDetector;
 import pcl.opensecurity.blocks.BlockKVM;
@@ -27,6 +28,7 @@ import pcl.opensecurity.items.ItemSecurityDoorPrivate;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntityDataBlock;
+import pcl.opensecurity.tileentity.TileEntityDisplayPanel;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
 import pcl.opensecurity.tileentity.TileEntityEntityDetector;
 import pcl.opensecurity.tileentity.TileEntityKVM;
@@ -62,6 +64,7 @@ public class ContentRegistry {
 	public static Block SwitchableHub;
 	public static Block BlockKVM;
 	public static Block SecurityDoorPrivate;
+	public static Block DisplayPanel;
 	public static Item magCard;
 	public static Item rfidCard;
 	public static Item securityDoor;
@@ -164,6 +167,12 @@ public class ContentRegistry {
 		BlockKVM.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityKVM.class, OpenSecurity.MODID + ".KVMTE");
 
+		DisplayPanel = new BlockDisplayPanel();
+		GameRegistry.registerBlock(DisplayPanel, OpenSecurity.MODID + ".DisplayPanel");
+		DisplayPanel.setCreativeTab(CreativeTab);
+		
+		GameRegistry.registerTileEntity(TileEntityDisplayPanel.class, OpenSecurity.MODID + ".DisplayPanelTE");
+		
 		OpenSecurity.logger.info("Registered Blocks");
 	}
 

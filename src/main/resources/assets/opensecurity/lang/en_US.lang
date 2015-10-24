@@ -7,6 +7,7 @@ tile.entitydetector.name=Entity Detector
 tile.doorController.name=Door Controller
 tile.datablock.name=Data Block
 tile.switchablehub.name=Switchable Hub
+tile.displaypanel.name=Display Panel
 tile.kvm.name=KVM Switch
 //items
 item.rfidCard.name=RFID Card
