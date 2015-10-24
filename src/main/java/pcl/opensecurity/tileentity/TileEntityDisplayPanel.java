@@ -11,7 +11,7 @@ public class TileEntityDisplayPanel extends TileEntityMachineBase{
 
 	public String getScreenText() {
 		// TODO Auto-generated method stub
-		return "MOTHAFUCKA!";
+		return "DEBUGGING BLOCK PLEASE IGNORE";
 	}
 
 	public int getScreenColor() {

@@ -91,6 +91,8 @@ public class BlockSecurityDoor extends BlockDoor {
 	@Override
 	public void registerBlockIcons(IIconRegister p_149651_1_)
 	{
+		this.iconsUpper = new IIcon[2];
+		this.iconsLower = new IIcon[2];
 		this.iconsUpper[0] = p_149651_1_.registerIcon(OpenSecurity.MODID + ":door_secure_upper");
 		this.iconsLower[0] = p_149651_1_.registerIcon(OpenSecurity.MODID + ":door_secure_lower");
 		this.iconsUpper[1] = new IconFlipped(this.iconsUpper[0], true, false);
