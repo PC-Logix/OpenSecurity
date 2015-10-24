@@ -147,10 +147,11 @@ public class ContentRegistry {
 
 		SecurityDoor = new BlockSecurityDoor();
 		GameRegistry.registerBlock(SecurityDoor, "SecurityDoor");
-		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "SecureDoorTE");
 
 		SecurityDoorPrivate = new BlockSecurityDoorPrivate();
 		GameRegistry.registerBlock(SecurityDoorPrivate, "SecurityDoorPrivate");
+		
+		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "SecureDoorTE");
 		
 		DataBlock = new BlockData();
 		GameRegistry.registerBlock(DataBlock, OpenSecurity.MODID + ".DataBlock");

@@ -26,9 +26,9 @@ public class BlockSecurityDoor extends BlockDoor {
 	public Item placerItem;
 
 	@SideOnly(Side.CLIENT)
-	private IIcon[] iconsUpper= new IIcon[2];
+	private IIcon[] iconsUpper;
 	@SideOnly(Side.CLIENT)
-	private IIcon[] iconsLower= new IIcon[2];
+	private IIcon[] iconsLower;
 
 	public BlockSecurityDoor()
 	{
