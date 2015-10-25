@@ -71,7 +71,7 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 		if (node != null && node.host() == this) {
 			node.load(nbt.getCompoundTag("oc:node"));
 		}
-		if (!(nbt.getString("eventName") == null)) {
+		if (nbt.hasKey("eventName") && !nbt.getString("eventName").isEmpty()) {
 			eventName = nbt.getString("eventName");
 		} else {
 			eventName = "magData";
