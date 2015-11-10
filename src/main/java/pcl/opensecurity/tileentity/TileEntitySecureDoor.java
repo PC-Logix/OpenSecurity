@@ -23,13 +23,17 @@ public class TileEntitySecureDoor extends TileEntity {
 		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
 			TileEntity te = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
 			if (te instanceof TileEntitySecureDoor) {
-				if (((TileEntitySecureDoor) te).getOwner().equals(this.ownerUUID)) {
-					if (((TileEntitySecureDoor) te).getPass().isEmpty() && !this.password.isEmpty()) {
-						((TileEntitySecureDoor) te).setPassword(this.password);	
+				if (!te.equals(this)) {
+					if (((TileEntitySecureDoor) te).getOwner().equals(this.ownerUUID)) {
+						((TileEntitySecureDoor) te).setSlavePassword(this.password);	
 					}
 				}
 			}
 		}
+	}
+
+	public void setSlavePassword(String pass) {
+		this.password = pass;
 	}
 
 	@Override

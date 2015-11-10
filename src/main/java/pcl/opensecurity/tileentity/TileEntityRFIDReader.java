@@ -182,7 +182,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 	}
 
 	@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.", direct = true)
-	public Object[] scan(Context context, Arguments args) throws Exception {
+	public Object[] scan(Context context, Arguments args) {
 		int range = args.optInteger(0, OpenSecurity.rfidRange);
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
@@ -192,7 +192,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		if (node.changeBuffer(-5 * range) == 0) {
 			return new Object[]{ scan(range) };
 		} else {
-			throw new Exception("Not enough power in OC Network.");
+			return new Object[] { false, "Not enough power in OC Network." };
 		}
 	}
 }

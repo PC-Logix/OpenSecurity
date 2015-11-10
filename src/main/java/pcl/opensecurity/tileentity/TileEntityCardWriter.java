@@ -81,9 +81,9 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 			node.remove();
 	}
 
-	private static final int[] slots_top = new int[] { 2 };
-	private static final int[] slots_bottom = new int[] { 3, 4, 5, 6, 7, 8, 9 };
-	private static final int[] slots_sides = new int[] { 0, 1 };
+	private static final int[] slots_top = new int[] { 0 };
+	private static final int[] slots_bottom = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	private static final int[] slots_sides = new int[] { 0 };
 	private ItemStack[] CardWriterItemStacks = new ItemStack[12];
 
 	@Override
@@ -302,7 +302,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 	}
 
 	@Callback(doc = "function(string: data, string: displayName, boolean: locked, int: color):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data, the 3rd argument will set the color of the card, use OC's sides api.", direct = true)
-	public Object[] write(Context context, Arguments args) throws Exception {
+	public Object[] write(Context context, Arguments args) {
 		String data = args.checkString(0);
 		String title = args.optString(1, "");
 		Boolean locked = args.optBoolean(2, false);
@@ -366,7 +366,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 							CardWriterItemStacks[x].stackTagCompound.setInteger("color", color);
 							
 							decrStackSize(0, 1);
-							return new Object[] { true };
+							return new Object[] { true,  CardWriterItemStacks[x].stackTagCompound.getString("uuid")};
 						}
 					}
 					return new Object[] { false, "No Empty Slots" };
@@ -375,7 +375,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 			}
 			return new Object[] { false, "Data is Null" };
 		} else {
-			throw new Exception("Not enough power in OC Network.");
+			return new Object[] { false, "Not enough power in OC Network." };
 		}
 	}
 

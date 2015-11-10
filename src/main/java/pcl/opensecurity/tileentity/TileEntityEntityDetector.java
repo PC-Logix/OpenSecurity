@@ -148,7 +148,7 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 	}
 
 	@Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each player in range, optional set range.", direct = true)
-	public Object[] scanPlayers(Context context, Arguments args) throws Exception {
+	public Object[] scanPlayers(Context context, Arguments args) {
 		range = args.optInteger(0, range);
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
@@ -157,12 +157,12 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 		if (node.changeBuffer(-5 * range) == 0) {
 			return new Object[]{ scan(true) };
 		} else {
-			throw new Exception("Not enough power in OC Network.");
+			return new Object[] { false, "Not enough power in OC Network." };
 		}
 	}
 
 	@Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each entity in range (excluding players), optional set range.", direct = true)
-	public Object[] scanEntities(Context context, Arguments args) throws Exception {
+	public Object[] scanEntities(Context context, Arguments args) {
 		range = args.optInteger(0, range);
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
@@ -171,7 +171,7 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 		if (node.changeBuffer(-5 * range) == 0) {
 			return new Object[]{ scan(false) };
 		} else {
-			throw new Exception("Not enough power in OC Network.");
+			return new Object[] { false, "Not enough power in OC Network." };
 		}
 	}
 

@@ -156,6 +156,23 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	}
 
 	@Callback
+	public Object[] removePassword(Context context, Arguments args) {
+		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
+		if (ownerUUID.equals(te.getOwner())) {
+			if (args.checkString(0).equals(te.getPass())) {
+				if (te instanceof TileEntitySecureDoor) {
+					((TileEntitySecureDoor) te).setPassword("");
+				}
+				return new Object[] { true, "Password Removed" };
+			} else {
+				return new Object[] { false, "Password was not removed" };
+			}	
+		} else {
+			return new Object[] { false, "Owner of Controller and Door do not match." };
+		}
+	}
+
+	@Callback
 	public Object[] setPassword(Context context, Arguments args) {
 		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
 		if (ownerUUID.equals(te.getOwner())) {
@@ -165,19 +182,19 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 					((TileEntitySecureDoor) te).setPassword(args.checkString(0));
 				}
 
-				return new Object[] { "Password set" };			
+				return new Object[] { true, "Password set" };			
 			} else {
 				if (args.checkString(0).equals(te.getPass())) {
 					if (te instanceof TileEntitySecureDoor) {
 						((TileEntitySecureDoor) te).setPassword(args.checkString(1));
 					}
-					return new Object[] { "Password Changed" };
+					return new Object[] { true, "Password Changed" };
 				} else {
-					return new Object[] { "Password was not changed" };
+					return new Object[] { false, "Password was not changed" };
 				}
 			}	
 		} else {
-			return new Object[] { "Owner of Controller and Door do not match." };
+			return new Object[] { false, "Owner of Controller and Door do not match." };
 		}
 	}
 
@@ -206,7 +223,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	}
 
 	@Callback
-	public Object[] toggle(Context context, Arguments args) throws Exception {
+	public Object[] toggle(Context context, Arguments args) {
 		if (node.changeBuffer(-5) == 0) {
 			BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
 			BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
@@ -214,7 +231,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 			if (ownerUUID.equals(te.getOwner())) {
 				if (!te.getPass().isEmpty() && !te.getPass().equals(args.checkString(0))) {
-					return new Object[] { "Password Incorrect" };
+					return new Object[] { false, "Password Incorrect" };
 				}
 				int direction = getDoorOrientation(door, loc);
 				// boolean isOpen = isDoorOpen(door, loc);
@@ -266,10 +283,10 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 				}
 				return new Object[] { !isDoorOpen(door, loc) };
 			} else {
-				throw new Exception("Not enough power in OC Network.");
+				return new Object[] { false, "Not enough power in OC Network." };
 			}
 		} else {
-			return new Object[] { "Owner of Controller and Door do not match." };
+			return new Object[] { false, "Owner of Controller and Door do not match." };
 		}
 	}
 
