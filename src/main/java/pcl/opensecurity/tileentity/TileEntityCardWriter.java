@@ -83,7 +83,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 
 	private static final int[] slots_top = new int[] { 0 };
 	private static final int[] slots_bottom = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	private static final int[] slots_sides = new int[] { 0 };
+	private static final int[] slots_sides = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	private ItemStack[] CardWriterItemStacks = new ItemStack[12];
 
 	@Override
