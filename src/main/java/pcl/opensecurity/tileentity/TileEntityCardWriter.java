@@ -9,6 +9,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
@@ -33,32 +34,40 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 
 	public ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
+	protected boolean addedToNetwork = false;
+
 	public TileEntityCardWriter() {
 		if (this.node() != null) {
 			initOCFilesystem();
 		}
 	}
 
-	private li.cil.oc.api.network.ManagedEnvironment oc_fs;
+	//private li.cil.oc.api.network.ManagedEnvironment oc_fs;
+
+	private Object oc_fs;
+
+	protected ManagedEnvironment oc_fs(){
+		return (ManagedEnvironment) this.oc_fs;
+	}
 
 	private void initOCFilesystem() {
 		oc_fs = li.cil.oc.api.FileSystem.asManagedEnvironment(li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/cardwriter/"), "cardwriter");
-		((Component) oc_fs.node()).setVisibility(Visibility.Neighbors);
+		((Component) oc_fs().node()).setVisibility(Visibility.Network);
 	}
 
 	@Override
 	public void onConnect(final Node node) {
-		if (node.host() instanceof Context) {
-			node.connect(oc_fs.node());
+		if(node == node()) {
+			node.connect(oc_fs().node());
 		}
 	}
 
 	@Override
 	public void onDisconnect(final Node node) {
 		if (node.host() instanceof Context) {
-			node.disconnect(oc_fs.node());
+			node.disconnect(oc_fs().node());
 		} else if (node == this.node) {
-			oc_fs.node().remove();
+			oc_fs().node().remove();
 		}
 	}
 
@@ -70,15 +79,17 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
-		if (node != null)
+		if(node != null) {
 			node.remove();
+		}
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (node != null)
+		if(node != null) {
 			node.remove();
+		}
 	}
 
 	private static final int[] slots_top = new int[] { 0 };
@@ -197,19 +208,29 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		if (node != null && node.network() == null) {
+		if(!addedToNetwork) {
+			addToNetwork();
+		}
+		//if (node != null && node.network() == null) {
+		//	Network.joinOrCreateNetwork(this);
+		//}
+	}
+
+	protected void addToNetwork() {
+		if(!addedToNetwork) {
+			addedToNetwork = true;
 			Network.joinOrCreateNetwork(this);
 		}
 	}
-
+	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		if (node != null && node.host() == this) {
 			node.load(nbt.getCompoundTag("oc:node"));
 		}
-		if (oc_fs != null && oc_fs.node() != null) {
-			oc_fs.node().load(nbt.getCompoundTag("oc:fs"));
+		if (oc_fs != null && oc_fs().node() != null) {
+			oc_fs().node().load(nbt.getCompoundTag("oc:fs"));
 		}
 
 		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
@@ -231,9 +252,9 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 			node.save(nodeNbt);
 			nbt.setTag("oc:node", nodeNbt);
 		}
-		if (oc_fs != null && oc_fs.node() != null) {
+		if (oc_fs != null && oc_fs().node() != null) {
 			final NBTTagCompound fsNbt = new NBTTagCompound();
-			oc_fs.node().save(fsNbt);
+			oc_fs().node().save(fsNbt);
 			nbt.setTag("oc:fs", fsNbt);
 		}
 
@@ -270,9 +291,9 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 		if (code != null) {
 			if (getStackInSlot(0) != null) {
 				for (int x = 3; x <= 12; x++) { // Loop the 9 output slots
-												// checking for a empty one
+					// checking for a empty one
 					if (getStackInSlot(x) == null) { // The slot is empty lets
-														// make us a RFID
+						// make us a RFID
 						if (getStackInSlot(0).getItem() instanceof EEPROM) {
 							CardWriterItemStacks[x] = eepromItem;
 							NBTTagCompound oc_data = new NBTTagCompound();
@@ -308,26 +329,26 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 		Boolean locked = args.optBoolean(2, false);
 		int colorIn = args.optInteger(3, 0);
 		int color = Integer.parseInt("FFFFFF", 16);
-	
+
 		if (colorIn > 0 && colorIn < 15) {
 			switch(colorIn) {
-				case 0: color = Integer.parseInt("FFFFFF", 16); break;
-				case 1: color = Integer.parseInt("FFA500", 16); break;
-				case 2: color = Integer.parseInt("FF00FF", 16); break;
-				case 3: color = Integer.parseInt("ADD8E6", 16); break;
-				case 4: color = Integer.parseInt("FFFF00", 16); break;
-				case 5: color = Integer.parseInt("00FF00", 16); break;
-				case 6: color = Integer.parseInt("FFC0CB", 16); break;
-				case 7: color = Integer.parseInt("808080", 16); break;
-				case 8: color = Integer.parseInt("C0C0C0", 16); break;
-				case 9: color = Integer.parseInt("00FFFF", 16); break;
-				case 10: color = Integer.parseInt("800080", 16); break;
-				case 11: color = Integer.parseInt("0000FF", 16); break;
-				case 12: color = Integer.parseInt("A52A2A", 16); break;
-				case 13: color = Integer.parseInt("008000", 16); break;
-				case 14: color = Integer.parseInt("FF0000", 16); break;
-				case 15: color = Integer.parseInt("000000", 16); break;
-				default: color = Integer.parseInt("FFFFFF", 16); break;
+			case 0: color = Integer.parseInt("FFFFFF", 16); break;
+			case 1: color = Integer.parseInt("FFA500", 16); break;
+			case 2: color = Integer.parseInt("FF00FF", 16); break;
+			case 3: color = Integer.parseInt("ADD8E6", 16); break;
+			case 4: color = Integer.parseInt("FFFF00", 16); break;
+			case 5: color = Integer.parseInt("00FF00", 16); break;
+			case 6: color = Integer.parseInt("FFC0CB", 16); break;
+			case 7: color = Integer.parseInt("808080", 16); break;
+			case 8: color = Integer.parseInt("C0C0C0", 16); break;
+			case 9: color = Integer.parseInt("00FFFF", 16); break;
+			case 10: color = Integer.parseInt("800080", 16); break;
+			case 11: color = Integer.parseInt("0000FF", 16); break;
+			case 12: color = Integer.parseInt("A52A2A", 16); break;
+			case 13: color = Integer.parseInt("008000", 16); break;
+			case 14: color = Integer.parseInt("FF0000", 16); break;
+			case 15: color = Integer.parseInt("000000", 16); break;
+			default: color = Integer.parseInt("FFFFFF", 16); break;
 			}
 		}
 
@@ -335,9 +356,9 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 			if (data != null) {
 				if (getStackInSlot(0) != null) {
 					for (int x = 3; x <= 12; x++) { // Loop the 9 output slots
-													// checking for a empty one
+						// checking for a empty one
 						if (getStackInSlot(x) == null) { // The slot is empty lets
-															// make us a RFID
+							// make us a RFID
 							if (getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
 								CardWriterItemStacks[x] = new ItemStack(ContentRegistry.rfidCard);
 								if (data.length() > 64) {
@@ -362,9 +383,9 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 							if (locked) {
 								CardWriterItemStacks[x].stackTagCompound.setBoolean("locked", locked);
 							}
-							
+
 							CardWriterItemStacks[x].stackTagCompound.setInteger("color", color);
-							
+
 							decrStackSize(0, 1);
 							return new Object[] { true,  CardWriterItemStacks[x].stackTagCompound.getString("uuid")};
 						}
