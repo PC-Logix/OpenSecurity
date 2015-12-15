@@ -24,7 +24,7 @@ else
 
 version = "1.0"
 group = "pcl.OpenSecurity"
-archivesBaseName = "OpenSecurity"
+archivesBaseName = "OpenSecurity-1.7.10"
 
 repositories {
     maven {
