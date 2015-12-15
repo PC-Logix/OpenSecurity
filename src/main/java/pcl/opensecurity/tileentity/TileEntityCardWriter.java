@@ -299,7 +299,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 							NBTTagCompound oc_data = new NBTTagCompound();
 							NBTTagCompound our_data = new NBTTagCompound();
 							if(code.length > Settings.get().eepromSize()) {
-								code = Arrays.copyOfRange(code, 0, 4096);
+								code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
 							}
 							if(title.length() > Settings.get().eepromDataSize()) {
 								title = title.substring(0, Settings.get().eepromDataSize());
