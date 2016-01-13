@@ -11,6 +11,7 @@ import pcl.opensecurity.blocks.BlockCardWriter;
 import pcl.opensecurity.blocks.BlockData;
 import pcl.opensecurity.blocks.BlockDisplayPanel;
 import pcl.opensecurity.blocks.BlockDoorController;
+import pcl.opensecurity.blocks.BlockEnergyTurret;
 import pcl.opensecurity.blocks.BlockEntityDetector;
 import pcl.opensecurity.blocks.BlockKVM;
 import pcl.opensecurity.blocks.BlockMagReader;
@@ -20,6 +21,7 @@ import pcl.opensecurity.blocks.BlockSecurityDoorPrivate;
 import pcl.opensecurity.blocks.BlockSwitchableHub;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.drivers.RFIDReaderCardDriver;
+import pcl.opensecurity.entity.EntityEnergyBolt;
 import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.items.ItemRFIDReaderCard;
@@ -30,6 +32,7 @@ import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntityDataBlock;
 import pcl.opensecurity.tileentity.TileEntityDisplayPanel;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
+import pcl.opensecurity.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.tileentity.TileEntityEntityDetector;
 import pcl.opensecurity.tileentity.TileEntityKVM;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
@@ -37,6 +40,7 @@ import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import pcl.opensecurity.tileentity.TileEntitySwitchableHub;
 import pcl.opensecurity.util.OSBreakEvent;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -65,6 +69,7 @@ public class ContentRegistry {
 	public static Block BlockKVM;
 	public static Block SecurityDoorPrivate;
 	public static Block DisplayPanel;
+	public static Block energyTurretBlock;
 	public static Item magCard;
 	public static Item rfidCard;
 	public static Item securityDoor;
@@ -79,9 +84,14 @@ public class ContentRegistry {
 	public static void init() {
         registerTabs();
         registerBlocks();
+        registerEntities();
         registerItems();
         registerEvents();
         registerRecipes();
+	}
+
+	private static void registerEntities() {
+		EntityRegistry.registerModEntity(EntityEnergyBolt.class, "energybolt", 0, OpenSecurity.instance, 64, 20, true);
 	}
 
 	private static void registerEvents() {
@@ -168,11 +178,18 @@ public class ContentRegistry {
 		BlockKVM.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityKVM.class, OpenSecurity.MODID + ".KVMTE");
 
-		DisplayPanel = new BlockDisplayPanel();
-		GameRegistry.registerBlock(DisplayPanel, OpenSecurity.MODID + ".DisplayPanel");
-		DisplayPanel.setCreativeTab(CreativeTab);
+		//DisplayPanel = new BlockDisplayPanel();
+		//GameRegistry.registerBlock(DisplayPanel, OpenSecurity.MODID + ".DisplayPanel");
+		//DisplayPanel.setCreativeTab(CreativeTab);
 		
-		GameRegistry.registerTileEntity(TileEntityDisplayPanel.class, OpenSecurity.MODID + ".DisplayPanelTE");
+		//GameRegistry.registerTileEntity(TileEntityDisplayPanel.class, OpenSecurity.MODID + ".DisplayPanelTE");
+		
+		energyTurretBlock = new BlockEnergyTurret();
+		GameRegistry.registerBlock(energyTurretBlock, "energyTurretBlock");
+		energyTurretBlock.setCreativeTab(CreativeTab);
+		
+		GameRegistry.registerTileEntity(TileEntityEnergyTurret.class, "EnergyTurret");
+
 		
 		OpenSecurity.logger.info("Registered Blocks");
 	}

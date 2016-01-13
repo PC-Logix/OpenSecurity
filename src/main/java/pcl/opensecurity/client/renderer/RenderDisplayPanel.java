@@ -38,7 +38,7 @@ public class RenderDisplayPanel extends TileEntitySpecialRenderer {
 
 		int dir = tileEntity.getBlockMetadata();
 
-		OpenSecurity.logger.info(dir);
+		//OpenSecurity.logger.info(dir);
 		GL11.glNormal3f(0, 1, 0);
 		if (dir == 2) {
 			GL11.glTranslatef((float)x +.501F, (float)y + .972F, (float)z + 0F);

@@ -36,6 +36,7 @@ import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.items.ItemRFIDReaderCard;
 import pcl.opensecurity.items.ItemSecurityDoor;
+import pcl.opensecurity.networking.packet.PacketBoltFire;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntityDataBlock;
@@ -77,6 +78,7 @@ public class OpenSecurity {
 	public static boolean debug = false;
 	public static int rfidRange;
 	public static boolean enableplaySoundAt = false;
+	public static boolean ignoreUUIDs = false;
 
 	public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
@@ -94,6 +96,7 @@ public class OpenSecurity {
 		alarmList = cfg.alarmsConfigList;
 		rfidRange = cfg.rfidMaxRange;
 		enableplaySoundAt = cfg.enableplaySoundAt;
+		ignoreUUIDs = cfg.ignoreUUIDs;
 
 		if ((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD) {
 			logger.info("Registering mod with OpenUpdater");
@@ -106,6 +109,7 @@ public class OpenSecurity {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, 0, Side.SERVER);
+	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, 0, Side.CLIENT);
 	    ContentRegistry.init();
 	}
 

@@ -375,7 +375,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 							if (!title.isEmpty()) {
 								CardWriterItemStacks[x].setStackDisplayName(title);
 							}
-							System.out.println(CardWriterItemStacks[x].stackTagCompound.getString("uuid"));
+							//System.out.println(CardWriterItemStacks[x].stackTagCompound.getString("uuid"));
 							if (CardWriterItemStacks[x].stackTagCompound.getString("uuid").isEmpty()) {
 								CardWriterItemStacks[x].stackTagCompound.setString("uuid", UUID.randomUUID().toString());
 							}

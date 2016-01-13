@@ -1,14 +1,22 @@
 package pcl.opensecurity;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 import pcl.opensecurity.CommonProxy;
+import pcl.opensecurity.client.renderer.BlockEnergyTurretTESR;
 import pcl.opensecurity.client.renderer.RenderDisplayPanel;
+import pcl.opensecurity.client.renderer.RenderEntityEnergyBolt;
+import pcl.opensecurity.client.renderer.RendererItemEnergyTurret;
 import pcl.opensecurity.containers.MagCardContainer;
 import pcl.opensecurity.containers.CardWriterContainer;
+import pcl.opensecurity.entity.EntityEnergyBolt;
+import pcl.opensecurity.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
@@ -34,6 +42,12 @@ public class ClientProxy extends CommonProxy {
 	{
 		TileEntitySpecialRenderer panelDisplayPanel = new RenderDisplayPanel();
 		ClientRegistry.bindTileEntitySpecialRenderer(pcl.opensecurity.tileentity.TileEntityDisplayPanel.class, panelDisplayPanel);
+
+	    BlockEnergyTurretTESR render = new BlockEnergyTurretTESR();
+	    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, render);
+	    MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ContentRegistry.energyTurretBlock), new RendererItemEnergyTurret(render));
+	    RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, new RenderEntityEnergyBolt());
+		
 		OpenSecurity.logger.info("Registered TESRs");
 	}
 	
