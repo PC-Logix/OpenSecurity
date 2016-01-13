@@ -118,7 +118,13 @@ public class RFIDReaderCardDriver extends DriverItem {
 						for (int k = 0; k < size; k++) {
 							ItemStack st = em.inventory.getStackInSlot(k);
 							if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-								output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid"), st.stackTagCompound.getBoolean("locked")));
+								String localUUID;
+								if (!OpenSecurity.ignoreUUIDs) {
+									localUUID = st.stackTagCompound.getString("uuid");
+								} else {
+									localUUID = "-1";
+								}
+								output.put(index++, info(entity, st.stackTagCompound.getString("data"), localUUID, st.stackTagCompound.getBoolean("locked")));
 							}
 						}
 					} else if (entity instanceof li.cil.oc.common.entity.Drone) {
@@ -128,13 +134,25 @@ public class RFIDReaderCardDriver extends DriverItem {
 						for (int k = 0; k < size; k++) {
 							ItemStack st = droneInventory.getStackInSlot(k);
 							if (st != null && st.getItem() instanceof ItemRFIDCard && st.stackTagCompound != null && st.stackTagCompound.hasKey("data")) {
-								output.put(index++, info(entity, st.stackTagCompound.getString("data"), st.stackTagCompound.getString("uuid"), st.stackTagCompound.getBoolean("locked")));
+								String localUUID;
+								if (!OpenSecurity.ignoreUUIDs) {
+									localUUID = st.stackTagCompound.getString("uuid");
+								} else {
+									localUUID = "-1";
+								}
+								output.put(index++, info(entity, st.stackTagCompound.getString("data"), localUUID, st.stackTagCompound.getBoolean("locked")));
 							}
 						}
 					}
 					NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
 					if (tag.hasKey("data")) {
-						output.put(index++, info(entity, tag.getString("data"), tag.getString("uuid"), tag.getBoolean("locked")));
+						String localUUID;
+						if (!OpenSecurity.ignoreUUIDs) {
+							localUUID = tag.getString("uuid");
+						} else {
+							localUUID = "-1";
+						}
+						output.put(index++, info(entity, tag.getString("data"), localUUID, tag.getBoolean("locked")));
 					}
 				}
 			}
