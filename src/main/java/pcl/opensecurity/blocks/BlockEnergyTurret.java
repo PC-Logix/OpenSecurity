@@ -11,40 +11,38 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-public class BlockEnergyTurret
-  extends Block
-  implements ITileEntityProvider
-{
-  public BlockEnergyTurret()
-  {
+public class BlockEnergyTurret extends Block implements ITileEntityProvider {
+	
+  public BlockEnergyTurret() {
     super(Material.anvil);
     setHardness(6.0F);
     setStepSound(soundTypeMetal);
     setBlockName("energyTurret");
+    setBlockTextureName("opensecurity:machine_side");
   }
   
-  public TileEntity createNewTileEntity(World world, int metadata)
-  {
+  @Override
+  public TileEntity createNewTileEntity(World world, int metadata)  {
     return new TileEntityEnergyTurret();
   }
   
-  public int getRenderType()
-  {
+  @Override
+  public int getRenderType() {
     return -1;
   }
   
-  public boolean isOpaqueCube()
-  {
+  @Override
+  public boolean isOpaqueCube() {
     return false;
   }
   
-  public boolean renderAsNormalBlock()
-  {
+  @Override
+  public boolean renderAsNormalBlock() {
     return false;
   }
   
-  public IIcon getIcon(int side, int meta)
-  {
+  @Override
+  public IIcon getIcon(int side, int meta) {
     return Blocks.iron_block.getIcon(side, meta);
   }
 }
