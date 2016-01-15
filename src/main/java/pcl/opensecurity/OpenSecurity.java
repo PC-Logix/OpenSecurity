@@ -56,7 +56,7 @@ public class OpenSecurity {
 	public void preInit(FMLPreInitializationEvent event) {
 
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
-		alarmSounds = new File(Minecraft.getMinecraft().mcDataDir + "/mods/OpenSecurity/sounds/alarms/");
+		alarmSounds = new File("./mods/OpenSecurity/sounds/alarms/");
 		System.out.println(alarmSounds);
 		alarmList = cfg.alarmsConfigList;
 		rfidRange = cfg.rfidMaxRange;

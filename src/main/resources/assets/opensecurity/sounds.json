@@ -1,4 +1,4 @@
 {
-    "klaxon1": {"category": "master","sounds": [{"name": "klaxon1","stream": false}]},
-    "klaxon2": {"category": "master","sounds": [{"name": "klaxon2","stream": false}]}
+    "turretMove": {"category": "master","sounds": [{"name": "turretMove","stream": false}]},
+    "turretFire": {"category": "master","sounds": [{"name": "turretFire","stream": false}]}
 }
