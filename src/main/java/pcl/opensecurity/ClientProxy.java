@@ -1,5 +1,7 @@
 package pcl.opensecurity;
 
+import java.io.File;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -13,6 +15,7 @@ import pcl.opensecurity.client.renderer.BlockEnergyTurretTESR;
 import pcl.opensecurity.client.renderer.RenderDisplayPanel;
 import pcl.opensecurity.client.renderer.RenderEntityEnergyBolt;
 import pcl.opensecurity.client.renderer.RendererItemEnergyTurret;
+import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.containers.MagCardContainer;
 import pcl.opensecurity.containers.CardWriterContainer;
 import pcl.opensecurity.entity.EntityEnergyBolt;
@@ -51,4 +54,27 @@ public class ClientProxy extends CommonProxy {
 		OpenSecurity.logger.info("Registered TESRs");
 	}
 	
+	public void listFilesForFolder(final File folder) {
+		AlarmResource r = new AlarmResource();
+		int i = 1;
+	    for (final File fileEntry : folder.listFiles()) {
+	        if (fileEntry.isDirectory()) {
+	            listFilesForFolder(fileEntry);
+	        } else {
+	        	r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
+	        	i++;
+	            System.out.println(OpenSecurity.alarmSounds + "\\" + fileEntry.getName());
+	        }
+	    }
+	    r.registerAsResourceLocation(); //finalise IResourcePack
+	}
+	
+    @Override
+    public void registerSounds () {
+        
+        //for (ItemExtraRecord record : ExtraRecords.records) {
+        //    r.addSoundReferenceMapping(record.data.recordNum, record.data.sound.getResourcePath()); //add map soundlocation -> recordX
+        //}
+        listFilesForFolder(OpenSecurity.alarmSounds);
+    }
 }

@@ -38,4 +38,9 @@ public class CommonProxy implements IGuiHandler {
 			return null;
 		}
 	}
+
+	public void registerSounds() {
+		// TODO Auto-generated method stub
+		
+	}
 }

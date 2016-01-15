@@ -1,53 +1,18 @@
 package pcl.opensecurity;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import li.cil.oc.api.fs.FileSystem;
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import pcl.opensecurity.OSPacketHandler.PacketHandler;
-import pcl.opensecurity.blocks.BlockAlarm;
-import pcl.opensecurity.blocks.BlockCardWriter;
-import pcl.opensecurity.blocks.BlockData;
-import pcl.opensecurity.blocks.BlockDoorController;
-import pcl.opensecurity.blocks.BlockEntityDetector;
-import pcl.opensecurity.blocks.BlockMagReader;
-import pcl.opensecurity.blocks.BlockRFIDReader;
-import pcl.opensecurity.blocks.BlockSecurityDoor;
-import pcl.opensecurity.blocks.BlockSwitchableHub;
-import pcl.opensecurity.blocks.BlockKVM;
-import pcl.opensecurity.client.CreativeTab;
-import pcl.opensecurity.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.gui.OSGUIHandler;
-import pcl.opensecurity.items.ItemMagCard;
-import pcl.opensecurity.items.ItemRFIDCard;
-import pcl.opensecurity.items.ItemRFIDReaderCard;
-import pcl.opensecurity.items.ItemSecurityDoor;
 import pcl.opensecurity.networking.packet.PacketBoltFire;
-import pcl.opensecurity.tileentity.TileEntityAlarm;
-import pcl.opensecurity.tileentity.TileEntityCardWriter;
-import pcl.opensecurity.tileentity.TileEntityDataBlock;
-import pcl.opensecurity.tileentity.TileEntityDoorController;
-import pcl.opensecurity.tileentity.TileEntityEntityDetector;
-import pcl.opensecurity.tileentity.TileEntityKVM;
-import pcl.opensecurity.tileentity.TileEntityMagReader;
-import pcl.opensecurity.tileentity.TileEntityRFIDReader;
-import pcl.opensecurity.tileentity.TileEntitySecureDoor;
-import pcl.opensecurity.tileentity.TileEntitySwitchableHub;
-import pcl.opensecurity.util.OSBreakEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -58,14 +23,13 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers")
 public class OpenSecurity {
 
 	public static final String MODID = "opensecurity";
-
+	public static File alarmSounds;
 
 
 	@Instance(value = MODID)
@@ -92,7 +56,8 @@ public class OpenSecurity {
 	public void preInit(FMLPreInitializationEvent event) {
 
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
-
+		alarmSounds = new File(Minecraft.getMinecraft().mcDataDir + "/mods/OpenSecurity/sounds/alarms/");
+		System.out.println(alarmSounds);
 		alarmList = cfg.alarmsConfigList;
 		rfidRange = cfg.rfidMaxRange;
 		enableplaySoundAt = cfg.enableplaySoundAt;
@@ -116,5 +81,6 @@ public class OpenSecurity {
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
 		proxy.registerRenderers();
+		proxy.registerSounds();
 	}
 }

@@ -69,7 +69,11 @@ public class TileEntityMachineBase extends TileEntity {
 				if (sound == null) {
 					if (this instanceof ISoundTile) {
 						ISoundTile tile = (ISoundTile) this;
-						soundRes = new ResourceLocation(OpenSecurity.MODID + ":" + tile.getSoundName());
+						if (tile instanceof TileEntityAlarm) {
+							soundRes = new ResourceLocation("opensecurity_external:" + tile.getSoundName());
+						} else {
+							soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
+						}
 						sound = new MachineSound(soundRes, xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, getVolume(), getPitch(), shouldRepeat());
 						FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
 					}

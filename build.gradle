@@ -51,7 +51,10 @@ jar.doFirst {
 }
 
 jar.classifier = "${ext.buildNumber}"
-
+jar.manifest = manifest { attributes(
+	"FMLCorePlugin": "pcl.opensecurity.util.DepLoader",
+	"FMLCorePluginContainsFMLMod": "icanhazfmlmodpweeze"
+) }
 def curseforge_key = 0
 def curse_changlog = "default"
 if (project.hasProperty('opensecurity_curseforge_key')) {

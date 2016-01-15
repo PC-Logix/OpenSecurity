@@ -10,6 +10,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.ResourceLocation;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
 public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent, ISoundTile {
@@ -89,7 +90,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
-		if (OpenSecurity.alarmList.contains(alarm)) {
+		if (AlarmResource.sound_map.containsValue(alarm + ".ogg")) {
 			soundName = alarm;
 			setSound(alarm);
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
