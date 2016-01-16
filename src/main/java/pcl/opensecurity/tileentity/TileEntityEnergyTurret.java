@@ -123,17 +123,17 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 
 	@Callback(doc="function():number -- Current real yaw")
 	public Object[] getYaw(Context context, Arguments args) {
-		return new Object[] { Float.valueOf(this.yaw) };
+		return new Object[] { yaw };
 	}
 
 	@Callback(doc="function():number -- Current real pitch")
 	public Object[] getPitch(Context context, Arguments args) {
-		return new Object[] { Float.valueOf(this.pitch) };
+		return new Object[] { pitch };
 	}
 
 	@Callback(doc="function():boolean -- Returns whether the gun has reached the set position")
 	public Object[] isOnTarget(Context context, Arguments args) {
-		return new Object[] { Boolean.valueOf(this.onPoint) };
+		return new Object[] { onPoint };
 	}
 
 	@Callback(doc = "function():boolean -- Returns whether the gun is cool enough to fire again")
@@ -157,7 +157,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			computerPlaying = true;
 			return new Object[0];	
 		} else {
-			return new Object[] { Integer.valueOf(-1), "powered off" };
+			return new Object[] { -1, "powered off" };
 		}
 	}
 	
@@ -192,17 +192,17 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			if (this.ItemStacks[0].getItem() instanceof ItemMagCard) {
 				damage = 200F;
 			} else {
-				damage = 1f;
+				damage = 1F;
 			}
 			EntityEnergyBolt bolt = new EntityEnergyBolt(this.worldObj);
 			bolt.setHeading(a, p);
 			bolt.setDamage(damage);
 			bolt.setPosition(this.xCoord + 0.5F, this.yCoord + 0.85F, this.zCoord + 0.5F);
 			if (!((Connector)this.node).tryChangeBuffer(-damage)) {
-				return new Object[] { Integer.valueOf(-1), "not enough energy" };
+				return new Object[] { -1, "not enough energy" };
 			}
 			if (this.tickCool > 0) {
-				return new Object[] { Integer.valueOf(-1), "gun hasn't cooled" };
+				return new Object[] { -1, "gun hasn't cooled" };
 			}
 			this.tickCool = 200;
 
@@ -216,9 +216,9 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			markDirty();
 
 			this.worldObj.spawnEntityInWorld(bolt);
-			return new Object[] { Integer.valueOf(0) };
+			return new Object[] { 0 };
 		} else {
-			return new Object[] { Integer.valueOf(-1), "powered off" };
+			return new Object[] { -1, "powered off" };
 		}
 
 	}
@@ -298,7 +298,6 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 				this.ItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
 			}
 		}
-		
 	}
 
 	private void readSyncableDataFromNBT(NBTTagCompound tag) {
