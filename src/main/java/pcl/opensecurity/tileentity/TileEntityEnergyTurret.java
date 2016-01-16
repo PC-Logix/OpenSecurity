@@ -1,8 +1,10 @@
 package pcl.opensecurity.tileentity;
 
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.entity.EntityEnergyBolt;
+import pcl.opensecurity.items.ItemMagCard;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -13,14 +15,21 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import li.cil.oc.common.item.EEPROM;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
-public class TileEntityEnergyTurret extends TileEntityMachineBase implements Environment, ISoundTile {
+public class TileEntityEnergyTurret extends TileEntityMachineBase implements Environment, IInventory, ISoundTile {
 	public float yaw = 0.0F;
 	public float pitch = 0.0F;
 	public float setpointYaw = 0.0F;
@@ -104,7 +113,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		onPoint = (Math.abs(dy) < movePerTick) && (Math.abs(dp) < movePerTick);
 		if (!this.onPoint && ticks == 0) {
 			ticks++;
-			worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "opensecurity:turretMove", 10 / 15 + 0.5F, 1.0F);
+			worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "opensecurity:turretMove", 100 / 15 + 0.5F, 1.0F);
 		} else if (ticks > 5) {
 			ticks = 0;
 		} else {
@@ -179,12 +188,17 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		if (power) {
 			float p = getRealPitch();
 			float a = getRealYaw() + (float)Math.PI;
-			float damage = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 50.0F);
+			float damage;
+			if (this.ItemStacks[0].getItem() instanceof ItemMagCard) {
+				damage = 200F;
+			} else {
+				damage = 1f;
+			}
 			EntityEnergyBolt bolt = new EntityEnergyBolt(this.worldObj);
 			bolt.setHeading(a, p);
 			bolt.setDamage(damage);
 			bolt.setPosition(this.xCoord + 0.5F, this.yCoord + 0.85F, this.zCoord + 0.5F);
-			if (!((Connector)this.node).tryChangeBuffer(-1.0D)) {
+			if (!((Connector)this.node).tryChangeBuffer(-damage)) {
 				return new Object[] { Integer.valueOf(-1), "not enough energy" };
 			}
 			if (this.tickCool > 0) {
@@ -250,6 +264,17 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		tag.setFloat("spitch", this.setpointPitch);
 		tag.setInteger("cool", this.tickCool);
 		writeSyncableDataToNBT(tag);
+		
+		NBTTagList var2 = new NBTTagList();
+		for (int var3 = 0; var3 < this.ItemStacks.length; ++var3) {
+			if (this.ItemStacks[var3] != null) {
+				NBTTagCompound var4 = new NBTTagCompound();
+				var4.setByte("Slot", (byte) var3);
+				this.ItemStacks[var3].writeToNBT(var4);
+				var2.appendTag(var4);
+			}
+		}
+		tag.setTag("Items", var2);
 	}
 
 	private void read(NBTTagCompound tag) {
@@ -263,20 +288,27 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		this.setpointPitch = tag.getFloat("spitch");
 		this.tickCool = tag.getInteger("cool");
 		readSyncableDataFromNBT(tag);
+		
+		NBTTagList var2 = tag.getTagList("Items", tag.getId());
+		this.ItemStacks = new ItemStack[this.getSizeInventory()];
+		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
+			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
+			byte var5 = var4.getByte("Slot");
+			if (var5 >= 0 && var5 < this.ItemStacks.length) {
+				this.ItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+			}
+		}
+		
 	}
 
 	private void readSyncableDataFromNBT(NBTTagCompound tag) {
-		//shouldPlay = tag.getBoolean("isPlayingSound");
 		soundName = tag.getString("soundName");
 		volume = tag.getFloat("volume");
-		//computerPlaying = tag.getBoolean("computerPlaying");
 	}
 
 	private void writeSyncableDataToNBT(NBTTagCompound tag) {
-		//tag.setBoolean("isPlayingSound", shouldPlay);
 		tag.setString("soundName", soundName);
 		tag.setFloat("volume", volume);
-		//tag.setBoolean("computerPlaying", computerPlaying);
 	}
 
 	public float getRealYaw() {
@@ -315,5 +347,88 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	public boolean playSoundNow() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	
+	private ItemStack[] ItemStacks = new ItemStack[12];
+	
+	
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
+	}
+
+	@Override
+	public int getSizeInventory() {
+		return this.ItemStacks.length;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int i) {
+		return this.ItemStacks[i];
+	}
+
+	@Override
+	public ItemStack decrStackSize(int slot, int amt) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack != null) {
+			if (stack.stackSize <= amt) {
+				setInventorySlotContents(slot, null);
+			} else {
+				stack = stack.splitStack(amt);
+				if (stack.stackSize == 0) {
+					setInventorySlotContents(slot, null);
+				}
+			}
+		}
+		return stack;
+	}
+
+	@Override
+	public ItemStack getStackInSlotOnClosing(int i) {
+		if (getStackInSlot(i) != null) {
+			ItemStack var2 = getStackInSlot(i);
+			setInventorySlotContents(i, null);
+			return var2;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+		this.ItemStacks[i] = itemstack;
+		if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit()) {
+			itemstack.stackSize = this.getInventoryStackLimit();
+		}
+	}
+
+	@Override
+	public String getInventoryName() {
+		return "os_energyturret";
+	}
+
+	@Override
+	public boolean hasCustomInventoryName() {
+		return false;
+	}
+
+	@Override
+	public int getInventoryStackLimit() {
+		return 64;
+	}
+
+	@Override
+	public void openInventory() {
+	}
+
+	@Override
+	public void closeInventory() {
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

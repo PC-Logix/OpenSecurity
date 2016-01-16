@@ -12,7 +12,7 @@ import pcl.opensecurity.entity.EntityEnergyBolt;
 public class RenderEntityEnergyBolt
   extends Render
 {
-  private static final ResourceLocation textures = new ResourceLocation("futurecomputers:turret.png");
+  private static final ResourceLocation textures = new ResourceLocation("opensecurity:turret.png");
   private final ModelEnergyBolt model;
   
   public RenderEntityEnergyBolt()

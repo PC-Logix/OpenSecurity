@@ -7,8 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import pcl.opensecurity.containers.CardWriterContainer;
+import pcl.opensecurity.containers.EnergyTurretContainer;
 import pcl.opensecurity.containers.KVMContainer;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
+import pcl.opensecurity.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.tileentity.TileEntityKVM;
 import cpw.mods.fml.common.network.IGuiHandler;
 
@@ -31,6 +33,12 @@ public class OSGUIHandler implements IGuiHandler {
 				return new KVMContainer(player.inventory, (TileEntityKVM) tileEntity);
 			}
 			return null;
+		} else if (id == 2) {
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if (tileEntity instanceof TileEntityEnergyTurret) {
+				return new EnergyTurretContainer(player.inventory, (TileEntityEnergyTurret) tileEntity);
+			}
+			return null;
 		}
 		return null;
 	}
@@ -46,6 +54,11 @@ public class OSGUIHandler implements IGuiHandler {
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			if (tileEntity instanceof TileEntityKVM) {
 				return new KVMGUI(player.inventory, (TileEntityKVM) tileEntity);
+			}
+		} else if (id == 2) {
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if (tileEntity instanceof TileEntityEnergyTurret) {
+				return new EnergyTurretGUI(player.inventory, (TileEntityEnergyTurret) tileEntity);
 			}
 		}
 		return null;
