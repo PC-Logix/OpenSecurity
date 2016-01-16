@@ -414,7 +414,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 
 	@Override
 	public int getInventoryStackLimit() {
-		return 64;
+		return 1;
 	}
 
 	@Override
