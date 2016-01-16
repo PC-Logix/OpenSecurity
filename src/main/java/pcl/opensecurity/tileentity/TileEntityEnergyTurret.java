@@ -92,7 +92,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	}
 
 	public void setShouldStop(boolean b) {
-		shouldPlay = b;
+		shouldPlay = !b;
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		getDescriptionPacket();
 	}
