@@ -8,6 +8,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import pcl.opensecurity.gui.CooldownUpgradeSlot;
+import pcl.opensecurity.gui.DamageUpgradeSlot;
+import pcl.opensecurity.gui.EnergyUpgradeSlot;
+import pcl.opensecurity.gui.MovementUpgradeSlot;
 import pcl.opensecurity.tileentity.TileEntityEnergyTurret;
 
 public class EnergyTurretContainer extends Container {
@@ -19,18 +23,20 @@ public class EnergyTurretContainer extends Container {
 
 	public EnergyTurretContainer(InventoryPlayer inventory, TileEntityEnergyTurret te) {
 		tileEntity = te;
+		
+		specialSlots = new ArrayList<Slot>();
 		// Output slots
 		outputSlots = new ArrayList<Slot>();
 	
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 0, 8, 7)));
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 1, 8, 25)));
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 2, 8, 43)));
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 3, 8, 61)));
+		outputSlots.add(addSlotToContainer(new DamageUpgradeSlot(tileEntity, 0, 8, 13)));
+		outputSlots.add(addSlotToContainer(new DamageUpgradeSlot(tileEntity, 1, 8, 31)));
+		outputSlots.add(addSlotToContainer(new MovementUpgradeSlot(tileEntity, 2, 8, 49)));
+		outputSlots.add(addSlotToContainer(new MovementUpgradeSlot(tileEntity, 3, 8, 67)));
 		
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 4, 152, 7)));
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 5, 152, 25)));
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 6, 152, 43)));
-		outputSlots.add(addSlotToContainer(new Slot(tileEntity, 7, 152, 61)));
+		outputSlots.add(addSlotToContainer(new CooldownUpgradeSlot(tileEntity, 4, 152, 13)));
+		outputSlots.add(addSlotToContainer(new CooldownUpgradeSlot(tileEntity, 5, 152, 31)));
+		outputSlots.add(addSlotToContainer(new EnergyUpgradeSlot(tileEntity, 6, 152, 49)));
+		outputSlots.add(addSlotToContainer(new EnergyUpgradeSlot(tileEntity, 7, 152, 67)));
 
 
 		// commonly used vanilla code that adds the player's inventory
@@ -47,13 +53,13 @@ public class EnergyTurretContainer extends Container {
 		playerSlots = new ArrayList<Slot>();
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 9; j++) {
-				playerSlots.add(addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18 + 15 - 16)));
+				playerSlots.add(addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18 + 15 - 10)));
 			}
 		}
 
 		hotbarSlots = new ArrayList<Slot>();
 		for (int i = 0; i < 9; i++) {
-			hotbarSlots.add(addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142 + 15 - 16)));
+			hotbarSlots.add(addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142 + 15 - 10)));
 		}
 	}
 

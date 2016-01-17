@@ -22,7 +22,11 @@ import pcl.opensecurity.blocks.BlockSwitchableHub;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.entity.EntityEnergyBolt;
+import pcl.opensecurity.items.ItemCooldownUpgrade;
+import pcl.opensecurity.items.ItemDamageUpgrade;
+import pcl.opensecurity.items.ItemEnergyUpgrade;
 import pcl.opensecurity.items.ItemMagCard;
+import pcl.opensecurity.items.ItemMovementUpgrade;
 import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.items.ItemRFIDReaderCard;
 import pcl.opensecurity.items.ItemSecurityDoor;
@@ -75,6 +79,10 @@ public class ContentRegistry {
 	public static Item securityDoor;
 	public static Item securityDoorPrivate;
 	public static Item rfidReaderCard;
+	public static Item damageUpgrade;
+	public static Item cooldownUpgrade;
+	public static Item energyUpgrade;
+	public static Item movementUpgrade;
 	public static ItemBlock securityitemBlock;
 	public static ItemStack secureOS_disk;
 	public static CreativeTabs CreativeTab;
@@ -120,6 +128,22 @@ public class ContentRegistry {
 		securityDoorPrivate = new ItemSecurityDoorPrivate(SecurityDoor);
 		GameRegistry.registerItem(securityDoorPrivate, "opensecurity.securityDoorPrivate");
 		securityDoor.setCreativeTab(CreativeTab);
+		
+		damageUpgrade = new ItemDamageUpgrade();
+		GameRegistry.registerItem(damageUpgrade, "opensecurity.damageUpgrade");
+		damageUpgrade.setCreativeTab(CreativeTab);
+		
+		cooldownUpgrade = new ItemCooldownUpgrade();
+		GameRegistry.registerItem(cooldownUpgrade, "opensecurity.cooldownUpgrade");
+		cooldownUpgrade.setCreativeTab(CreativeTab);
+		
+		energyUpgrade = new ItemEnergyUpgrade();
+		GameRegistry.registerItem(energyUpgrade, "opensecurity.energyUpgrade");
+		energyUpgrade.setCreativeTab(CreativeTab);
+		
+		movementUpgrade = new ItemMovementUpgrade();
+		GameRegistry.registerItem(movementUpgrade, "opensecurity.movementUpgrade");
+		movementUpgrade.setCreativeTab(CreativeTab);
 		
 		OpenSecurity.logger.info("Registered Items");
 	}
@@ -222,40 +246,128 @@ public class ContentRegistry {
 		ItemStack cable = li.cil.oc.api.Items.get("cable").createItemStack(1);
 		ItemStack transistor = li.cil.oc.api.Items.get("transistor").createItemStack(1);
 		ItemStack floppy = li.cil.oc.api.Items.get("floppy").createItemStack(1);
+		ItemStack iron = new ItemStack(Items.iron_ingot);
+		ItemStack diamond = new ItemStack(Items.diamond);
+		ItemStack gunpowder = new ItemStack(Items.gunpowder);
+		ItemStack arrow = new ItemStack(Items.arrow);
+		ItemStack piston = new ItemStack(Item.getItemFromBlock(Blocks.piston));
+		ItemStack water = new ItemStack(Items.water_bucket);
+		ItemStack batteryUpgrade = li.cil.oc.api.Items.get("batteryUpgrade1").createItemStack(1);
 		ItemStack datacard;
 		if (li.cil.oc.api.Items.get("dataCard").createItemStack(1) != null) {
 			datacard = li.cil.oc.api.Items.get("dataCard").createItemStack(1);
 		} else {
 			datacard = li.cil.oc.api.Items.get("dataCard1").createItemStack(1);
 		}
-		
 		ItemStack oc_relay = li.cil.oc.api.Items.get("relay").createItemStack(1);
 
-		GameRegistry.addRecipe(new ItemStack(rfidReaderCard, 1), "MRM", " N ", "BC ", 'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit);
+		GameRegistry.addRecipe(new ItemStack(rfidReaderCard, 1), 
+				"MRM", 
+				" N ", 
+				"BC ", 
+				'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit);
 
-		GameRegistry.addRecipe(new ItemStack(EntityDetector, 1), "MRM", "   ", "BC ", 'M', t2microchip, 'R', t1ram, 'B', cardbase, 'C', controlunit);
+		GameRegistry.addRecipe(new ItemStack(EntityDetector, 1), 
+				"MRM", 
+				"   ", 
+				"BC ", 
+				'M', t2microchip, 'R', t1ram, 'B', cardbase, 'C', controlunit);
 
-		GameRegistry.addRecipe(new ItemStack(rfidCardReader, 1), " R ", "PFT", " C ", 'F', rfidReaderCard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
+		GameRegistry.addRecipe(new ItemStack(rfidCardReader, 1), 
+				" R ", 
+				"PFT", 
+				" C ", 
+				'F', rfidReaderCard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
 
-		GameRegistry.addRecipe(new ItemStack(DataBlock, 1), " D ", "PFT", " C ", 'D', datacard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
+		GameRegistry.addRecipe(new ItemStack(DataBlock, 1), 
+				" D ", 
+				"PFT", 
+				" C ", 
+				'D', datacard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
 
-		GameRegistry.addRecipe(new ItemStack(Alarm, 1), " R ", "PNC", " T ", 'N', noteblock, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
+		GameRegistry.addRecipe(new ItemStack(Alarm, 1), 
+				" R ", 
+				"PNC", 
+				" T ", 
+				'N', noteblock, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip);
 
-		GameRegistry.addRecipe(new ItemStack(cardWriter, 1), "TRT", "SUS", "PC ", 'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor, 'U', controlunit, 'R', t1ram);
+		GameRegistry.addRecipe(new ItemStack(cardWriter, 1), 
+				"TRT", 
+				"SUS", 
+				"PC ", 
+				'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor, 'U', controlunit, 'R', t1ram);
 
-		GameRegistry.addRecipe(new ItemStack(magCardReader, 1), "T T", "S S", "PC ", 'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor);
+		GameRegistry.addRecipe(new ItemStack(magCardReader, 1), 
+				"T T", 
+				"S S", 
+				"PC ", 
+				'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor);
 
-		GameRegistry.addRecipe(new ItemStack(rfidCard, 6), "P P", " S ", "PTP", 'P', paper, 'S', transistor, 'T', t1microchip);
+		GameRegistry.addRecipe(new ItemStack(rfidCard, 6), 
+				"P P", 
+				" S ", 
+				"PTP", 
+				'P', paper, 'S', transistor, 'T', t1microchip);
 
-		GameRegistry.addRecipe(new ItemStack(magCard, 6), "P P", " S ", "P P", 'P', paper, 'S', transistor);
+		GameRegistry.addRecipe(new ItemStack(magCard, 6), 
+				"P P", 
+				" S ", 
+				"P P", 
+				'P', paper, 'S', transistor);
 
-		GameRegistry.addRecipe(new ItemStack(securityDoor, 1), "TOT", "ODO", "SOS", 'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian);
+		GameRegistry.addRecipe(new ItemStack(securityDoor, 1), 
+				"TOT", 
+				"ODO", 
+				"SOS", 
+				'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian);
 
-		GameRegistry.addRecipe(new ItemStack(DoorController, 1), "TOT", "OCO", "SBS", 'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip, 'O', obsidian);
+		GameRegistry.addRecipe(new ItemStack(DoorController, 1), 
+				"TOT", 
+				"OCO", 
+				"SBS", 
+				'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip, 'O', obsidian);
 
-		GameRegistry.addRecipe(new ItemStack(SwitchableHub, 1), "TBT", "BSB", "RBR", 'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
+		GameRegistry.addRecipe(new ItemStack(SwitchableHub, 1), 
+				"TBT", 
+				"BSB", 
+				"RBR", 
+				'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
 		
-		GameRegistry.addRecipe(new ItemStack(BlockKVM, 1), " B ", "BSB", "RBR", 'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
+		GameRegistry.addRecipe(new ItemStack(BlockKVM, 1), 
+				" B ", 
+				"BSB", 
+				"RBR", 
+				'B', cable,  'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian);
+		
+        GameRegistry.addShapedRecipe(new ItemStack(energyTurretBlock, 1),
+        		"ABA",
+        		"BCB",
+        		"ABA",
+        		'A', iron, 'B', t2microchip, 'C', diamond);
+        
+        GameRegistry.addShapedRecipe(new ItemStack(damageUpgrade, 1),
+        		"A A",
+        		" G ",
+        		"A A",
+        		'A', arrow, 'G', gunpowder);
+        
+        GameRegistry.addShapedRecipe(new ItemStack(movementUpgrade, 1),
+        		"R R",
+        		" P ",
+        		"R R",
+        		'P', piston, 'R', redstone);
+        
+        GameRegistry.addShapedRecipe(new ItemStack(cooldownUpgrade, 1),
+        		"R R",
+        		" W ",
+        		"R R",
+        		'W', water, 'R', redstone);
+        
+        GameRegistry.addShapedRecipe(new ItemStack(energyUpgrade, 1),
+        		"R R",
+        		" B ",
+        		"R R",
+        		'B', batteryUpgrade, 'R', redstone);
 		
 		GameRegistry.addShapelessRecipe(secureOS_disk, new Object[] { floppy, magCard });
 		OpenSecurity.logger.info("Registered Recipes");

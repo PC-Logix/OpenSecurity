@@ -1,10 +1,13 @@
 package pcl.opensecurity.tileentity;
 
-import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.entity.EntityEnergyBolt;
+import pcl.opensecurity.items.ItemCooldownUpgrade;
+import pcl.opensecurity.items.ItemDamageUpgrade;
+import pcl.opensecurity.items.ItemEnergyUpgrade;
 import pcl.opensecurity.items.ItemMagCard;
+import pcl.opensecurity.items.ItemMovementUpgrade;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -15,11 +18,8 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
-import li.cil.oc.common.item.EEPROM;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -36,7 +36,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	public float setpointPitch = 0.0F;
 	public int tickCool = 0;
 	public boolean onPoint = true;
-	private final float movePerTick = 0.005F;
+	private float movePerTick = 0.005F;
 	public Boolean shouldPlay = false;
 	public String soundName = "turretMove";
 	public Boolean computerPlaying = false;
@@ -100,8 +100,26 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
+		movePerTick = 0.005F;
 		if (node != null && node.network() == null) {
 			Network.joinOrCreateNetwork(this);
+		}
+		if (this.ItemStacks[2] != null && this.ItemStacks[2].getItem() instanceof ItemMovementUpgrade) {
+			movePerTick = movePerTick + 0.002F;
+		}
+		if (this.ItemStacks[3] != null && this.ItemStacks[3].getItem() instanceof ItemMovementUpgrade) {
+			movePerTick = movePerTick + 0.002F;
+		}
+		
+		if (this.ItemStacks[4] != null && this.ItemStacks[4].getItem() instanceof ItemCooldownUpgrade) {
+			--tickCool;
+			--tickCool;
+			--tickCool;
+		}
+		if (this.ItemStacks[5] != null && this.ItemStacks[5].getItem() instanceof ItemCooldownUpgrade) {
+			--tickCool;
+			--tickCool;
+			--tickCool;
 		}
 		--tickCool;
 		float dy = setpointYaw - yaw;
@@ -183,22 +201,32 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		return new Object[0];
 	}
 	
-	@Callback(doc="function(damage:number):table -- Fires the gun.  More damage means longer cooldown and more energy draw.  Returns 0 for success and -1 with a message for failure")
+	@Callback(doc="function():table -- Fires the gun.  More damage means longer cooldown and more energy draw.  Returns 0 for success and -1 with a message for failure")
 	public Object[] fire(Context context, Arguments args) {
 		if (power) {
 			float p = getRealPitch();
 			float a = getRealYaw() + (float)Math.PI;
-			float damage;
-			if (this.ItemStacks[0].getItem() instanceof ItemMagCard) {
-				damage = 200F;
-			} else {
-				damage = 1F;
+			float damage = 10F;
+			if (this.ItemStacks[0] != null && this.ItemStacks[0].getItem() instanceof ItemDamageUpgrade) {
+				damage = damage + 10F;
 			}
+			if (this.ItemStacks[1] != null && this.ItemStacks[1].getItem() instanceof ItemDamageUpgrade) {
+				damage = damage + 10F;
+			}
+			
 			EntityEnergyBolt bolt = new EntityEnergyBolt(this.worldObj);
 			bolt.setHeading(a, p);
 			bolt.setDamage(damage);
 			bolt.setPosition(this.xCoord + 0.5F, this.yCoord + 0.85F, this.zCoord + 0.5F);
-			if (!((Connector)this.node).tryChangeBuffer(-damage)) {
+			float energy = -damage;
+			if (this.ItemStacks[6] != null && this.ItemStacks[6].getItem() instanceof ItemEnergyUpgrade) {
+				energy = energy - 4;
+			}
+			if (this.ItemStacks[7] != null && this.ItemStacks[7].getItem() instanceof ItemEnergyUpgrade) {
+				energy = energy - 4;
+			}
+ 
+			if (!((Connector)this.node).tryChangeBuffer(energy)) {
 				return new Object[] { -1, "not enough energy" };
 			}
 			if (this.tickCool > 0) {

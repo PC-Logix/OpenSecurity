@@ -16,6 +16,10 @@ item.magCard.name=Magnetic Strip Card
 item.rfidReaderCard.name=RFID Reader Card
 item.securityDoor.name=Security Door
 item.securityDoorPrivate.name=Private Security Door
+item.damageUpgrade.name=Damage Upgrade
+item.movementUpgrade.name=Movement Upgrade
+item.energyUpgrade.name=Energy Upgrade
+item.cooldownUpgrade.name=Cooldown Upgrade
 itemGroup.OpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer
@@ -23,6 +27,7 @@ gui.string.cardslot=Card Slot
 gui.string.kvm=KVM Switch Control
 gui.string.energyturret=Energy Turret
 gui.string.energyturret.damagemod=+Damage
+gui.string.energyturret.movementmod=+Movement
 gui.string.energyturret.cooldownmod=-Cooldown
 gui.string.energyturret.energymod=-Energy
 //OpenUpdater

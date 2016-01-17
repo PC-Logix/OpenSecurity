@@ -31,16 +31,16 @@ public class EnergyTurretGUI extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		// the parameters for drawString are: string, x, y, color
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret"), 55, -9, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.damagemod"), 27, 11, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.damagemod"), 27, 29, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.damagemod"), 27, 47, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.damagemod"), 27, 65, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret"), 55, 4, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.damagemod"), 27, 18, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.damagemod"), 27, 36, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.movementmod"), 27, 54, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.movementmod"), 27, 72, 4210752);
 		
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.cooldownmod"), 96, 11, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.cooldownmod"), 96, 29, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.energymod"), 96, 47, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.energymod"), 96, 65, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.cooldownmod"), 96, 18, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.cooldownmod"), 96, 36, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.energymod"), 96, 54, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.energyturret.energymod"), 96, 72, 4210752);
 	}
 
 	@Override
