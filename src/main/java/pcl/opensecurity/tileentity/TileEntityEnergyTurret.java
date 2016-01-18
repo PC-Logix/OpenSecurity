@@ -110,7 +110,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		if (this.ItemStacks[3] != null && this.ItemStacks[3].getItem() instanceof ItemMovementUpgrade) {
 			movePerTick = movePerTick + 0.002F;
 		}
-		
+
 		if (this.ItemStacks[4] != null && this.ItemStacks[4].getItem() instanceof ItemCooldownUpgrade) {
 			--tickCool;
 			--tickCool;
@@ -165,8 +165,16 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			soundName = "turretMove";
 			setSound(soundName);
 			this.setShouldStart(true);			
-			this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360;
-			System.out.println(CalcShortestRotDirection(yaw, MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F)));
+
+
+			if (MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360 > .50) {
+				this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360 - 1;
+				System.out.println("1");
+			} else {
+				this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360;
+				System.out.println("2");
+			}
+
 			this.setpointPitch = MathHelper.clamp_float((float)args.checkDouble(1), -45.0F, 90.0F) / 90;
 			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 			getDescriptionPacket();
@@ -178,55 +186,6 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			throw new Exception("powered off");
 		}
 	}
-	
-	 // If the return value is positive, then rotate to the left. Else,
-	 // rotate to the right.
-	 float CalcShortestRot(float from, float to)
-	 {
-	     // If from or to is a negative, we have to recalculate them.
-	     // For an example, if from = -45 then from(-45) + 360 = 315.
-	     if(from < 0) {
-	         from += 360;
-	     }
-	     
-	     if(to < 0) {
-	         to += 360;
-	     }
-	 
-	     // Do not rotate if from == to.
-	     if(from == to || from == 0  && to == 360 || from == 360 && to == 0) {
-	         return 0;
-	     }
-	     
-	     // Pre-calculate left and right.
-	     float left = (360 - from) + to;
-	     float right = from - to;
-	     // If from < to, re-calculate left and right.
-	     if(from < to)  {
-	         if(to > 0) {
-	             left = to - from;
-	             right = (360 - to) + from;
-	         } else {
-	             left = (360 - to) + from;
-	             right = to - from;
-	         }
-	     }
-	 
-	     // Determine the shortest direction.
-	     return ((left <= right) ? left : (right * -1));
-	 }
-	 
-	 // Call CalcShortestRot and check its return value.
-	 // If CalcShortestRot returns a positive value, then this function
-	 // will return true for left. Else, false for right.
-	 boolean CalcShortestRotDirection(float from, float to)
-	 {
-	     // If the value is positive, return true (left).
-	     if(CalcShortestRot(from, to) >= 0) {
-	         return true;
-	     }
-	     return false; // right
-	 }
 	
 	@Callback
 	public Object[] powerOn(Context context, Arguments args) {
@@ -249,7 +208,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		markDirty();
 		return new Object[] { true };
 	}
-	
+
 	@Callback(doc="function():table -- Fires the gun.  More damage means longer cooldown and more energy draw.  Returns 0 for success and -1 with a message for failure")
 	public Object[] fire(Context context, Arguments args) throws Exception {
 		if (power) {
@@ -262,7 +221,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			if (this.ItemStacks[1] != null && this.ItemStacks[1].getItem() instanceof ItemDamageUpgrade) {
 				damage = damage + 10F;
 			}
-			
+
 			EntityEnergyBolt bolt = new EntityEnergyBolt(this.worldObj);
 			bolt.setHeading(a, p);
 			bolt.setDamage(damage);
@@ -274,7 +233,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			if (this.ItemStacks[7] != null && this.ItemStacks[7].getItem() instanceof ItemEnergyUpgrade) {
 				energy = energy - 4;
 			}
- 
+
 			if (!((Connector)this.node).tryChangeBuffer(energy)) {
 				throw new Exception("not enough energy");
 			}
@@ -341,7 +300,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		tag.setFloat("spitch", this.setpointPitch);
 		tag.setInteger("cool", this.tickCool);
 		writeSyncableDataToNBT(tag);
-		
+
 		NBTTagList var2 = new NBTTagList();
 		for (int var3 = 0; var3 < this.ItemStacks.length; ++var3) {
 			if (this.ItemStacks[var3] != null) {
@@ -365,7 +324,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		this.setpointPitch = tag.getFloat("spitch");
 		this.tickCool = tag.getInteger("cool");
 		readSyncableDataFromNBT(tag);
-		
+
 		NBTTagList var2 = tag.getTagList("Items", tag.getId());
 		this.ItemStacks = new ItemStack[this.getSizeInventory()];
 		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
@@ -414,10 +373,10 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		return false;
 	}
 
-	
+
 	private ItemStack[] ItemStacks = new ItemStack[12];
-	
-	
+
+
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
 		return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
