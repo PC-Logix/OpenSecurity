@@ -66,8 +66,6 @@ public class EnergyTurretContainer extends Container {
 			itemstack = itemstack1.copy();
 			
 			// If item is in our custom Inventory or an ARMOR slot
-			System.out.println(index);
-			System.out.println(INV_START);
 			if (index < INV_START) {
 				// try to place in player inventory / action bar
 				if (!this.mergeItemStack(itemstack1, INV_START, HOTBAR_END+1, true)) {
