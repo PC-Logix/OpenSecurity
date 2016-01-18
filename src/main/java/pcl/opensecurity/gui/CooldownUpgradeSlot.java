@@ -16,12 +16,17 @@ public class CooldownUpgradeSlot extends Slot {
 	
     public boolean isItemValid(ItemStack itemstack)
     {
-
             if (itemstack.getItem() instanceof ItemCooldownUpgrade) {
             	return true;
             }
             return false;
     }
+    
+    public int getSlotStackLimit()
+    {
+        return 1;
+    }
+    
     /**
      * Called when the player picks up an item from an inventory slot
      */

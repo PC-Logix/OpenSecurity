@@ -21,6 +21,12 @@ public class EnergyUpgradeSlot extends Slot {
             }
             return false;
     }
+    
+    public int getSlotStackLimit()
+    {
+        return 1;
+    }
+    
     /**
      * Called when the player picks up an item from an inventory slot
      */

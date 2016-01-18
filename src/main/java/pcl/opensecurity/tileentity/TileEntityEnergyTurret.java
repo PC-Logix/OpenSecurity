@@ -1,12 +1,12 @@
 package pcl.opensecurity.tileentity;
 
+import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.entity.EntityEnergyBolt;
 import pcl.opensecurity.items.ItemCooldownUpgrade;
 import pcl.opensecurity.items.ItemDamageUpgrade;
 import pcl.opensecurity.items.ItemEnergyUpgrade;
-import pcl.opensecurity.items.ItemMagCard;
 import pcl.opensecurity.items.ItemMovementUpgrade;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
@@ -127,11 +127,11 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		float my = Math.min(movePerTick, Math.abs(dy));
 		float mp = Math.min(movePerTick, Math.abs(dp));
 		yaw += my * Math.signum(dy);
-		pitch += mp * Math.signum(dp);
+		pitch += mp * Math.signum(dp);		
 		onPoint = (Math.abs(dy) < movePerTick) && (Math.abs(dp) < movePerTick);
 		if (!this.onPoint && ticks == 0) {
 			ticks++;
-			worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "opensecurity:turretMove", 100 / 15 + 0.5F, 1.0F);
+			worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "opensecurity:turretMove", 10 / 15 + 0.5F, 1.0F);
 		} else if (ticks > 5) {
 			ticks = 0;
 		} else {
@@ -160,24 +160,73 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	}
 
 	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint (Yaw ranges (0.0..360) Pitch ranges (-45..90)")
-	public Object[] moveTo(Context context, Arguments args) {
+	public Object[] moveTo(Context context, Arguments args) throws Exception {
 		if (power) {
 			soundName = "turretMove";
 			setSound(soundName);
-			this.setShouldStart(true);
-
+			this.setShouldStart(true);			
 			this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360;
+			System.out.println(CalcShortestRotDirection(yaw, MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F)));
 			this.setpointPitch = MathHelper.clamp_float((float)args.checkDouble(1), -45.0F, 90.0F) / 90;
 			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 			getDescriptionPacket();
 			markDirty();
 			//this.setShouldStop(true);
 			computerPlaying = true;
-			return new Object[0];	
+			return new Object[] { true };	
 		} else {
-			return new Object[] { -1, "powered off" };
+			throw new Exception("powered off");
 		}
 	}
+	
+	 // If the return value is positive, then rotate to the left. Else,
+	 // rotate to the right.
+	 float CalcShortestRot(float from, float to)
+	 {
+	     // If from or to is a negative, we have to recalculate them.
+	     // For an example, if from = -45 then from(-45) + 360 = 315.
+	     if(from < 0) {
+	         from += 360;
+	     }
+	     
+	     if(to < 0) {
+	         to += 360;
+	     }
+	 
+	     // Do not rotate if from == to.
+	     if(from == to || from == 0  && to == 360 || from == 360 && to == 0) {
+	         return 0;
+	     }
+	     
+	     // Pre-calculate left and right.
+	     float left = (360 - from) + to;
+	     float right = from - to;
+	     // If from < to, re-calculate left and right.
+	     if(from < to)  {
+	         if(to > 0) {
+	             left = to - from;
+	             right = (360 - to) + from;
+	         } else {
+	             left = (360 - to) + from;
+	             right = to - from;
+	         }
+	     }
+	 
+	     // Determine the shortest direction.
+	     return ((left <= right) ? left : (right * -1));
+	 }
+	 
+	 // Call CalcShortestRot and check its return value.
+	 // If CalcShortestRot returns a positive value, then this function
+	 // will return true for left. Else, false for right.
+	 boolean CalcShortestRotDirection(float from, float to)
+	 {
+	     // If the value is positive, return true (left).
+	     if(CalcShortestRot(from, to) >= 0) {
+	         return true;
+	     }
+	     return false; // right
+	 }
 	
 	@Callback
 	public Object[] powerOn(Context context, Arguments args) {
@@ -187,7 +236,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 		getDescriptionPacket();
 		markDirty();
-		return new Object[0];
+		return new Object[] { true };
 	}
 
 	@Callback
@@ -198,11 +247,11 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 		getDescriptionPacket();
 		markDirty();
-		return new Object[0];
+		return new Object[] { true };
 	}
 	
 	@Callback(doc="function():table -- Fires the gun.  More damage means longer cooldown and more energy draw.  Returns 0 for success and -1 with a message for failure")
-	public Object[] fire(Context context, Arguments args) {
+	public Object[] fire(Context context, Arguments args) throws Exception {
 		if (power) {
 			float p = getRealPitch();
 			float a = getRealYaw() + (float)Math.PI;
@@ -227,10 +276,10 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			}
  
 			if (!((Connector)this.node).tryChangeBuffer(energy)) {
-				return new Object[] { -1, "not enough energy" };
+				throw new Exception("not enough energy");
 			}
 			if (this.tickCool > 0) {
-				return new Object[] { -1, "gun hasn't cooled" };
+				throw new Exception("gun hasn't cooled");
 			}
 			this.tickCool = 200;
 
@@ -244,9 +293,9 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			markDirty();
 
 			this.worldObj.spawnEntityInWorld(bolt);
-			return new Object[] { 0 };
+			return new Object[] { true };
 		} else {
-			return new Object[] { -1, "powered off" };
+			throw new Exception("powered off");
 		}
 
 	}
@@ -348,31 +397,20 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 
 	@Override
 	public Node node() {
-		// TODO Auto-generated method stub
 		return this.node;
 	}
 
 	@Override
-	public void onConnect(Node arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onConnect(Node arg0) { }
 
 	@Override
-	public void onDisconnect(Node arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onDisconnect(Node arg0) { }
 
 	@Override
-	public void onMessage(Message arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onMessage(Message arg0) { }
 
 	@Override
 	public boolean playSoundNow() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -454,8 +492,11 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		// TODO Auto-generated method stub
-		return true;
+	public boolean isItemValidForSlot(int slot, ItemStack item) {
+		if((slot == 0 || slot == 1) && item.getItem() == ContentRegistry.damageUpgrade) return true;
+		if((slot == 2 || slot == 3) && item.getItem() == ContentRegistry.movementUpgrade) return true;
+		if((slot == 4 || slot == 5) && item.getItem() == ContentRegistry.cooldownUpgrade) return true;
+		if((slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgrade) return true;
+		return false;
 	}
 }
