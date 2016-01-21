@@ -169,10 +169,8 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 
 			if (MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360 > .50) {
 				this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360 - 1;
-				System.out.println("1");
 			} else {
 				this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360;
-				System.out.println("2");
 			}
 
 			this.setpointPitch = MathHelper.clamp_float((float)args.checkDouble(1), -45.0F, 90.0F) / 90;
