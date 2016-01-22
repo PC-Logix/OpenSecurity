@@ -36,6 +36,8 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 
 	protected boolean addedToNetwork = false;
 
+	public boolean hasCards = false;
+	
 	public TileEntityCardWriter() {
 		if (this.node() != null) {
 			initOCFilesystem();
@@ -211,9 +213,17 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 		if(!addedToNetwork) {
 			addToNetwork();
 		}
-		//if (node != null && node.network() == null) {
-		//	Network.joinOrCreateNetwork(this);
-		//}
+		if (!hasCards && getStackInSlot(0) != null) {
+			hasCards = true;
+			if (node != null)
+				node.sendToReachable("computer.signal", "cardInsert", "cardInsert");
+		}
+		
+		if (hasCards && getStackInSlot(0) == null) {
+			hasCards = false;
+			if (node != null)
+				node.sendToReachable("computer.signal", "cardRemove", "cardRemove");
+		}
 	}
 
 	protected void addToNetwork() {
