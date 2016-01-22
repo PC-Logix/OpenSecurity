@@ -10,6 +10,7 @@ tile.switchablehub.name=Switchable Hub
 tile.displaypanel.name=Display Panel
 tile.kvm.name=KVM Switch
 tile.energyTurret.name=Energy Turret
+tile.keypadlock.name=Keypad
 //items
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card

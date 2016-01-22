@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -56,6 +57,7 @@ public class ClientProxy extends CommonProxy {
 		
 	    RendererKeypadTESR terk = new RendererKeypadTESR();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypadLock.class, terk);
+		MinecraftForgeClient.registerItemRenderer(new ItemStack(ContentRegistry.keypadLock).getItem(), terk);
 	    
 		OpenSecurity.logger.info("Registered TESRs");
 	}

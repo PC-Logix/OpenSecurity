@@ -15,8 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 
 public class RendererKeypadTESR extends TileEntitySpecialRenderer implements IItemRenderer {
 
@@ -266,7 +264,7 @@ public class RendererKeypadTESR extends TileEntitySpecialRenderer implements IIt
 		}
 		
 		//have to draw the sides ourselves here!
-		this.bindTexture(new ResourceLocation("biolock", "textures/blocks/biolock_top.png"));
+		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 		
 		GL11.glBegin(GL11.GL_QUADS);
 		
@@ -278,7 +276,7 @@ public class RendererKeypadTESR extends TileEntitySpecialRenderer implements IIt
 		
 		GL11.glEnd();
 		
-		this.bindTexture(new ResourceLocation("biolock", "textures/blocks/biolock_side.png"));
+		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 
 		GL11.glBegin(GL11.GL_QUADS);
 		
@@ -306,7 +304,7 @@ public class RendererKeypadTESR extends TileEntitySpecialRenderer implements IIt
 
 			GL11.glEnd();
 	
-			this.bindTexture(new ResourceLocation("biolock", "textures/blocks/biolock_bottom.png"));
+			this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 			
 			GL11.glBegin(GL11.GL_QUADS);
 
@@ -320,7 +318,7 @@ public class RendererKeypadTESR extends TileEntitySpecialRenderer implements IIt
 			
 		GL11.glEnd();
 			
-		this.bindTexture(new ResourceLocation("biolock", "textures/blocks/biolock_side.png"));
+		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 
 		drawKeypadBlock( itemButtonStates, 10000);
 			
