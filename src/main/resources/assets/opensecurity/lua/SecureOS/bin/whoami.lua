@@ -1,1 +1,0 @@
-print(os.getenv('USER'))
