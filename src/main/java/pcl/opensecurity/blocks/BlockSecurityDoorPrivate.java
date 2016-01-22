@@ -21,7 +21,7 @@ public class BlockSecurityDoorPrivate extends BlockSecurityDoor {
 		float f = 0.5F;
 		float f1 = 1.0F;
 		this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f1, 0.5F + f);
-		this.setHardness(5F);
+		this.setHardness(400F);
 		this.setResistance(6000F);
 		this.setBlockName("securityDoor");
 		this.setBlockTextureName(OpenSecurity.MODID + ":door_secure_upper_nowindow");

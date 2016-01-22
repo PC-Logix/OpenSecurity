@@ -10,9 +10,10 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import pcl.opensecurity.OSPacketHandler.PacketHandler;
 import pcl.opensecurity.gui.OSGUIHandler;
+import pcl.opensecurity.networking.packet.OSPacketHandler;
 import pcl.opensecurity.networking.packet.PacketBoltFire;
+import pcl.opensecurity.networking.packet.OSPacketHandler.PacketHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -43,6 +44,7 @@ public class OpenSecurity {
 	public static int rfidRange;
 	public static boolean enableplaySoundAt = false;
 	public static boolean ignoreUUIDs = false;
+	public static boolean registerBlockBreakEvent = true;
 
 	public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
@@ -62,6 +64,7 @@ public class OpenSecurity {
 		rfidRange = cfg.rfidMaxRange;
 		enableplaySoundAt = cfg.enableplaySoundAt;
 		ignoreUUIDs = cfg.ignoreUUIDs;
+		registerBlockBreakEvent = cfg.registerBlockBreak;
 
 		if ((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient() && cfg.enableMUD) {
 			logger.info("Registering mod with OpenUpdater");

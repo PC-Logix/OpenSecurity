@@ -9,9 +9,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import pcl.opensecurity.OSPacketHandler;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.containers.KVMContainer;
+import pcl.opensecurity.networking.packet.OSPacketHandler;
 import pcl.opensecurity.tileentity.TileEntityKVM;
 
 public class KVMGUI extends GuiContainer {

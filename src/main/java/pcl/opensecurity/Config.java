@@ -20,6 +20,7 @@ public class Config {
 	public final boolean enableMUD;
 	public final int rfidMaxRange;
 	public final boolean ignoreUUIDs;
+	public boolean registerBlockBreak;
 
 	public Config(Configuration config) {
 		config.load();
@@ -27,6 +28,8 @@ public class Config {
 		rfidMaxRange = config.getInt("rfidMaxRange", "options", 16, 1, 64, "The maximum range of the RFID Reader in blocks");
 		enableplaySoundAt = config.get("options", "playSoundAt", false, "Enable/Disable the playSoundAt feature of alarm blocks, this allows any user to play any sound at any location in a world, and is exploitable, disabled by default.").getBoolean(false);
 		ignoreUUIDs = config.getBoolean("ignoreUUIDs", "options", false, "RFID and Mag cards will return '-1' for UUIDs.  Allows for less secure security.");
+		registerBlockBreak = config.getBoolean("registerBlockBreak", "options", true, "If false the block break event will not be registered, which will leave Door Controllers and Security Doors able to be broken.");
+
 		if (config.hasChanged()) {
 			config.save();
 		}

@@ -27,7 +27,7 @@ public class BlockDoorController extends BlockOSBase {
 		super();
 		setBlockName("doorController");
 		setBlockTextureName("opensecurity:door_controller");
-		this.setHardness(5F);
+		this.setHardness(400F);
 		this.setResistance(6000F);
 	}
 

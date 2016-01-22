@@ -1,4 +1,4 @@
-package pcl.opensecurity;
+package pcl.opensecurity.networking.packet;
 import pcl.opensecurity.tileentity.TileEntityKVM;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
