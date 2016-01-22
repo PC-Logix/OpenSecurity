@@ -1,0 +1,4 @@
+[submodule "src/main/resources/assets/opensecurity/lua/SecureOS"]
+	path = src/main/resources/assets/opensecurity/lua/SecureOS
+	url = https://github.com/Shuudoushi/SecureOS.git
+	branch = release
