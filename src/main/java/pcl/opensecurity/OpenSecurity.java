@@ -74,7 +74,7 @@ public class OpenSecurity {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, 0, Side.SERVER);
-	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, 0, Side.CLIENT);
+	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, 1, Side.CLIENT);
 	    ContentRegistry.init();
 	}
 

@@ -9,8 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.world.World;
 
-public class PacketBoltFire
-  implements IMessage, IMessageHandler<PacketBoltFire, IMessage>
+public class PacketBoltFire implements IMessage, IMessageHandler<PacketBoltFire, IMessage>
 {
   float yaw;
   float pitch;
