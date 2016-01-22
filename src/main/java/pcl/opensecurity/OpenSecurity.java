@@ -78,11 +78,13 @@ public class OpenSecurity {
 		}
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
-	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, 0, Side.SERVER);
-	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, 1, Side.CLIENT);
-	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, 2, Side.CLIENT);
+	    int packetID = 0;
+	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
+	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
+	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
+	    logger.info("Registered " + packetID + " packets");
 	    ContentRegistry.init();
-	    logger.debug("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
+	    logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 
 	@EventHandler
@@ -90,6 +92,6 @@ public class OpenSecurity {
 		long time = System.nanoTime();
 		proxy.registerRenderers();
 		proxy.registerSounds();
-		logger.debug("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
+		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 }
