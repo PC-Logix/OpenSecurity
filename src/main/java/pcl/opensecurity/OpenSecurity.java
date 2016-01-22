@@ -11,9 +11,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import pcl.opensecurity.gui.OSGUIHandler;
+import pcl.opensecurity.networking.packet.HandlerKeypadButton;
 import pcl.opensecurity.networking.packet.OSPacketHandler;
 import pcl.opensecurity.networking.packet.PacketBoltFire;
 import pcl.opensecurity.networking.packet.OSPacketHandler.PacketHandler;
+import pcl.opensecurity.networking.packet.PacketKeypadButton;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -56,7 +58,7 @@ public class OpenSecurity {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-
+		long time = System.nanoTime();
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 		alarmSounds = new File("./mods/OpenSecurity/sounds/alarms/");
 		System.out.println(alarmSounds);
@@ -78,12 +80,16 @@ public class OpenSecurity {
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, 0, Side.SERVER);
 	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, 1, Side.CLIENT);
+	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, 2, Side.CLIENT);
 	    ContentRegistry.init();
+	    logger.debug("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
+		long time = System.nanoTime();
 		proxy.registerRenderers();
 		proxy.registerSounds();
+		logger.debug("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 }

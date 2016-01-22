@@ -39,6 +39,11 @@ public class CommonProxy implements IGuiHandler {
 		}
 	}
 
+	public World getWorld(int dimId) {
+		//overridden separately for client and server.
+		return null;
+	}
+	
 	public void registerSounds() {
 		// TODO Auto-generated method stub
 		

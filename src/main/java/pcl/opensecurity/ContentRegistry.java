@@ -14,6 +14,7 @@ import pcl.opensecurity.blocks.BlockDoorController;
 import pcl.opensecurity.blocks.BlockEnergyTurret;
 import pcl.opensecurity.blocks.BlockEntityDetector;
 import pcl.opensecurity.blocks.BlockKVM;
+import pcl.opensecurity.blocks.BlockKeypadLock;
 import pcl.opensecurity.blocks.BlockMagReader;
 import pcl.opensecurity.blocks.BlockRFIDReader;
 import pcl.opensecurity.blocks.BlockSecurityDoor;
@@ -39,6 +40,7 @@ import pcl.opensecurity.tileentity.TileEntityDoorController;
 import pcl.opensecurity.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.tileentity.TileEntityEntityDetector;
 import pcl.opensecurity.tileentity.TileEntityKVM;
+import pcl.opensecurity.tileentity.TileEntityKeypadLock;
 import pcl.opensecurity.tileentity.TileEntityMagReader;
 import pcl.opensecurity.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
@@ -74,6 +76,7 @@ public class ContentRegistry {
 	public static Block SecurityDoorPrivate;
 	public static Block DisplayPanel;
 	public static Block energyTurretBlock;
+	public static Block keypadLock;
 	public static Item magCard;
 	public static Item rfidCard;
 	public static Item securityDoor;
@@ -214,6 +217,11 @@ public class ContentRegistry {
 		
 		GameRegistry.registerTileEntity(TileEntityEnergyTurret.class, "EnergyTurret");
 
+		keypadLock = new BlockKeypadLock();
+		GameRegistry.registerBlock(keypadLock, "keypadLock");
+		keypadLock.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityKeypadLock.class, "KeypadLock");
+		
 		
 		OpenSecurity.logger.info("Registered Blocks");
 	}
@@ -232,6 +240,7 @@ public class ContentRegistry {
 		secureOS_disk = li.cil.oc.api.Items.registerFloppy("SecureOS", 1, factory);
 
 		ItemStack redstone = new ItemStack(Items.redstone);
+		ItemStack stone_button = new ItemStack((Block)Block.blockRegistry.getObject("stone_button"));
 		ItemStack paper = new ItemStack(Items.paper);
 		ItemStack noteblock = new ItemStack(Blocks.noteblock);
 		ItemStack door = new ItemStack(Items.iron_door);
@@ -368,6 +377,13 @@ public class ContentRegistry {
         		" B ",
         		"R R",
         		'B', batteryUpgrade, 'R', redstone);
+        
+		GameRegistry.addRecipe(new ItemStack(keypadLock, 1), 
+				"BBB", 
+				"BBB",
+				"BBB", 
+				'B', stone_button);
+
 		
 		GameRegistry.addShapelessRecipe(secureOS_disk, new Object[] { floppy, magCard });
 		OpenSecurity.logger.info("Registered Recipes");
