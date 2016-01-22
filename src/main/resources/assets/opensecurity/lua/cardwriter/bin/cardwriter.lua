@@ -1,7 +1,6 @@
 local string = require("string")
 local term = require("term")
-local c = require("component")
-local writer = c.os_cardwriter
+local writer = require("component").os_cardwriter
 
 local data
 local name
@@ -22,9 +21,9 @@ lock = term.read()
 term.setCursor(1,5)
 
 if lock and (lock == "" or lock:sub(1, 1):lower() == "y") then
-	doLock = true
+  doLock = true
 else 
-	doLock = false
+  doLock = false
 end
 
 writer.write(data, name, doLock)
