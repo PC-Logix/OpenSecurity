@@ -159,6 +159,11 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		return new Object[] { !(tickCool > 0) };
 	}
 
+	@Callback
+	public Object[] greet(Context context, Arguments args) {
+		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
+	}
+	
 	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint (Yaw ranges (0.0..360) Pitch ranges (-45..90)")
 	public Object[] moveTo(Context context, Arguments args) throws Exception {
 		if (power) {
