@@ -222,6 +222,20 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		return new Object[] { isDoorOpen(door, loc) };
 	}
 
+/*	@Callback
+	public Object[] open(Context context, Arguments args) {
+		if (node.changeBuffer(-5) == 0) {
+			
+		}
+	}
+	
+	@Callback
+	public Object[] close(Context context, Arguments args) {
+		if (node.changeBuffer(-5) == 0) {
+			
+		}
+	}*/
+	
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
 		if (node.changeBuffer(-5) == 0) {
@@ -283,10 +297,10 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 				}
 				return new Object[] { !isDoorOpen(door, loc) };
 			} else {
-				return new Object[] { false, "Not enough power in OC Network." };
+				return new Object[] { false, "Owner of Controller and Door do not match." };
 			}
 		} else {
-			return new Object[] { false, "Owner of Controller and Door do not match." };
+			return new Object[] { false, "Not enough power in OC Network." };
 		}
 	}
 
