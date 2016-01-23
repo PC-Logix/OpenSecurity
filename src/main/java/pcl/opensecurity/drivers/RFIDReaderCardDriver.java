@@ -67,7 +67,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 			return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
 		}
 
-		@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.", direct = true)
+		@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.")
 		public Object[] scan(Context context, Arguments args) throws Exception {
 			double range = args.optDouble(0, OpenSecurity.rfidRange);
 			if (range > OpenSecurity.rfidRange) {
