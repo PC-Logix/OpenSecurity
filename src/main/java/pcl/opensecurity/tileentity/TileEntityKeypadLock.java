@@ -254,8 +254,6 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 			EntityPlayerMP p=(EntityPlayerMP)player;			
 			OpenSecurity.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(p.dimension, (double)xCoord, (double)yCoord, (double)zCoord, 64d));
 			
-			//queueForAttached("keypad_button",new Object[] { null, keyChars[buttonIndex]} );
-			
 			if (pressedBuffer.length()==maxCodeLength)
 				pressedBuffer=pressedBuffer.substring(2, maxCodeLength);
 			pressedBuffer = pressedBuffer+keyChars[buttonIndex];
