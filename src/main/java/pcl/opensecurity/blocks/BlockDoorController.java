@@ -2,6 +2,9 @@ package pcl.opensecurity.blocks;
 
 import li.cil.oc.common.item.Wrench;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
+import net.minecraft.block.BlockGlass;
+import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -42,6 +45,18 @@ public class BlockDoorController extends BlockOSBase {
 	}
 
 	@Override
+	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+		TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(x, y, z);
+		//If the user is not the owner, or the user is not in creative drop out.
+		if(tileEntity.getOwner()!=null){
+			if(tileEntity.getOwner().equals(player.getUniqueID().toString())) {
+				this.setResistance(0F);
+				this.setHardness(0F);
+			}
+		}
+	}
+	
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX, float clickY, float clickZ) {
 		TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(x, y, z);
 		if (tileEntity == null || player.isSneaking()) {
@@ -60,9 +75,13 @@ public class BlockDoorController extends BlockOSBase {
 		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemBlock) {
 			Block block = Block.getBlockFromItem(player.getCurrentEquippedItem().getItem());
 			Item oldBlock = tileEntity.DoorControllerCamo[0].getItem();
-			if (block.isOpaqueCube() || block.equals(Blocks.glass)) {
+			if (block.isOpaqueCube() || block instanceof BlockGlass || block instanceof BlockStainedGlass) {
 				if (!tileEntity.DoorControllerCamo[0].getItem().equals(player.getCurrentEquippedItem().getItem())) {
-					tileEntity.overrideTexture(block, player.getCurrentEquippedItem().splitStack(1), ForgeDirection.getOrientation(side));
+					if(player.capabilities.isCreativeMode) {
+						tileEntity.overrideTexture(block, player.getCurrentEquippedItem().splitStack(0), ForgeDirection.getOrientation(side));
+					} else {
+						tileEntity.overrideTexture(block, player.getCurrentEquippedItem().splitStack(1), ForgeDirection.getOrientation(side));
+					}
 					world.scheduleBlockUpdate(x, y, z, tileEntity.block, 5);
 					if (!world.isRemote) {
 						ItemStack testAgainst = new ItemStack(oldBlock);
@@ -84,7 +103,6 @@ public class BlockDoorController extends BlockOSBase {
 			tileEntity.overrideTexture(ContentRegistry.DoorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.DoorController)), ForgeDirection.getOrientation(side));
 			world.scheduleBlockUpdate(x, y, z, tileEntity.block, 5);
 		}
-
 		return true;
 	}
 

@@ -2,9 +2,12 @@ package pcl.opensecurity.blocks;
 
 import net.minecraft.client.renderer.IconFlipped;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -37,6 +40,18 @@ public class BlockSecurityDoorPrivate extends BlockSecurityDoor {
 		this.iconsLower[0] = p_149651_1_.registerIcon(OpenSecurity.MODID + ":door_secure_lower");
 		this.iconsUpper[1] = new IconFlipped(this.iconsUpper[0], true, false);
 		this.iconsLower[1] = new IconFlipped(this.iconsLower[0], true, false);
+	}
+	
+	@Override
+	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+		TileEntitySecureDoor tileEntity = (TileEntitySecureDoor) world.getTileEntity(x, y, z);
+		//If the user is not the owner, or the user is not in creative drop out.
+		if(tileEntity.getOwner()!=null){
+			if(tileEntity.getOwner().equals(player.getUniqueID().toString())) {
+				this.setResistance(0F);
+				this.setHardness(0F);
+			}
+		}
 	}
 	
 	@SideOnly(Side.CLIENT)

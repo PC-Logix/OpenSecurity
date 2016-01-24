@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.tileentity.TileEntityDoorController;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
@@ -117,6 +118,18 @@ public class BlockSecurityDoor extends BlockDoor {
 
 	}
 
+	@Override
+	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+		TileEntitySecureDoor tileEntity = (TileEntitySecureDoor) world.getTileEntity(x, y, z);
+		//If the user is not the owner, or the user is not in creative drop out.
+		if(tileEntity.getOwner()!=null){
+			if(tileEntity.getOwner().equals(player.getUniqueID().toString())) {
+				this.setResistance(0F);
+				this.setHardness(0F);
+			}
+		}
+	}
+	
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
