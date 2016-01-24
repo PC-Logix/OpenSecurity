@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.containers.KVMContainer;
-import pcl.opensecurity.networking.packet.OSPacketHandler;
+import pcl.opensecurity.networking.OSPacketHandler;
 import pcl.opensecurity.tileentity.TileEntityKVM;
 
 public class KVMGUI extends GuiContainer {

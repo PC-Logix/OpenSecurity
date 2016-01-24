@@ -1,4 +1,4 @@
-package pcl.opensecurity.networking.packet;
+package pcl.opensecurity.networking;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;

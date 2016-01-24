@@ -1,4 +1,4 @@
-package pcl.opensecurity.networking.packet;
+package pcl.opensecurity.networking;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;

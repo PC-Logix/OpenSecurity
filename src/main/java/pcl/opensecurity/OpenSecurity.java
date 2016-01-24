@@ -11,11 +11,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import pcl.opensecurity.gui.OSGUIHandler;
-import pcl.opensecurity.networking.packet.HandlerKeypadButton;
-import pcl.opensecurity.networking.packet.OSPacketHandler;
-import pcl.opensecurity.networking.packet.PacketBoltFire;
-import pcl.opensecurity.networking.packet.OSPacketHandler.PacketHandler;
-import pcl.opensecurity.networking.packet.PacketKeypadButton;
+import pcl.opensecurity.networking.HandlerKeypadButton;
+import pcl.opensecurity.networking.OSPacketHandler;
+import pcl.opensecurity.networking.PacketBoltFire;
+import pcl.opensecurity.networking.PacketKeypadButton;
+import pcl.opensecurity.networking.OSPacketHandler.PacketHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;

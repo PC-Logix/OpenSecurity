@@ -21,7 +21,7 @@ import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.networking.packet.PacketKeypadButton;
+import pcl.opensecurity.networking.PacketKeypadButton;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
