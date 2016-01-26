@@ -1,11 +1,15 @@
 package pcl.opensecurity.blocks;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.tileentity.TileEntityKVM;
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +25,7 @@ public class BlockKVM extends BlockOSBase {
 	private IIcon outputNoCon;
 	@SideOnly(Side.CLIENT)
 	private IIcon outputCon;
-	
+
 	public BlockKVM() {
 		setBlockName("kvm");
 	}
@@ -31,7 +35,31 @@ public class BlockKVM extends BlockOSBase {
 		return new TileEntityKVM();
 	}
 
-	
+	/**
+	 * Called when the block is placed in the world.
+	 */
+	@Override
+	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
+		super.onBlockPlacedBy(par1World, x, y, z, par5EntityLivingBase, par6ItemStack);
+		int whichDirectionFacing = 0;
+		whichDirectionFacing = (MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3);
+		switch (whichDirectionFacing) {
+		case 0:
+			whichDirectionFacing = ForgeDirection.SOUTH.ordinal();
+			break;
+		case 1:
+			whichDirectionFacing = ForgeDirection.WEST.ordinal();
+			break;
+		case 2:
+			whichDirectionFacing = ForgeDirection.NORTH.ordinal();
+			break;
+		case 3:
+			whichDirectionFacing = ForgeDirection.EAST.ordinal();
+			break;
+		}
+		par1World.setBlockMetadataWithNotify(x, y, z, par5EntityLivingBase.isSneaking() ? whichDirectionFacing : ForgeDirection.OPPOSITES[whichDirectionFacing], 2);
+	}
+
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float clickX, float clickY, float clickZ) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
@@ -41,8 +69,8 @@ public class BlockKVM extends BlockOSBase {
 		player.openGui(OpenSecurity.instance, 1, world, x, y, z);
 		return true;
 	}
-	
-	
+
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister icon) {
@@ -52,7 +80,7 @@ public class BlockKVM extends BlockOSBase {
 		outputCon   = icon.registerIcon("opensecurity:hub_input_connected");
 	}
 
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int metadata, int side) {
@@ -61,8 +89,8 @@ public class BlockKVM extends BlockOSBase {
 		}
 		return this.outputNoCon;
 	}
-	
-	
+
+
 	/**
 	 * From the specified side and block metadata retrieves the blocks texture.
 	 * Args: side, metadata
@@ -72,7 +100,7 @@ public class BlockKVM extends BlockOSBase {
 	public IIcon getIcon(IBlockAccess block, int x, int y, int z, int side) {
 		int metadata = block.getBlockMetadata(x, y, z);
 		TileEntityKVM KVMTE = (TileEntityKVM) block.getTileEntity(x, y, z);
-	
+
 		if (metadata == 0 && side == 0)
 			return this.inputCon;
 		else if (metadata == 1 && side == 1)
@@ -85,9 +113,9 @@ public class BlockKVM extends BlockOSBase {
 			return this.inputCon;
 		else if (metadata == 5 && side == 5)
 			return this.inputCon;
-		
-		
-		
+
+
+
 		if (KVMTE.down && side == 0)
 			return this.outputCon;
 		else if (KVMTE.up && side == 1)
@@ -100,9 +128,9 @@ public class BlockKVM extends BlockOSBase {
 			return this.outputCon;
 		else if (KVMTE.east && side == 5)
 			return this.outputCon;
-		
-		
-			return this.outputNoCon;
+
+
+		return this.outputNoCon;
 	}
 
 }

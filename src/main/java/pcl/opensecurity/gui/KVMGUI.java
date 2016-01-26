@@ -41,6 +41,7 @@ public class KVMGUI extends GuiContainer {
 		this.buttonList.add(backBttn);
 		this.buttonList.add(leftBttn);
 		this.buttonList.add(frontBttn);
+		this.frontBttn.enabled = false;
 		this.buttonList.add(rightBttn);
 		this.buttonList.add(topBttn);
 		this.buttonList.add(bottomBttn);
@@ -103,7 +104,7 @@ public class KVMGUI extends GuiContainer {
 			this.rightBttn.enabled = !te.east;
 			this.leftBttn.enabled = !te.west;
 			this.backBttn.enabled = !te.south;
-			this.frontBttn.enabled = !te.north;
+			//this.frontBttn.enabled = !te.north;
 			this.topBttn.enabled = !te.up;
 			this.bottomBttn.enabled = !te.down;
 			break;
@@ -111,7 +112,7 @@ public class KVMGUI extends GuiContainer {
 			this.rightBttn.enabled = !te.west;
 			this.leftBttn.enabled = !te.east;
 			this.backBttn.enabled = !te.north;
-			this.frontBttn.enabled = !te.south;
+			//this.frontBttn.enabled = !te.south;
 			this.topBttn.enabled = !te.up;
 			this.bottomBttn.enabled = !te.down;
 			break;
@@ -119,7 +120,7 @@ public class KVMGUI extends GuiContainer {
 			this.rightBttn.enabled = !te.south;
 			this.leftBttn.enabled = !te.north;
 			this.backBttn.enabled = !te.west;
-			this.frontBttn.enabled = !te.east;
+			//this.frontBttn.enabled = !te.east;
 			this.topBttn.enabled = !te.up;
 			this.bottomBttn.enabled = !te.down;
 			break;
@@ -127,7 +128,7 @@ public class KVMGUI extends GuiContainer {
 			this.rightBttn.enabled = !te.north;
 			this.leftBttn.enabled = !te.south;
 			this.backBttn.enabled = !te.east;
-			this.frontBttn.enabled = !te.west;
+			//this.frontBttn.enabled = !te.west;
 			this.topBttn.enabled = !te.up;
 			this.bottomBttn.enabled = !te.down;
 			break;
@@ -135,7 +136,7 @@ public class KVMGUI extends GuiContainer {
 			this.rightBttn.enabled = !te.west;
 			this.leftBttn.enabled = !te.east;
 			this.backBttn.enabled = !te.down;
-			this.frontBttn.enabled = !te.up;
+			//this.frontBttn.enabled = !te.up;
 			this.topBttn.enabled = !te.north;
 			this.bottomBttn.enabled = !te.south;
 			break;
@@ -143,7 +144,7 @@ public class KVMGUI extends GuiContainer {
 			this.rightBttn.enabled = !te.west;
 			this.leftBttn.enabled = !te.east;
 			this.backBttn.enabled = !te.up;
-			this.frontBttn.enabled = !te.down;
+			//this.frontBttn.enabled = !te.down;
 			this.topBttn.enabled = !te.north;
 			this.bottomBttn.enabled = !te.south;
 			break;
