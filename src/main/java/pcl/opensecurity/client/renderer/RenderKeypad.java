@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 
-public class RendererKeypadTESR extends TileEntitySpecialRenderer implements IItemRenderer {
+public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRenderer {
 
 	static float texPixel=1.0f/16f;
 	
@@ -102,7 +102,7 @@ public class RendererKeypadTESR extends TileEntitySpecialRenderer implements IIt
 	
 	ButtonRenderer buttons[];
 	
-	public RendererKeypadTESR()
+	public RenderKeypad()
 	{
 		super();
 		buttons=new ButtonRenderer[12];

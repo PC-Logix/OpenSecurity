@@ -261,6 +261,7 @@ public class ContentRegistry {
 		ItemStack arrow = new ItemStack(Items.arrow);
 		ItemStack piston = new ItemStack(Item.getItemFromBlock(Blocks.piston));
 		ItemStack water = new ItemStack(Items.water_bucket);
+		ItemStack numpad = li.cil.oc.api.Items.get("numPad").createItemStack(1);
 		ItemStack batteryUpgrade = li.cil.oc.api.Items.get("batteryUpgrade1").createItemStack(1);
 		ItemStack datacard;
 		if (li.cil.oc.api.Items.get("dataCard").createItemStack(1) != null) {
@@ -379,10 +380,10 @@ public class ContentRegistry {
         		'B', batteryUpgrade, 'R', redstone);
         
 		GameRegistry.addRecipe(new ItemStack(keypadLock, 1), 
-				"BBB", 
-				"BBB",
-				"BBB", 
-				'B', stone_button);
+				"TIT", 
+				"INI",
+				"ICI", 
+				'T', transistor, 'N', numpad, 'C', t1microchip, 'I', iron);
 
 		
 		GameRegistry.addShapelessRecipe(secureOS_disk, new Object[] { floppy, magCard });

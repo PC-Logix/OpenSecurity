@@ -12,13 +12,13 @@ import org.lwjgl.opengl.GL11;
 import pcl.opensecurity.client.model.ModelEnergyTurret;
 import pcl.opensecurity.tileentity.TileEntityEnergyTurret;
 
-public class BlockEnergyTurretTESR
+public class RenderEnergyTurret
   extends TileEntitySpecialRenderer
 {
   private final ModelEnergyTurret model;
   ResourceLocation textures;
   
-  public BlockEnergyTurretTESR()
+  public RenderEnergyTurret()
   {
     this.model = new ModelEnergyTurret();
     this.textures = new ResourceLocation("opensecurity:turret.png");
