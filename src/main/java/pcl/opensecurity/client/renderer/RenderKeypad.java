@@ -143,8 +143,8 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) 
 	{
 		//Temp fix until I can debug this.
-		float light = tileEntity.getWorldObj().getLightBrightnessForSkyBlocks(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 15);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, light, light);
+		//float light = tileEntity.getWorldObj().getLightBrightnessForSkyBlocks(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 15);
+		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, light, light);
 		
 		TileEntityKeypadLock te=(TileEntityKeypadLock)tileEntity;
 		Tessellator tessellator=Tessellator.instance;
@@ -154,10 +154,10 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		World world=te.getWorldObj();
 		
 		float brightness=ContentRegistry.keypadLock.getLightValue(world, bx, by, bz);
-		//int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,0);
+		int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,12);
 		
 		tessellator.setColorOpaque_F(brightness,brightness,brightness);
-		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(light&0xffff),(float)(light>>16));
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(light&0xffff),(float)(light>>16));
 		
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y,(float)z);
