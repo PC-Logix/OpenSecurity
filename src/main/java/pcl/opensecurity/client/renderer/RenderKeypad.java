@@ -101,7 +101,9 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		float h=pos.h*texPixel;
 
 		GL11.glPushMatrix();
-			
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glTranslatef(x+w/2f, y+h/2f, depth+texPixel*-.07f);
 		int labelW=font.getStringWidth(label);
 		float scale=Math.min(h/10F, 0.8F*w/labelW);
@@ -114,7 +116,7 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		if((color&1)!=0) argb|=0xFF;
 		font.drawString(label, -labelW/2, -4, argb);
 		GL11.glDepthMask(true);
-			
+		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 	}
 	
@@ -140,6 +142,10 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) 
 	{
+		//Temp fix until I can debug this.
+		float light = tileEntity.getWorldObj().getLightBrightnessForSkyBlocks(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 15);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, light, light);
+		
 		TileEntityKeypadLock te=(TileEntityKeypadLock)tileEntity;
 		Tessellator tessellator=Tessellator.instance;
 		
@@ -148,10 +154,10 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		World world=te.getWorldObj();
 		
 		float brightness=ContentRegistry.keypadLock.getLightValue(world, bx, by, bz);
-		int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,0);
+		//int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,0);
 		
 		tessellator.setColorOpaque_F(brightness,brightness,brightness);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(light&0xffff),(float)(light>>16));
+		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(light&0xffff),(float)(light>>16));
 		
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y,(float)z);
@@ -239,7 +245,7 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		for (int i=0; i<12; ++i)
 			renderButtonGeometry(tessellator, pressed[i]?texPixel*.75f:0f, buttons[i]);
 		
-		renderButtonGeometry(tessellator, texPixel*.5f, display);
+		renderButtonGeometry(tessellator, 0f, display);
 
 		tessellator.draw();		
 		

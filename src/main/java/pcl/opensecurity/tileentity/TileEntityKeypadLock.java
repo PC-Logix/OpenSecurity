@@ -120,7 +120,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		
+
 		if (node != null && node.host() == this) {
 			final NBTTagCompound nodeNbt = new NBTTagCompound();
 			node.save(nodeNbt);
@@ -133,19 +133,19 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		nbt.setString("fbText",displayText);
 		nbt.setInteger("fbColor",displayColor);
 	}
-	
+
 	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a key is pressed")
 	public Object[] setEventName(Context context, Arguments args) throws Exception {
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
-	
+
 	@Callback(doc = "function(String:text[, color:number]):boolean; Sets the display string (0-8 chars), color (0-7) - 1 bit per channel")
 	public Object[] setDisplay(Context context, Arguments args) throws Exception {
 		String text = args.checkString(0);
-		
+
 		displayColor = (byte)(args.optInteger(1, displayColor)&7);
-		
+
 		displayText = trimString(text, MAX_DISPLAY_LENGTH);
 
 		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
@@ -168,7 +168,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 			Map colors = args.optTable(1, null);
 			for(int i=0;i<12;++i)
 			{
-			        Integer id = new Integer(i+1);
+				Integer id = new Integer(i+1);
 				Object val = labels.get(id);
 				if(val!=null && val instanceof String)
 				{
@@ -186,51 +186,51 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 			}
 		}
 		else throw new IllegalArgumentException("First argument must be index or table");
-		
+
 		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 		markDirty();
 
 		return new Object[]{ true };
 	}
-	
+
 	public static class ButtonState {
 		public static int pressDelay=5;
 		public long pressedTime;
-		
+
 		public ButtonState()
 		{
 			pressedTime=0;
 		}
-		
+
 		public boolean isPressed(long time)
 		{
 			return time-pressedTime<pressDelay;			
 		}
-		
+
 		public void press(long time)
 		{
 			pressedTime=time;			
 		}		
 	}
-	
+
 	public ButtonState buttonStates[];
-	
+
 	public TileEntityKeypadLock()
 	{		
 		super();
 		buttonStates=new ButtonState[] { 
-			new ButtonState(), new ButtonState(), new ButtonState(),
-			new ButtonState(), new ButtonState(), new ButtonState(),
-			new ButtonState(), new ButtonState(), new ButtonState(),
-			new ButtonState(), new ButtonState(), new ButtonState(),
+				new ButtonState(), new ButtonState(), new ButtonState(),
+				new ButtonState(), new ButtonState(), new ButtonState(),
+				new ButtonState(), new ButtonState(), new ButtonState(),
+				new ButtonState(), new ButtonState(), new ButtonState(),
 		};
 	}
 
 	public static String getBaseInstanceFileName()
 	{
-    		return "keypad";
+		return "keypad";
 	}	
-	
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
@@ -239,7 +239,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		}
 	}
 
-	
+
 	@Override
 	public Packet getDescriptionPacket() 
 	{
@@ -247,7 +247,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		this.writeToNBT(nbtTag);
 		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);		
 	}
-	
+
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
 	{
@@ -258,7 +258,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	{		
 		return worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 	}
-	
+
 	public void pressedButton(EntityPlayer player, int buttonIndex) {
 		if (!worldObj.isRemote) {
 			PacketKeypadButton packet = new PacketKeypadButton((short) 1, worldObj.provider.dimensionId, xCoord, yCoord, zCoord, buttonIndex);
