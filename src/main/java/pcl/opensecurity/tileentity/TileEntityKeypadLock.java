@@ -38,11 +38,23 @@ import net.minecraft.tileentity.TileEntity;
 
 
 public class TileEntityKeypadLock extends TileEntityMachineBase implements Environment  {
+	final static int MAX_LABEL_LENGTH = 3;
+	final static int MAX_DISPLAY_LENGTH = 8;
 
 	public String data;
 	public String eventName = "keypad";
+	public String buttonLabels[] = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"};
+	public byte buttonColors[] = new byte[] {7,7,7, 7,7,7, 7,7,7, 7,7,7};
+	public String displayText = "";
+	public byte displayColor = 7;
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+
+	static String trimString(String str, int len)
+	{
+		if (str==null || str.length()<=len) return str;
+		return str.substring(0,len);
+	}
 
 	@Override
 	public Node node() {
@@ -95,6 +107,14 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		} else {
 			eventName = "keypad";
 		}
+		for(int i=0;i<12;++i)
+			buttonLabels[i] = trimString(nbt.getString("btn:"+i), MAX_LABEL_LENGTH);
+		byte colors[] = nbt.getByteArray("btn:colors");
+		if(colors!=null)
+			for(int i=0; i<12 && i<colors.length; ++i)
+				buttonColors[i] = colors[i];
+		displayText = trimString(nbt.getString("fbText"), MAX_DISPLAY_LENGTH);
+		displayColor = nbt.getByte("fbColor");
 	}
 
 	@Override
@@ -107,39 +127,72 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 			nbt.setTag("oc:node", nodeNbt);
 		}
 		nbt.setString("eventName", eventName);
+		for(int i=0;i<12;++i)
+			nbt.setString("btn:"+i, buttonLabels[i]);
+		nbt.setByteArray("btn:colors", buttonColors);
+		nbt.setString("fbText",displayText);
+		nbt.setInteger("fbColor",displayColor);
 	}
 	
-	@Callback
-	public Object[] greet(Context context, Arguments args) {
-		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
-	}
-
-	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a card is swipped", direct = true)
+	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a key is pressed")
 	public Object[] setEventName(Context context, Arguments args) throws Exception {
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
 	
-	static String[] keyChars=new String[] {"1","2","3","4","5","6","7","8","9","*","0","#"};
-	static int maxCodeLength=8;
-	protected int instanceID;
-	static Set<String> validChars = new HashSet<String>();
-	static {
-		 validChars.add("0");
-		 validChars.add("1");
-		 validChars.add("2");
-		 validChars.add("3");
-		 validChars.add("4");
-		 validChars.add("5");
-		 validChars.add("6");
-		 validChars.add("7");
-		 validChars.add("8");
-		 validChars.add("9");
-		 validChars.add("#");
-		 validChars.add("*");
-		 
-	}
+	@Callback(doc = "function(String:text[, color:number]):boolean; Sets the display string (0-8 chars), color (0-7) - 1 bit per channel")
+	public Object[] setDisplay(Context context, Arguments args) throws Exception {
+		String text = args.checkString(0);
+		
+		displayColor = (byte)(args.optInteger(1, displayColor)&7);
+		
+		displayText = trimString(text, MAX_DISPLAY_LENGTH);
 
+		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		markDirty();
+		return new Object[]{ true };
+	}
+	@Callback(doc = "function(idx:number, text:string, color:number):boolean; Sets the key text (1-2 chars)")
+	public Object[] setKey(Context context, Arguments args) throws Exception {
+		if(args.count()==0) throw new IllegalArgumentException("Not enough arguments");
+		if(args.isInteger(0))
+		{
+			int idx = args.checkInteger(0);
+			if (idx<1 || idx>12) throw new IllegalArgumentException("Index "+idx+" is out of range");
+			buttonLabels[idx-1] = trimString(args.checkString(1), MAX_LABEL_LENGTH);
+			buttonColors[idx-1] = (byte)(args.optInteger(2, buttonColors[idx-1])&7);
+		}
+		else if(args.isTable(0))
+		{
+			Map labels = args.checkTable(0);
+			Map colors = args.optTable(1, null);
+			for(int i=0;i<12;++i)
+			{
+			        Integer id = new Integer(i+1);
+				Object val = labels.get(id);
+				if(val!=null && val instanceof String)
+				{
+					buttonLabels[i] = trimString((String)val, MAX_LABEL_LENGTH);
+				}
+				if (colors!=null)
+				{
+					val = colors.get(id);
+					if(val!=null && val instanceof Number)
+					{
+						Number color = (Number)val;
+						buttonColors[i] = (byte)(color.intValue()&7);
+					}
+				}
+			}
+		}
+		else throw new IllegalArgumentException("First argument must be index or table");
+		
+		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		markDirty();
+
+		return new Object[]{ true };
+	}
+	
 	public static class ButtonState {
 		public static int pressDelay=5;
 		public long pressedTime;
@@ -160,41 +213,8 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		}		
 	}
 	
-	public static class LockCode {
-		String name;
-		String code;
-		byte accessLevel;
-		
-		public LockCode(String name, String code, byte accessLevel)
-		{
-			this.name=name;
-			this.code=code;
-			this.accessLevel=accessLevel;
-		}
-
-		public boolean matchesBuffer(String pressedBuffer) 
-		{
-			int skip=pressedBuffer.length()-code.length();
-			if (skip>=0) 
-			{
-				String relevant=pressedBuffer.substring(skip,pressedBuffer.length());
-				return relevant.equals(code);
-			}
-			return false;
-		}
-		
-	}
 	public ButtonState buttonStates[];
 	
-	Map<String,LockCode> storedCodes;
-	
-	// true if the blocks redstone output state has changed
-	boolean outputChanged;
-	//true if one or more activation programs are running
-	boolean programsActive;
-
-	String pressedBuffer;
-
 	public TileEntityKeypadLock()
 	{		
 		super();
@@ -204,18 +224,12 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 			new ButtonState(), new ButtonState(), new ButtonState(),
 			new ButtonState(), new ButtonState(), new ButtonState(),
 		};
-		
-		storedCodes=Collections.synchronizedMap(new HashMap<String,LockCode>());
-		
-		programsActive=false;
-		outputChanged=false;
-		pressedBuffer="";
 	}
 
-    public static String getBaseInstanceFileName()
-    {
-    	return "keypad";
-    }	
+	public static String getBaseInstanceFileName()
+	{
+    		return "keypad";
+	}	
 	
 	@Override
 	public void updateEntity() {
@@ -227,7 +241,6 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 
 	
 	@Override
-	@SideOnly(Side.SERVER)
 	public Packet getDescriptionPacket() 
 	{
 		NBTTagCompound nbtTag = new NBTTagCompound();
@@ -236,7 +249,6 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) 
 	{
 		readFromNBT(packet.func_148857_g());
@@ -249,15 +261,10 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	
 	public void pressedButton(EntityPlayer player, int buttonIndex) {
 		if (!worldObj.isRemote) {
-			
-			PacketKeypadButton packet = new PacketKeypadButton((short) 1, worldObj.provider.dimensionId, xCoord, yCoord, zCoord, buttonIndex);		
+			PacketKeypadButton packet = new PacketKeypadButton((short) 1, worldObj.provider.dimensionId, xCoord, yCoord, zCoord, buttonIndex);
 			EntityPlayerMP p=(EntityPlayerMP)player;			
 			OpenSecurity.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(p.dimension, (double)xCoord, (double)yCoord, (double)zCoord, 64d));
-			
-			if (pressedBuffer.length()==maxCodeLength)
-				pressedBuffer=pressedBuffer.substring(2, maxCodeLength);
-			pressedBuffer = pressedBuffer+keyChars[buttonIndex];
-			node.sendToReachable("computer.signal", eventName, keyChars[buttonIndex]);
+			node.sendToReachable("computer.signal", eventName, buttonIndex+1, buttonIndex>=0 && buttonIndex<buttonLabels.length ? buttonLabels[buttonIndex] : "");
 		}
 	}
 	public static float[] facingToAngle={0,0,0,180,90,270};
@@ -265,4 +272,4 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	{
 		return facingToAngle[getFacing()];
 	}
-}
+} 

@@ -21,108 +21,121 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 	static float texPixel=1.0f/16f;
 	
 	static ButtonState itemButtonStates[];
-	
+	static String default_labels[] = new String[] {"1","2","3","4","5","6","7","8","9","*","0","#"};
+	static byte default_colors[] = new byte[] {7,7,7, 7,7,7, 7,7,7, 7,7,7};
+	static ButtonPosition buttons[] = null;
+	static ButtonPosition display = null;
+
 	static {
 		itemButtonStates=new ButtonState[12];
 		for(int i=0; i<12; ++i)
-		{
 			itemButtonStates[i]=new ButtonState();
-		}
-	}
-	
-	public static class ButtonRenderer {
-		public float x, y, z;
-		public float w, h;
-		public String label;
-		
-		public ButtonRenderer(float x, float y, float z, float w, float h, String label)
-		{
-			this.x=x*texPixel;
-			this.y=y*texPixel;
-			this.z=z*texPixel;
-			this.w=w*texPixel;
-			this.h=h*texPixel;
-			this.label=label;
-		}
-		
-		public void renderGeometry(Tessellator tessellator, float depth)
-		{
-			float tx=texPixel*2,ty=texPixel*2;
-			
-			tessellator.setNormal(0f,0f,-1f);
-			tessellator.addVertexWithUV(x,   y,   z+depth, tx, ty);
-			tessellator.addVertexWithUV(x,   y+h, z+depth, tx, ty+2f*texPixel);
-			tessellator.addVertexWithUV(x+w, y+h, z+depth, tx+2f*texPixel, ty+2f*texPixel);
-			tessellator.addVertexWithUV(x+w, y,   z+depth, tx+2f*texPixel, ty);
-			
-			tessellator.setNormal(-1f,0f,0f);
-			
-			tessellator.addVertexWithUV(x,   y,   z+depth, tx, ty);
-			tessellator.addVertexWithUV(x,   y,   z+2*texPixel+depth, tx+2f*texPixel, ty);
-			tessellator.addVertexWithUV(x,   y+h, z+2*texPixel+depth, tx+2f*texPixel, ty+2f*texPixel);
-			tessellator.addVertexWithUV(x,   y+h, z+depth, tx, ty+2f*texPixel);
-			
-			tessellator.setNormal(1f,0f,0f);
-			tessellator.addVertexWithUV(x+w,   y,   z+2*texPixel+depth, tx+2f*texPixel, ty);
-			tessellator.addVertexWithUV(x+w,   y,   z+depth, tx, ty);
-			tessellator.addVertexWithUV(x+w,   y+h, z+depth, tx, ty+2f*texPixel);
-			tessellator.addVertexWithUV(x+w,   y+h, z+2*texPixel+depth, tx+2f*texPixel, ty+2f*texPixel);
-			
-			tessellator.setNormal(0f,-1f,0f);
-			tessellator.addVertexWithUV(x,     y,   z+depth, tx, ty);
-			tessellator.addVertexWithUV(x+w,   y,   z+depth, tx+2f*texPixel, ty);
-			tessellator.addVertexWithUV(x+w,   y,   z+2*texPixel+depth, tx+2f*texPixel, ty+2f*texPixel);
-			tessellator.addVertexWithUV(x,     y,   z+2*texPixel+depth, tx, ty+2f*texPixel);
 
-			tessellator.setNormal(0f,1f,0f);
-			tessellator.addVertexWithUV(x,     y+h,   z+2*texPixel+depth, tx+2f*texPixel, ty);
-			tessellator.addVertexWithUV(x+w,   y+h,   z+2*texPixel+depth, tx+2f*texPixel, ty+2f*texPixel);
-			tessellator.addVertexWithUV(x+w,   y+h,   z+depth, tx, ty+2f*texPixel);
-			tessellator.addVertexWithUV(x,     y+h,   z+depth, tx, ty);
-		}
+		buttons=new ButtonPosition[12];
 		
-		public void writeLabel(FontRenderer font, float depth)
-		{
-			/**/
-			
-			GL11.glPushMatrix();
-			
-			GL11.glTranslatef(x+w/2f, y+h/2f, depth+texPixel*-.07f);
-			float scale=h/10;
-			GL11.glScalef(-scale,-scale,scale);
-			GL11.glTranslatef(.5f,.5f,0f);
-			GL11.glDepthMask(false);
-			int labelW=font.getStringWidth(label);
-			font.drawString(label, -labelW/2, -4, 0xFFFFFF);
-			GL11.glDepthMask(true);
-			
-			GL11.glPopMatrix();
-		}
+		buttons[0] =new ButtonPosition(10f, 9.5f, 2f, 2f);
+		buttons[1] =new ButtonPosition( 7f, 9.5f, 2f, 2f);
+		buttons[2] =new ButtonPosition( 4f, 9.5f, 2f, 2f);
+
+		buttons[3] =new ButtonPosition(10f,  7f, 2f, 2f);
+		buttons[4] =new ButtonPosition( 7f,  7f, 2f, 2f);
+		buttons[5] =new ButtonPosition( 4f,  7f, 2f, 2f);
+
+		buttons[6] =new ButtonPosition(10f,  4.5f, 2f, 2f);
+		buttons[7] =new ButtonPosition( 7f,  4.5f, 2f, 2f);
+		buttons[8] =new ButtonPosition( 4f,  4.5f, 2f, 2f);
+
+		buttons[9] =new ButtonPosition(10f,  2f, 2f, 2f);
+		buttons[10]=new ButtonPosition( 7f,  2f, 2f, 2f);
+		buttons[11]=new ButtonPosition( 4f,  2f, 2f, 2f);
+
+		display = new ButtonPosition( 4f, 12f, 8f, 2f);
 	}
 	
-	ButtonRenderer buttons[];
+	public static void renderButtonGeometry(Tessellator tessellator, float depth, ButtonPosition pos)
+	{
+		float tx=texPixel*2,ty=texPixel*2;
+		float x=pos.x*texPixel;
+		float y=pos.y*texPixel;
+		float z=depth;
+		float w=pos.w*texPixel;
+		float h=pos.h*texPixel;
+			
+		tessellator.setNormal(0f,0f,-1f);
+		tessellator.addVertexWithUV(x,   y,   z, tx, ty);
+		tessellator.addVertexWithUV(x,   y+h, z, tx, ty+2f*texPixel);
+		tessellator.addVertexWithUV(x+w, y+h, z, tx+2f*texPixel, ty+2f*texPixel);
+		tessellator.addVertexWithUV(x+w, y,   z, tx+2f*texPixel, ty);
+			
+		tessellator.setNormal(-1f,0f,0f);
+			
+		tessellator.addVertexWithUV(x,   y,   z, tx, ty);
+		tessellator.addVertexWithUV(x,   y,   z+1f, tx+2f*texPixel, ty);
+		tessellator.addVertexWithUV(x,   y+h, z+1f, tx+2f*texPixel, ty+2f*texPixel);
+		tessellator.addVertexWithUV(x,   y+h, z, tx, ty+2f*texPixel);
+			
+		tessellator.setNormal(1f,0f,0f);
+		tessellator.addVertexWithUV(x+w,   y,   z+1f, tx+2f*texPixel, ty);
+		tessellator.addVertexWithUV(x+w,   y,   z, tx, ty);
+		tessellator.addVertexWithUV(x+w,   y+h, z, tx, ty+2f*texPixel);
+		tessellator.addVertexWithUV(x+w,   y+h, z+1f, tx+2f*texPixel, ty+2f*texPixel);
+			
+		tessellator.setNormal(0f,-1f,0f);
+		tessellator.addVertexWithUV(x,     y,   z, tx, ty);
+		tessellator.addVertexWithUV(x+w,   y,   z, tx+2f*texPixel, ty);
+		tessellator.addVertexWithUV(x+w,   y,   z+1f, tx+2f*texPixel, ty+2f*texPixel);
+		tessellator.addVertexWithUV(x,     y,   z+1f, tx, ty+2f*texPixel);
+
+		tessellator.setNormal(0f,1f,0f);
+		tessellator.addVertexWithUV(x,     y+h,   z+1f, tx+2f*texPixel, ty);
+		tessellator.addVertexWithUV(x+w,   y+h,   z+1f, tx+2f*texPixel, ty+2f*texPixel);
+		tessellator.addVertexWithUV(x+w,   y+h,   z, tx, ty+2f*texPixel);
+		tessellator.addVertexWithUV(x,     y+h,   z, tx, ty);
+	}
+		
+	public static void writeButtonLabel(FontRenderer font, float depth, ButtonPosition pos, int color, String label)
+	{
+		float x=pos.x*texPixel;
+		float y=pos.y*texPixel;
+		float w=pos.w*texPixel;
+		float h=pos.h*texPixel;
+
+		GL11.glPushMatrix();
+			
+		GL11.glTranslatef(x+w/2f, y+h/2f, depth+texPixel*-.07f);
+		int labelW=font.getStringWidth(label);
+		float scale=Math.min(h/10F, 0.8F*w/labelW);
+		GL11.glScalef(-scale,-scale,scale);
+		GL11.glTranslatef(.5f,.5f,0f);
+		GL11.glDepthMask(false);
+		int argb = 0xFF000000;
+		if((color&4)!=0) argb|=0xFF0000;
+		if((color&2)!=0) argb|=0xFF00;
+		if((color&1)!=0) argb|=0xFF;
+		font.drawString(label, -labelW/2, -4, argb);
+		GL11.glDepthMask(true);
+			
+		GL11.glPopMatrix();
+	}
 	
+	static class ButtonPosition
+	{
+		public float x, y;
+		public float w, h;
+
+		ButtonPosition(float x, float y, float w, float h)
+		{
+			this.x=x;
+			this.y=y;
+			this.w=w;
+			this.h=h;
+		}
+	}
+
 	public RenderKeypad()
 	{
 		super();
-		buttons=new ButtonRenderer[12];
-		
-		buttons[0] =new ButtonRenderer(10f, 11.5f, 0f, 2f, 2f, "1");
-		buttons[1] =new ButtonRenderer( 7f, 11.5f, 0f, 2f, 2f, "2");
-		buttons[2] =new ButtonRenderer( 4f, 11.5f, 0f, 2f, 2f, "3");
-
-		buttons[3] =new ButtonRenderer(10f,  8.5f, 0f, 2f, 2f, "4");
-		buttons[4] =new ButtonRenderer( 7f,  8.5f, 0f, 2f, 2f, "5");
-		buttons[5] =new ButtonRenderer( 4f,  8.5f, 0f, 2f, 2f, "6");
-
-		buttons[6] =new ButtonRenderer(10f,  5.5f, 0f, 2f, 2f, "7");
-		buttons[7] =new ButtonRenderer( 7f,  5.5f, 0f, 2f, 2f, "8");
-		buttons[8] =new ButtonRenderer( 4f,  5.5f, 0f, 2f, 2f, "9");
-
-		buttons[9] =new ButtonRenderer(10f,  2.5f, 0f, 2f, 2f, "*");
-		buttons[10]=new ButtonRenderer( 7f,  2.5f, 0f, 2f, 2f, "0");
-		buttons[11]=new ButtonRenderer( 4f,  2.5f, 0f, 2f, 2f, "#");
-}
+	}
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) 
@@ -134,11 +147,10 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		
 		World world=te.getWorldObj();
 		
-		
 		float brightness=ContentRegistry.keypadLock.getLightValue(world, bx, by, bz);
-		int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,0);				
+		int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,0);
 		
-		tessellator.setColorOpaque_F(brightness,brightness,brightness);		
+		tessellator.setColorOpaque_F(brightness,brightness,brightness);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(light&0xffff),(float)(light>>16));
 		
 		GL11.glPushMatrix();
@@ -150,13 +162,13 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		long time = world.getTotalWorldTime();
 		
 		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
-		
-		drawKeypadBlock(te.buttonStates, time);
+
+		drawKeypadBlock(te, time);
 		
 		GL11.glPopMatrix();
 	}
 	
-	public void drawKeypadBlock(ButtonState buttonStates[], long time) 
+	public void drawKeypadBlock(TileEntityKeypadLock keylock, long time)
 	{
 		Tessellator tessellator=Tessellator.instance;
 		
@@ -215,17 +227,41 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		tessellator.addVertexWithUV( 1f-texPixel, 1f-texPixel, 0f,       1f-texPixel, 1f-texPixel);
 		tessellator.addVertexWithUV( 1f-texPixel, texPixel,    0f,       1f-texPixel, texPixel);
 				
+		tessellator.draw();		
+
+		tessellator.startDrawingQuads();
+		tessellator.setBrightness(255);
+
+		boolean pressed[] = new boolean[12];
+		for(int i=0; i<pressed.length; ++i)
+			pressed[i] = keylock!=null ? keylock.buttonStates[i].isPressed(time) : false;
+
 		for (int i=0; i<12; ++i)
-			buttons[i].renderGeometry(tessellator,buttonStates[i].isPressed(time)?texPixel*.75f:0f);
+			renderButtonGeometry(tessellator, pressed[i]?texPixel*.75f:0f, buttons[i]);
 		
+		renderButtonGeometry(tessellator, texPixel*.5f, display);
+
 		tessellator.draw();		
 		
 		FontRenderer font=this.func_147498_b();
 		if (font!=null)
+		{
+			String btnLabels[] = keylock!=null ? keylock.buttonLabels : default_labels;
+			byte btnColors[] = keylock!=null ? keylock.buttonColors : default_colors;
+			String fbText = keylock!=null ? keylock.displayText : "";
+			byte fbColor = keylock!=null ? keylock.displayColor : 7;
+			
 			for (int i=0; i<12; ++i)
-				buttons[i].writeLabel(font,buttonStates[i].isPressed(time)?texPixel*.75f:0f);
-				
-		
+			{
+				String lbl = btnLabels[i];
+				if(lbl==null) lbl=default_labels[i];
+				if(lbl.length()>0)
+					writeButtonLabel(font, pressed[i]?texPixel*.75f:0f, buttons[i], btnColors[i], lbl);
+			}
+
+			if (fbText!=null && fbText.length()>0)
+				writeButtonLabel(font, texPixel*.5f, display, fbColor, fbText);
+		}
 	}
 
 	@Override
@@ -234,15 +270,12 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
-			ItemRendererHelper helper) {
+	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
 		return true;
 	}
 
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		
-		
 		GL11.glPushMatrix();		
 
 		if (type==ItemRenderType.EQUIPPED_FIRST_PERSON)
@@ -268,15 +301,15 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		
 		GL11.glBegin(GL11.GL_QUADS);
 		
-			GL11.glNormal3f(0f,1f,0f);
-			GL11.glTexCoord2f(0, 0);  GL11.glVertex3f(0f, 1f, 0f);
-			GL11.glTexCoord2f(0, 1);  GL11.glVertex3f(0f, 1f, 1f);
-			GL11.glTexCoord2f(1, 1);  GL11.glVertex3f(1f, 1f, 1f);
-			GL11.glTexCoord2f(1, 0);  GL11.glVertex3f(1f, 1f, 0f);
+		GL11.glNormal3f(0f,1f,0f);
+		GL11.glTexCoord2f(0, 0);  GL11.glVertex3f(0f, 1f, 0f);
+		GL11.glTexCoord2f(0, 1);  GL11.glVertex3f(0f, 1f, 1f);
+		GL11.glTexCoord2f(1, 1);  GL11.glVertex3f(1f, 1f, 1f);
+		GL11.glTexCoord2f(1, 0);  GL11.glVertex3f(1f, 1f, 0f);
 		
 		GL11.glEnd();
 		
-		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
+//		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 
 		GL11.glBegin(GL11.GL_QUADS);
 		
@@ -301,10 +334,9 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 			GL11.glTexCoord2f(1, 0);  GL11.glVertex3f(1f, 1f, 1f);
 			GL11.glTexCoord2f(0, 0);  GL11.glVertex3f(0f, 1f, 1f);
 					
-
 			GL11.glEnd();
 	
-			this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
+//			this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 			
 			GL11.glBegin(GL11.GL_QUADS);
 
@@ -318,9 +350,9 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 			
 		GL11.glEnd();
 			
-		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
+//		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 
-		drawKeypadBlock( itemButtonStates, 10000);
+		drawKeypadBlock( null, 10000);
 			
 		GL11.glPopMatrix();
 	}

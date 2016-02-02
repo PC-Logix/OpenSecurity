@@ -1,9 +1,6 @@
 package pcl.opensecurity.blocks;
 
-import pcl.opensecurity.tileentity.TileEntityDoorController;
 import pcl.opensecurity.tileentity.TileEntityKeypadLock;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -113,7 +110,7 @@ public class BlockKeypadLock extends BlockOSBase {
 		}
 		
 		//figure out what, if any, button was hit?
-		if (relX<4f || relX>12 || relY<2.5f || relY>13.5f)
+		if (relX<4f || relX>12 || relY<2f || relY>11.5f)
 		{
 			//BLLog.debug("outside button area.");			
 			//completely outside area of buttons, return
@@ -121,8 +118,8 @@ public class BlockKeypadLock extends BlockOSBase {
 		}
 		int col=(int)((relX-4f)/3f);
 		float colOff=(relX-4f)%3f;
-		int row=(int)((relY-2.5f)/3f);
-		float rowOff=(relY-2.5f)%3f;
+		int row=(int)((relY-2f)/2.5f);
+		float rowOff=(relY-2f)%2.5f;
 		//check and return if between buttons
 		if (colOff>2f || rowOff>2f)
 		{
@@ -132,8 +129,9 @@ public class BlockKeypadLock extends BlockOSBase {
 		
 		//ok! hit a button!
 		//BLLog.debug("Hit button on row %d in col %d", row, col);
+		int idx = (2-col)+3*(3-row);
 		TileEntityKeypadLock te=(TileEntityKeypadLock)world.getTileEntity(x,y,z);
-		te.pressedButton(player,(2-col)+3*(3-row));
+		te.pressedButton(player,idx);
 		return true;
 	
 	}
