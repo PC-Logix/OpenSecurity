@@ -27,11 +27,16 @@ public class RenderEnergyTurret
   public void renderTileEntityAt(TileEntity te, double x, double y, double z, float scale)
   {
     GL11.glPushMatrix();
-    GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+    GL11.glTranslatef((float)x, (float)y, (float)z);
     Minecraft.getMinecraft().renderEngine.bindTexture(this.textures);
     GL11.glPushMatrix();
-    GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-    this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F, ((TileEntityEnergyTurret)te).getRealYaw(), ((TileEntityEnergyTurret)te).getRealPitch());
+    if(te!=null && te instanceof TileEntityEnergyTurret)
+    {
+      TileEntityEnergyTurret et = (TileEntityEnergyTurret)te;
+      this.model.render(0.0625F, et.isUpright(), et.shaft, et.barrel, et.getRealYaw(), et.getRealPitch());
+    }
+    else
+      this.model.render(0.0625F, true, 1.0F, 1.0F, 0F, 0F);
     GL11.glPopMatrix();
     GL11.glPopMatrix();
   }

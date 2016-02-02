@@ -14,7 +14,7 @@ public class ModelEnergyBolt
     this.textureWidth = 64;
     this.textureHeight = 64;
     this.bolt = new ModelRenderer(this, 23, 38);
-    this.bolt.setRotationPoint(0.0F, 16.0F, 0.0F);
+    this.bolt.setRotationPoint(0.0F, 0.0F, 0.0F);
     this.bolt.addBox(-0.5F, -0.5F, -4.0F, 1, 1, 8, 0.0F);
   }
   

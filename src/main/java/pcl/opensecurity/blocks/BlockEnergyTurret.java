@@ -5,6 +5,8 @@ import java.util.Random;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.tileentity.TileEntityEnergyTurret;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -13,11 +15,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockEnergyTurret extends BlockOSBase {
+public class BlockEnergyTurret extends BlockContainer {
 
 	private Random random;
 	
 	public BlockEnergyTurret() {
+		super(Material.iron);
 		random = new Random();
 		setHardness(6.0F);
 		setStepSound(soundTypeMetal);
@@ -80,6 +83,12 @@ public class BlockEnergyTurret extends BlockOSBase {
 		return new TileEntityEnergyTurret();
 	}
 
+ 	@Override
+ 	public int onBlockPlaced(World world, int x, int y, int z, int side, float subX, float subY, float subZ, int meta)
+ 	{
+ 		return side != 0 && (side == 1 || (double)subY <= 0.5D) ? meta : meta | 1;
+ 	}
+	
 	@Override
 	public int getRenderType() {
 		return -1;

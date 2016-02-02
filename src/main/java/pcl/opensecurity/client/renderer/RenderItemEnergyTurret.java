@@ -18,6 +18,7 @@ public class RenderItemEnergyTurret
   public RenderItemEnergyTurret(RenderEnergyTurret render)
   {
     this.render = render;
+    entity.barrel = 1.0F;
   }
   
   public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)

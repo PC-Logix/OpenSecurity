@@ -26,23 +26,29 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 public class TileEntityEnergyTurret extends TileEntityMachineBase implements Environment, IInventory, ISoundTile {
+        static final float maxShaftLengthForOneBlock = 0.5f;
+
 	public float yaw = 0.0F;
 	public float pitch = 0.0F;
 	public float setpointYaw = 0.0F;
 	public float setpointPitch = 0.0F;
+	public float shaft = 1.0F;
+	public float setShaft = 1.0F;
+	public float barrel = 1.0F;
 	public int tickCool = 0;
 	public boolean onPoint = true;
 	private float movePerTick = 0.005F;
 	public Boolean shouldPlay = false;
 	public String soundName = "turretMove";
-	public Boolean computerPlaying = false;
 	public float volume = 1.0F;
-	public int ticks = 0;
+	public int soundTicks = 0;
 	public boolean power = true;
+	public boolean armed = true;
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
@@ -84,31 +90,45 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		return getSoundRes();
 	}
 
-	public void setShouldStart(boolean b) {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		getDescriptionPacket();
-		shouldPlay = b;
-
+	public boolean isUpright()
+	{
+		return worldObj==null ? true : 1 != worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 	}
 
-	public void setShouldStop(boolean b) {
-		shouldPlay = !b;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		getDescriptionPacket();
+	public void setShouldStart(boolean b) {
+		shouldPlay = b;
 	}
 
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		movePerTick = 0.005F;
-		if (node != null && node.network() == null) {
-			Network.joinOrCreateNetwork(this);
+		boolean upright = isUpright();
+		boolean shaftLengthValid = true;
+		boolean moveSound = false;
+
+		movePerTick = 3;
+
+		float maxShaft = getMaxAvailableShaftLength(shaft);
+		if (shaft > maxShaft)
+		{
+			shaftLengthValid = false;
+			
+			if (setShaft > maxShaft)
+				setShaft(maxShaft);
+		}
+
+		if (node != null) {
+			if(node.network() == null)
+				Network.joinOrCreateNetwork(this);
+			if (power && !((Connector)this.node).tryChangeBuffer(-10)) {
+				doPowerOff();
+			}
 		}
 		if (this.ItemStacks[2] != null && this.ItemStacks[2].getItem() instanceof ItemMovementUpgrade) {
-			movePerTick = movePerTick + 0.002F;
+			movePerTick = movePerTick + 1.5F;
 		}
 		if (this.ItemStacks[3] != null && this.ItemStacks[3].getItem() instanceof ItemMovementUpgrade) {
-			movePerTick = movePerTick + 0.002F;
+			movePerTick = movePerTick + 1.5F;
 		}
 
 		if (this.ItemStacks[4] != null && this.ItemStacks[4].getItem() instanceof ItemCooldownUpgrade) {
@@ -122,128 +142,261 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			--tickCool;
 		}
 		--tickCool;
-		float dy = setpointYaw - yaw;
-		float dp = setpointPitch - pitch;
-		float my = Math.min(movePerTick, Math.abs(dy));
-		float mp = Math.min(movePerTick, Math.abs(dp));
-		yaw += my * Math.signum(dy);
-		pitch += mp * Math.signum(dp);		
-		onPoint = (Math.abs(dy) < movePerTick) && (Math.abs(dp) < movePerTick);
-		if (!this.onPoint && ticks == 0) {
-			ticks++;
-			worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "opensecurity:turretMove", 10 / 15 + 0.5F, 1.0F);
-		} else if (ticks > 5) {
-			ticks = 0;
-		} else {
-			ticks++;
+
+		float tmpSetPitch=setpointPitch;
+		float ms=0F, my=0F, mp=0F;
+
+		if (power || !shaftLengthValid) {
+			if(Float.isNaN(shaft) || Float.isInfinite(shaft)) shaft = 0;
+			float ds = setShaft - shaft;
+			ms = Math.min(0.05F, Math.abs(ds));
+			shaft += ms * Math.signum(ds);
+			if(ms>0F) moveSound = true;
 		}
+		if (power) {
+			if(Float.isNaN(yaw) || Float.isInfinite(yaw)) yaw = 0;
+
+			float dy = (setpointYaw - yaw)%360;
+			if(dy>180) dy = dy - 360;
+			else if(dy<-180) dy = 360 + dy;
+			my = Math.min(movePerTick, Math.abs(dy));
+			yaw += my * Math.signum(dy);
+			yaw = yaw%360;
+			if(yaw<0F) yaw+=360F;
+			if(my>0F) moveSound = true;
+		} else {
+			tmpSetPitch = -90F;
+			movePerTick = 6;
+		}
+
+		if (upright)
+		{
+		    tmpSetPitch = Math.min(tmpSetPitch, (float)(Math.atan(shaft)*360/Math.PI));
+		    tmpSetPitch = Math.max(tmpSetPitch, (float)(-Math.atan(shaft)*180/Math.PI));
+		}
+		else
+		{
+		    tmpSetPitch = Math.min(tmpSetPitch, (float)(Math.atan(shaft)*180/Math.PI));
+		    tmpSetPitch = Math.max(tmpSetPitch, (float)(-Math.atan(shaft)*360/Math.PI));
+		}
+
+		if(Float.isNaN(pitch) || Float.isInfinite(pitch)) pitch = 0;
+		float dp = tmpSetPitch - pitch;
+		mp = Math.min(movePerTick, Math.abs(dp));
+		if(power && mp>0F) moveSound = true;
+		
+		pitch += mp * Math.signum(dp);
+		if(pitch < -90F) pitch=-90F;
+		else if(pitch > 90F) pitch=90F;
+	
+		if (power) {
+			if (armed) {
+				if(barrel<1F) {
+					barrel=Math.min(1F, barrel+0.1F);
+					moveSound = true;
+				}
+			}
+			else {
+				if (barrel>0F) {
+					barrel=Math.max(0F, barrel-0.1F);
+					moveSound = true;
+				}
+			}
+		}
+
+		if (moveSound) {
+        		if(soundTicks == 0) {
+	        		worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "opensecurity:turretMove", 10 / 15 + 0.5F, 1.0F);
+	        	}
+        		soundTicks++;
+        		if (soundTicks > 5) {
+        			soundTicks = 0;
+	        	}
+        	} else {
+        		soundTicks = 0;
+        	}
 	}
 
-	@Callback(doc="function():number -- Current real yaw")
+	@Callback(doc="function():number -- Current real yaw", direct=true)
 	public Object[] getYaw(Context context, Arguments args) {
 		return new Object[] { yaw };
 	}
 
-	@Callback(doc="function():number -- Current real pitch")
+	@Callback(doc="function():number -- Current real pitch", direct=true)
 	public Object[] getPitch(Context context, Arguments args) {
 		return new Object[] { pitch };
 	}
 
-	@Callback(doc="function():boolean -- Returns whether the gun has reached the set position")
+	@Callback(doc="function():boolean -- Returns whether the gun has reached the set position", direct=true)
 	public Object[] isOnTarget(Context context, Arguments args) {
-		return new Object[] { onPoint };
+	        double dPitch = Math.abs(pitch-setpointPitch);
+	        double dYaw = Math.abs(yaw-setpointYaw);
+	        double delta = dPitch + dYaw;
+		boolean onPoint = (delta < 0.5F);
+		return new Object[] { onPoint, delta };
 	}
 
-	@Callback(doc = "function():boolean -- Returns whether the gun is cool enough to fire again")
+	@Callback(doc = "function():boolean -- Returns whether the gun is ready to fire again (cooled down and armed)", direct=true)
 	public Object[] isReady(Context context, Arguments args)  {
-		return new Object[] { !(tickCool > 0) };
+		return new Object[] { !(tickCool > 0) && armed && barrel==1F };
 	}
 
-	@Callback
-	public Object[] greet(Context context, Arguments args) {
-		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
+	@Callback(doc = "function():boolean,number -- Returns whether the gun is powered", direct=true)
+	public Object[] isPowered(Context context, Arguments args)  {
+		return new Object[] { power };
 	}
-	
-	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint (Yaw ranges (0.0..360) Pitch ranges (-45..90)")
+
+	float getMaxAvailableShaftLength(float newExt)
+	{
+	        if (newExt<0F) {
+		        newExt = 0F;
+	        }
+	        if (newExt>2F) {
+		        newExt = 2F;
+	        }
+	        int otherY = this.yCoord+(isUpright()?1:-1);
+	        if(newExt>maxShaftLengthForOneBlock && (otherY<0 || otherY>255 || !worldObj.isAirBlock(this.xCoord, otherY, this.zCoord)))
+	        {
+	            return maxShaftLengthForOneBlock;
+	        }
+	        return newExt;
+	}
+
+	float setShaft(float newlen)
+	{
+	        if (newlen<0F) {
+		        newlen = 0F;
+	        }
+	        float most = getMaxAvailableShaftLength(newlen);
+	        if (newlen>most) {
+		        newlen = most;
+	        }
+	        if(setShaft != newlen)
+	        {
+		        setShaft = newlen;
+
+			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+			markDirty();
+		}
+		
+		return newlen;
+	}
+
+	void setYaw(float value)
+	{
+      		this.setpointYaw = value % 360;
+      		if (this.setpointYaw < 0) this.setpointYaw += 360;
+	}
+
+	void setPitch(float value)
+	{
+		this.setpointPitch = value;
+		if (this.setpointPitch < -90F) this.setpointPitch = -90F;
+		else if(this.setpointPitch > 90F) this.setpointPitch = 90F;
+	}
+
+	@Callback(doc="function(length:boolean):number -- Extends gun shaft (0-2)")
+	public Object[] extendShaft(Context context, Arguments args) throws Exception {
+	        float setTo = setShaft((float)args.checkDouble(0));
+		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		markDirty();
+		return new Object[] { setTo };
+	}
+	@Callback(doc="function():boolean -- Get gun shaft extension", direct=true)
+	public Object[] getShaftLength(Context context, Arguments args) throws Exception {
+		return new Object[] { this.shaft };
+	}
+
+	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint (Yaw ranges (0.0..360) Pitch ranges (-45..90))")
 	public Object[] moveTo(Context context, Arguments args) throws Exception {
 		if (power) {
 			soundName = "turretMove";
 			setSound(soundName);
-			this.setShouldStart(true);			
+			this.setShouldStart(true);
 
+			setYaw((float)args.checkDouble(0));
+			setPitch((float)args.checkDouble(1));
 
-			if (MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360 > .50) {
-				this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360 - 1;
-			} else {
-				this.setpointYaw = MathHelper.clamp_float((float)args.checkDouble(0), 0.0F, 360.0F) / 360;
-			}
-
-			this.setpointPitch = MathHelper.clamp_float((float)args.checkDouble(1), -45.0F, 90.0F) / 90;
 			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-			getDescriptionPacket();
 			markDirty();
-			//this.setShouldStop(true);
-			computerPlaying = true;
 			return new Object[] { true };	
 		} else {
-			throw new Exception("powered off");
+			throw new IllegalArgumentException("powered off");
 		}
 	}
 	
 	@Callback
-	public Object[] powerOn(Context context, Arguments args) {
-		power = true;
-		this.setpointYaw = 0;
-		this.setpointPitch = 0;
-		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-		getDescriptionPacket();
-		markDirty();
+	public Object[] setArmed(Context context, Arguments args) {
+		boolean newArmed = args.checkBoolean(0);
+		if (armed!=newArmed)
+		{
+			armed = newArmed;
+			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+			markDirty();
+		}
 		return new Object[] { true };
 	}
 
 	@Callback
-	public Object[] powerOff(Context context, Arguments args) {
-		power = false;
-		this.setpointYaw = 0;
-		this.setpointPitch = (float) -0.2777778;
+	public Object[] powerOn(Context context, Arguments args) {
+		power = true;
 		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-		getDescriptionPacket();
 		markDirty();
 		return new Object[] { true };
 	}
 
-	@Callback(doc="function():table -- Fires the gun.  More damage means longer cooldown and more energy draw.  Returns 0 for success and -1 with a message for failure")
+	void doPowerOff()
+	{
+		power = false;
+		setPitch(pitch);
+		setYaw(yaw);
+		setShaft(shaft);
+		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		markDirty();
+	}
+
+	@Callback
+	public Object[] powerOff(Context context, Arguments args) {
+		doPowerOff();
+		return new Object[] { true };
+	}
+
+	@Callback(doc="function():table -- Fires the gun.  More damage means longer cooldown and more energy draw. Returns true for success and throws error with a message for failure")
 	public Object[] fire(Context context, Arguments args) throws Exception {
 		if (power) {
+			if (!armed || barrel<1F) throw new IllegalArgumentException("Not armed");
+
 			float p = getRealPitch();
 			float a = getRealYaw() + (float)Math.PI;
-			float damage = 10F;
+			float damage = 3F;
 			if (this.ItemStacks[0] != null && this.ItemStacks[0].getItem() instanceof ItemDamageUpgrade) {
-				damage = damage + 10F;
+				damage = damage * 3F;
 			}
 			if (this.ItemStacks[1] != null && this.ItemStacks[1].getItem() instanceof ItemDamageUpgrade) {
-				damage = damage + 10F;
+				damage = damage * 3F;
 			}
 
-			EntityEnergyBolt bolt = new EntityEnergyBolt(this.worldObj);
-			bolt.setHeading(a, p);
-			bolt.setDamage(damage);
-			bolt.setPosition(this.xCoord + 0.5F, this.yCoord + 0.85F, this.zCoord + 0.5F);
-			float energy = -damage;
+			float energy = damage;
 			if (this.ItemStacks[6] != null && this.ItemStacks[6].getItem() instanceof ItemEnergyUpgrade) {
-				energy = energy - 4;
+				energy = energy * 0.7F;
 			}
 			if (this.ItemStacks[7] != null && this.ItemStacks[7].getItem() instanceof ItemEnergyUpgrade) {
-				energy = energy - 4;
+				energy = energy * 0.7F;
 			}
 
-			if (!((Connector)this.node).tryChangeBuffer(energy)) {
-				throw new Exception("not enough energy");
-			}
 			if (this.tickCool > 0) {
-				throw new Exception("gun hasn't cooled");
+				throw new IllegalArgumentException("gun hasn't cooled");
+			}
+			if (!((Connector)this.node).tryChangeBuffer(-energy*25)) {
+				throw new IllegalArgumentException("not enough energy");
 			}
 			this.tickCool = 200;
+
+			EntityEnergyBolt bolt = new EntityEnergyBolt(this.worldObj);
+			float dY = 0.5F + (isUpright() ? 1F : -1F) * (0.125F + shaft*0.375F);
+			bolt.setPosition(this.xCoord + 0.5F, this.yCoord + dY, this.zCoord + 0.5F);
+			bolt.setHeading(a, p);
+			bolt.setDamage(damage);
 
 			soundName = "turretFire";
 			setSound(soundName);
@@ -257,7 +410,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			this.worldObj.spawnEntityInWorld(bolt);
 			return new Object[] { true };
 		} else {
-			throw new Exception("powered off");
+			throw new IllegalArgumentException("powered off");
 		}
 
 	}
@@ -297,10 +450,15 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			node.save(nodeNbt);
 			tag.setTag("oc:node", nodeNbt);
 		}
+		tag.setBoolean("powered", this.power);
+		tag.setBoolean("armed", this.armed);
 		tag.setFloat("yaw", this.yaw);
-		tag.setFloat("pitch", this.pitch);
 		tag.setFloat("syaw", this.setpointYaw);
+		tag.setFloat("pitch", this.pitch);
 		tag.setFloat("spitch", this.setpointPitch);
+		tag.setFloat("shaft", this.shaft);
+		tag.setFloat("sshaft", this.setShaft);
+		tag.setFloat("barrel", this.barrel);
 		tag.setInteger("cool", this.tickCool);
 		writeSyncableDataToNBT(tag);
 
@@ -321,10 +479,15 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		if (node != null && node.host() == this) {
 			node.load(tag.getCompoundTag("oc:node"));
 		}
+		this.power = tag.getBoolean("powered");
+		this.armed = tag.getBoolean("armed");
 		this.yaw = tag.getFloat("yaw");
-		this.pitch = tag.getFloat("pitch");
 		this.setpointYaw = tag.getFloat("syaw");
+		this.pitch = tag.getFloat("pitch");
 		this.setpointPitch = tag.getFloat("spitch");
+		this.shaft = tag.getFloat("shaft");
+		this.setShaft = tag.getFloat("sshaft");
+		this.barrel = tag.getFloat("barrel");
 		this.tickCool = tag.getInteger("cool");
 		readSyncableDataFromNBT(tag);
 
@@ -350,11 +513,11 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	}
 
 	public float getRealYaw() {
-		return ((float)Math.PI) * 2.0F * yaw;
+		return ((float)Math.PI) * yaw / 180;
 	}
 
 	public float getRealPitch() {
-		return ((float)Math.PI) * 0.5F * -pitch;
+		return ((float)Math.PI) * pitch / 180;
 	}
 
 	@Override
@@ -460,5 +623,14 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		if((slot == 4 || slot == 5) && item.getItem() == ContentRegistry.cooldownUpgrade) return true;
 		if((slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgrade) return true;
 		return false;
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+	        if(isUpright())
+			return AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 0.75 + shaft*0.5, zCoord + 1);
+		else
+			return AxisAlignedBB.getBoundingBox(xCoord, yCoord+0.25-shaft*0.5, zCoord, xCoord + 1, yCoord + 1, zCoord + 1);
 	}
 }
