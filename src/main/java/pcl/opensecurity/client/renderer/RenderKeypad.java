@@ -21,8 +21,14 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 	static float texPixel=1.0f/16f;
 	
 	static ButtonState itemButtonStates[];
-	static String default_labels[] = new String[] {"1","2","3","4","5","6","7","8","9","*","0","#"};
-	static byte default_colors[] = new byte[] {7,7,7, 7,7,7, 7,7,7, 7,7,7};
+	static String default_labels[] = new String[] {"1","2","3", 
+												   "4","5","6", 
+												   "7","8","9", 
+												   "*","0","#"};
+	static byte default_colors[] = new byte[] {7,7,7, 
+											   7,7,7, 
+											   7,7,7, 
+											   7,7,7};
 	static ButtonPosition buttons[] = null;
 	static ButtonPosition display = null;
 
@@ -102,8 +108,8 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 
 		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		//GL11.glEnable(GL11.GL_BLEND);
+		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glTranslatef(x+w/2f, y+h/2f, depth+texPixel*-.07f);
 		int labelW=font.getStringWidth(label);
 		float scale=Math.min(h/10F, 0.8F*w/labelW);
@@ -154,7 +160,7 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		World world=te.getWorldObj();
 		
 		float brightness=ContentRegistry.keypadLock.getLightValue(world, bx, by, bz);
-		int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,12);
+		int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,0);
 		
 		tessellator.setColorOpaque_F(brightness,brightness,brightness);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(light&0xffff),(float)(light>>16));
