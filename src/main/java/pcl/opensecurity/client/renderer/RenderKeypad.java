@@ -1,6 +1,7 @@
 package pcl.opensecurity.client.renderer;
 
 import pcl.opensecurity.ContentRegistry;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.tileentity.TileEntityKeypadLock;
 import pcl.opensecurity.tileentity.TileEntityKeypadLock.ButtonState;
 
@@ -101,6 +102,7 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		
 	public static void writeButtonLabel(FontRenderer font, float depth, ButtonPosition pos, int color, String label)
 	{
+		//OpenSecurity.logger.info(label);
 		float x=pos.x*texPixel;
 		float y=pos.y*texPixel;
 		float w=pos.w*texPixel;
@@ -270,9 +272,9 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 				if(lbl.length()>0)
 					writeButtonLabel(font, pressed[i]?texPixel*.75f:0f, buttons[i], btnColors[i], lbl);
 			}
-
+			
 			if (fbText!=null && fbText.length()>0)
-				writeButtonLabel(font, texPixel*.5f, display, fbColor, fbText);
+				writeButtonLabel(font, 0f, display, fbColor, fbText);
 		}
 	}
 
