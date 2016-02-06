@@ -33,10 +33,10 @@ public class EntityEnergyBolt
   public void setHeading(float yaw, float pitch)
   {
     DataWatcher d = getDataWatcher();
-  //This will crash when run on a dedicated server, because Entity#setVelocity is marked with @SideOnly(Side.CLIENT), and therefore stripped from a dedicated server instance.
+    //This will crash when run on a dedicated server, because Entity#setVelocity is marked with @SideOnly(Side.CLIENT), and therefore stripped from a dedicated server instance.
     //setVelocity((float)(-Math.sin(yaw) * Math.cos(pitch)), (float)-Math.sin(pitch), (float)(Math.cos(yaw) * Math.cos(pitch)));
-    this.motionX = -Math.sin(yaw) * Math.cos(pitch);
-    this.motionY = -Math.sin(pitch);
+    this.motionX = Math.sin(yaw) * Math.cos(pitch);
+    this.motionY = Math.sin(pitch);
     this.motionZ = Math.cos(yaw) * Math.cos(pitch);
     d.updateObject(19, Float.valueOf(this.yaw = yaw));
     d.updateObject(20, Float.valueOf(this.pitch = pitch));

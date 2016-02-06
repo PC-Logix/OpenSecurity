@@ -513,7 +513,11 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	}
 
 	public float getRealYaw() {
-		return ((float)Math.PI) * yaw / 180;
+		//return ((float)Math.PI) * yaw / 180;
+		if (pcl.opensecurity.OpenSecurity.cfg.turretReverseRotation)
+			 return ((float)Math.PI) * (0 - yaw) / 180; // TODO: set legacy compatible offset (90? -90?)
+		else
+			 return ((float)Math.PI) * yaw / 180;
 	}
 
 	public float getRealPitch() {
