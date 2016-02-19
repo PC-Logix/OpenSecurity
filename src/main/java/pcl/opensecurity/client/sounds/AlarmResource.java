@@ -61,11 +61,11 @@ public class AlarmResource implements IResourcePack {
         JsonObject root = new JsonObject();
         for (Map.Entry<String, String> entry : sound_map.entrySet()) {
             JsonObject event = new JsonObject();
-            event.addProperty("category", "master"); // put under the "record" category for sound options
+            event.addProperty("category", "master"); // put under the "master" category for sound options
             JsonArray sounds = new JsonArray(); // array of sounds (will only ever be one)
             JsonObject sound = new JsonObject(); // sound object (instead of primitive to use 'stream' flag)
             sound.addProperty("name", new File(".") + "\\mods\\OpenSecurity\\sounds\\alarms\\" + entry.getValue().substring(0, entry.getValue().lastIndexOf('.'))); // path to file
-            sound.addProperty("stream", false); // prevents lag for large files
+            sound.addProperty("stream", false); // streaming seems to break the alarm... why?
             sounds.add(sound);
             event.add("sounds", sounds);
            root.add(entry.getValue().substring(0, entry.getValue().lastIndexOf('.')), event); // event name (same as name sent to ItemCustomRecord)
