@@ -34,7 +34,7 @@ public class BlockOSBase extends BlockContainer {
 		} else if (par5EntityLivingBase.rotationPitch <= -70) {
 			whichDirectionFacing = 1;// up
 		} else {
-			whichDirectionFacing = (MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3);
+			whichDirectionFacing = MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 			switch (whichDirectionFacing) {
 			case 0:
 				whichDirectionFacing = ForgeDirection.SOUTH.ordinal();

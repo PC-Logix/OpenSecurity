@@ -118,7 +118,7 @@ public class EnergyTurretContainer extends Container {
 	protected boolean mergeItemStack(ItemStack stack, int start, int end, boolean backwards)
 	{
 		boolean flag1 = false;
-		int k = (backwards ? end - 1 : start);
+		int k = backwards ? end - 1 : start;
 		Slot slot;
 		ItemStack itemstack1;
 
@@ -159,7 +159,7 @@ public class EnergyTurretContainer extends Container {
 
 		if (stack.stackSize > 0)
 		{
-			k = (backwards ? end - 1 : start);
+			k = backwards ? end - 1 : start;
 
 			while (!backwards && k < end || backwards && k >= start) {
 				slot = (Slot) inventorySlots.get(k);

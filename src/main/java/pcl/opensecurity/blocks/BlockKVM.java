@@ -42,7 +42,7 @@ public class BlockKVM extends BlockOSBase {
 	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
 		super.onBlockPlacedBy(par1World, x, y, z, par5EntityLivingBase, par6ItemStack);
 		int whichDirectionFacing = 0;
-		whichDirectionFacing = (MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3);
+		whichDirectionFacing = MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 		switch (whichDirectionFacing) {
 		case 0:
 			whichDirectionFacing = ForgeDirection.SOUTH.ordinal();
