@@ -89,7 +89,7 @@ public class BlockLocation {
 	@SuppressWarnings("unchecked")
 	public <T extends TileEntity> T getTileEntity(Class<T> tileEntityClass) {
 		TileEntity tileEntity = getTileEntity();
-		return (tileEntityClass.isInstance(tileEntity) ? (T)tileEntity : null);
+		return tileEntityClass.isInstance(tileEntity) ? (T)tileEntity : null;
 	}
 	
 	/** Gets the tile entity of the block at this location.
@@ -156,7 +156,7 @@ public class BlockLocation {
 	
 	@Override
 	public int hashCode() {
-		return (blockAccess.hashCode() ^ x ^ (z << 4) ^ (y << 8)); 
+		return blockAccess.hashCode() ^ x ^ (z << 4) ^ (y << 8); 
 	}
 	
 	@Override
@@ -167,8 +167,8 @@ public class BlockLocation {
 	// Helper functions
 	
 	private String getWorldName() {
-		return (isWorld ? ("DIM=" + Integer.toString(world.provider.dimensionId))
-		                : blockAccess.toString());
+		return isWorld ? ("DIM=" + Integer.toString(world.provider.dimensionId))
+		                : blockAccess.toString();
 	}
 	
 }

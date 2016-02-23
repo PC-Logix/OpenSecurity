@@ -39,7 +39,8 @@ public class ItemRFIDCard extends Item {
 			NBTTagCompound entityData = entity.getEntityData();
 			NBTTagCompound rfidData;
 			if (!entityData.hasKey("rfidData")) {
-				entityData.setTag("rfidData", (rfidData = new NBTTagCompound()));
+				rfidData = new NBTTagCompound();
+				entityData.setTag("rfidData", rfidData);
 			} else {
 				rfidData = entityData.getCompoundTag("rfidData");
 			}

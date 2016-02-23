@@ -212,7 +212,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	}
 
 	private boolean isDoorMirrored(BlockDoor door, BlockLocation loc) {
-		return ((door.func_150012_g(loc.blockAccess, loc.x, loc.y, loc.z) & 16) != 0);
+		return (door.func_150012_g(loc.blockAccess, loc.x, loc.y, loc.z) & 16) != 0;
 	}
 
 	@Callback
@@ -251,7 +251,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 				// boolean isOpen = isDoorOpen(door, loc);
 				boolean isMirrored = isDoorMirrored(door, loc);
 
-				int i = (isMirrored ? -1 : 1);
+				int i = isMirrored ? -1 : 1;
 				switch (direction) {
 				case 0:
 					loc = loc.relative(0, 0, i);

@@ -232,7 +232,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	        double dPitch = Math.abs(pitch-setpointPitch);
 	        double dYaw = Math.abs(yaw-setpointYaw);
 	        double delta = dPitch + dYaw;
-		boolean onPoint = (delta < 0.5F);
+		boolean onPoint = delta < 0.5F;
 		return new Object[] { onPoint, delta };
 	}
 
