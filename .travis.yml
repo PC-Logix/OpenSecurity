@@ -9,7 +9,7 @@ sudo: false
 notifications:
   email: false
 branches:
-  except:
+  only:
     - master
 
 # Make the gradle wrapper executable.
