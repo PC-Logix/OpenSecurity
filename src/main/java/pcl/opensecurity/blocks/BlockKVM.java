@@ -56,6 +56,8 @@ public class BlockKVM extends BlockOSBase {
 		case 3:
 			whichDirectionFacing = ForgeDirection.EAST.ordinal();
 			break;
+		default:
+			break;
 		}
 		par1World.setBlockMetadataWithNotify(x, y, z, par5EntityLivingBase.isSneaking() ? whichDirectionFacing : ForgeDirection.OPPOSITES[whichDirectionFacing], 2);
 	}

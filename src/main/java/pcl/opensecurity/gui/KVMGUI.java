@@ -85,6 +85,8 @@ public class KVMGUI extends GuiContainer {
 		case 6:
 			this.mc.thePlayer.closeScreen(); 
 			break;
+		default:
+			break;
 		}
 	}
 

@@ -265,6 +265,8 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 				case 3:
 					loc = loc.relative(i, 0, 0);
 					break;
+				default:
+					break;
 				}
 
 				if ((loc.getBlock() == door) && (getDoorOrientation(door, loc) == direction) && (isDoorMirrored(door, loc) != isMirrored) || worldObj.getBlock(doorCoordX, doorCoordY, doorCoordZ) instanceof BlockSecurityDoor) {
