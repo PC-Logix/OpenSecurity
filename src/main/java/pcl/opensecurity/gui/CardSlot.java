@@ -16,11 +16,7 @@ public class CardSlot extends Slot {
 	@Override
 	public boolean isItemValid(ItemStack itemstack) {
 		if (itemstack.getItem() instanceof ItemRFIDCard || itemstack.getItem() instanceof ItemMagCard || itemstack.getItem() instanceof EEPROM) {
-			if (itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("locked") && !itemstack.stackTagCompound.hasKey("oc:readonly")) {
-				return true;
-			} else {
-				return false;
-			}
+			return itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("locked") && !itemstack.stackTagCompound.hasKey("oc:readonly");
 		}
 		return false;
 	}

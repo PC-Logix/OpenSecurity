@@ -58,10 +58,8 @@ public class TileEntitySwitchableHub extends TileEntitySidedEnvironment implemen
 			return true;
 		} else if (side.ordinal() == ForgeDirection.UP.ordinal() && up) {
 			return true;
-		} else if (side.ordinal() == ForgeDirection.DOWN.ordinal() && down) {
-			return true;
 		} else {
-			return false;
+			return side.ordinal() == ForgeDirection.DOWN.ordinal() && down;
 		}
 
 	}

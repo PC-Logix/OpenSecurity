@@ -193,11 +193,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		if (i == 0) {
 			if (itemstack.getItem() instanceof ItemRFIDCard || itemstack.getItem() instanceof ItemMagCard || itemstack.getItem() instanceof EEPROM) {
-				if (itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("locked") && !itemstack.stackTagCompound.hasKey("oc:readonly")) {
-					return true;
-				} else {
-					return false;
-				}
+				return itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("locked") && !itemstack.stackTagCompound.hasKey("oc:readonly");
 			}
 		}
 		return false;
