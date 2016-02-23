@@ -66,6 +66,8 @@ public class BlockKeypadLock extends BlockOSBase {
 			case 3: mz--; break;
 			case 4: mx++; break;
 			case 5: mx--; break;
+			default:
+				break;
 			}			
 
 		    int facing=blockAccess.getBlockMetadata(mx, my, mz);
@@ -106,7 +108,9 @@ public class BlockKeypadLock extends BlockOSBase {
 		case 2: relX=hitX*16f; break;
 		case 3: relX=(1f-hitX)*16f; break;
 		case 4: relX=(1f-hitZ)*16f; break;
-		case 5: relX=hitZ*16f; break;		
+		case 5: relX=hitZ*16f; break;
+		default:
+			break;
 		}
 		
 		//figure out what, if any, button was hit?
