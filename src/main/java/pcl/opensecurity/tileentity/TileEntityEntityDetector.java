@@ -2,6 +2,7 @@ package pcl.opensecurity.tileentity;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
@@ -109,12 +110,12 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public HashMap<Integer, HashMap<String, Object>> scan(boolean players) {
+	public Map<Integer, HashMap<String, Object>> scan(boolean players) {
 		worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
 		Block block = worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
 		worldObj.scheduleBlockUpdate(this.xCoord, this.yCoord, this.zCoord, block, 20);
 		Entity entity;
-		HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
+		Map<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 		int index = 1;
 		List e = this.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(this.xCoord - range, this.yCoord - range, this.zCoord - range, this.xCoord + range, this.yCoord + range, this.zCoord + range));
 		if (!e.isEmpty()) {
