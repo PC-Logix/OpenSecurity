@@ -93,7 +93,7 @@ public class EntityEnergyBolt
       this.isDead = true;
     }
     List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox);
-    if (list.size() > 0)
+    if (!list.isEmpty())
     {
       ((Entity)list.get(0)).attackEntityFrom(energy, this.damage);
       this.isDead = true;

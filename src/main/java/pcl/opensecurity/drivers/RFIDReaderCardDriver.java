@@ -2,6 +2,7 @@ package pcl.opensecurity.drivers;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.EnvironmentHost;
@@ -103,9 +104,9 @@ public class RFIDReaderCardDriver extends DriverItem {
 		}
 
 		@SuppressWarnings({ "rawtypes" })
-		public HashMap<Integer, HashMap<String, Object>> scan(double range) {
+		public Map<Integer, HashMap<String, Object>> scan(double range) {
 			Entity entity;
-			HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
+			Map<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 			int index = 1;
 			List e = container.world().getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(container.xPosition() - range, container.yPosition() - range, container.zPosition() - range, container.xPosition() + range, container.yPosition() + range, container.zPosition() + range));
 			if (!e.isEmpty()) {
