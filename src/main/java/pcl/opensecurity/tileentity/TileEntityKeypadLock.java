@@ -75,7 +75,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 			node.remove();
 	}
 
-	private String getComponentName() {
+	private static String getComponentName() {
 		return "os_keypad";
 	}
 

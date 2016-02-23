@@ -49,7 +49,7 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 			node.remove();
 	}
 
-	private String getComponentName() {
+	private static String getComponentName() {
 		// TODO Auto-generated method stub
 		return "os_entdetector";
 	}

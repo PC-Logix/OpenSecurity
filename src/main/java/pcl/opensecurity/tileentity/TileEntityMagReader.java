@@ -45,7 +45,7 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 			node.remove();
 	}
 
-	private String getComponentName() {
+	private static String getComponentName() {
 		return "os_magreader";
 	}
 

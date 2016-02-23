@@ -70,7 +70,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 			node.remove();
 	}
 
-	private String getComponentName() {
+	private static String getComponentName() {
 		return "os_door";
 	}
 
