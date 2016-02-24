@@ -439,7 +439,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			node.remove();
 	}
 
-	private String getComponentName() {
+	private static String getComponentName() {
 		return "os_energyturret";
 	}
 

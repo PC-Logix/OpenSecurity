@@ -55,7 +55,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 			node.remove();
 	}
 
-	private String getComponentName() {
+	private static String getComponentName() {
 		// TODO Auto-generated method stub
 		return "os_rfidreader";
 	}
