@@ -79,6 +79,7 @@ pip-log.txt
 /.gradle/
 /build/
 /run/
+/run_client/
 /eclipse/
 /runtime/
 /server_runtime/

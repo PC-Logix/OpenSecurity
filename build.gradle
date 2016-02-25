@@ -52,7 +52,7 @@ jar.doFirst {
 
 jar.classifier = "${ext.buildNumber}"
 jar.manifest = manifest { attributes(
-	"FMLCorePlugin": "pcl.opensecurity.util.DepLoader",
+	"FMLCorePlugin": "pcl.opensecurity.util.SoundUnpack",
 	"FMLCorePluginContainsFMLMod": "icanhazfmlmodpweeze"
 ) }
 def curseforge_key = 0
