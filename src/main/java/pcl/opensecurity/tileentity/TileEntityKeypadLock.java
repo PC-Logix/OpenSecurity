@@ -43,8 +43,8 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 
 	public String data;
 	public String eventName = "keypad";
-	public String buttonLabels[] = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"};
-	public byte buttonColors[] = new byte[] {7,7,7, 7,7,7, 7,7,7, 7,7,7};
+	public String[] buttonLabels = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"};
+	public byte[] buttonColors = new byte[] {7,7,7, 7,7,7, 7,7,7, 7,7,7};
 	public String displayText = "";
 	public byte displayColor = 7;
 
@@ -109,7 +109,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		}
 		for(int i=0;i<12;++i)
 			buttonLabels[i] = trimString(nbt.getString("btn:"+i), MAX_LABEL_LENGTH);
-		byte colors[] = nbt.getByteArray("btn:colors");
+		byte[] colors = nbt.getByteArray("btn:colors");
 		if(colors!=null)
 			for(int i=0; i<12 && i<colors.length; ++i)
 				buttonColors[i] = colors[i];
@@ -213,7 +213,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		}		
 	}
 
-	public ButtonState buttonStates[];
+	public ButtonState[] buttonStates;
 
 	public TileEntityKeypadLock()
 	{		
