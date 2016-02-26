@@ -146,10 +146,8 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 				doorCoordX = xCoord + direction.offsetX;
 				doorCoordY = yCoord + direction.offsetY;
 				doorCoordZ = zCoord + direction.offsetZ;
-				if(te instanceof TileEntitySecureDoor) {
-					if (((TileEntitySecureDoor) te).getPass().isEmpty()) {
-						((TileEntitySecureDoor) te).setPassword(this.password);
-					}
+				if(te instanceof TileEntitySecureDoor && ((TileEntitySecureDoor) te).getPass().isEmpty()) {
+					((TileEntitySecureDoor) te).setPassword(this.password);
 				}
 			}
 		}

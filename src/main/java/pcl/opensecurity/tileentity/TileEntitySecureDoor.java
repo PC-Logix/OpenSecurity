@@ -29,12 +29,8 @@ public class TileEntitySecureDoor extends TileEntity implements Environment{
 		this.password = pass;
 		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
 			TileEntity te = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
-			if (te instanceof TileEntitySecureDoor) {
-				if (!te.equals(this)) {
-					if (((TileEntitySecureDoor) te).getOwner().equals(this.ownerUUID)) {
-						((TileEntitySecureDoor) te).setSlavePassword(this.password);	
-					}
-				}
+			if (te instanceof TileEntitySecureDoor && !te.equals(this) && ((TileEntitySecureDoor) te).getOwner().equals(this.ownerUUID)) {
+				((TileEntitySecureDoor) te).setSlavePassword(this.password);	
 			}
 		}
 	}

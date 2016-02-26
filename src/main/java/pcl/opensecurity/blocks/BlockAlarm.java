@@ -34,15 +34,11 @@ public class BlockAlarm extends BlockOSBase {
 	@Override
 	public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventPramater) {
 		TileEntityAlarm tile = (TileEntityAlarm) world.getTileEntity(x, y, z);
-		if (eventId == 0) {
-			if (!tile.computerPlaying) {
-				tile.setShouldStart(true);
-			}
+		if (eventId == 0 && !tile.computerPlaying) {
+			tile.setShouldStart(true);
 		}
-		if (world.isRemote && eventId == 1) {
-			if (!tile.computerPlaying) {
-				tile.setShouldStop(true);
-			}
+		if (world.isRemote && eventId == 1 && !tile.computerPlaying) {
+			tile.setShouldStop(true);
 		}
 		return true;
 	}
