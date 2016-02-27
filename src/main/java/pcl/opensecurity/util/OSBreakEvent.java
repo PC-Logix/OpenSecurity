@@ -20,21 +20,13 @@ public class OSBreakEvent {
 			TileEntity TE = event.world.getTileEntity(event.x, event.y, event.z);
 			if(TE instanceof TileEntitySecureDoor){
 				TileEntitySecureDoor xEntity = (TileEntitySecureDoor) TE;
-				if(xEntity.getOwner()!=null){
-					if(!xEntity.getOwner().equals(event.getPlayer().getUniqueID().toString()) && !event.getPlayer().capabilities.isCreativeMode) {
-						if(!xEntity.getOwner().isEmpty()) {
-							event.setCanceled(true);						
-						}
-					}
+				if(xEntity.getOwner()!=null && !xEntity.getOwner().equals(event.getPlayer().getUniqueID().toString()) && !event.getPlayer().capabilities.isCreativeMode && !xEntity.getOwner().isEmpty()){
+					event.setCanceled(true);
 				}
 			} else if(TE instanceof TileEntityDoorController){
 				TileEntityDoorController xEntity = (TileEntityDoorController) TE;
-				if(xEntity.getOwner()!=null){
-					if(!xEntity.getOwner().equals(event.getPlayer().getUniqueID().toString()) && !event.getPlayer().capabilities.isCreativeMode) {
-						if(!xEntity.getOwner().isEmpty()) {
-							event.setCanceled(true);						
-						}
-					}
+				if(xEntity.getOwner()!=null && !xEntity.getOwner().equals(event.getPlayer().getUniqueID().toString()) && !event.getPlayer().capabilities.isCreativeMode && !xEntity.getOwner().isEmpty()){
+					event.setCanceled(true);
 				}
 			}	
 		}

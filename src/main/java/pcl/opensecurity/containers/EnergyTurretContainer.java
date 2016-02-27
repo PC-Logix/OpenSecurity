@@ -76,11 +76,9 @@ public class EnergyTurretContainer extends Container {
 			
 			// Item is in inventory / hotbar, try to place in custom inventory or armor slots
 			else {
-				if (index >= INV_START) {
+				if (index >= INV_START && !this.mergeItemStack(itemstack1, 0, 8, false)) {
 					// place in custom inventory
-					if (!this.mergeItemStack(itemstack1, 0, 8, false)) {
-						return null;
-					}
+					return null;
 				}
 			}
 
