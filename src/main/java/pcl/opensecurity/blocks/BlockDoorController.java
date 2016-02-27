@@ -162,7 +162,7 @@ public class BlockDoorController extends BlockOSBase {
 	public IIcon getIcon(IBlockAccess block, int x, int y, int z, int side) {
 		//int metadata = block.getBlockMetadata(x, y, z);
 		TileEntityDoorController te = (TileEntityDoorController) block.getTileEntity(x, y, z);
-		IIcon thisBlockTextures[] = new IIcon[6];
+		IIcon[] thisBlockTextures = new IIcon[6];
 
 		if (te.DoorControllerCamo[0] != null) {
 			te.overrideTexture(te.DoorControllerCamo[0]);

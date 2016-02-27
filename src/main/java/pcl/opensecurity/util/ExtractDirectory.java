@@ -80,7 +80,7 @@ public class ExtractDirectory {
 					System.out.println( "  writing  " + name );
 					final InputStream is = jar.getInputStream( entry );
 					final OutputStream os = new BufferedOutputStream( new FileOutputStream( f ) );
-					final byte buffer[] = new byte[4096];
+					final byte[] buffer = new byte[4096];
 					int readCount;
 					// write contents of 'is' to 'os'
 					while( (readCount = is.read(buffer)) > 0 ) {

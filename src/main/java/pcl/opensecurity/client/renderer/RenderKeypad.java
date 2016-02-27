@@ -21,16 +21,16 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 
 	static float texPixel=1.0f/16f;
 	
-	static ButtonState itemButtonStates[];
-	static String default_labels[] = new String[] {"1","2","3", 
+	static ButtonState[] itemButtonStates;
+	static String[] default_labels = new String[] {"1","2","3", 
 												   "4","5","6", 
 												   "7","8","9", 
 												   "*","0","#"};
-	static byte default_colors[] = new byte[] {7,7,7, 
+	static byte[] default_colors = new byte[] {7,7,7, 
 											   7,7,7, 
 											   7,7,7, 
 											   7,7,7};
-	static ButtonPosition buttons[] = null;
+	static ButtonPosition[] buttons = null;
 	static ButtonPosition display = null;
 
 	static {
@@ -246,7 +246,7 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		tessellator.startDrawingQuads();
 		tessellator.setBrightness(255);
 
-		boolean pressed[] = new boolean[12];
+		boolean[] pressed = new boolean[12];
 		for(int i=0; i<pressed.length; ++i)
 			pressed[i] = keylock!=null ? keylock.buttonStates[i].isPressed(time) : false;
 
@@ -260,8 +260,8 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		FontRenderer font=this.func_147498_b();
 		if (font!=null)
 		{
-			String btnLabels[] = keylock!=null ? keylock.buttonLabels : default_labels;
-			byte btnColors[] = keylock!=null ? keylock.buttonColors : default_colors;
+			String[] btnLabels = keylock!=null ? keylock.buttonLabels : default_labels;
+			byte[] btnColors = keylock!=null ? keylock.buttonColors : default_colors;
 			String fbText = keylock!=null ? keylock.displayText : "";
 			byte fbColor = keylock!=null ? keylock.displayColor : 7;
 			
