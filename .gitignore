@@ -83,6 +83,7 @@ pip-log.txt
 /eclipse/
 /runtime/
 /server_runtime/
+/run_client/
 *~
 *.lnk
 output.txt
