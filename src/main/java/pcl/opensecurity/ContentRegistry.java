@@ -234,7 +234,7 @@ public class ContentRegistry {
 		Callable<FileSystem> factory = new Callable<FileSystem>() {
 			@Override
 			public FileSystem call() {
-				return li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/SecureOS/");
+				return li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/SecureOS/SecureOS/");
 			}
 		};
 		secureOS_disk = li.cil.oc.api.Items.registerFloppy("SecureOS", 1, factory);
