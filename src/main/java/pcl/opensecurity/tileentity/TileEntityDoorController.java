@@ -225,8 +225,9 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 		if (!isDoorOpen(door, loc)) {
-			toggle(context, args)
+			return toggle(context, args);
 		}
+		return new Object[] { true };
 	}
 	
 	@Callback
@@ -234,8 +235,9 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 		if (isDoorOpen(door, loc)) {
-			toggle(context, args)
+			return toggle(context, args);
 		}
+		return new Object[] { true };
 	}
 	
 	@Callback
