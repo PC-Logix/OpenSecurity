@@ -220,19 +220,25 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		return new Object[] { isDoorOpen(door, loc) };
 	}
 
-/*	@Callback
+	@Callback
 	public Object[] open(Context context, Arguments args) {
-		if (node.changeBuffer(-5) == 0) {
-			
+		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
+		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
+		if (!isDoorOpen(door, loc)) {
+			return toggle(context, args);
 		}
+		return new Object[] { true };
 	}
 	
 	@Callback
 	public Object[] close(Context context, Arguments args) {
-		if (node.changeBuffer(-5) == 0) {
-			
+		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
+		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
+		if (isDoorOpen(door, loc)) {
+			return toggle(context, args);
 		}
-	}*/
+		return new Object[] { true };
+	}
 	
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
