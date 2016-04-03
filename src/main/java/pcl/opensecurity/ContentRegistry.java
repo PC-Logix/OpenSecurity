@@ -22,6 +22,7 @@ import pcl.opensecurity.blocks.BlockSecurityDoorPrivate;
 import pcl.opensecurity.blocks.BlockSwitchableHub;
 import pcl.opensecurity.client.CreativeTab;
 import pcl.opensecurity.drivers.RFIDReaderCardDriver;
+import pcl.opensecurity.drivers.SecureNetworkCardDriver;
 import pcl.opensecurity.entity.EntityEnergyBolt;
 import pcl.opensecurity.items.ItemCooldownUpgrade;
 import pcl.opensecurity.items.ItemDamageUpgrade;
@@ -32,6 +33,7 @@ import pcl.opensecurity.items.ItemRFIDCard;
 import pcl.opensecurity.items.ItemRFIDReaderCard;
 import pcl.opensecurity.items.ItemSecurityDoor;
 import pcl.opensecurity.items.ItemSecurityDoorPrivate;
+import pcl.opensecurity.items.ItemSecureNetworkCard;
 import pcl.opensecurity.tileentity.TileEntityAlarm;
 import pcl.opensecurity.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.tileentity.TileEntityDataBlock;
@@ -82,6 +84,7 @@ public class ContentRegistry {
 	public static Item securityDoor;
 	public static Item securityDoorPrivate;
 	public static Item rfidReaderCard;
+	public static Item secureNetworkCard;
 	public static Item damageUpgrade;
 	public static Item cooldownUpgrade;
 	public static Item energyUpgrade;
@@ -124,6 +127,10 @@ public class ContentRegistry {
 		rfidReaderCard.setCreativeTab(CreativeTab);
 		li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
 
+		secureNetworkCard = new ItemSecureNetworkCard();
+		GameRegistry.registerItem(secureNetworkCard, "opensecurity.secureNetworkCard");
+		secureNetworkCard.setCreativeTab(CreativeTab);
+				
 		securityDoor = new ItemSecurityDoor(SecurityDoor);
 		GameRegistry.registerItem(securityDoor, "opensecurity.securityDoor");
 		securityDoor.setCreativeTab(CreativeTab);
