@@ -31,7 +31,7 @@ import pcl.opensecurity.items.ItemRFIDCard;
 public class RFIDReaderCardDriver extends DriverItem {
 
 	public RFIDReaderCardDriver() {
-		super(new ItemStack(ContentRegistry.rfidReaderCard));
+		super(new ItemStack(ContentRegistry.rfidReaderCardItem));
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 	public class Environment extends li.cil.oc.api.prefab.ManagedEnvironment {
 		public String data = null;
 		protected EnvironmentHost container = null;
-		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("OSRFIDReader").withConnector(32).create();
+		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("os_rfidreader").withConnector(32).create();
 
 		@Override
 		public Node node() {

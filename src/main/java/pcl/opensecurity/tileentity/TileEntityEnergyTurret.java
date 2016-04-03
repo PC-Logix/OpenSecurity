@@ -622,10 +622,10 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack item) {
-		if((slot == 0 || slot == 1) && item.getItem() == ContentRegistry.damageUpgrade) return true;
-		if((slot == 2 || slot == 3) && item.getItem() == ContentRegistry.movementUpgrade) return true;
-		if((slot == 4 || slot == 5) && item.getItem() == ContentRegistry.cooldownUpgrade) return true;
-		if((slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgrade) return true;
+		if((slot == 0 || slot == 1) && item.getItem() == ContentRegistry.damageUpgradeItem) return true;
+		if((slot == 2 || slot == 3) && item.getItem() == ContentRegistry.movementUpgradeItem) return true;
+		if((slot == 4 || slot == 5) && item.getItem() == ContentRegistry.cooldownUpgradeItem) return true;
+		if((slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgradeItem) return true;
 		return false;
 	}
 

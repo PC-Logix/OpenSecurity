@@ -1,6 +1,5 @@
 package pcl.opensecurity.items;
 
-import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.drivers.SecureNetworkCardDriver;
 import li.cil.oc.api.driver.EnvironmentAware;
 import li.cil.oc.api.driver.EnvironmentHost;
@@ -12,7 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ItemSecureNetworkCard extends Item implements HostAware, EnvironmentAware {
+public class ItemSecureNetworkCard extends Item implements li.cil.oc.api.driver.Item, HostAware, EnvironmentAware {
 	public ItemSecureNetworkCard() {
 		super();
 		setUnlocalizedName("secureNetworkCard");

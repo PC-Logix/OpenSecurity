@@ -1,5 +1,6 @@
 package pcl.opensecurity.drivers;
 
+import pcl.opensecurity.OpenSecurity;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.EnvironmentHost;
 import li.cil.oc.api.machine.Arguments;
@@ -13,7 +14,7 @@ import li.cil.oc.server.component.NetworkCard;
 
 public class SecureNetworkCardDriver extends NetworkCard {
 
-	public static EnvironmentHost container;
+	public final EnvironmentHost container;
 	private ComponentConnector node;
 
 	public SecureNetworkCardDriver(EnvironmentHost container) {
@@ -25,18 +26,19 @@ public class SecureNetworkCardDriver extends NetworkCard {
 				.create());
 	}
 
-	@Callback(doc = "generateUUID() -- Randomises the UUID")
+	@Callback(doc = "function() -- Randomises the UUID")
 	public Object[] generateUUID(Context context, Arguments args) {
-		if(node.tryChangeBuffer(1)) {
-			this.node = null;
+		//if(node.tryChangeBuffer(1)) {
+			this.node.remove();
 			this.setNode(Network.newNode(this, Visibility.Network)
 					.withComponent("modem", Visibility.Neighbors)
 					.withConnector(1)
 					.create());
+			OpenSecurity.logger.info(this.node.address());
 			return new Object[] { true };
-		} else {
-			return new Object[] { false };
-		}
+		//} else {
+			//return new Object[] { false };
+		//}
 	}
 
 	@Override

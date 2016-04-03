@@ -364,12 +364,12 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 						if (getStackInSlot(x) == null) { // The slot is empty lets
 							// make us a RFID
 							if (getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
-								CardWriterItemStacks[x] = new ItemStack(ContentRegistry.rfidCard);
+								CardWriterItemStacks[x] = new ItemStack(ContentRegistry.rfidCardItem);
 								if (data.length() > 64) {
 									data = data.substring(0, 64);
 								}
 							} else if (getStackInSlot(0).getItem() instanceof ItemMagCard) {
-								CardWriterItemStacks[x] = new ItemStack(ContentRegistry.magCard);
+								CardWriterItemStacks[x] = new ItemStack(ContentRegistry.magCardItem);
 								if (data.length() > 128) {
 									data = data.substring(0, 128);
 								}

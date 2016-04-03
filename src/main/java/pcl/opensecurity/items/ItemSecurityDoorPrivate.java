@@ -39,7 +39,7 @@ public class ItemSecurityDoorPrivate extends ItemDoor {
             ++par5;
             Block block;
 
-            block = ContentRegistry.SecurityDoorPrivate;
+            block = ContentRegistry.SecurityDoorPrivateBlock;
 
             if (par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack))
             {

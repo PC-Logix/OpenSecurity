@@ -109,12 +109,12 @@ public class BlockSecurityDoor extends BlockDoor {
 	@Override
 	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
 	{
-		return ContentRegistry.securityDoor;
+		return ContentRegistry.securityDoorItem;
 	}
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-		return new ItemStack(ContentRegistry.securityDoor);
+		return new ItemStack(ContentRegistry.securityDoorItem);
 
 	}
 

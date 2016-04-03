@@ -57,7 +57,7 @@ public class ClientProxy extends CommonProxy {
 		
 	    RenderKeypad keypadRenderer = new RenderKeypad();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypadLock.class, keypadRenderer);
-		MinecraftForgeClient.registerItemRenderer(new ItemStack(ContentRegistry.keypadLock).getItem(), keypadRenderer);
+		MinecraftForgeClient.registerItemRenderer(new ItemStack(ContentRegistry.keypadLockBlock).getItem(), keypadRenderer);
 	    
 		OpenSecurity.logger.info("Registered TESRs");
 	}

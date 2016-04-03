@@ -83,15 +83,16 @@ public class OpenSecurity {
 	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
 	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
 	    logger.info("Registered " + packetID + " packets");
-	    ContentRegistry.init();
+	    ContentRegistry.preInit();
 	    logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 
 	@EventHandler
-	public void load(FMLInitializationEvent event) {
+	public void init(FMLInitializationEvent event) {
 		long time = System.nanoTime();
 		proxy.registerRenderers();
 		proxy.registerSounds();
+		ContentRegistry.init();
 		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 }

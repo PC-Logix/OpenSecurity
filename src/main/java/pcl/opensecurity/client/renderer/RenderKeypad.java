@@ -161,7 +161,7 @@ public class RenderKeypad extends TileEntitySpecialRenderer implements IItemRend
 		
 		World world=te.getWorldObj();
 		
-		float brightness=ContentRegistry.keypadLock.getLightValue(world, bx, by, bz);
+		float brightness=ContentRegistry.keypadLockBlock.getLightValue(world, bx, by, bz);
 		int light=world.getLightBrightnessForSkyBlocks(bx,by,bz,0);
 		
 		tessellator.setColorOpaque_F(brightness,brightness,brightness);

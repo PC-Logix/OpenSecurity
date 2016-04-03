@@ -215,14 +215,14 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 
 	@Callback
 	public Object[] isOpen(Context context, Arguments args) {
-		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
+		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoorBlock;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 		return new Object[] { isDoorOpen(door, loc) };
 	}
 
 	@Callback
 	public Object[] open(Context context, Arguments args) {
-		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
+		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoorBlock;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 		if (!isDoorOpen(door, loc)) {
 			return toggle(context, args);
@@ -232,7 +232,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	
 	@Callback
 	public Object[] close(Context context, Arguments args) {
-		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
+		BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoorBlock;
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 		if (isDoorOpen(door, loc)) {
 			return toggle(context, args);
@@ -243,7 +243,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
 		if (node.changeBuffer(-5) == 0) {
-			BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoor;
+			BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoorBlock;
 			BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
 			TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorCoordX, doorCoordY, doorCoordZ);
 
