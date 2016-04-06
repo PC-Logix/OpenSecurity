@@ -1,12 +1,5 @@
 package pcl.opensecurity.drivers;
 
-import li.cil.oc.api.driver.item.Memory;
-import li.cil.oc.api.driver.item.Slot;
-import li.cil.oc.api.network.EnvironmentHost;
-import li.cil.oc.api.network.ManagedEnvironment;
-import li.cil.oc.api.prefab.DriverItem;
-import net.minecraft.item.ItemStack;
-
 /**
  * @author Michiyo
  */
