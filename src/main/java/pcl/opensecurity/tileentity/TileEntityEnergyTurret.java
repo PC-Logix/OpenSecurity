@@ -106,7 +106,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		boolean shaftLengthValid = true;
 		boolean moveSound = false;
 
-		movePerTick = 3;
+		movePerTick = 4;
 
 		float maxShaft = getMaxAvailableShaftLength(shaft);
 		if (shaft > maxShaft)
@@ -125,10 +125,10 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			}
 		}
 		if (this.ItemStacks[2] != null && this.ItemStacks[2].getItem() instanceof ItemMovementUpgrade) {
-			movePerTick = movePerTick + 1.5F;
+			movePerTick = movePerTick + 2.5F;
 		}
 		if (this.ItemStacks[3] != null && this.ItemStacks[3].getItem() instanceof ItemMovementUpgrade) {
-			movePerTick = movePerTick + 1.5F;
+			movePerTick = movePerTick + 2.5F;
 		}
 
 		if (this.ItemStacks[4] != null && this.ItemStacks[4].getItem() instanceof ItemCooldownUpgrade) {
