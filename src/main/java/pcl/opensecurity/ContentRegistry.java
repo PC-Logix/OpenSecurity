@@ -256,6 +256,7 @@ public class ContentRegistry {
 		ItemStack noteblock = new ItemStack(Blocks.noteblock);
 		ItemStack door = new ItemStack(Items.iron_door);
 		ItemStack obsidian = new ItemStack(Blocks.obsidian);
+		ItemStack glass = new ItemStack(Blocks.glass_pane);
 		ItemStack t2microchip = li.cil.oc.api.Items.get("chip2").createItemStack(1);
 		ItemStack t1microchip = li.cil.oc.api.Items.get("chip1").createItemStack(1);
 		ItemStack t1ram = li.cil.oc.api.Items.get("ram1").createItemStack(1);
@@ -337,11 +338,17 @@ public class ContentRegistry {
 				'P', paper, 'S', transistor);
 
 		GameRegistry.addRecipe(new ItemStack(securityDoorItem, 1), 
+				"TGT", 
+				"ODO", 
+				"SOS", 
+				'G', glass, 'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian);
+
+		GameRegistry.addRecipe(new ItemStack(securityDoorItem, 1), 
 				"TOT", 
 				"ODO", 
 				"SOS", 
 				'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian);
-
+		
 		GameRegistry.addRecipe(new ItemStack(DoorControllerBlock, 1), 
 				"TOT", 
 				"OCO", 
