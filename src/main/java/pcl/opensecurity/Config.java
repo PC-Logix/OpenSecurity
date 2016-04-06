@@ -22,6 +22,7 @@ public class Config {
 	public final boolean ignoreUUIDs;
 	public final boolean turretReverseRotation;
 	public boolean registerBlockBreak;
+	public boolean magCardDisplayName;
 
 	public Config(Configuration config) {
 		config.load();
@@ -31,6 +32,7 @@ public class Config {
 		ignoreUUIDs = config.getBoolean("ignoreUUIDs", "options", false, "RFID and Mag cards will return '-1' for UUIDs.  Allows for less secure security.");
 		registerBlockBreak = config.getBoolean("registerBlockBreak", "options", true, "If false the block break event will not be registered, which will leave Door Controllers and Security Doors able to be broken.");
 		turretReverseRotation = config.getBoolean("turretReverseRotation", "options", true, "If true - turrets should rotate as in old versions.");
+		magCardDisplayName = config.getBoolean("magCardDisplayName", "options", true, "If true - the Mag Card Reader will return the Minecraft Username of the player who swiped the card, false will return \"player\"");
 		
 		if (config.hasChanged()) {
 			config.save();

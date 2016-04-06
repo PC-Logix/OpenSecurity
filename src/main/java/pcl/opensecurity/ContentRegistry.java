@@ -343,7 +343,7 @@ public class ContentRegistry {
 				"SOS", 
 				'G', glass, 'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian);
 
-		GameRegistry.addRecipe(new ItemStack(securityDoorItem, 1), 
+		GameRegistry.addRecipe(new ItemStack(securityDoorPrivateItem, 1), 
 				"TOT", 
 				"ODO", 
 				"SOS", 

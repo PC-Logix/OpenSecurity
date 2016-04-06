@@ -12,6 +12,7 @@ import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.items.ItemMagCard;
 
@@ -95,6 +96,7 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("data")) {
 			data = itemStack.stackTagCompound.getString("data");
 			String uuid = itemStack.stackTagCompound.getString("uuid");
+			String user;
 			boolean locked = itemStack.stackTagCompound.getBoolean("locked");
 			if (node.changeBuffer(-5) == 0) {
 				String localUUID;
@@ -103,7 +105,12 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 				} else {
 					localUUID = "-1";
 				}
-				node.sendToReachable("computer.signal", eventName, em.getDisplayName(), data, localUUID, locked, side);
+				if (OpenSecurity.cfg.magCardDisplayName) {
+					user = em.getDisplayName();
+				} else {
+					user = "player";
+				}
+				node.sendToReachable("computer.signal", eventName, user, data, localUUID, locked, side);
 			}
 			return true;
 		} else {
