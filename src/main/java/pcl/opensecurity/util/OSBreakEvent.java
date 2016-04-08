@@ -16,7 +16,7 @@ public class OSBreakEvent {
 	
 	@SubscribeEvent(priority=EventPriority.NORMAL)
 	public void onBlockBreak(BreakEvent event) {
-		if (!OpenSecurity.registerBlockBreakEvent) {
+		if (OpenSecurity.registerBlockBreakEvent) {
 			TileEntity TE = event.world.getTileEntity(event.x, event.y, event.z);
 			if(TE instanceof TileEntitySecureDoor){
 				TileEntitySecureDoor xEntity = (TileEntitySecureDoor) TE;
