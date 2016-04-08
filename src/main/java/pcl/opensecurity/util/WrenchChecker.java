@@ -38,6 +38,7 @@ public class WrenchChecker {
                 "mekanism.api.IMekWrench",                      //Mekanism
                 "mcjty.rftools.items.smartwrench",              //RFTools
                 "pneumaticCraft.common.item.ItemPneumaticWrench",
+                "li.cil.oc.common.item.Wrench",					//OC Scrench
                 "powercrystals.minefactoryreloaded.api.IToolHammer"
 
         }) {

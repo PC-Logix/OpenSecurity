@@ -17,7 +17,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
-import pcl.opensecurity.util.WrenchChecker;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -92,7 +91,7 @@ public class BlockDoorController extends BlockOSBase {
 				}
 			}
 			//Remove the block texture with the scrench
-		} else if (player.getCurrentEquippedItem() != null && WrenchChecker.isAWrench(player.getCurrentEquippedItem().getItem())) {
+		} else if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof Wrench) {
 			if (!world.isRemote) {
 				if (!tileEntity.DoorControllerCamo[0].getItem().equals(Item.getItemFromBlock(ContentRegistry.DoorControllerBlock))) {
 					EntityItem myItemEntity = new EntityItem(world, x, y, z, tileEntity.DoorControllerCamo[0]);
