@@ -17,6 +17,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
+import pcl.opensecurity.util.WrenchChecker;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -45,11 +46,12 @@ public class BlockDoorController extends BlockOSBase {
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
 		TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(x, y, z);
 		//If the user is not the owner, or the user is not in creative drop out.
-		if(tileEntity.getOwner()!=null){
-			if(tileEntity.getOwner().equals(player.getUniqueID().toString())) {
-				this.setResistance(0F);
-				this.setHardness(0F);
-			}
+		if((tileEntity.getOwner()!=null && tileEntity.getOwner().equals(player.getUniqueID().toString())) || player.capabilities.isCreativeMode){
+			this.setResistance(4F);
+			this.setHardness(6F);
+		} else {
+			this.setResistance(400F);
+			this.setHardness(6000F);
 		}
 	}
 	
@@ -90,7 +92,7 @@ public class BlockDoorController extends BlockOSBase {
 				}
 			}
 			//Remove the block texture with the scrench
-		} else if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof Wrench) {
+		} else if (player.getCurrentEquippedItem() != null && WrenchChecker.isAWrench(player.getCurrentEquippedItem().getItem())) {
 			if (!world.isRemote) {
 				if (!tileEntity.DoorControllerCamo[0].getItem().equals(Item.getItemFromBlock(ContentRegistry.DoorControllerBlock))) {
 					EntityItem myItemEntity = new EntityItem(world, x, y, z, tileEntity.DoorControllerCamo[0]);

@@ -46,9 +46,12 @@ public class BlockSecurityDoorPrivate extends BlockSecurityDoor {
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
 		TileEntitySecureDoor tileEntity = (TileEntitySecureDoor) world.getTileEntity(x, y, z);
 		//If the user is not the owner, or the user is not in creative drop out.
-		if(tileEntity.getOwner()!=null && tileEntity.getOwner().equals(player.getUniqueID().toString())){
-			this.setResistance(0F);
-			this.setHardness(0F);
+		if((tileEntity.getOwner()!=null && tileEntity.getOwner().equals(player.getUniqueID().toString())) || player.capabilities.isCreativeMode){
+			this.setResistance(4F);
+			this.setHardness(6F);
+		} else {
+			this.setResistance(400F);
+			this.setHardness(6000F);
 		}
 	}
 	
