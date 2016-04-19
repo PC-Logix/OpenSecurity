@@ -43,7 +43,7 @@ public class SecureNetworkCardDriver extends NetworkCard {
 
 			Iterator<Node> meh = tempNodes.iterator();
 			while (meh.hasNext()) {
-				this.node().network().connect(this.node, meh.next());
+				this.node().connect(meh.next());
 			}
 
 			OpenSecurity.logger.info("New: " + this.node.address());
