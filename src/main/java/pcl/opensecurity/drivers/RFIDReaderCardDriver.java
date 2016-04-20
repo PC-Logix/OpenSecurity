@@ -35,11 +35,11 @@ public class RFIDReaderCardDriver extends DriverItem {
 	}
 
 	@Override
-	public ManagedEnvironment createEnvironment(ItemStack stack, EnvironmentHost container) {
-		if (container instanceof TileEntity)
-			return new Environment(container);
-		if (container instanceof TabletWrapper)
-			return new Environment(container);
+	public ManagedEnvironment createEnvironment(ItemStack arg0, li.cil.oc.api.network.EnvironmentHost arg1) {
+		if (arg1 instanceof TileEntity)
+			return new Environment(arg1);
+		if (arg1 instanceof TabletWrapper)
+			return new Environment(arg1);
 		return null;
 	}
 
@@ -50,7 +50,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 
 	public class Environment extends li.cil.oc.api.prefab.ManagedEnvironment {
 		public String data = null;
-		protected EnvironmentHost container = null;
+		protected li.cil.oc.api.network.EnvironmentHost container = null;
 		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("os_rfidreader").withConnector(32).create();
 
 		@Override
@@ -58,8 +58,8 @@ public class RFIDReaderCardDriver extends DriverItem {
 			return node;
 		}
 
-		public Environment(EnvironmentHost container3) {
-			this.container = container3;
+		public Environment(li.cil.oc.api.network.EnvironmentHost arg1) {
+			this.container = arg1;
 			this.setNode(node);
 		}
 

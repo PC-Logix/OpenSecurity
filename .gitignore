@@ -26,6 +26,12 @@ local.properties
 # PDT-specific
 .buildpath
 
+.idea
+*.iml
+*.ipl
+*.ipr
+*.iws
+
 #############
 ## Windows detritus
 #############

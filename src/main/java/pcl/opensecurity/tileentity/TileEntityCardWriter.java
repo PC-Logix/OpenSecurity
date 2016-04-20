@@ -297,15 +297,19 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements Envir
 				for (int x = 3; x <= 12; x++) { // Loop the 9 output slots
 					// checking for a empty one
 					if (getStackInSlot(x) == null) { // The slot is empty lets
-						// make us a RFID
+						// make us a new EEPROM
 						if (getStackInSlot(0).getItem() instanceof EEPROM) {
 							CardWriterItemStacks[x] = eepromItem;
 							NBTTagCompound oc_data = new NBTTagCompound();
 							NBTTagCompound our_data = new NBTTagCompound();
-							if(code.length > Settings.get().eepromSize()) {
+							if(!OpenSecurity.cfg.biggerEEPROM && code.length > Settings.get().eepromSize()) {
+								code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
+							} else if(OpenSecurity.cfg.biggerEEPROM && code.length > 8096) {
 								code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
 							}
-							if(title.length() > Settings.get().eepromDataSize()) {
+							if(!OpenSecurity.cfg.biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
+								title = title.substring(0, Settings.get().eepromDataSize());
+							} else if(OpenSecurity.cfg.biggerEEPROM && title.length() > 512) {
 								title = title.substring(0, Settings.get().eepromDataSize());
 							}
 							our_data.setByteArray("oc:eeprom", code);

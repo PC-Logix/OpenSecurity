@@ -24,9 +24,10 @@ public class ItemSecureNetworkCard extends Item implements li.cil.oc.api.driver.
 	}
 
 	@Override
-	public ManagedEnvironment createEnvironment(ItemStack stack, EnvironmentHost host) {
-		return new SecureNetworkCardDriver(host);
+	public ManagedEnvironment createEnvironment(ItemStack arg0, li.cil.oc.api.network.EnvironmentHost arg1) {
+		return new SecureNetworkCardDriver(arg1);
 	}
+
 
 	@Override
 	public String slot(ItemStack stack) {
@@ -58,9 +59,9 @@ public class ItemSecureNetworkCard extends Item implements li.cil.oc.api.driver.
 	}
 
 	@Override
-	public boolean worksWith(ItemStack stack, Class<? extends EnvironmentHost> host) {
+	public boolean worksWith(ItemStack arg0, Class<? extends li.cil.oc.api.network.EnvironmentHost> arg1) {
 		// TODO Auto-generated method stub
-		boolean works = worksWith(stack);
+		boolean works = worksWith(arg0);
 		return works;
 	}
 }
