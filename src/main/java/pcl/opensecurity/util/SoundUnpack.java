@@ -12,22 +12,24 @@ import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
-
-	@SuppressWarnings("static-access")
 	public void load() {
-		File f = new File("\\mods\\");
 		File jar = null;
-		try {
-			jar = new File(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			new ExtractDirectory(new URL("file:/" + jar  + "!/assets/opensecurity/sounds/alarms/"), "mods/OpenSecurity/sounds/alarms");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		File f = new File("mods/OpenSecurity/sounds/");
+		if (!f.exists()) {
+			f.mkdirs();
+			try {
+				jar = new File(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+					
+			try {
+				FileUtils.copyResourcesRecursively(new URL("file://" + jar  + "/assets/opensecurity/sounds/alarms/"), f);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
