@@ -48,7 +48,7 @@ public class OpenSecurity {
 	public static boolean ignoreUUIDs = false;
 	public static boolean registerBlockBreakEvent = true;
 
-	public static final Logger logger = LogManager.getFormatterLogger(MODID);
+	public static final Logger logger = LogManager.getFormatterLogger("OpenSecurity");
 
 	public static List<String> alarmList;
 
@@ -61,7 +61,6 @@ public class OpenSecurity {
 		long time = System.nanoTime();
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 		alarmSounds = new File("./mods/OpenSecurity/sounds/alarms/");
-		System.out.println(alarmSounds);
 		alarmList = cfg.alarmsConfigList;
 		rfidRange = cfg.rfidMaxRange;
 		enableplaySoundAt = cfg.enableplaySoundAt;

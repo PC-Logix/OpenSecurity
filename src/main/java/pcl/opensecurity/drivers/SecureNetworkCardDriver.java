@@ -14,6 +14,7 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.server.component.NetworkCard;
 
+//Thanks gamax92
 public class SecureNetworkCardDriver extends NetworkCard {
 
 	public final EnvironmentHost container;
@@ -28,28 +29,34 @@ public class SecureNetworkCardDriver extends NetworkCard {
 				.create());
 	}
 
+	@Override
+	public Component node() {
+		return this.node;
+	}
+
+	@Override
+	protected void setNode(Node value) {
+		if (value instanceof ComponentConnector)
+			this.node = (ComponentConnector) value;
+	}
+
 	@Callback(doc = "function() -- Randomises the UUID")
 	public Object[] generateUUID(Context context, Arguments args) {
-		//if(node.tryChangeBuffer(-1)) {
-			//<@Sangar> well, in that case your best bet is to store its neighbors before disconnecting, then reconnect to them all
-			OpenSecurity.logger.info("Old: " + this.node.address());
+		if(node.tryChangeBuffer(-1)) {
 			Iterable<Node> tempNodes = this.node().neighbors();
-
 			this.node().remove();
 			this.setNode(Network.newNode(this, Visibility.Network)
 					.withComponent("modem", Visibility.Neighbors)
 					.withConnector(10)
 					.create());
-
+			Network.joinNewNetwork(this.node);
 			Iterator<Node> meh = tempNodes.iterator();
 			while (meh.hasNext()) {
 				this.node().connect(meh.next());
 			}
-
-			OpenSecurity.logger.info("New: " + this.node.address());
 			return new Object[] { true };
-		//} else {
-		//	return new Object[] { false };
-		//}
+		} else {
+			return new Object[] { false };
+		}
 	}
 }
