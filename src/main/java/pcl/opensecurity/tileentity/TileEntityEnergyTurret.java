@@ -325,6 +325,30 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 		}
 	}
 	
+	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint in radians")
+	public Object[] moveToRadians(Context context, Arguments args) throws Exception {
+		if (power) {
+			soundName = "turretMove";
+			setSound(soundName);
+			this.setShouldStart(true);
+
+			double rad = args.checkDouble(0);
+			double deg = rad*180/Math.PI;
+			
+			double rad2 = args.checkDouble(1);
+			double deg2 = rad2*180/Math.PI;
+			
+			setYaw((float)deg);
+			setPitch((float)deg2);
+
+			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+			markDirty();
+			return new Object[] { true };	
+		} else {
+			throw new IllegalArgumentException("powered off");
+		}
+	}
+	
 	@Callback
 	public Object[] setArmed(Context context, Arguments args) {
 		boolean newArmed = args.checkBoolean(0);
