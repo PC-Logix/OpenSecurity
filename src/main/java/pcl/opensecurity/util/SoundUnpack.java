@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import pcl.opensecurity.BuildInfo;
 import cpw.mods.fml.relauncher.IFMLCallHook;
