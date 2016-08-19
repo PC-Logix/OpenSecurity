@@ -19,7 +19,7 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 			f.mkdirs();
 			try {
 				Path path = Paths.get(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-				jar = new file(path);
+				jar = new File(path);
 				//jar = new File(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 				System.out.println("Selected Jar");
 			} catch (URISyntaxException e) {
