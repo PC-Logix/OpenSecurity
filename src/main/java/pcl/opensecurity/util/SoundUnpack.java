@@ -18,7 +18,9 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 		//if (!f.exists()) {
 			f.mkdirs();
 			try {
-				jar = new File(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+				Path path = Paths.get(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+				jar = new file(path);
+				//jar = new File(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 				System.out.println("Selected Jar");
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
