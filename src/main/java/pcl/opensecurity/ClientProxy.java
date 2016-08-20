@@ -71,7 +71,7 @@ public class ClientProxy extends CommonProxy {
 	        } else {
 	        	r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
 	        	i++;
-	            System.out.println(OpenSecurity.alarmSounds + "\\" + fileEntry.getName());
+	            System.out.println(OpenSecurity.alarmSounds + File.separator + fileEntry.getName());
 	        }
 	    }
 	    r.registerAsResourceLocation(); //finalise IResourcePack
@@ -88,10 +88,6 @@ public class ClientProxy extends CommonProxy {
 	
     @Override
     public void registerSounds () {
-        
-        //for (ItemExtraRecord record : ExtraRecords.records) {
-        //    r.addSoundReferenceMapping(record.data.recordNum, record.data.sound.getResourcePath()); //add map soundlocation -> recordX
-        //}
         listFilesForFolder(OpenSecurity.alarmSounds);
     }
 }

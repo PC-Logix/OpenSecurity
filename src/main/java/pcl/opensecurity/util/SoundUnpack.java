@@ -8,31 +8,31 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import pcl.opensecurity.OpenSecurity;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
-	public void load() throws IOException {
-		File f = new File("mods/OpenSecurity/sounds/alarms/");
+	public void load() throws IOException, URISyntaxException {
+		File f = new File("mods"+File.separator+"OpenSecurity"+File.separator+"sounds"+File.separator+"alarms"+File.separator);
 		f.mkdirs();
-		final String path = "assets/opensecurity/sounds/alarms";
-		final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+		final String path = "assets"+File.separator+"opensecurity"+File.separator+"sounds"+File.separator+"alarms";
+		final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 		if(jarFile.isFile()) {  // Run with JAR file
 			JarFile jar = null;
 			jar = new JarFile(jarFile);
 			final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
 			while(entries.hasMoreElements()) {
 				final String name = entries.nextElement().getName();
-				if (name.startsWith(path + "/") && name.endsWith(".ogg")) { //filter according to the path
+				if (name.startsWith(path + File.separator) && name.endsWith(".ogg")) { //filter according to the path
 					InputStream oggStream = SoundUnpack.class.getClassLoader().getResourceAsStream(name);
 					Path p = Paths.get(name);
 					String file = p.getFileName().toString();
 					System.out.println("Extracting file: " + file);
-					try (FileOutputStream fos = new FileOutputStream(f + "/" + file);){
+					try (FileOutputStream fos = new FileOutputStream(f + File.separator + file);){
 						byte[] buf = new byte[2048];
 						int r;
 						while(-1 != (r = oggStream.read(buf))) {
@@ -45,26 +45,6 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 		} else {
 			System.out.println("ERROR: Can't detect valid JAR");
 		}
-		/*		File jar = null;
-		File f = new File("mods/OpenSecurity/sounds/");
-		if (!f.exists()) {
-			f.mkdirs();
-			try {
-				jar = new File(SoundUnpack.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-				System.out.println("Selected Jar");
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			try {
-				FileUtils.copyResourcesRecursively(new URL("file://" + jar  + "/assets/opensecurity/sounds/alarms/"), f);
-				System.out.println("Exctracted sounds");
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
 	}
 
 	@Override
@@ -90,7 +70,7 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 	public Void call() {
 		try {
 			load();
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
