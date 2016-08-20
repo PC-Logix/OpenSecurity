@@ -56,7 +56,7 @@ public class AlarmResource implements IResourcePack {
         return new File(mc_dir.getAbsolutePath(),altPath);
     }
     private static InputStream generateSoundsJSON () throws IOException {
-        OpenSecurity.logger.info(Minecraft.getMinecraft().mcDataDir + "\\mods\\OpenSecurity\\sounds\\alarms\\");
+        OpenSecurity.logger.info(Minecraft.getMinecraft().mcDataDir + "/mods/OpenSecurity/sounds/alarms/");
         
         JsonObject root = new JsonObject();
         for (Map.Entry<String, String> entry : sound_map.entrySet()) {
@@ -64,7 +64,7 @@ public class AlarmResource implements IResourcePack {
             event.addProperty("category", "master"); // put under the "master" category for sound options
             JsonArray sounds = new JsonArray(); // array of sounds (will only ever be one)
             JsonObject sound = new JsonObject(); // sound object (instead of primitive to use 'stream' flag)
-            sound.addProperty("name", Minecraft.getMinecraft().mcDataDir + "\\mods\\OpenSecurity\\sounds\\alarms\\" + entry.getValue().substring(0, entry.getValue().lastIndexOf('.'))); // path to file
+            sound.addProperty("name", Minecraft.getMinecraft().mcDataDir + "/mods/OpenSecurity/sounds/alarms/" + entry.getValue().substring(0, entry.getValue().lastIndexOf('.'))); // path to file
             sound.addProperty("stream", false); // streaming seems to break the alarm... why?
             sounds.add(sound);
             event.add("sounds", sounds);

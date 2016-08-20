@@ -61,7 +61,7 @@ public class OpenSecurity {
 		long time = System.nanoTime();
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 		alarmSounds = new File("./mods/OpenSecurity/sounds/alarms/");
-		System.out.println(alarmSounds);
+		//System.out.println(alarmSounds);
 		alarmList = cfg.alarmsConfigList;
 		rfidRange = cfg.rfidMaxRange;
 		enableplaySoundAt = cfg.enableplaySoundAt;
