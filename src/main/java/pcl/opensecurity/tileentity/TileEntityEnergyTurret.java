@@ -321,7 +321,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			markDirty();
 			return new Object[] { true };	
 		} else {
-			throw new IllegalArgumentException("powered off");
+			throw new Exception("powered off");
 		}
 	}
 	
@@ -345,7 +345,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			markDirty();
 			return new Object[] { true };	
 		} else {
-			throw new IllegalArgumentException("powered off");
+			throw new Exception("powered off");
 		}
 	}
 	
@@ -388,7 +388,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 	@Callback(doc="function():table -- Fires the gun.  More damage means longer cooldown and more energy draw. Returns true for success and throws error with a message for failure")
 	public Object[] fire(Context context, Arguments args) throws Exception {
 		if (power) {
-			if (!armed || barrel<1F) throw new IllegalArgumentException("Not armed");
+			if (!armed || barrel<1F) throw new Exception("Not armed");
 
 			float p = getRealPitch();
 			float a = getRealYaw() + (float)Math.PI;
@@ -409,10 +409,10 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			}
 
 			if (this.tickCool > 0) {
-				throw new IllegalArgumentException("gun hasn't cooled");
+				throw new Exception("gun hasn't cooled");
 			}
 			if (!((Connector)this.node).tryChangeBuffer(-energy*25)) {
-				throw new IllegalArgumentException("not enough energy");
+				throw new Exception("not enough energy");
 			}
 			this.tickCool = 200;
 
@@ -434,7 +434,7 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements Env
 			this.worldObj.spawnEntityInWorld(bolt);
 			return new Object[] { true };
 		} else {
-			throw new IllegalArgumentException("powered off");
+			throw new Exception("powered off");
 		}
 
 	}
