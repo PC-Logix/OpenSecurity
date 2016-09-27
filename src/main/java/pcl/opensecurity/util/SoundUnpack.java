@@ -19,7 +19,8 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 	public void load() throws IOException, URISyntaxException {
 		File f = new File("mods"+File.separator+"OpenSecurity"+File.separator+"sounds"+File.separator+"alarms"+File.separator);
 		f.mkdirs();
-		final String path = "assets"+File.separator+"opensecurity"+File.separator+"sounds"+File.separator+"alarms";
+		final String path = "assets/opensecurity/sounds/alarms/";
+		System.out.println("Extracting sounds from: " +path);
 		final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 		if(jarFile.isFile()) {  // Run with JAR file
 			JarFile jar = null;
@@ -27,7 +28,7 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 			final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
 			while(entries.hasMoreElements()) {
 				final String name = entries.nextElement().getName();
-				if (name.startsWith(path + File.separator) && name.endsWith(".ogg")) { //filter according to the path
+				if (name.startsWith(path) && name.endsWith(".ogg")) { //filter according to the path
 					InputStream oggStream = SoundUnpack.class.getClassLoader().getResourceAsStream(name);
 					Path p = Paths.get(name);
 					String file = p.getFileName().toString();
