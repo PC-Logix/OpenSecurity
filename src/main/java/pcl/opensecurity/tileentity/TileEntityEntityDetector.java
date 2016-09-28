@@ -28,6 +28,7 @@ import pcl.opensecurity.OpenSecurity;
 public class TileEntityEntityDetector extends TileEntityMachineBase implements Environment {
 
 	public int range = OpenSecurity.rfidRange;
+	public boolean offset = false;
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
@@ -91,7 +92,7 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 	}
 
 	// Thanks gamax92 from #oc for the following 2 methods...
-	private HashMap<String, Object> info(Entity entity) {
+	private HashMap<String, Object> info(Entity entity, boolean offset) {
 		HashMap<String, Object> value = new HashMap<String, Object>();
 
 		double rangeToEntity = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
@@ -103,14 +104,21 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 		node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity);
 		value.put("name", name);
 		value.put("range", rangeToEntity);
-		value.put("x", entity.posX);
-		value.put("y", entity.posY);
-		value.put("z", entity.posZ);
+		if (!offset) {
+			value.put("x", entity.posX);
+			value.put("y", entity.posY);
+			value.put("z", entity.posZ);
+		} else {
+			value.put("x", entity.posX - this.xCoord);
+			value.put("y", entity.posY - this.yCoord);
+			value.put("z", entity.posZ - this.zCoord);
+		}
+
 		return value;
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public Map<Integer, HashMap<String, Object>> scan(boolean players) {
+	public Map<Integer, HashMap<String, Object>> scan(boolean players, boolean offset) {
 		worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
 		Block block = worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
 		worldObj.scheduleBlockUpdate(this.xCoord, this.yCoord, this.zCoord, block, 20);
@@ -122,10 +130,10 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 			for (int i = 0; i <= e.size() - 1; i++) {
 				entity = (Entity) e.get(i);
 				if (players && entity instanceof EntityPlayerMP) {
-					output.put(index++, info(entity));
+					output.put(index++, info(entity, offset));
 					worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
 				} else if (!players) {
-					output.put(index++, info(entity));
+					output.put(index++, info(entity, offset));
 					worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
 				}
 			}
@@ -147,16 +155,22 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 	public Object[] greet(Context context, Arguments args) {
 		return new Object[] { "Lasciate ogne speranza, voi ch'intrate" };
 	}
+	
+	@Callback
+	public Object[] getLoc(Context context, Arguments args) {
+		return new Object[] { this.xCoord, this.yCoord, this.zCoord };
+	}
 
 	@Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each player in range, optional set range.", direct = true)
 	public Object[] scanPlayers(Context context, Arguments args) {
 		range = args.optInteger(0, range);
+		offset = args.optBoolean(1, offset);
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
 		}
 		range = range / 2;
 		if (node.changeBuffer(-5 * range) == 0) {
-			return new Object[]{ scan(true) };
+			return new Object[]{ scan(true, offset) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };
 		}
@@ -164,13 +178,14 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 
 	@Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each entity in range (excluding players), optional set range.", direct = true)
 	public Object[] scanEntities(Context context, Arguments args) {
-		range = args.optInteger(0, range);
+		range = args.optInteger(16, range);
+		offset = args.optBoolean(1, offset);
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
 		}
 		range = range / 2;
 		if (node.changeBuffer(-5 * range) == 0) {
-			return new Object[]{ scan(false) };
+			return new Object[]{ scan(false, offset) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };
 		}
