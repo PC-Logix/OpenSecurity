@@ -62,9 +62,9 @@ public class ClientProxy extends CommonProxy {
 		OpenSecurity.logger.info("Registered TESRs");
 	}
 	
-	public void listFilesForFolder(final File[] alarms) {
+	public void listFilesForFolder(final File folder) {
 		AlarmResource r = new AlarmResource();
-/*		int i = 1;
+		int i = 1;
 	    for (final File fileEntry : folder.listFiles()) {
 	        if (fileEntry.isDirectory()) {
 	            listFilesForFolder(fileEntry);
@@ -73,15 +73,7 @@ public class ClientProxy extends CommonProxy {
 	        	i++;
 	            System.out.println(OpenSecurity.alarmSounds + File.separator + fileEntry.getName());
 	        }
-	    }*/
-	    
-	    for (int i = 0; i < alarms.length; i++) {
-	        if (alarms[i].isFile()) {
-	          r.addSoundReferenceMapping(i, alarms[i].getName()); //add map soundlocation -> recordX
-	          //System.out.println("File " + alarms[i].getName());
-	        }
-	      }
-	    
+	    }
 	    r.registerAsResourceLocation(); //finalise IResourcePack
 	}
 	

@@ -32,7 +32,7 @@ import cpw.mods.fml.relauncher.Side;
 public class OpenSecurity {
 
 	public static final String MODID = "opensecurity";
-	public static File[] alarmSounds;
+	public static File alarmSounds;
 
 
 	@Instance(value = MODID)
@@ -60,11 +60,17 @@ public class OpenSecurity {
 	public void preInit(FMLPreInitializationEvent event) {
 		long time = System.nanoTime();
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
-		File alarmSoundsFolder = new File("./mods/OpenSecurity/sounds/alarms/");
+		alarmSounds = new File("./mods/OpenSecurity/sounds/alarms/");
 		//System.out.println(alarmSounds);
 		//alarmList = cfg.alarmsConfigList;
-		alarmSounds = alarmSoundsFolder.listFiles();
+		File[] listOfFiles = alarmSounds.listFiles();
 
+	    for (int i = 0; i < listOfFiles.length; i++) {
+	      if (listOfFiles[i].isFile()) {
+	        System.out.println("File " + listOfFiles[i].getName());
+	        alarmList.add(listOfFiles[i].getName());
+	      }
+	    }
 		rfidRange = cfg.rfidMaxRange;
 		enableplaySoundAt = cfg.enableplaySoundAt;
 		ignoreUUIDs = cfg.ignoreUUIDs;
