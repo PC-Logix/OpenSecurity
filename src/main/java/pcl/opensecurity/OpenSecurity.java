@@ -2,6 +2,7 @@ package pcl.opensecurity;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -50,7 +51,7 @@ public class OpenSecurity {
 
 	public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
-	public static List<String> alarmList;
+	public static List<String> alarmList = new ArrayList<String>();
 
 	
 	
