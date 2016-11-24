@@ -260,6 +260,8 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	}
 
 	public void pressedButton(EntityPlayer player, int buttonIndex) {
+		worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D,  zCoord + 0.5D, "random.click", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+
 		if (!worldObj.isRemote) {
 			PacketKeypadButton packet = new PacketKeypadButton((short) 1, worldObj.provider.dimensionId, xCoord, yCoord, zCoord, buttonIndex);
 			EntityPlayerMP p=(EntityPlayerMP)player;			
