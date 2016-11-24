@@ -45,6 +45,7 @@ public class ContentRegistry {
 	public static Block DisplayPanelBlock;
 	public static Block energyTurretBlock;
 	public static Block keypadLockBlock;
+	public static Block biometricScanner;
 	public static Item magCardItem;
 	public static Item rfidCardItem;
 	public static Item securityDoorItem;
@@ -199,6 +200,11 @@ public class ContentRegistry {
 		keypadLockBlock.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityKeypadLock.class, "KeypadLock");
 		
+		biometricScanner = new BlockBiometricReader();
+		GameRegistry.registerBlock(biometricScanner, "biometricScanner");
+		biometricScanner.setCreativeTab(CreativeTab);
+		GameRegistry.registerTileEntity(TileEntityBiometricReader.class, "BiometricReader");
+		
 		
 		OpenSecurity.logger.info("Registered Blocks");
 	}
@@ -208,13 +214,13 @@ public class ContentRegistry {
 	}
 	
 	private static void registerRecipes() {
-		Callable<FileSystem> factory = new Callable<FileSystem>() {
+		Callable<FileSystem> SOSFactory = new Callable<FileSystem>() {
 			@Override
 			public FileSystem call() {
 				return li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/SecureOS/SecureOS/");
 			}
 		};
-		secureOS_disk = li.cil.oc.api.Items.registerFloppy("SecureOS", 1, factory);
+		secureOS_disk = li.cil.oc.api.Items.registerFloppy("SecureOS", 1, SOSFactory);
 
 		// Vanilla Minecraft blocks/items
 		String iron = "ingotIron";

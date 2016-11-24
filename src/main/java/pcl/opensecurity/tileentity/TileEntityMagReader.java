@@ -93,6 +93,9 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 	}
 
 	public boolean doRead(ItemStack itemStack, EntityPlayer em, int side) {
+		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard) {
+			worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		}
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("data")) {
 			data = itemStack.stackTagCompound.getString("data");
 			String uuid = itemStack.stackTagCompound.getString("uuid");
