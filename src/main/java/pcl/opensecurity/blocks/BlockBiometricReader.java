@@ -49,6 +49,9 @@ public class BlockBiometricReader extends BlockOSBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int metadata) {
+		if (side == 4 && metadata == 0) {
+			return this.faceIcon;
+		}
 		if (metadata == side) {
 			return this.faceIcon;
 		} else

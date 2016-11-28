@@ -11,6 +11,7 @@ tile.displaypanel.name=Display Panel
 tile.kvm.name=KVM Switch
 tile.energyTurret.name=Energy Turret
 tile.keypadlock.name=Keypad
+tile.biometricreader.name=Biometric Reader
 //items
 item.rfidCard.name=RFID Card
 item.magCard.name=Magnetic Strip Card

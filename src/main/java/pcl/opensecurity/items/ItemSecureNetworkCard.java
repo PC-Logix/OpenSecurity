@@ -15,7 +15,7 @@ public class ItemSecureNetworkCard extends Item implements li.cil.oc.api.driver.
 	public ItemSecureNetworkCard() {
 		super();
 		setUnlocalizedName("secureNetworkCard");
-		setTextureName("opensecurity:rfidReaderCard");
+		setTextureName("opensecurity:secureNetworkCard");
 	}
 
 	@Override
