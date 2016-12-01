@@ -1,5 +1,7 @@
 package pcl.opensecurity.tileentity;
 
+import java.io.File;
+
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -90,7 +92,8 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
-		if (AlarmResource.sound_map.containsValue(alarm + ".ogg")) {
+		File f = new File("mods"+File.separator+"OpenSecurity"+File.separator+"sounds"+File.separator+"alarms"+File.separator+ alarm + ".ogg");
+		if (f.exists() && !f.isDirectory()) {
 			soundName = alarm;
 			setSound(alarm);
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
