@@ -1,16 +1,6 @@
 package pcl.opensecurity.tileentity;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -23,18 +13,14 @@ import li.cil.oc.api.network.Visibility;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.networking.PacketKeypadButton;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 
 
 public class TileEntityKeypadLock extends TileEntityMachineBase implements Environment  {
@@ -43,8 +29,14 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 
 	public String data;
 	public String eventName = "keypad";
-	public String[] buttonLabels = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"};
-	public byte[] buttonColors = new byte[] {7,7,7, 7,7,7, 7,7,7, 7,7,7};
+	public String[] buttonLabels = new String[] {"1", "2", "3",
+												 "4", "5", "6",
+												 "7", "8", "9",
+												 "*", "0", "#"};
+	public byte[] buttonColors = new byte[] {7,7,7,
+											 7,7,7,
+											 7,7,7,
+											 7,7,7};
 	public String displayText = "";
 	public byte displayColor = 7;
 
@@ -260,7 +252,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	}
 
 	public void pressedButton(EntityPlayer player, int buttonIndex) {
-		worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D,  zCoord + 0.5D, "opensecurity:keypad_press", 1.0F, 1);
+		worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D,  zCoord + 0.5D, "opensecurity:keypad_press",Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.BLOCKS) - 0.7F, 1);
 		if (!worldObj.isRemote) {
 			PacketKeypadButton packet = new PacketKeypadButton((short) 1, worldObj.provider.dimensionId, xCoord, yCoord, zCoord, buttonIndex);
 			EntityPlayerMP p=(EntityPlayerMP)player;			

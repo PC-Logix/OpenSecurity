@@ -11,6 +11,8 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -89,7 +91,7 @@ public class TileEntityBiometricReader extends TileEntityMachineBase implements 
 	public void doRead(EntityPlayer entityplayer, int side) {
 		byte[] bytesEncoded = Base64.encodeBase64(entityplayer.getUniqueID().toString().getBytes());
 		node.sendToReachable("computer.signal", eventName, new String(bytesEncoded));
-		worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner3", 1.0F, 1);
+		worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner3", Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.BLOCKS) - 0.4F, 1);
 	}
 
 	@Callback

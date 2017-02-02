@@ -9,6 +9,8 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -93,8 +95,8 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 	}
 
 	public boolean doRead(ItemStack itemStack, EntityPlayer em, int side) {
-		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard) {
-			worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && this.blockMetadata == 0) {
+			worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.BLOCKS) - 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("data")) {
 			data = itemStack.stackTagCompound.getString("data");

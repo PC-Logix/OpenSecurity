@@ -208,7 +208,7 @@ public class TileEntityRFIDReader extends TileEntityMachineBase implements Envir
 		range = range / 2;
 		
 		if (node.changeBuffer(-5 * range) == 0) {
-			worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner2", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner2", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			return new Object[]{ scan(range) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };

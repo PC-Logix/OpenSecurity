@@ -170,7 +170,7 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 		}
 		range = range / 2;
 		if (node.changeBuffer(-5 * range) == 0) {
-			worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner1", 1.0F, 1);
+			//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner1", 1.0F, 1);
 			return new Object[]{ scan(true, offset) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };
@@ -186,8 +186,8 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 		}
 		range = range / 2;
 		if (node.changeBuffer(-5 * range) == 0) {
-			worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner1", 1.0F, 1);
-			System.out.println(range * 0.1F + 0.9F);
+			//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner1", 1.0F, 1);
+			//System.out.println(range * 0.1F + 0.9F);
 			return new Object[]{ scan(false, offset) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };
