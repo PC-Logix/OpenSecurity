@@ -91,7 +91,7 @@ public class TileEntityBiometricReader extends TileEntityMachineBase implements 
 	public void doRead(EntityPlayer entityplayer, int side) {
 		byte[] bytesEncoded = Base64.encodeBase64(entityplayer.getUniqueID().toString().getBytes());
 		node.sendToReachable("computer.signal", eventName, new String(bytesEncoded));
-		worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner3", Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.BLOCKS) - 0.4F, 1);
+		worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner3", 0.4F, 1);
 	}
 
 	@Callback

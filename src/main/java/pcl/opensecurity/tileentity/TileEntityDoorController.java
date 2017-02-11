@@ -276,8 +276,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 				}
 
 				if ((loc.getBlock() == door) && (getDoorOrientation(door, loc) == direction) && (isDoorMirrored(door, loc) != isMirrored) || worldObj.getBlock(doorCoordX, doorCoordY, doorCoordZ) instanceof BlockSecurityDoor) {
-					worldObj.playSoundEffect(loc.x + 0.5D, loc.y + 0.5D,  loc.z + 0.5D, "opensecurity:security_door", Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.BLOCKS) - 0.2F, 1);
-
+					this.worldObj.playSoundEffect(loc.x + 0.5D, loc.y + 0.5D,  loc.z + 0.5D, "opensecurity:security_door", 0.5F, 1);
 					int i1 = worldObj.getBlockMetadata(doorCoordX, doorCoordY, doorCoordZ);
 
 					int j2;

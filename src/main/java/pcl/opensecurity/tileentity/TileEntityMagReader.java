@@ -85,7 +85,7 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		
+
 		if (node != null && node.host() == this) {
 			final NBTTagCompound nodeNbt = new NBTTagCompound();
 			node.save(nodeNbt);
@@ -96,7 +96,9 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 
 	public boolean doRead(ItemStack itemStack, EntityPlayer em, int side) {
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && this.blockMetadata == 0) {
-			worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.BLOCKS) - 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			if(!worldObj.isRemote){
+				worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			}
 		}
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("data")) {
 			data = itemStack.stackTagCompound.getString("data");
@@ -133,7 +135,7 @@ public class TileEntityMagReader extends TileEntityMachineBase implements Enviro
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
-	
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();

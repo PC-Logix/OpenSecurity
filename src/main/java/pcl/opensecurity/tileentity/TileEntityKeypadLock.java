@@ -27,6 +27,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	final static int MAX_LABEL_LENGTH = 3;
 	final static int MAX_DISPLAY_LENGTH = 8;
 
+	private boolean shouldBeep = true;
 	public String data;
 	public String eventName = "keypad";
 	public String[] buttonLabels = new String[] {"1", "2", "3",
@@ -99,6 +100,11 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		} else {
 			eventName = "keypad";
 		}
+		if (nbt.hasKey("shouldBeep")) {
+			shouldBeep = nbt.getBoolean("shouldBeep");
+		} else {
+			shouldBeep = true;
+		}
 		for(int i=0;i<12;++i)
 			buttonLabels[i] = trimString(nbt.getString("btn:"+i), MAX_LABEL_LENGTH);
 		byte[] colors = nbt.getByteArray("btn:colors");
@@ -124,11 +130,18 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		nbt.setByteArray("btn:colors", buttonColors);
 		nbt.setString("fbText",displayText);
 		nbt.setInteger("fbColor",displayColor);
+		nbt.setBoolean("shouldBeep", shouldBeep);
 	}
 
 	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a key is pressed")
 	public Object[] setEventName(Context context, Arguments args) throws Exception {
 		eventName = args.checkString(0);
+		return new Object[]{ true };
+	}
+	
+	@Callback(doc = "function(Boolean):boolean; Sets if the keys should beep when pressed")
+	public Object[] setShouldBeep(Context context, Arguments args) throws Exception {
+		shouldBeep = args.checkBoolean(0);
 		return new Object[]{ true };
 	}
 
@@ -252,7 +265,8 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 	}
 
 	public void pressedButton(EntityPlayer player, int buttonIndex) {
-		worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D,  zCoord + 0.5D, "opensecurity:keypad_press",Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.BLOCKS) - 0.7F, 1);
+		if (shouldBeep)
+			worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D,  zCoord + 0.5D, "opensecurity:keypad_press", 0.4F, 1);
 		if (!worldObj.isRemote) {
 			PacketKeypadButton packet = new PacketKeypadButton((short) 1, worldObj.provider.dimensionId, xCoord, yCoord, zCoord, buttonIndex);
 			EntityPlayerMP p=(EntityPlayerMP)player;			
