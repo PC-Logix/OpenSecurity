@@ -1,10 +1,10 @@
 {
-    "turretMove": {"category": "master","sounds": [{"name": "turretMove","stream": false}]},
-    "turretFire": {"category": "master","sounds": [{"name": "turretFire","stream": false}]},
-	"keypad_press": {"category": "master","sounds": [{"name": "keypad_press","stream": false}]},
-	"security_door": {"category": "master","sounds": [{"name": "security_door","stream": false}]},
-	"scanner1": {"category": "master","sounds": [{"name": "scanner1","stream": false}]},
-	"scanner2": {"category": "master","sounds": [{"name": "scanner2","stream": false}]},
-	"scanner3": {"category": "master","sounds": [{"name": "scanner3","stream": false}]},
-	"card_swipe": {"category": "master","sounds": [{"name": "card_swipe","stream": false}]}
+    "turretMove": {"category": "block","sounds": [{"name": "turretMove","stream": false}]},
+    "turretFire": {"category": "block","sounds": [{"name": "turretFire","stream": false}]},
+	"keypad_press": {"category": "block","sounds": [{"name": "keypad_press","stream": false}]},
+	"security_door": {"category": "block","sounds": [{"name": "security_door","stream": false}]},
+	"scanner1": {"category": "block","sounds": [{"name": "scanner1","stream": false}]},
+	"scanner2": {"category": "block","sounds": [{"name": "scanner2","stream": false}]},
+	"scanner3": {"category": "block","sounds": [{"name": "scanner3","stream": false}]},
+	"card_swipe": {"category": "block","sounds": [{"name": "card_swipe","stream": false}]}
 }
