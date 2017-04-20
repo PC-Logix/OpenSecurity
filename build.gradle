@@ -38,10 +38,11 @@ repositories {
 
 dependencies {
     compile "li.cil.oc:OpenComputers:MC1.7.10-1.6.+:dev"
+    compile 'org.mindrot:jbcrypt:0.3m'
 }
 
 minecraft {
-	version = "1.7.10-10.13.4.1448-1.7.10"
+	version = "1.7.10-10.13.4.1614-1.7.10"
 	replace "@VERSION@", project.version
 	replace "@BUILD@", project.ext.buildNumber
 }

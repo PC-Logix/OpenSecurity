@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.mindrot.jbcrypt.BCrypt;
 
 import pcl.opensecurity.OpenSecurity;
 
@@ -200,6 +201,21 @@ public class TileEntityDataBlock extends TileEntityMachineBase implements Enviro
 		if (data.length > Settings.get().dataCardSoftLimit())
 			context.pause(Settings.get().dataCardTimeout());
 		return data;
+	}
+	
+	@Callback(direct = true, limit = 32)
+	public Object[] bCryptHash(Context context, Arguments args, Double cost) throws Exception {
+		int rounds = (int) args.optDouble(1, 10);
+		if ((rounds < 1) || (rounds > 20)) {
+			rounds = 20;
+		}
+		String hashed = BCrypt.hashpw(args.checkString(0), BCrypt.gensalt(rounds));
+		return new Object[] { hashed };
+	}
+	
+	@Callback(direct = true, limit = 32)
+	public Object[] bCryptCheck(Context context, Arguments args, Double cost) throws Exception {
+		return new Object[] { BCrypt.checkpw(args.checkString(0), args.checkString(1)) };
 	}
 
 	public static String rot13(String input) {
