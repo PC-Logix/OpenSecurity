@@ -192,11 +192,13 @@ public class TileEntityDataBlock extends TileEntityMachineBase implements Enviro
 		return new Object[] { rot13(args.checkString(0)) };
 	}
 
-	@Callback(direct = true, limit = 32, doc = "function(plain-text:string, optional rounds:int):string -- Computes the bCryptHash of the input plaintext, optionally supply rounds (1-20)")
+	@Callback(direct = true, limit = 32, doc = "function(plain-text:string, optional rounds:int):string -- Computes the bCryptHash of the input plaintext, optionally supply rounds (4-15)")
 	public Object[] bCryptHash(Context context, Arguments args) throws Exception {
 		int rounds = (int) args.optDouble(1, 10);
-		if ((rounds < 1) || (rounds > 20)) {
-			rounds = 20;
+		if (rounds < 4) {
+			rounds = 4;
+		} else if (rounds > 15) {
+			rounds = 15;
 		}
 		String hashed = BCrypt.hashpw(args.checkString(0), BCrypt.gensalt(rounds));
 		return new Object[] { hashed };
