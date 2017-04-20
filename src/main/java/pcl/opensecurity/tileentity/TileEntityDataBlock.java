@@ -192,6 +192,21 @@ public class TileEntityDataBlock extends TileEntityMachineBase implements Enviro
 		return new Object[] { rot13(args.checkString(0)) };
 	}
 
+	@Callback(direct = true, limit = 32, doc = "function(plain-text:string, optional rounds:int):string -- Computes the bCryptHash of the input plaintext, optionally supply rounds (1-20)")
+	public Object[] bCryptHash(Context context, Arguments args) throws Exception {
+		int rounds = (int) args.optDouble(1, 10);
+		if ((rounds < 1) || (rounds > 20)) {
+			rounds = 20;
+		}
+		String hashed = BCrypt.hashpw(args.checkString(0), BCrypt.gensalt(rounds));
+		return new Object[] { hashed };
+	}
+	
+	@Callback(direct = true, limit = 32, doc = "function(plain-text:string, hash:string):boolean -- Checks bCrypt input vs hash supplied")
+	public Object[] bCryptCheck(Context context, Arguments args) throws Exception {
+		return new Object[] { BCrypt.checkpw(args.checkString(0), args.checkString(1)) };
+	}
+	
 	private byte[] checkLimits(Context context, Arguments args, Double cost) throws Exception {
 		byte[] data = args.checkByteArray(0);
 		if (data.length > Settings.get().dataCardHardLimit())
@@ -203,21 +218,6 @@ public class TileEntityDataBlock extends TileEntityMachineBase implements Enviro
 		return data;
 	}
 	
-	@Callback(direct = true, limit = 32)
-	public Object[] bCryptHash(Context context, Arguments args, Double cost) throws Exception {
-		int rounds = (int) args.optDouble(1, 10);
-		if ((rounds < 1) || (rounds > 20)) {
-			rounds = 20;
-		}
-		String hashed = BCrypt.hashpw(args.checkString(0), BCrypt.gensalt(rounds));
-		return new Object[] { hashed };
-	}
-	
-	@Callback(direct = true, limit = 32)
-	public Object[] bCryptCheck(Context context, Arguments args, Double cost) throws Exception {
-		return new Object[] { BCrypt.checkpw(args.checkString(0), args.checkString(1)) };
-	}
-
 	public static String rot13(String input) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < input.length(); i++) {
