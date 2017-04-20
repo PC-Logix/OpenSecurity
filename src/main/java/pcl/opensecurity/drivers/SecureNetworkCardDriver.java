@@ -17,7 +17,6 @@ import li.cil.oc.server.component.NetworkCard;
 public class SecureNetworkCardDriver extends NetworkCard {
 
 	public final EnvironmentHost container;
-	private ComponentConnector node;
 
 	public SecureNetworkCardDriver(EnvironmentHost container) {
 		super(container);
@@ -32,7 +31,8 @@ public class SecureNetworkCardDriver extends NetworkCard {
 	public Object[] generateUUID(Context context, Arguments args) {
 		//if(node.tryChangeBuffer(-1)) {
 			//<@Sangar> well, in that case your best bet is to store its neighbors before disconnecting, then reconnect to them all
-			OpenSecurity.logger.info("Old: " + this.node.address());
+			String oldNode = this.node().address();
+			OpenSecurity.logger.info("Old: " + this.node().address());
 			Iterable<Node> tempNodes = this.node().neighbors();
 
 			this.node().remove();
@@ -43,10 +43,12 @@ public class SecureNetworkCardDriver extends NetworkCard {
 
 			Iterator<Node> meh = tempNodes.iterator();
 			while (meh.hasNext()) {
-				this.node().connect(meh.next());
+				Node thisNode = meh.next();
+				System.out.println(thisNode.address());
+				this.node().connect(thisNode);
 			}
 
-			OpenSecurity.logger.info("New: " + this.node.address());
+			OpenSecurity.logger.info("New: " + this.node().address());
 			return new Object[] { true };
 		//} else {
 		//	return new Object[] { false };
