@@ -42,7 +42,7 @@ public class SecureNetworkCardDriver extends NetworkCard {
 					.create());
 
 			Iterator<Node> meh = tempNodes.iterator();
-			Network.joinNewNetwork(node())
+			Network.joinNewNetwork(node());
 			while (meh.hasNext()) {
 				Node thisNode = meh.next();
 				System.out.println(thisNode.address());
