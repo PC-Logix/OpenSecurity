@@ -43,7 +43,7 @@ public class TileEntityMachineBase extends TileEntity implements ITickable {
 		return soundRes;
 	}
 
-	public boolean shouldPlaySound() {
+	public boolean getShouldPlay() {
 		return shouldPlay;
 	}
 
@@ -64,13 +64,13 @@ public class TileEntityMachineBase extends TileEntity implements ITickable {
 	}
 
 	public boolean shouldRepeat() {
-		return true;
+		return getShouldPlay();
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void updateSound() {
 		if (hasSound()) {
-			if ((shouldPlaySound()) && !isInvalid()) {
+			if ((getShouldPlay()) && !isInvalid()) {
 				if (sound == null && this instanceof ISoundTile) {
 						ISoundTile tile = (ISoundTile) this;
 						soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());

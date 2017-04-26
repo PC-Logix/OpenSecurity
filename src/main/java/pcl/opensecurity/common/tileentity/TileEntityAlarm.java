@@ -18,7 +18,7 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
 public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent, ISoundTile {
-	
+
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
 	public Boolean computerPlaying = false;
@@ -39,7 +39,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	}
 
 	@Override
-	public boolean shouldPlaySound() {
+	public boolean getShouldPlay() {
 		return shouldPlay;
 	}
 
@@ -61,12 +61,14 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 
 	public void setShouldStart(boolean b) {
 		setShouldPlay(true);
+		worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
 		getUpdateTag();
 		markDirty();
 	}
 
 	public void setShouldStop(boolean b) {
 		setShouldPlay(false);
+		worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
 		getUpdateTag();
 		markDirty();
 	}
@@ -92,16 +94,11 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
-		//File f = new File("mods"+File.separator+"OpenSecurityExternal"+File.separator+"sounds"+File.separator+"alarms"+File.separator+ alarm + ".ogg");
-		//if (f.exists() && !f.isDirectory()) {
-			soundName = alarm;
-			setSound(alarm);
-			getUpdateTag();
-			markDirty();
-			return new Object[] { "Success" };
-		//} else {
-		//	return new Object[] { "Fail" };
-		//}
+		soundName = alarm;
+		setSound(alarm);
+		getUpdateTag();
+		markDirty();
+		return new Object[] { "Success" };
 	}
 
 	@Callback(doc = "function():string; Activates the alarm", direct = true)
@@ -119,7 +116,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		setShouldPlay(false);
 		return new Object[] { "Ok" };
 	}
-	
+
 	@Callback(doc = "function(int:x, int:y, int:z, string:sound, float:range(1-10 recommended)):string; Plays sound at x y z", direct = true)
 	public Object[] playSoundAt(Context context, Arguments args) {
 		if (OpenSecurity.enableplaySoundAt) {
@@ -155,7 +152,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		tag.setBoolean("isPlayingSound", shouldPlaySound());
+		tag.setBoolean("isPlayingSound", getShouldPlay());
 		tag.setString("alarmName", soundName);
 		tag.setFloat("volume", volume);
 		tag.setBoolean("computerPlaying", computerPlaying);
@@ -164,32 +161,22 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 
 	@Override
 	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket()
-	{
-		super.getUpdatePacket();
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
-		writeToNBT(nbtTagCompound);
-		int metadata = getBlockMetadata();
-		return new SPacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		super.getUpdateTag();
-		NBTTagCompound tagCom = new NBTTagCompound();
-		this.writeToNBT(tagCom);
-		return tagCom;
+		return writeToNBT(new NBTTagCompound());
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-		super.onDataPacket(net, packet);
 		readFromNBT(packet.getNbtCompound());
 	}
 
 	@Override
 	public void handleUpdateTag(NBTTagCompound tag) {
-		super.handleUpdateTag(tag);
 		this.readFromNBT(tag);
 	}
 }
