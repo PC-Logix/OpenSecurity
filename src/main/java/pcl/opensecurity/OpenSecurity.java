@@ -1,6 +1,7 @@
 package pcl.opensecurity;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,22 @@ public class OpenSecurity {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		long time = System.nanoTime();
+		File[] listOfFiles;
+		alarmSounds = new File("."+File.separator+"mods"+File.separator+"OpenSecurity"+File.separator+"sounds"+File.separator+"alarms");
+		if (alarmSounds.exists()) {
+			listOfFiles = alarmSounds.listFiles();
+			
+		    for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile()) {
+		        alarmList.add(listOfFiles[i].getName());
+		      }
+		    }
+		}
+
 		ContentRegistry.preInit();
+		proxy.registerSounds();
+		
+		
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    int packetID = 0;
 	    
@@ -63,7 +79,6 @@ public class OpenSecurity {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		long time = System.nanoTime();
-
 		
 		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}

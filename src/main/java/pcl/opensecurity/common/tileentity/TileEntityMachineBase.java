@@ -1,6 +1,7 @@
 package pcl.opensecurity.common.tileentity;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -8,15 +9,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.client.sounds.MachineSound;
 
-public class TileEntityMachineBase extends TileEntity {
+public class TileEntityMachineBase extends TileEntity implements ITickable {
 
 	public TileEntityMachineBase() {
 		super();
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
 		if (worldObj.isRemote && hasSound()) {
 			updateSound();
 		}
@@ -68,11 +68,11 @@ public class TileEntityMachineBase extends TileEntity {
 				if (sound == null && this instanceof ISoundTile) {
 						ISoundTile tile = (ISoundTile) this;
 						if (tile instanceof TileEntityAlarm) {
-							soundRes = new ResourceLocation("opensecurity_external:" + tile.getSoundName());
+							soundRes = new ResourceLocation("opensecurityexternal:" + tile.getSoundName());
 						} else {
 							soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
 						}
-						sound = new MachineSound(soundRes, xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, getVolume(), getPitch(), shouldRepeat());
+						sound = new MachineSound(soundRes, this.getPos(), getVolume(), getPitch(), shouldRepeat());
 						FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
 				}
 			} else if (sound != null) {

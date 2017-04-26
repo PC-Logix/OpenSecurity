@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pcl.opensecurity.common.blocks.BlockAlarm;
+import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 
 public class ContentRegistry {
 	public static CreativeTabs creativeTab;
@@ -30,6 +31,7 @@ public class ContentRegistry {
 	private static void registerBlocks() {
 		alarmBlock = new BlockAlarm(Material.IRON);
 		GameRegistry.registerBlock(alarmBlock, "alarm");
+		GameRegistry.registerTileEntity(TileEntityAlarm.class, "alarm");
 	}
 	
 	private static void registerRecipes() {

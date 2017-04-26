@@ -2,10 +2,15 @@ package pcl.opensecurity.common.tileentity;
 
 import java.io.File;
 
+import javax.annotation.Nullable;
+
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -13,12 +18,11 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
 public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent, ISoundTile {
-	public static String cName = "OSAlarm";
 	public Boolean shouldPlay = false;
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
 	public Boolean computerPlaying = false;
-	
+
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
@@ -30,8 +34,8 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 	}
 
 	@Override
@@ -51,23 +55,23 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 
 	@Override
 	public ResourceLocation setSound(String sound) {
-		setSoundRes(new ResourceLocation(OpenSecurity.MODID + ":" + sound));
+		setSoundRes(new ResourceLocation("opensecurityexternal:" + sound));
 		return getSoundRes();
 	}
 
 	public void setShouldStart(boolean b) {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		getDescriptionPacket();
+		getUpdateTag();
+		markDirty();
 		shouldPlay = true;
 
 	}
 
 	public void setShouldStop(boolean b) {
 		shouldPlay = false;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		getDescriptionPacket();
+		getUpdateTag();
+		markDirty();
 	}
-	
+
 	// OC Methods.
 
 	@Callback
@@ -89,16 +93,16 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
 	public Object[] setAlarm(Context context, Arguments args) {
 		String alarm = args.checkString(0);
-		File f = new File("mods"+File.separator+"OpenSecurity"+File.separator+"sounds"+File.separator+"alarms"+File.separator+ alarm + ".ogg");
-		if (f.exists() && !f.isDirectory()) {
+		//File f = new File("mods"+File.separator+"OpenSecurityExternal"+File.separator+"sounds"+File.separator+"alarms"+File.separator+ alarm + ".ogg");
+		//if (f.exists() && !f.isDirectory()) {
 			soundName = alarm;
 			setSound(alarm);
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			getDescriptionPacket();
+			getUpdateTag();
+			markDirty();
 			return new Object[] { "Success" };
-		} else {
-			return new Object[] { "Fail" };
-		}
+		//} else {
+		//	return new Object[] { "Fail" };
+		//}
 	}
 
 	@Callback(doc = "function():string; Activates the alarm", direct = true)
@@ -139,5 +143,51 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public boolean playSoundNow() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+		shouldPlay = tag.getBoolean("isPlayingSound");
+		soundName = tag.getString("alarmName");
+		volume = tag.getFloat("volume");
+		computerPlaying = tag.getBoolean("computerPlaying");
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		tag.setBoolean("isPlayingSound", shouldPlay);
+		tag.setString("alarmName", soundName);
+		tag.setFloat("volume", volume);
+		tag.setBoolean("computerPlaying", computerPlaying);
+		return tag;
+	}
+
+	@Override
+	@Nullable
+	public SPacketUpdateTileEntity getUpdatePacket()
+	{
+		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		writeToNBT(nbtTagCompound);
+		int metadata = getBlockMetadata();
+		return new SPacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		NBTTagCompound tagCom = new NBTTagCompound();
+		this.writeToNBT(tagCom);
+		return tagCom;
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+		readFromNBT(packet.getNbtCompound());
+	}
+
+	@Override
+	public void handleUpdateTag(NBTTagCompound tag) {
+		this.readFromNBT(tag);
 	}
 }
