@@ -27,7 +27,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers")
 public class OpenSecurity {
 	public static final String MODID = "opensecurity";
-	public static File alarmSounds;
 
 	@Instance(value = MODID)
 	public static OpenSecurity instance;
@@ -44,8 +43,6 @@ public class OpenSecurity {
 
 	public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
-	public static List<String> alarmList = new ArrayList<String>();
-
 	public static SimpleNetworkWrapper network;
 	
 	public static CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
@@ -53,21 +50,9 @@ public class OpenSecurity {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		long time = System.nanoTime();
-		File[] listOfFiles;
-		alarmSounds = new File("."+File.separator+"mods"+File.separator+"OpenSecurity"+File.separator+"sounds"+File.separator+"alarms");
-		if (alarmSounds.exists()) {
-			listOfFiles = alarmSounds.listFiles();
-			
-		    for (int i = 0; i < listOfFiles.length; i++) {
-		      if (listOfFiles[i].isFile()) {
-		        alarmList.add(listOfFiles[i].getName());
-		      }
-		    }
-		}
 
 		ContentRegistry.preInit();
 		proxy.registerSounds();
-		
 		
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    int packetID = 0;

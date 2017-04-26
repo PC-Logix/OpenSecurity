@@ -68,7 +68,7 @@ public class TileEntityMachineBase extends TileEntity implements ITickable {
 				if (sound == null && this instanceof ISoundTile) {
 						ISoundTile tile = (ISoundTile) this;
 						if (tile instanceof TileEntityAlarm) {
-							soundRes = new ResourceLocation("opensecurityexternal:" + tile.getSoundName());
+							soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
 						} else {
 							soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
 						}

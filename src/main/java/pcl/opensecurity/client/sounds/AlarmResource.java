@@ -60,7 +60,7 @@ public class AlarmResource implements IResourcePack {
     private InputStream getResourceStream(ResourceLocation l)
     {
     	try {
-			return new FileInputStream(Minecraft.getMinecraft().mcDataDir+"/mods/OpenSecurity/sounds/"+l.getResourcePath().substring(7));
+			return new FileInputStream(mc_dir+"/mods/OpenSecurity/assets/opensecurity/sounds/"+l.getResourcePath().substring(7));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -73,16 +73,16 @@ public class AlarmResource implements IResourcePack {
     }
     
     private File getRealPath (String file) {
-    	//File meh = new File(mc_dir.getAbsolutePath(),"/mods/OpenSecurity/sounds/"+file.replace("sounds/", ""));
+    	//File meh = new File(mc_dir.getAbsolutePath(),"/mods/OpenSecurity/assets/opensecurity/sounds/"+file.substring(7));
     	//System.out.println(meh.getPath());
-    	return new File(mc_dir.getAbsolutePath(),"/mods/OpenSecurity/sounds/"+file.replace("sounds/", ""));
+    	return new File(mc_dir.getAbsolutePath(),"/mods/OpenSecurity/assets/opensecurity/sounds/"+file.substring(7));
     }
     
     private static InputStream generateSoundsJSON () throws IOException {
         JsonObject root = new JsonObject();
         for (Map.Entry<String, String> entry : sound_map.entrySet()) {
             JsonObject event = new JsonObject();
-            event.addProperty("category", "blocks"); // put under the "blocks" category for sound options
+            event.addProperty("category", "records"); // put under the "blocks" category for sound options
             JsonArray sounds = new JsonArray(); // array of sounds (will only ever be one)
             JsonObject sound = new JsonObject(); // sound object (instead of primitive to use 'stream' flag)
             //"klaxon1":"opensecurity:/alarms/klaxon1","stream:false"

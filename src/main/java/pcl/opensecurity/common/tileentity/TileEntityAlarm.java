@@ -109,12 +109,9 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public Object[] activate(Context context, Arguments args) {
 		this.setShouldStart(true);
 		computerPlaying = true;
+		getUpdateTag();
+		markDirty();
 		return new Object[] { "Ok" };
-	}
-
-	@Callback(doc = "function():table; Returns a table of Alarm Sounds", direct = true)
-	public Object[] listSounds(Context context, Arguments args) {
-		return new Object[] { OpenSecurity.alarmList };
 	}
 
 	@Callback(doc = "function(int:x, int:y, int:z, string:sound, float:range(1-10 recommended)):string; Plays sound at x y z", direct = true)
@@ -126,6 +123,8 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 			String sound = args.checkString(3);
 			float range = args.checkInteger(4);
 			worldObj.playSound(x, y, z, new SoundEvent(new ResourceLocation(sound)), SoundCategory.BLOCKS, range / 15 + 0.5F, 1.0F, false);
+			getUpdateTag();
+			markDirty();
 			return new Object[] { "Ok" };
 		} else {
 			return new Object[] { "Disabled" };
@@ -136,6 +135,8 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public Object[] deactivate(Context context, Arguments args) {
 		this.setShouldStop(true);
 		computerPlaying = false;
+		getUpdateTag();
+		markDirty();
 		return new Object[] { "Ok" };
 	}
 

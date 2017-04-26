@@ -1,28 +1,22 @@
 package pcl.opensecurity.client;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.resources.FolderResourcePack;
-import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
-import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
 
 public class ClientProxy extends CommonProxy {
+	public static File alarmSounds;
+	public static List<String> alarmList = new ArrayList<String>();
+	
+	
+	public static SoundEvent klaxon1;
 	
 	public void listFilesForFolder(final File folder) {
 		AlarmResource r = new AlarmResource();
@@ -32,23 +26,27 @@ public class ClientProxy extends CommonProxy {
 	            listFilesForFolder(fileEntry);
 	        } else {
 	        	r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
-	        	registerSound(fileEntry.getName());
 	        	i++;
 	        }
 	    }
+	    
 	    r.registerAsResourceLocation(); //finalise IResourcePack
-	    Minecraft.getMinecraft().refreshResources();
 	}
 	
     @Override
     public void registerSounds () {
-        listFilesForFolder(OpenSecurity.alarmSounds);
-    	  //List<IResourcePack> defaultResourcePacks = null;
-    	  
-    	  //defaultResourcePacks = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "defaultResourcePacks");
-    	  
-    	  //defaultResourcePacks.add(new FolderResourcePack(new File( Minecraft.getMinecraft().mcDataDir.getAbsolutePath() + File.separator+"mods"+File.separator+"OpenSecurityExternal")));
-    	  
+		File[] listOfFiles;
+		File alarmSounds = new File("./mods/OpenSecurity/assets/opensecurity/sounds/alarms");
+		if (alarmSounds.exists()) {
+			listOfFiles = alarmSounds.listFiles();
+			
+		    for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile()) {
+				alarmList.add(listOfFiles[i].getName());
+		      }
+		    }
+		}
+        listFilesForFolder(alarmSounds);
     }
     
     /**
