@@ -18,7 +18,7 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
 public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent, ISoundTile {
-	public Boolean shouldPlay = false;
+	
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
 	public Boolean computerPlaying = false;
@@ -55,19 +55,18 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 
 	@Override
 	public ResourceLocation setSound(String sound) {
-		setSoundRes(new ResourceLocation("opensecurityexternal:" + sound));
+		setSoundRes(new ResourceLocation("opensecurity:" + sound));
 		return getSoundRes();
 	}
 
 	public void setShouldStart(boolean b) {
+		setShouldPlay(true);
 		getUpdateTag();
 		markDirty();
-		shouldPlay = true;
-
 	}
 
 	public void setShouldStop(boolean b) {
-		shouldPlay = false;
+		setShouldPlay(false);
 		getUpdateTag();
 		markDirty();
 	}
@@ -109,11 +108,18 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	public Object[] activate(Context context, Arguments args) {
 		this.setShouldStart(true);
 		computerPlaying = true;
-		getUpdateTag();
-		markDirty();
+		setShouldPlay(true);
 		return new Object[] { "Ok" };
 	}
 
+	@Callback(doc = "function():string; Deactivates the alarm", direct = true)
+	public Object[] deactivate(Context context, Arguments args) {
+		this.setShouldStop(true);
+		computerPlaying = false;
+		setShouldPlay(false);
+		return new Object[] { "Ok" };
+	}
+	
 	@Callback(doc = "function(int:x, int:y, int:z, string:sound, float:range(1-10 recommended)):string; Plays sound at x y z", direct = true)
 	public Object[] playSoundAt(Context context, Arguments args) {
 		if (OpenSecurity.enableplaySoundAt) {
@@ -131,15 +137,6 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 		}
 	}
 
-	@Callback(doc = "function():string; Deactivates the alarm", direct = true)
-	public Object[] deactivate(Context context, Arguments args) {
-		this.setShouldStop(true);
-		computerPlaying = false;
-		getUpdateTag();
-		markDirty();
-		return new Object[] { "Ok" };
-	}
-
 	@Override
 	public boolean playSoundNow() {
 		// TODO Auto-generated method stub
@@ -149,7 +146,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		shouldPlay = tag.getBoolean("isPlayingSound");
+		setShouldPlay(tag.getBoolean("isPlayingSound"));
 		soundName = tag.getString("alarmName");
 		volume = tag.getFloat("volume");
 		computerPlaying = tag.getBoolean("computerPlaying");
@@ -158,7 +155,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		tag.setBoolean("isPlayingSound", shouldPlay);
+		tag.setBoolean("isPlayingSound", shouldPlaySound());
 		tag.setString("alarmName", soundName);
 		tag.setFloat("volume", volume);
 		tag.setBoolean("computerPlaying", computerPlaying);
@@ -169,6 +166,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Nullable
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
+		super.getUpdatePacket();
 		NBTTagCompound nbtTagCompound = new NBTTagCompound();
 		writeToNBT(nbtTagCompound);
 		int metadata = getBlockMetadata();
@@ -177,6 +175,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
+		super.getUpdateTag();
 		NBTTagCompound tagCom = new NBTTagCompound();
 		this.writeToNBT(tagCom);
 		return tagCom;
@@ -184,11 +183,13 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+		super.onDataPacket(net, packet);
 		readFromNBT(packet.getNbtCompound());
 	}
 
 	@Override
 	public void handleUpdateTag(NBTTagCompound tag) {
+		super.handleUpdateTag(tag);
 		this.readFromNBT(tag);
 	}
 }

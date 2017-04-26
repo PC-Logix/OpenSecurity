@@ -10,7 +10,9 @@ import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.client.sounds.MachineSound;
 
 public class TileEntityMachineBase extends TileEntity implements ITickable {
-
+	
+	public Boolean shouldPlay = false;
+	
 	public TileEntityMachineBase() {
 		super();
 	}
@@ -42,9 +44,13 @@ public class TileEntityMachineBase extends TileEntity implements ITickable {
 	}
 
 	public boolean shouldPlaySound() {
-		return false;
+		return shouldPlay;
 	}
 
+	public void setShouldPlay(boolean b) {
+		shouldPlay = b;
+	}
+	
 	public boolean hasSound() {
 		return getSoundName() != null;
 	}
@@ -64,14 +70,10 @@ public class TileEntityMachineBase extends TileEntity implements ITickable {
 	@SideOnly(Side.CLIENT)
 	public void updateSound() {
 		if (hasSound()) {
-			if (shouldPlaySound() && !isInvalid()) {
+			if ((shouldPlaySound()) && !isInvalid()) {
 				if (sound == null && this instanceof ISoundTile) {
 						ISoundTile tile = (ISoundTile) this;
-						if (tile instanceof TileEntityAlarm) {
-							soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
-						} else {
-							soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
-						}
+						soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
 						sound = new MachineSound(soundRes, this.getPos(), getVolume(), getPitch(), shouldRepeat());
 						FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
 				}
