@@ -1,5 +1,11 @@
 package pcl.opensecurity.common.tileentity;
 
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Message;
+import li.cil.oc.api.network.Node;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -9,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.client.sounds.MachineSound;
 
-public class TileEntityMachineBase extends TileEntity implements ITickable {
+public class TileEntityMachineBase extends TileEntity implements ITickable, Environment {
 	
 	public Boolean shouldPlay = false;
 	
@@ -86,6 +92,35 @@ public class TileEntityMachineBase extends TileEntity implements ITickable {
 
 	public void setSoundRes(ResourceLocation soundRes) {
 		this.soundRes = soundRes;
+	}
+	
+	@Callback
+	public Object[] greet(Context context, Arguments args) {
+		return new Object[] { "Lasciate ogne speranza, voi ch'entrate" };
+	}
+
+	@Override
+	public Node node() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void onConnect(Node node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnect(Node node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMessage(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

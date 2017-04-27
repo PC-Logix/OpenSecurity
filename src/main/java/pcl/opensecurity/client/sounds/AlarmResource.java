@@ -73,8 +73,6 @@ public class AlarmResource implements IResourcePack {
     }
     
     private File getRealPath (String file) {
-    	//File meh = new File(mc_dir.getAbsolutePath(),"/mods/OpenSecurity/assets/opensecurity/sounds/"+file.substring(7));
-    	//System.out.println(meh.getPath());
     	return new File(mc_dir.getAbsolutePath(),"/mods/OpenSecurity/assets/opensecurity/sounds/"+file.substring(7));
     }
     
@@ -92,7 +90,6 @@ public class AlarmResource implements IResourcePack {
             event.add("sounds", sounds);
             root.add(entry.getValue().substring(0, entry.getValue().lastIndexOf('.')), event); // event name (same as name sent to ItemCustomRecord)
         }
-        System.out.println(new Gson().toJson(root));
         return new ByteArrayInputStream(new Gson().toJson(root).getBytes());
     }
 

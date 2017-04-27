@@ -1,5 +1,7 @@
 package pcl.opensecurity.common.blocks;
 
+import java.util.Random;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -15,7 +17,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockOSBase extends BlockContainer {
-
+	protected Random random;
 	protected BlockOSBase(Material materialIn) {
 		super(materialIn);
 		// TODO Auto-generated constructor stub

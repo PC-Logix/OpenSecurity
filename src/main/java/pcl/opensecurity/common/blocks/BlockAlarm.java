@@ -18,7 +18,7 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 
 public class BlockAlarm extends BlockOSBase {
-	private Random random;
+
 
 	public BlockAlarm(Material materialIn) {
 		super(materialIn);
@@ -30,9 +30,7 @@ public class BlockAlarm extends BlockOSBase {
 	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		// TODO Auto-generated method stub
 		return new TileEntityAlarm();
-		//return null;
 	}
 	
 }

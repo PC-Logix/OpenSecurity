@@ -7,6 +7,7 @@ import java.util.List;
 
 import pcl.opensecurity.client.ClientProxy;
 import pcl.opensecurity.common.CommonProxy;
+import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.client.CreativeTab;
 
 import org.apache.logging.log4j.LogManager;
@@ -53,7 +54,7 @@ public class OpenSecurity {
 
 		ContentRegistry.preInit();
 		proxy.registerSounds();
-		
+		SoundHandler.registerSounds();
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    int packetID = 0;
 	    

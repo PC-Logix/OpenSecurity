@@ -1,13 +1,14 @@
 package pcl.opensecurity.common.tileentity;
 
-import java.io.File;
-
 import javax.annotation.Nullable;
 
+import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
+import li.cil.oc.api.network.ComponentConnector;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -17,18 +18,38 @@ import net.minecraft.util.SoundEvent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
-public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComponent, ISoundTile {
+public class TileEntityAlarm extends TileEntityMachineBase implements ISoundTile {
 
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
 	public Boolean computerPlaying = false;
 
+	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	
+	@Override
+	public Node node() {
+		return node;
+	}
+
+	@Override
+	public void onChunkUnload() {
+		super.onChunkUnload();
+		if (node != null)
+			node.remove();
+	}
+
+	@Override
+	public void invalidate() {
+		super.invalidate();
+		if (node != null)
+			node.remove();
+	}
+	
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
 	}
 
-	@Override
 	public String getComponentName() {
 		return "os_alarm";
 	}
@@ -36,6 +57,9 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Override
 	public void update() {
 		super.update();
+		if (node != null && node.network() == null) {
+			Network.joinOrCreateNetwork(this);
+		}
 	}
 
 	@Override
@@ -74,11 +98,6 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	}
 
 	// OC Methods.
-
-	@Callback
-	public Object[] greet(Context context, Arguments args) {
-		return new Object[] { "Lasciate ogne speranza, voi ch'entrate" };
-	}
 
 	@Callback(doc = "function(range:integer):string; Sets the range in blocks of the alarm", direct = true)
 	public Object[] setRange(Context context, Arguments args) {
@@ -143,6 +162,9 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
+		if (node != null && node.host() == this) {
+			node.load(tag.getCompoundTag("oc:node"));
+		}
 		setShouldPlay(tag.getBoolean("isPlayingSound"));
 		soundName = tag.getString("alarmName");
 		volume = tag.getFloat("volume");
@@ -152,6 +174,11 @@ public class TileEntityAlarm extends TileEntityMachineBase implements SimpleComp
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
+		if (node != null && node.host() == this) {
+			final NBTTagCompound nodeNbt = new NBTTagCompound();
+			node.save(nodeNbt);
+			tag.setTag("oc:node", nodeNbt);
+		}
 		tag.setBoolean("isPlayingSound", getShouldPlay());
 		tag.setString("alarmName", soundName);
 		tag.setFloat("volume", volume);
