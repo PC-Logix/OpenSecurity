@@ -45,15 +45,14 @@ public class OpenSecurity {
 	public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
 	public static SimpleNetworkWrapper network;
-	
-	public static CreativeTabs CreativeTab = new CreativeTab("OpenSecurity");
-	
+		
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		long time = System.nanoTime();
 
 		ContentRegistry.preInit();
 		proxy.registerSounds();
+		proxy.registerItemRenderers();
 		SoundHandler.registerSounds();
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    int packetID = 0;

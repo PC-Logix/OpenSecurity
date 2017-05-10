@@ -49,23 +49,6 @@ public class TileEntityBiometricReader extends TileEntityMachineBase {
 	}
 
 	@Override
-	public void onConnect(Node arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onDisconnect(final Node node) {
-
-	}
-
-	@Override
-	public void onMessage(Message arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		if (node != null && node.host() == this) {

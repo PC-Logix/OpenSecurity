@@ -20,8 +20,8 @@ public class BlockBiometricReader extends BlockOSBase {
 
 	public BlockBiometricReader(Material materialIn) {
 		super(materialIn);
-		setCreativeTab(OpenSecurity.CreativeTab);
 		setUnlocalizedName("biometric_reader");
+		setRegistryName("biometric_reader");
 		setHardness(.5f);
 		random = new Random();
 	}
@@ -29,7 +29,7 @@ public class BlockBiometricReader extends BlockOSBase {
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntityBiometricReader tile = (TileEntityBiometricReader) world.getTileEntity(pos);
-		if (!world.isRemote && side.getOpposite().getHorizontalIndex() == state.getBlock().getMetaFromState(state)) {
+		if (!world.isRemote && side.getOpposite().getHorizontalIndex() == state.getBlock().getMetaFromState(state) && hand.equals(hand.OFF_HAND)) {
 			tile.doRead(player, side);
 			return true;
 		}

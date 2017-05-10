@@ -22,8 +22,8 @@ public class BlockAlarm extends BlockOSBase {
 
 	public BlockAlarm(Material materialIn) {
 		super(materialIn);
-		setCreativeTab(OpenSecurity.CreativeTab);
 		setUnlocalizedName("alarm");
+		setRegistryName("alarm");
 		setHardness(.5f);
 		random = new Random();
 	}
