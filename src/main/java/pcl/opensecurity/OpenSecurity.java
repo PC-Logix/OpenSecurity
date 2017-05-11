@@ -64,7 +64,7 @@ public class OpenSecurity {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		long time = System.nanoTime();
-		
+		proxy.init();
 		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 }

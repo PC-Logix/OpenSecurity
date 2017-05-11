@@ -5,18 +5,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
+import pcl.opensecurity.common.items.ItemCard;
 
 public class ClientProxy extends CommonProxy {
 	public static File alarmSounds;
 	public static List<String> alarmList = new ArrayList<String>();
 
+	@Override
+	public void init(){
+		Minecraft mc = Minecraft.getMinecraft();
+		mc.getItemColors().registerItemColorHandler( new CardColorHandler( ContentRegistry.itemRFIDCard ), ContentRegistry.itemRFIDCard );
+		mc.getItemColors().registerItemColorHandler( new CardColorHandler( ContentRegistry.itemMagCard ), ContentRegistry.itemMagCard );
+	}
 	
 	public void registerRenderers() {
 		//TileEntitySpecialRenderer<TileEntityRadio> radioRenderer = new RadioRenderer();
@@ -30,6 +42,7 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.biometricReaderBlock, 0, "biometric_reader");
 		registerBlockItem(ContentRegistry.dataBlock, 0, "data_block");
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
+		registerItem(ContentRegistry.itemMagCard, "MagCard");
 		//registerItem(ContentRegistry.itemRadioTuner, "RadioTuner");
 	}
 	
@@ -74,5 +87,23 @@ public class ClientProxy extends CommonProxy {
 		}
         listFilesForFolder(alarmSounds);
     }
+    
+
+	@SideOnly(Side.CLIENT)
+	private static class CardColorHandler implements IItemColor
+	{
+		private final ItemCard card;
+
+		private CardColorHandler(ItemCard card)
+		{
+			this.card = card;
+		}
+
+		@Override
+		public int getColorFromItemstack(ItemStack stack, int layer)
+		{
+			return layer == 0 ? 0xFFFFFF : card.getColor(stack);
+		}
+	}
 
 }

@@ -13,10 +13,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemRFIDCard extends ItemCard {
-	public ItemRFIDCard() {
+public class ItemMagCard extends ItemCard {
+	public ItemMagCard() {
 		super();
-		setUnlocalizedName("itemRFIDCard");
+		setUnlocalizedName("itemMagCard");
 	}
 
     @Override

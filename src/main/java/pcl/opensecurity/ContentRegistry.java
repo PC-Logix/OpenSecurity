@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,6 +19,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.blocks.BlockAlarm;
 import pcl.opensecurity.common.blocks.BlockBiometricReader;
 import pcl.opensecurity.common.blocks.BlockData;
+import pcl.opensecurity.common.items.ItemCard;
+import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
@@ -29,7 +32,8 @@ public class ContentRegistry {
 	public static Block biometricReaderBlock;
 	public static Block dataBlock;
 	
-	public static Item itemRFIDCard;
+	public static ItemCard itemRFIDCard;
+	public static ItemCard itemMagCard;
 	
 	private ContentRegistry() {}
 	
@@ -50,8 +54,12 @@ public class ContentRegistry {
 	@SuppressWarnings("deprecation")
 	private static void registerItems() {
 		itemRFIDCard = new ItemRFIDCard();
-        GameRegistry.registerItem(itemRFIDCard);
+		GameRegistry.register( itemRFIDCard.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "rfidcard" ) ) );
         itemRFIDCard.setCreativeTab(creativeTab);
+        
+        itemMagCard = new ItemMagCard();
+		GameRegistry.register( itemMagCard.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "magcard" ) ) );
+		itemMagCard.setCreativeTab(creativeTab);
 	}
 	
 	private static void registerBlocks() {
