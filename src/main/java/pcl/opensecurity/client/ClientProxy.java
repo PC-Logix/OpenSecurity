@@ -39,10 +39,11 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerItemRenderers() {
-		registerBlockItem(ContentRegistry.alarmBlock, 0, "Alarm");
+		registerBlockItem(ContentRegistry.alarmBlock, 0, "alarm");
 		registerBlockItem(ContentRegistry.biometricReaderBlock, 0, "biometric_reader");
 		registerBlockItem(ContentRegistry.dataBlock, 0, "data_block");
 		registerBlockItem(ContentRegistry.cardWriter, 0, "card_writer");
+		registerBlockItem(ContentRegistry.magReader, 0, "mag_reader");
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");
 	}

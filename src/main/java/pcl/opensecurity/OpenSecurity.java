@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -49,7 +50,7 @@ public class OpenSecurity {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		long time = System.nanoTime();
-
+		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 		ContentRegistry.preInit();
 		proxy.registerSounds();
 		proxy.registerItemRenderers();

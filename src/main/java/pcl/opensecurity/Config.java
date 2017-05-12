@@ -14,10 +14,7 @@ import net.minecraftforge.common.config.Configuration;
  *
  */
 public class Config {
-	public List<String> alarmsConfigList = new ArrayList<String>();
-	//public final boolean render3D;
 	public final boolean enableplaySoundAt;
-	public final boolean enableMUD;
 	public final int rfidMaxRange;
 	public final boolean ignoreUUIDs;
 	public final boolean turretReverseRotation;
@@ -27,7 +24,6 @@ public class Config {
 
 	public Config(Configuration config) {
 		config.load();
-		enableMUD = config.get("options", "enableMUD", true, "Enable the Update Checker? Disabling this will remove all traces of the MUD.").getBoolean(true);
 		rfidMaxRange = config.getInt("rfidMaxRange", "options", 16, 1, 64, "The maximum range of the RFID Reader in blocks");
 		enableplaySoundAt = config.get("options", "playSoundAt", false, "Enable/Disable the playSoundAt feature of alarm blocks, this allows any user to play any sound at any location in a world, and is exploitable, disabled by default.").getBoolean(false);
 		ignoreUUIDs = config.getBoolean("ignoreUUIDs", "options", false, "RFID and Mag cards will return '-1' for UUIDs.  Allows for less secure security.");

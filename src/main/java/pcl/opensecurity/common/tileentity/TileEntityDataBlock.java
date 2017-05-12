@@ -84,34 +84,6 @@ public class TileEntityDataBlock extends TileEntityMachineBase {
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		if (node != null && node.host() == this) {
-			node.load(nbt.getCompoundTag("oc:node"));
-		}
-		if (oc_fs != null && oc_fs.node() != null) {
-			oc_fs.node().load(nbt.getCompoundTag("oc:fs"));
-		}
-
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
-		if (node != null && node.host() == this) {
-			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
-			nbt.setTag("oc:node", nodeNbt);
-		}
-		if (oc_fs != null && oc_fs.node() != null) {
-			final NBTTagCompound fsNbt = new NBTTagCompound();
-			oc_fs.node().save(fsNbt);
-			nbt.setTag("oc:fs", fsNbt);
-		}
-		return nbt;
-	}
-
-	@Override
 	public void update() {
 		super.update();
 		if (node != null && node.network() == null) {

@@ -35,12 +35,12 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements ITick
 	private static final int[] SLOTS_BOTTOM = new int[] {1};
 	private static final int[] SLOTS_SIDES = new int[] {1};
 	private final BasicInventory inv;
-	protected boolean addedToNetwork = false;
 	public boolean hasCards = false;
 
-	public ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	
 
 	public TileEntityCardWriter() {
+		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 		if (this.node() != null) {
 			initOCFilesystem();
 		}
@@ -100,19 +100,11 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements ITick
 		}
 	}
 
-	protected void addToNetwork() {
-		if(!addedToNetwork) {
-			addedToNetwork = true;
-			Network.joinOrCreateNetwork(this);
-		}
-	}
+
 
 	@Override
 	public void update() {
 		super.update();
-		if(!addedToNetwork) {
-			addToNetwork();
-		}
 		if (!hasCards && getStackInSlot(0) != null) {
 			hasCards = true;
 			if (node != null)

@@ -20,6 +20,7 @@ import pcl.opensecurity.common.blocks.BlockAlarm;
 import pcl.opensecurity.common.blocks.BlockBiometricReader;
 import pcl.opensecurity.common.blocks.BlockCardWriter;
 import pcl.opensecurity.common.blocks.BlockData;
+import pcl.opensecurity.common.blocks.BlockMagReader;
 import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
@@ -27,6 +28,7 @@ import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.common.tileentity.TileEntityDataBlock;
+import pcl.opensecurity.common.tileentity.TileEntityMagReader;
 
 public class ContentRegistry {
 	public static CreativeTabs creativeTab;
@@ -34,6 +36,7 @@ public class ContentRegistry {
 	public static Block biometricReaderBlock;
 	public static Block dataBlock;
 	public static Block cardWriter;
+	public static Block magReader;
 	
 	public static ItemCard itemRFIDCard;
 	public static ItemCard itemMagCard;
@@ -85,6 +88,11 @@ public class ContentRegistry {
 		registerBlock(cardWriter);
 		cardWriter.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityCardWriter.class, "card_writer");
+		
+		magReader = new BlockMagReader(Material.IRON);
+		registerBlock(magReader);
+		magReader.setCreativeTab(creativeTab);
+		GameRegistry.registerTileEntity(TileEntityMagReader.class, "mag_reader");
 	}
 	
 	private static void registerRecipes() {
@@ -117,7 +125,6 @@ public class ContentRegistry {
 			final ItemBlock itemBlock = itemFactory.apply(block);
 
 			GameRegistry.register(itemBlock.setRegistryName(block.getRegistryName()));
-			//GameRegistry.register(new ItemBlock(block), block.getRegistryName());
 		}
 
 		blocks.add(block);
