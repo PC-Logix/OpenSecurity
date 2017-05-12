@@ -89,8 +89,12 @@ public class TileEntityBiometricReader extends TileEntityMachineBase implements 
 	}
 
 	public void doRead(EntityPlayer entityplayer, int side) {
-		byte[] bytesEncoded = Base64.encodeBase64(entityplayer.getUniqueID().toString().getBytes());
-		node.sendToReachable("computer.signal", eventName, new String(bytesEncoded));
+		if (!OpenSecurity.returnRealUUID) {
+			byte[] bytesEncoded = Base64.encodeBase64(entityplayer.getUniqueID().toString().getBytes());
+			node.sendToReachable("computer.signal", eventName, new String(bytesEncoded));
+		} else {
+			node.sendToReachable("computer.signal", eventName, ntityplayer.getUniqueID().toString());
+		}
 		worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner3", 0.4F, 1);
 	}
 
