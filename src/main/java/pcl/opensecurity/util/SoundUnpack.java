@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 	public void load() throws IOException, URISyntaxException {
-		File f = new File("/mods/OpenSecurity/assets/opensecurity/sounds/alarms/");
+		File f = new File("mods/OpenSecurity/assets/opensecurity/sounds/alarms/");
 		f.mkdirs();
 		final String path = "assets/opensecurity/sounds/alarms/";
 		System.out.println("Extracting sounds from: " +path);
