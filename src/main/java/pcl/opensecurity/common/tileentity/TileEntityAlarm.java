@@ -55,14 +55,6 @@ public class TileEntityAlarm extends TileEntityMachineBase implements ISoundTile
 	}
 
 	@Override
-	public void update() {
-		super.update();
-		if (node != null && node.network() == null) {
-			Network.joinOrCreateNetwork(this);
-		}
-	}
-
-	@Override
 	public boolean getShouldPlay() {
 		return shouldPlay;
 	}

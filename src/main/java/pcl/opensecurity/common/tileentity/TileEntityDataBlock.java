@@ -83,14 +83,6 @@ public class TileEntityDataBlock extends TileEntityMachineBase {
 
 	}
 
-	@Override
-	public void update() {
-		super.update();
-		if (node != null && node.network() == null) {
-			Network.joinOrCreateNetwork(this);
-		}
-	}
-
 	@Callback(direct = true, doc = "function():number -- The maximum size of data that can be passed to other functions of the card.")
 	public Object[] getLimit(Context context, Arguments args) {
 		return new Object[] { Settings.get().dataCardHardLimit() };

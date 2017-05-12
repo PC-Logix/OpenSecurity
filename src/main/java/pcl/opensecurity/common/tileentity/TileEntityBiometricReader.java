@@ -84,13 +84,4 @@ public class TileEntityBiometricReader extends TileEntityMachineBase {
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
-	
-	@Override
-	public void update() {
-		super.update();
-		if (node != null && node.network() == null) {
-			Network.joinOrCreateNetwork(this);
-		}
-	}
-	
 }
