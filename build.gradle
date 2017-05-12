@@ -60,13 +60,13 @@ if (project.hasProperty('opensecurity_curseforge_key')) {
 	curse_changlog = project.changelog
 }
 
-apply plugin: 'curseforge'
-curse {
+curseforge {
 	apiKey = curseforge_key
-	projectId = "231687"
-	releaseType = "release"
-	changelog = curse_changlog
-	addGameVersion project.minecraft.version
+	project {
+		id = "231687"
+		releaseType = "alpha"
+		changelog = curse_changlog
+	}
 }
 
 processResources
