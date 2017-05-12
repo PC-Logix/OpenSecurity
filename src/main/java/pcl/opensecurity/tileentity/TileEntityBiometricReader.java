@@ -2,6 +2,7 @@ package pcl.opensecurity.tileentity;
 
 import org.apache.commons.codec.binary.Base64;
 
+import pcl.opensecurity.OpenSecurity;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
