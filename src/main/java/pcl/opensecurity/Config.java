@@ -24,6 +24,7 @@ public class Config {
 	public boolean registerBlockBreak;
 	public boolean magCardDisplayName;
 	public boolean biggerEEPROM;
+	public boolean returnRealUUID;
 
 	public Config(Configuration config) {
 		config.load();
@@ -35,6 +36,7 @@ public class Config {
 		turretReverseRotation = config.getBoolean("turretReverseRotation", "options", true, "If true - turrets should rotate as in old versions.");
 		magCardDisplayName = config.getBoolean("magCardDisplayName", "options", true, "If true - the Mag Card Reader will return the Minecraft Username of the player who swiped the card, false will return \"player\"");
 		biggerEEPROM = config.getBoolean("biggerEEPROMS", "options", false, "If enabled changes EEPROMS capacity to 8096 bytes (Only when flashed with the OS CardWriter!)");
+		returnRealUUID = config.getBoolean("returnRealUUID", "options", false, "If enabled makes the BioMetric reader return the user's REAL UUID, and not the base64'd hash");
 		if (config.hasChanged()) {
 			config.save();
 		}
