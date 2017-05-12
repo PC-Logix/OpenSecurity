@@ -15,19 +15,38 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
+import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.common.tileentity.TileEntityDataBlock;
 
 public class BlockCardWriter extends BlockOSBase {
 
+	public static final int GUI_ID = 1;
+	
 	public BlockCardWriter(Material materialIn) {
 		super(materialIn);
 		setUnlocalizedName("card_writer");
+		setRegistryName("card_writer");
 		setHardness(.5f);
 		random = new Random();
 	}
 		
-	//@Override
-	//public TileEntity createNewTileEntity(World var1, int var2) {
-		//return new TileEntityDataBlock();
-	//}
+	@Override
+	public TileEntity createNewTileEntity(World var1, int var2) {
+		return new TileEntityCardWriter();
+	}
+	
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side,
+                float hitX, float hitY, float hitZ) {
+        // Only execute on the server
+        if (world.isRemote) {
+            return true;
+        }
+        TileEntity te = world.getTileEntity(pos);
+        if (!(te instanceof TileEntityCardWriter)) {
+            return false;
+        }
+        player.openGui(OpenSecurity.instance, GUI_ID, world, pos.getX(), pos.getY(), pos.getZ());
+        return true;
+    }
 }

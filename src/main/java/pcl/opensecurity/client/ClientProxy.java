@@ -25,6 +25,7 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void init(){
+		super.init();
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.getItemColors().registerItemColorHandler( new CardColorHandler( ContentRegistry.itemRFIDCard ), ContentRegistry.itemRFIDCard );
 		mc.getItemColors().registerItemColorHandler( new CardColorHandler( ContentRegistry.itemMagCard ), ContentRegistry.itemMagCard );
@@ -41,9 +42,9 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.alarmBlock, 0, "Alarm");
 		registerBlockItem(ContentRegistry.biometricReaderBlock, 0, "biometric_reader");
 		registerBlockItem(ContentRegistry.dataBlock, 0, "data_block");
+		registerBlockItem(ContentRegistry.cardWriter, 0, "card_writer");
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");
-		//registerItem(ContentRegistry.itemRadioTuner, "RadioTuner");
 	}
 	
 	public static void registerBlockItem(final Block block, int meta, final String blockName) {

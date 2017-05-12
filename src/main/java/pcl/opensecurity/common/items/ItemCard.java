@@ -17,7 +17,7 @@ public class ItemCard extends Item {
 	}
 
 	/**
-	 * Return whether the specified armor ItemStack has a color.
+	 * Return whether the specified card ItemStack has a color.
 	 */
 	public boolean hasColor(ItemStack stack) {
 		NBTTagCompound nbttagcompound = stack.getTagCompound();
@@ -25,7 +25,7 @@ public class ItemCard extends Item {
 	}
 
 	/**
-	 * Return the color for the specified armor ItemStack.
+	 * Return the color for the specified card ItemStack.
 	 */
 	public int getColor(ItemStack stack) {
 		NBTTagCompound nbttagcompound = stack.getTagCompound();

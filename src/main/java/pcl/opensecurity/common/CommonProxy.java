@@ -4,16 +4,15 @@
 package pcl.opensecurity.common;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import pcl.opensecurity.OpenSecurity;
 
 /**
  * @author Caitlyn
  *
  */
-public class CommonProxy implements IGuiHandler {
+public class CommonProxy {
 
 	public World getWorld(int dimId) {
 		//overridden separately for client and server.
@@ -22,28 +21,15 @@ public class CommonProxy implements IGuiHandler {
 	
 	public void registerSounds() {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("bhnszekgfbuxg");
 	}
 
 	public void registerItemRenderers() {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		NetworkRegistry.INSTANCE.registerGuiHandler(OpenSecurity.instance, new GuiHandler());
 	}
 }
