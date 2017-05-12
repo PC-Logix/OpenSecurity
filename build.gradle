@@ -12,6 +12,12 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 version = "1.0"
+
+if (System.getenv().BUILD_NUMBER != null)
+	ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
+else
+	ext.buildNumber = 0
+
 group= "pcl.opensecurity" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "OpenSecurity"
 
@@ -31,8 +37,10 @@ minecraft {
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20160720"
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    replace "@VERSION@", project.version
+	replace "@BUILD@", project.ext.buildNumber
 }
-
+jar.classifier = "${ext.buildNumber}"
 repositories {
     maven {
         name = "OC repo"
@@ -43,6 +51,22 @@ repositories {
 dependencies {
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.+"
     compile 'org.mindrot:jbcrypt:0.3m'
+}
+
+def curseforge_key = 0
+def curse_changlog = "default"
+if (project.hasProperty('opensecurity_curseforge_key')) {
+	curseforge_key = project.opensecurity_curseforge_key
+	curse_changlog = project.changelog
+}
+
+apply plugin: 'curseforge'
+curse {
+	apiKey = curseforge_key
+	projectId = "231687"
+	releaseType = "release"
+	changelog = curse_changlog
+	addGameVersion project.minecraft.version
 }
 
 processResources
