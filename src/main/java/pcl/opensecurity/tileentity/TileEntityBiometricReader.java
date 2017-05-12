@@ -93,7 +93,7 @@ public class TileEntityBiometricReader extends TileEntityMachineBase implements 
 			byte[] bytesEncoded = Base64.encodeBase64(entityplayer.getUniqueID().toString().getBytes());
 			node.sendToReachable("computer.signal", eventName, new String(bytesEncoded));
 		} else {
-			node.sendToReachable("computer.signal", eventName, ntityplayer.getUniqueID().toString());
+			node.sendToReachable("computer.signal", eventName, entityplayer.getUniqueID().toString());
 		}
 		worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner3", 0.4F, 1);
 	}
