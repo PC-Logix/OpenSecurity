@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 
-version = "1.0"
+version = "MC1.10.2-1.0"
 
 if (System.getenv().BUILD_NUMBER != null)
 	ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
@@ -44,6 +44,10 @@ minecraft {
 	replace "@BUILD@", project.ext.buildNumber
 }
 jar.classifier = "${ext.buildNumber}"
+jar.manifest = manifest { attributes(
+	"FMLCorePlugin": "pcl.opensecurity.util.SoundUnpack",
+	"FMLCorePluginContainsFMLMod": "icanhazfmlmodpweeze"
+) }
 repositories {
     maven {
         name = "OC repo"
