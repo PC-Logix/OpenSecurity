@@ -45,6 +45,7 @@ public class OpenSecurity {
 
 	public static boolean debug = false;
 	public static int rfidRange;
+	public static boolean returnRealUUID = false;
 	public static boolean enableplaySoundAt = false;
 	public static boolean ignoreUUIDs = false;
 	public static boolean registerBlockBreakEvent = true;
@@ -71,6 +72,7 @@ public class OpenSecurity {
 	      }
 	    }
 		rfidRange = cfg.rfidMaxRange;
+		returnRealUUID = cfg.returnRealUUID;
 		enableplaySoundAt = cfg.enableplaySoundAt;
 		ignoreUUIDs = cfg.ignoreUUIDs;
 		registerBlockBreakEvent = cfg.registerBlockBreak;
