@@ -21,7 +21,6 @@ public class CommonProxy {
 	
 	public void registerSounds() {
 		// TODO Auto-generated method stub
-		System.out.println("bhnszekgfbuxg");
 	}
 
 	public void registerItemRenderers() {
