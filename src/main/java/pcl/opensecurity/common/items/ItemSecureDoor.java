@@ -13,6 +13,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
+import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 public class ItemSecureDoor extends ItemBlock
 {
@@ -50,7 +51,7 @@ public class ItemSecureDoor extends ItemBlock
                 int i = enumfacing.getFrontOffsetX();
                 int j = enumfacing.getFrontOffsetZ();
                 boolean flag = i < 0 && hitZ < 0.5F || i > 0 && hitZ > 0.5F || j < 0 && hitX > 0.5F || j > 0 && hitX < 0.5F;
-                placeDoor(worldIn, pos, enumfacing, this.block, flag);
+                placeDoor(worldIn, pos, enumfacing, this.block, flag, playerIn);
                 SoundType soundtype = worldIn.getBlockState(pos).getBlock().getSoundType(worldIn.getBlockState(pos), worldIn, pos, playerIn);
                 worldIn.playSound(playerIn, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                 --stack.stackSize;
@@ -63,7 +64,7 @@ public class ItemSecureDoor extends ItemBlock
         }
     }
 
-    public static void placeDoor(World worldIn, BlockPos pos, EnumFacing facing, Block door, boolean isRightHinge)
+    public static void placeDoor(World worldIn, BlockPos pos, EnumFacing facing, Block door, boolean isRightHinge, EntityPlayer playerIn)
     {
         BlockPos blockpos = pos.offset(facing.rotateY());
         BlockPos blockpos1 = pos.offset(facing.rotateYCCW());
@@ -87,7 +88,11 @@ public class ItemSecureDoor extends ItemBlock
         BlockPos blockpos2 = pos.up();
         IBlockState iblockstate = door.getDefaultState().withProperty(BlockSecureDoor.FACING, facing).withProperty(BlockSecureDoor.HINGE, isRightHinge ? BlockSecureDoor.EnumHingePosition.RIGHT : BlockSecureDoor.EnumHingePosition.LEFT).withProperty(BlockSecureDoor.OPEN, false);
         worldIn.setBlockState(pos, iblockstate.withProperty(BlockSecureDoor.HALF, BlockSecureDoor.EnumDoorHalf.LOWER), 2);
+        TileEntitySecureDoor teLower = (TileEntitySecureDoor) worldIn.getTileEntity(pos);
+        teLower.setOwner(playerIn.getUniqueID().toString());
         worldIn.setBlockState(blockpos2, iblockstate.withProperty(BlockSecureDoor.HALF, BlockSecureDoor.EnumDoorHalf.UPPER), 2);
+        TileEntitySecureDoor teUpper = (TileEntitySecureDoor) worldIn.getTileEntity(blockpos2);
+        teUpper.setOwner(playerIn.getUniqueID().toString());
         worldIn.notifyNeighborsOfStateChange(pos, door);
         worldIn.notifyNeighborsOfStateChange(blockpos2, door);
     }
