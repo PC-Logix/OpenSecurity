@@ -34,7 +34,7 @@ public class TileEntityMachineBase extends TileEntity implements ITickable, Envi
 		if (node != null && node.network() == null) {
 			Network.joinOrCreateNetwork(this);
 		}
-		if (worldObj.isRemote && hasSound()) {
+		if (world.isRemote && hasSound()) {
 			updateSound();
 		}
 	}

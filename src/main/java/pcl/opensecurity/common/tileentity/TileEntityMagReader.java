@@ -29,7 +29,7 @@ public class TileEntityMagReader extends TileEntityMachineBase {
 	
 	public boolean doRead(ItemStack itemStack, EntityPlayer em, int side) {
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard /*&& this.blockMetadata == 0*/) {
-			if(!worldObj.isRemote){
+			if(!world.isRemote){
 				//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 		}

@@ -340,7 +340,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements ITick
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(EntityPlayer player) {
 		return true;
 	}
 

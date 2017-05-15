@@ -99,10 +99,7 @@ public class BasicInventory implements IInventory
 		}
 	}
 
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
-		return true;
-	}
+
 
 	@Override
 	public void openInventory(EntityPlayer player) {}
@@ -163,5 +160,10 @@ public class BasicInventory implements IInventory
 				setInventorySlotContents(index, ItemStack.loadItemStackFromNBT(slot));
 			}
 		}
+	}
+
+	@Override
+	public boolean isUsableByPlayer(EntityPlayer player) {
+		return true;
 	}
 }

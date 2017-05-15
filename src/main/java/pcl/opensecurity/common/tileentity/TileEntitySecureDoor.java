@@ -33,10 +33,10 @@ public class TileEntitySecureDoor extends TileEntity implements Environment, ITi
 		this.password = pass;
 		for (EnumFacing direction : EnumFacing.VALUES) {
 			BlockPos neighbourPos = this.pos.offset(direction); // Offset the block's position by 1 block in the current direction
-			IBlockState neighbourState = worldObj.getBlockState(neighbourPos); // Get the IBlockState at the neighboring position
+			IBlockState neighbourState = world.getBlockState(neighbourPos); // Get the IBlockState at the neighboring position
 			Block neighbourBlock = neighbourState.getBlock(); // Get the IBlockState's Block
 			if (neighbourBlock instanceof BlockSecureDoor){ // If the neighbouring block is a Door Block,
-				TileEntity te = worldObj.getTileEntity(neighbourPos);
+				TileEntity te = world.getTileEntity(neighbourPos);
 				if (te instanceof TileEntitySecureDoor && !te.equals(this) && ((TileEntitySecureDoor) te).getOwner().equals(this.ownerUUID)) {
 					((TileEntitySecureDoor) te).setSlavePassword(this.password);	
 				}
@@ -97,8 +97,8 @@ public class TileEntitySecureDoor extends TileEntity implements Environment, ITi
 			Network.joinOrCreateNetwork(this);
 		}
 		
-		if (worldObj.getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ())) instanceof TileEntitySecureDoor) {
-			TileEntitySecureDoor lowerDoor = (TileEntitySecureDoor) worldObj.getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
+		if (world.getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ())) instanceof TileEntitySecureDoor) {
+			TileEntitySecureDoor lowerDoor = (TileEntitySecureDoor) world.getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
 			//System.out.println(lowerDoor.getPos());
 			if (ownerUUID == null) {
 				ownerUUID = lowerDoor.ownerUUID;
@@ -107,8 +107,8 @@ public class TileEntitySecureDoor extends TileEntity implements Environment, ITi
 				setPassword(lowerDoor.getPass());
 			}
 		}
-		if (worldObj.getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())) instanceof TileEntitySecureDoor) {
-			TileEntitySecureDoor upperDoor = (TileEntitySecureDoor) worldObj.getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()));
+		if (world.getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())) instanceof TileEntitySecureDoor) {
+			TileEntitySecureDoor upperDoor = (TileEntitySecureDoor) world.getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()));
 			//System.out.println(upperDoor.getPos());
 			if (ownerUUID == null) {
 				ownerUUID = upperDoor.ownerUUID;

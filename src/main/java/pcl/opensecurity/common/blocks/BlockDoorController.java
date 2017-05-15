@@ -27,7 +27,7 @@ public class BlockDoorController extends BlockOSBase {
 	 * Called when the block is placed in the world.
 	 */
 	@Override
-	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		TileEntity te = world.getTileEntity(pos);
 		((TileEntityDoorController) te).setOwner(placer.getUniqueID().toString());
 		//((TileEntityDoorController) te).overrideTexture(ContentRegistry.doorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.doorController)), ForgeDirection.getOrientation(1));

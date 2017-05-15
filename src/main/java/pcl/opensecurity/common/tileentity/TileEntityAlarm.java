@@ -77,14 +77,14 @@ public class TileEntityAlarm extends TileEntityMachineBase implements ISoundTile
 
 	public void setShouldStart(boolean b) {
 		setShouldPlay(true);
-		worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
+		world.notifyBlockUpdate(this.pos, world.getBlockState(this.pos), world.getBlockState(this.pos), 3);
 		getUpdateTag();
 		markDirty();
 	}
 
 	public void setShouldStop(boolean b) {
 		setShouldPlay(false);
-		worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
+		world.notifyBlockUpdate(this.pos, world.getBlockState(this.pos), world.getBlockState(this.pos), 3);
 		getUpdateTag();
 		markDirty();
 	}
@@ -136,7 +136,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements ISoundTile
 			double z = args.checkDouble(2);
 			String sound = args.checkString(3);
 			float range = args.checkInteger(4);
-			worldObj.playSound(x, y, z, new SoundEvent(new ResourceLocation(sound)), SoundCategory.BLOCKS, range / 15 + 0.5F, 1.0F, false);
+			world.playSound(x, y, z, new SoundEvent(new ResourceLocation(sound)), SoundCategory.BLOCKS, range / 15 + 0.5F, 1.0F, false);
 			getUpdateTag();
 			markDirty();
 			return new Object[] { "Ok" };

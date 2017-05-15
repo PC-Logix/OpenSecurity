@@ -94,3 +94,4 @@ pip-log.txt
 *.lnk
 output.txt
 /bin
+out.log
