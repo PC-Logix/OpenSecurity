@@ -61,13 +61,23 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 		return new Object[] { true };
 	}
 	
+	public BlockPos getOtherDoorPart(BlockPos thisPos) {
+		if (worldObj.getTileEntity(new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ()))  instanceof TileEntitySecureDoor){
+			return new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ());
+		} else {
+			return new BlockPos(thisPos.getX(), thisPos.getY() - 1, thisPos.getZ());
+		}
+	}
+	
 	@Callback
 	public Object[] removePassword(Context context, Arguments args) {
 		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorPos);
+		TileEntitySecureDoor otherTE = (TileEntitySecureDoor) worldObj.getTileEntity(getOtherDoorPart(doorPos));
 		if (ownerUUID.equals(te.getOwner())) {
 			if (args.checkString(0).equals(te.getPass())) {
 				if (te instanceof TileEntitySecureDoor) {
-					((TileEntitySecureDoor) te).setPassword("");
+					te.setPassword("");
+					otherTE.setPassword("");
 				}
 				return new Object[] { true, "Password Removed" };
 			} else {
@@ -81,11 +91,13 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 	@Callback
 	public Object[] setPassword(Context context, Arguments args) {
 		TileEntitySecureDoor te = (TileEntitySecureDoor) worldObj.getTileEntity(doorPos);
+		TileEntitySecureDoor otherTE = (TileEntitySecureDoor) worldObj.getTileEntity(getOtherDoorPart(doorPos));
 		if (ownerUUID.equals(te.getOwner())) {
 			if (te.getPass().isEmpty()) {
 				//password = args.checkString(0);
 				if (te instanceof TileEntitySecureDoor) {
 					((TileEntitySecureDoor) te).setPassword(args.checkString(0));
+					otherTE.setPassword(args.checkString(0));
 				}
 
 				return new Object[] { true, "Password set" };			
@@ -93,6 +105,7 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 				if (args.checkString(0).equals(te.getPass())) {
 					if (te instanceof TileEntitySecureDoor) {
 						((TileEntitySecureDoor) te).setPassword(args.checkString(1));
+						otherTE.setPassword(args.checkString(1));
 					}
 					return new Object[] { true, "Password Changed" };
 				} else {
