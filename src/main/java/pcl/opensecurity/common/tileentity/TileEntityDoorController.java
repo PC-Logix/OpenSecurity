@@ -23,10 +23,10 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 	TileEntity te;
 	BlockPos doorPos;
 	BlockPos neighborDoorPos;
-	
+
 	private String password = "";
 	String ownerUUID = "";
-	
+
 	public TileEntityDoorController(){
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
@@ -37,30 +37,72 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
-        if(BlockDoor.isOpen(world, doorPos)) {
-        	doorBlock.toggleDoor(world, doorPos, false);
-        	neighborDoorBlock.toggleDoor(world, neighborDoorPos, false);
-        } else {
-        	doorBlock.toggleDoor(world, doorPos, true);
-        	neighborDoorBlock.toggleDoor(world, neighborDoorPos, true);
-        }
-		return new Object[] { true };
+		if (node.changeBuffer(-5) == 0) {
+			TileEntitySecureDoor doorTE = (TileEntitySecureDoor) world.getTileEntity(doorPos);
+			String doorPass = doorTE.getPass();
+			String doorOwner = doorTE.getOwner();
+			TileEntitySecureDoor neighborDoorTE = (TileEntitySecureDoor) world.getTileEntity(neighborDoorPos);
+			String neighborDoorPass = neighborDoorTE.getPass();
+			String neighborDoorOwner = neighborDoorTE.getOwner();
+			if ((this.password.equals(doorPass) && this.getOwner().equals(doorOwner)) || (this.password.equals(neighborDoorPass) && this.getOwner().equals(neighborDoorOwner))) {
+				if(BlockDoor.isOpen(world, doorPos)) {
+					doorBlock.toggleDoor(world, doorPos, false);
+					neighborDoorBlock.toggleDoor(world, neighborDoorPos, false);
+				} else {
+					doorBlock.toggleDoor(world, doorPos, true);
+					neighborDoorBlock.toggleDoor(world, neighborDoorPos, true);
+				}
+				return new Object[] { true };
+			} else {
+				return new Object[] { false, "Wrong password" };
+			}
+		} else {
+			return new Object[] { false, "Not enough power" };
+		}
 	}
-	
+
 	@Callback
 	public Object[] open(Context context, Arguments args) {
-		doorBlock.toggleDoor(world, doorPos, true);
-		neighborDoorBlock.toggleDoor(world, neighborDoorPos, true);
-		return new Object[] { true };
+		if (node.changeBuffer(-5) == 0) {
+			TileEntitySecureDoor doorTE = (TileEntitySecureDoor) world.getTileEntity(doorPos);
+			String doorPass = doorTE.getPass();
+			String doorOwner = doorTE.getOwner();
+			TileEntitySecureDoor neighborDoorTE = (TileEntitySecureDoor) world.getTileEntity(neighborDoorPos);
+			String neighborDoorPass = neighborDoorTE.getPass();
+			String neighborDoorOwner = neighborDoorTE.getOwner();
+			if ((this.password.equals(doorPass) && this.getOwner().equals(doorOwner)) || (this.password.equals(neighborDoorPass) && this.getOwner().equals(neighborDoorOwner))) {
+				doorBlock.toggleDoor(world, doorPos, true);
+				neighborDoorBlock.toggleDoor(world, neighborDoorPos, true);
+			} else {
+				return new Object[] { false, "Owner or Password incorrect" };
+			}
+			return new Object[] { true };
+		} else {
+			return new Object[] { false, "Not enough power" };
+		}
 	}
-	
+
 	@Callback
 	public Object[] close(Context context, Arguments args) {
-		doorBlock.toggleDoor(world, doorPos, false);
-		neighborDoorBlock.toggleDoor(world, neighborDoorPos, false);
-		return new Object[] { true };
+		if (node.changeBuffer(-5) == 0) {
+			TileEntitySecureDoor doorTE = (TileEntitySecureDoor) world.getTileEntity(doorPos);
+			String doorPass = doorTE.getPass();
+			String doorOwner = doorTE.getOwner();
+			TileEntitySecureDoor neighborDoorTE = (TileEntitySecureDoor) world.getTileEntity(neighborDoorPos);
+			String neighborDoorPass = neighborDoorTE.getPass();
+			String neighborDoorOwner = neighborDoorTE.getOwner();
+			if ((this.password.equals(doorPass) && this.getOwner().equals(doorOwner)) || (this.password.equals(neighborDoorPass) && this.getOwner().equals(neighborDoorOwner))) {
+				doorBlock.toggleDoor(world, doorPos, false);
+				neighborDoorBlock.toggleDoor(world, neighborDoorPos, false);
+			} else {
+				return new Object[] { false, "Owner or Password incorrect" };
+			}
+			return new Object[] { true };
+		} else {
+			return new Object[] { false, "Not enough power" };
+		}
 	}
-	
+
 	public BlockPos getOtherDoorPart(BlockPos thisPos) {
 		if (world.getTileEntity(new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ()))  instanceof TileEntitySecureDoor){
 			return new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ());
@@ -68,7 +110,7 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 			return new BlockPos(thisPos.getX(), thisPos.getY() - 1, thisPos.getZ());
 		}
 	}
-	
+
 	@Callback
 	public Object[] removePassword(Context context, Arguments args) {
 		TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
@@ -124,7 +166,7 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 	public String getOwner() {
 		return this.ownerUUID;
 	}
-	
+
 	@Override
 	public void update() {
 		super.update();
@@ -156,7 +198,7 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 						//return;
 					}
 				}
-				
+
 				return;
 			}
 		}
