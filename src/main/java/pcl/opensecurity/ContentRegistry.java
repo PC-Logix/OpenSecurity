@@ -83,6 +83,7 @@ public class ContentRegistry {
 		//secureDoorItemBlock.setCreativeTab(creativeTab);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static void registerBlocks() {
 		alarmBlock = new BlockAlarm(Material.IRON);
 		registerBlock(alarmBlock);
