@@ -10,6 +10,7 @@ import li.cil.oc.api.network.Visibility;
 //import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.items.ItemMagCard;
 
@@ -22,46 +23,10 @@ public class TileEntityMagReader extends TileEntityMachineBase {
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
 
-	@Override
-	public Node node() {
-		return node;
-	}
-
-	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
-		if (node != null)
-			node.remove();
-	}
-
-	@Override
-	public void invalidate() {
-		super.invalidate();
-		if (node != null)
-			node.remove();
-	}
-
 	private static String getComponentName() {
 		return "os_magreader";
 	}
-
-	@Override
-	public void onConnect(Node arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onDisconnect(final Node node) {
-
-	}
-
-	@Override
-	public void onMessage(Message arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	public boolean doRead(ItemStack itemStack, EntityPlayer em, int side) {
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard /*&& this.blockMetadata == 0*/) {
 			if(!worldObj.isRemote){

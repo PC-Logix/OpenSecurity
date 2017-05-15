@@ -138,26 +138,38 @@ public class TileEntityMachineBase extends TileEntity implements ITickable, Envi
 
 	@Override
 	public Node node() {
-		// TODO Auto-generated method stub
-		return null;
+		return node;
 	}
 
 	@Override
-	public void onConnect(Node node) {
-		// TODO Auto-generated method stub
-		
+	public void onChunkUnload() {
+		super.onChunkUnload();
+		if (node != null)
+			node.remove();
 	}
 
 	@Override
-	public void onDisconnect(Node node) {
-		// TODO Auto-generated method stub
-		
+	public void invalidate() {
+		super.invalidate();
+		if (node != null)
+			node.remove();
 	}
 
 	@Override
-	public void onMessage(Message message) {
+	public void onConnect(Node arg0) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void onDisconnect(final Node node) {
+
+	}
+
+	@Override
+	public void onMessage(Message arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

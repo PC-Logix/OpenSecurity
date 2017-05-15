@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -20,15 +21,22 @@ import pcl.opensecurity.common.blocks.BlockAlarm;
 import pcl.opensecurity.common.blocks.BlockBiometricReader;
 import pcl.opensecurity.common.blocks.BlockCardWriter;
 import pcl.opensecurity.common.blocks.BlockData;
+import pcl.opensecurity.common.blocks.BlockDoorController;
 import pcl.opensecurity.common.blocks.BlockMagReader;
+import pcl.opensecurity.common.blocks.BlockSecureDoor;
+import pcl.opensecurity.common.blocks.BlockSecurePrivateDoor;
 import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
+import pcl.opensecurity.common.items.ItemSecureDoor;
+import pcl.opensecurity.common.items.ItemSecurePrivateDoor;
 import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.common.tileentity.TileEntityDataBlock;
+import pcl.opensecurity.common.tileentity.TileEntityDoorController;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
+import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 public class ContentRegistry {
 	public static CreativeTabs creativeTab;
@@ -37,6 +45,9 @@ public class ContentRegistry {
 	public static Block dataBlock;
 	public static Block cardWriter;
 	public static Block magReader;
+	public static Block doorController;
+	public static Block secureDoor;
+	public static Block privateSecureDoor;
 	
 	public static ItemCard itemRFIDCard;
 	public static ItemCard itemMagCard;
@@ -66,6 +77,10 @@ public class ContentRegistry {
         itemMagCard = new ItemMagCard();
 		GameRegistry.register( itemMagCard.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "magcard" ) ) );
 		itemMagCard.setCreativeTab(creativeTab);
+		
+		//secureDoorItemBlock = new ItemSecureDoor(secureDoor);
+		//GameRegistry.register( secureDoorItemBlock.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "secure_door" ) ) );
+		//secureDoorItemBlock.setCreativeTab(creativeTab);
 	}
 	
 	private static void registerBlocks() {
@@ -93,6 +108,20 @@ public class ContentRegistry {
 		registerBlock(magReader);
 		magReader.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityMagReader.class, "mag_reader");
+		
+		doorController = new BlockDoorController(Material.IRON);
+		registerBlock(doorController);
+		doorController.setCreativeTab(creativeTab);
+		GameRegistry.registerTileEntity(TileEntityDoorController.class, "door_controller");
+		
+		secureDoor = new BlockSecureDoor(Material.IRON);
+		GameRegistry.registerBlock(secureDoor, ItemSecureDoor.class, "secure_door");
+		secureDoor.setCreativeTab(creativeTab);
+		privateSecureDoor = new BlockSecurePrivateDoor(Material.IRON);
+		GameRegistry.registerBlock(privateSecureDoor, ItemSecurePrivateDoor.class, "secure_private_door");
+		privateSecureDoor.setCreativeTab(creativeTab);
+		
+		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "secure_door");
 	}
 	
 	private static void registerRecipes() {

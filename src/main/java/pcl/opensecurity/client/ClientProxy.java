@@ -44,6 +44,9 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.dataBlock, 0, "data_block");
 		registerBlockItem(ContentRegistry.cardWriter, 0, "card_writer");
 		registerBlockItem(ContentRegistry.magReader, 0, "mag_reader");
+		registerBlockItem(ContentRegistry.secureDoor, 0, "secure_door");
+		registerBlockItem(ContentRegistry.privateSecureDoor, 0, "secure_private_door");
+		registerBlockItem(ContentRegistry.doorController, 0, "door_controller");
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");
 	}
@@ -57,7 +60,6 @@ public class ClientProxy extends CommonProxy {
 		ModelLoader.setCustomModelResourceLocation(item,  0, new ModelResourceLocation(OpenSecurity.MODID + ":" + itemName, "inventory"));
 		OpenSecurity.logger.info("Registering " + itemName + " Item Renderer");
     }
-	
 	
 	public void listFilesForFolder(final File folder) {
 		AlarmResource r = new AlarmResource();
