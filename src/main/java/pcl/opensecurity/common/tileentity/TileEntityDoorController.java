@@ -162,6 +162,21 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 		if (node != null && node.network() == null) {
 			Network.joinOrCreateNetwork(this);
 		}
+		
+		
+		if (doorBlock.getBlockState().getBlock() == null || !(doorBlock.getBlockState().getBlock() instanceof BlockSecureDoor)) {
+			doorBlock = null;
+		}
+		if (neighborDoorBlock.getBlockState().getBlock() == null || !(neighborDoorBlock.getBlockState().getBlock() instanceof BlockSecureDoor)) {
+			neighborDoorBlock = null;
+		}
+		
+		if (doorBlockVanilla.getBlockState().getBlock() == null || !(doorBlockVanilla.getBlockState().getBlock() instanceof BlockDoor)) {
+			doorBlockVanilla = null;
+		}
+		if (neighborDoorBlockVanilla.getBlockState().getBlock() == null || !(neighborDoorBlockVanilla.getBlockState().getBlock() instanceof BlockSecureDoor)) {
+			neighborDoorBlockVanilla = null;
+		}
 		for (EnumFacing direction : EnumFacing.VALUES) {
 			BlockPos neighbourPos = this.pos.offset(direction); // Offset the block's position by 1 block in the current direction
 			IBlockState neighbourState = world.getBlockState(neighbourPos); // Get the IBlockState at the neighboring position
