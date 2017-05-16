@@ -1,6 +1,7 @@
 package pcl.opensecurity.common.items;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import pcl.opensecurity.common.blocks.BlockSecureDoor;
 import pcl.opensecurity.common.blocks.BlockSecurePrivateDoor;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
