@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -59,6 +60,12 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 		//((TileEntityDoorController) te).overrideTexture(ContentRegistry.doorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.doorController)), ForgeDirection.getOrientation(1));
 	}
 	
+	@Override
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		EnumFacing enumfacing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
+		return this.getDefaultState().withProperty(PROPERTYFACING, enumfacing);
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -91,25 +98,41 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 		return true;
 	}
 
+	public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		EnumFacing facing = EnumFacing.getHorizontal(meta);
+		return this.getDefaultState().withProperty(PROPERTYFACING, facing);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		EnumFacing facing = (EnumFacing)state.getValue(PROPERTYFACING);
+		int facingbits = facing.getHorizontalIndex();
+		return facingbits;
+	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World var1, int var2) {
 		return new TileEntityDoorController();
 	}
 
 
-	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-	@SideOnly(Side.CLIENT)
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.SOLID;
-	}
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.CUTOUT_MIPPED;
+    }
 
 	// used by the renderer to control lighting and visibility of other blocks.
 	// set to true because this block is opaque and occupies the entire 1x1x1 space
 	// not strictly required because the default (super method) is true
 	@Override
 	public boolean isOpaqueCube(IBlockState iBlockState) {
-		return true;
+		return false;
 	}
 
 	// used by the renderer to control lighting and visibility of other blocks, also by
@@ -140,7 +163,7 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 	// - unlisted properties, which can be used to convey information but do not cause extra variants to be created.
 	@Override
 	protected BlockStateContainer createBlockState() {
-		IProperty [] listedProperties = new IProperty[0]; // no listed properties
+		IProperty [] listedProperties = new IProperty[] {PROPERTYFACING}; // no listed properties
 		IUnlistedProperty [] unlistedProperties = new IUnlistedProperty[] {COPIEDBLOCK};
 		return new ExtendedBlockState(this, listedProperties, unlistedProperties);
 	}
@@ -185,16 +208,14 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 
 		HashMap<IBlockState, Integer> adjacentBlockCount = new HashMap<IBlockState, Integer>();
 		for (EnumFacing facing : EnumFacing.values()) {
-			IBlockState adjacentIBS = te.getBlockFromNBT();
-			Block adjacentBlock = adjacentIBS.getBlock();
-			if (adjacentBlock != Blocks.AIR
-					&& adjacentBlock.getBlockLayer() == BlockRenderLayer.SOLID
-					&& adjacentBlock.isOpaqueCube(adjacentIBS)) {
-				adjacentSolidBlocks.put(facing, adjacentIBS);
-				if (adjacentBlockCount.containsKey(adjacentIBS)) {
-					adjacentBlockCount.put(adjacentIBS, 1 + adjacentBlockCount.get(adjacentIBS));
-				} else if (adjacentIBS.getBlock() != this){
-					adjacentBlockCount.put(adjacentIBS, 1);
+			IBlockState camoBlockState = te.getBlockFromNBT();
+			Block camoBlock = camoBlockState.getBlock();
+			if (camoBlock != Blocks.AIR) {
+				adjacentSolidBlocks.put(facing, camoBlockState);
+				if (adjacentBlockCount.containsKey(camoBlockState)) {
+					adjacentBlockCount.put(camoBlockState, 1 + adjacentBlockCount.get(camoBlockState));
+				} else if (camoBlockState.getBlock() != this){
+					adjacentBlockCount.put(camoBlockState, 1);
 				}
 			}
 		}

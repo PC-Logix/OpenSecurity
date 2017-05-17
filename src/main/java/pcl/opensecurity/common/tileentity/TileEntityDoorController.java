@@ -47,11 +47,6 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 	private static String getComponentName() {
 		return "os_doorcontroller";
 	}
-	
-	@Callback
-	public Object[] greet(Context context, Arguments args) {
-		return new Object[] { "Lasciate ogne speranza, voi ch'entrate" };
-	}
 
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
@@ -248,7 +243,6 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 				this.overrideTexture(ItemStack.loadItemStackFromNBT(var4));
 			}
 		}
-		//rescan(pos);
 	}
 
 	@Override

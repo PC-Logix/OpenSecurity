@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.models.CamouflageBakedModel;
+import pcl.opensecurity.client.models.ModColourManager;
 import pcl.opensecurity.client.models.ModelBakeEventHandler;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
@@ -49,6 +50,7 @@ public class ClientProxy extends CommonProxy {
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.getItemColors().registerItemColorHandler( new CardColorHandler( ContentRegistry.itemRFIDCard ), ContentRegistry.itemRFIDCard );
 		mc.getItemColors().registerItemColorHandler( new CardColorHandler( ContentRegistry.itemMagCard ), ContentRegistry.itemMagCard );
+		ModColourManager.registerColourHandlers();
 	}
 	
 	public void registerRenderers() {
