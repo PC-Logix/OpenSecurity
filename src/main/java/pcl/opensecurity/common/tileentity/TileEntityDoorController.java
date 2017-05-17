@@ -1,5 +1,7 @@
 package pcl.opensecurity.common.tileentity;
 
+import javax.annotation.Nullable;
+
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -9,12 +11,19 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import pcl.opensecurity.ContentRegistry;
+import pcl.opensecurity.common.blocks.BlockDoorController;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
 
 public class TileEntityDoorController extends TileEntityMachineBase {
@@ -25,9 +34,11 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 	TileEntity te;
 	BlockPos doorPos;
 	BlockPos neighborDoorPos;
-
+	public ItemStack[] DoorControllerCamo = new ItemStack[1];
+	
 	private String password = "";
 	String ownerUUID = "";
+	public Block block;
 
 	public TileEntityDoorController(){
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
@@ -36,9 +47,15 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 	private static String getComponentName() {
 		return "os_doorcontroller";
 	}
+	
+	@Callback
+	public Object[] greet(Context context, Arguments args) {
+		return new Object[] { "Lasciate ogne speranza, voi ch'entrate" };
+	}
 
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
+		rescan(this.pos);
 		if(BlockDoor.isOpen(world, doorPos)) {
 			return close(context, args);
 		} else {
@@ -48,6 +65,7 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 
 	@Callback
 	public Object[] open(Context context, Arguments args) {
+		rescan(this.pos);
 		if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
 			TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
 			if (args.optString(0, "").equals(te.getPass())) {
@@ -67,6 +85,7 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 
 	@Callback
 	public Object[] close(Context context, Arguments args) {
+		rescan(this.pos);
 		if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
 			TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
 			if (args.optString(0, "").equals(te.getPass())) {
@@ -208,6 +227,83 @@ public class TileEntityDoorController extends TileEntityMachineBase {
 					}
 				}
 			}
+		}
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		if (node != null && node.host() == this) {
+			node.load(nbt.getCompoundTag("oc:node"));
+		}
+		this.ownerUUID = nbt.getString("owner");
+		this.password = nbt.getString("password");
+		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
+		this.DoorControllerCamo = new ItemStack[1];
+		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
+			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
+			byte var5 = var4.getByte("Slot");
+			if (var5 >= 0 && var5 < this.DoorControllerCamo.length) {
+				this.DoorControllerCamo[var5] = ItemStack.loadItemStackFromNBT(var4);
+				this.overrideTexture(ItemStack.loadItemStackFromNBT(var4));
+			}
+		}
+		//rescan(pos);
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		if (node != null && node.host() == this) {
+			final NBTTagCompound nodeNbt = new NBTTagCompound();
+			node.save(nodeNbt);
+			nbt.setTag("oc:node", nodeNbt);
+		}
+		nbt.setString("owner", this.ownerUUID);
+		nbt.setString("password", this.password);
+		NBTTagList var2 = new NBTTagList();
+		for (int var3 = 0; var3 < this.DoorControllerCamo.length; ++var3) {
+			if (this.DoorControllerCamo[var3] != null) {
+				NBTTagCompound var4 = new NBTTagCompound();
+				var4.setByte("Slot", (byte) var3);
+				this.DoorControllerCamo[var3].writeToNBT(var4);
+				var2.appendTag(var4);
+			}
+		}
+		nbt.setTag("Items", var2);
+		return nbt;
+	}
+	
+	@Override
+	@Nullable
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+		readFromNBT(packet.getNbtCompound());
+	}
+
+	@Override
+	public void handleUpdateTag(NBTTagCompound tag) {
+		this.readFromNBT(tag);
+	}
+	
+	public void overrideTexture(ItemStack equipped) {
+		DoorControllerCamo[0] = equipped;
+	}
+
+	public IBlockState getBlockFromNBT() {
+		if (DoorControllerCamo[0] != null) {
+			return Block.getBlockFromItem(DoorControllerCamo[0].getItem()).getStateFromMeta(DoorControllerCamo[0].getMetadata());
+		} else {
+			return ContentRegistry.doorController.getDefaultState();
 		}
 	}
 }

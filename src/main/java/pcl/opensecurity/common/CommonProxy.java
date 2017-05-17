@@ -31,4 +31,9 @@ public class CommonProxy {
 	public void init() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(OpenSecurity.instance, new GuiHandler());
 	}
+
+	public void preinit() {
+		// TODO Auto-generated method stub
+		
+	}
 }

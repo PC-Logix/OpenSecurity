@@ -57,7 +57,7 @@ public class OpenSecurity {
 		SoundHandler.registerSounds();
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    int packetID = 0;
-	    
+	    proxy.preinit();
 	    logger.info("Registered " + packetID + " packets");
 	    logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}

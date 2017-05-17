@@ -45,90 +45,104 @@ public class ContentRegistry {
 	public static Block dataBlock;
 	public static Block cardWriter;
 	public static Block magReader;
-	public static Block doorController;
 	public static Block secureDoor;
 	public static Block privateSecureDoor;
-	
+
 	public static ItemCard itemRFIDCard;
 	public static ItemCard itemMagCard;
-	
+
+	public static BlockDoorController doorController;  // this holds the unique instance of your block
+	public static ItemBlock itemBlockDoorController;  // this holds the unique instance of the ItemBlock corresponding to your block
+
 	private ContentRegistry() {}
-	
+
 	public static final Set<Block> blocks = new HashSet<>();
-	
+
 	// Called on mod preInit()
 	public static void preInit() {
-        registerTabs();
-        registerBlocks();
-        registerItems();
+		registerTabs();
+		registerBlocks();
+		registerItems();
 	}
 
 	//Called on mod init()
 	public static void init() {
 		registerRecipes();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private static void registerItems() {
 		itemRFIDCard = new ItemRFIDCard();
 		GameRegistry.register( itemRFIDCard.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "rfidcard" ) ) );
-        itemRFIDCard.setCreativeTab(creativeTab);
-        
-        itemMagCard = new ItemMagCard();
+		itemRFIDCard.setCreativeTab(creativeTab);
+
+		itemMagCard = new ItemMagCard();
 		GameRegistry.register( itemMagCard.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "magcard" ) ) );
 		itemMagCard.setCreativeTab(creativeTab);
-		
+
 		//secureDoorItemBlock = new ItemSecureDoor(secureDoor);
 		//GameRegistry.register( secureDoorItemBlock.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "secure_door" ) ) );
 		//secureDoorItemBlock.setCreativeTab(creativeTab);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private static void registerBlocks() {
 		alarmBlock = new BlockAlarm(Material.IRON);
 		registerBlock(alarmBlock);
 		alarmBlock.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityAlarm.class, "alarm");
-		
+
 		biometricReaderBlock = new BlockBiometricReader(Material.IRON);
 		registerBlock(biometricReaderBlock);
 		biometricReaderBlock.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityBiometricReader.class, "biometric_reader");
-		
+
 		dataBlock = new BlockData(Material.IRON);
 		registerBlock(dataBlock);
 		dataBlock.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityDataBlock.class, "data_block");
-		
+
 		cardWriter = new BlockCardWriter(Material.IRON);
 		registerBlock(cardWriter);
 		cardWriter.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityCardWriter.class, "card_writer");
-		
+
 		magReader = new BlockMagReader(Material.IRON);
 		registerBlock(magReader);
 		magReader.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityMagReader.class, "mag_reader");
-		
-		doorController = new BlockDoorController(Material.IRON);
-		registerBlock(doorController);
-		doorController.setCreativeTab(creativeTab);
-		GameRegistry.registerTileEntity(TileEntityDoorController.class, "door_controller");
-		
+
+		//doorController = new BlockDoorController(Material.IRON);
+		//registerBlock(doorController);
+		//doorController.setCreativeTab(creativeTab);
+
 		secureDoor = new BlockSecureDoor(Material.IRON);
 		GameRegistry.registerBlock(secureDoor, ItemSecureDoor.class, "secure_door");
 		secureDoor.setCreativeTab(creativeTab);
 		privateSecureDoor = new BlockSecurePrivateDoor(Material.IRON);
 		GameRegistry.registerBlock(privateSecureDoor, ItemSecurePrivateDoor.class, "secure_private_door");
 		privateSecureDoor.setCreativeTab(creativeTab);
-		
+
 		GameRegistry.registerTileEntity(TileEntitySecureDoor.class, "secure_door");
+
+		doorController = (BlockDoorController)(new BlockDoorController(Material.IRON).setUnlocalizedName("door_controller"));
+		doorController.setRegistryName("door_controller");
+		GameRegistry.register(doorController);
+
+		doorController.setCreativeTab(creativeTab);
+		// We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
+		itemBlockDoorController = new ItemBlock(doorController);
+		itemBlockDoorController.setRegistryName(doorController.getRegistryName());
+		GameRegistry.register(itemBlockDoorController);
+		itemBlockDoorController.setCreativeTab(creativeTab);
+
+		GameRegistry.registerTileEntity(TileEntityDoorController.class, "door_controller");
 	}
-	
+
 	private static void registerRecipes() {
-		
+
 	}
-	
+
 	/**
 	 * Register a Block with the default ItemBlock class.
 	 *
@@ -160,7 +174,7 @@ public class ContentRegistry {
 		blocks.add(block);
 		return block;
 	}
-	
+
 	public static void registerTabs() {
 
 		creativeTab = new CreativeTabs("tabOpenSecurity") {

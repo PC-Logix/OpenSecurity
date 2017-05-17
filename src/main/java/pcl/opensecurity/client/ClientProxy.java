@@ -5,16 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.client.models.CamouflageBakedModel;
+import pcl.opensecurity.client.models.ModelBakeEventHandler;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.items.ItemCard;
@@ -23,6 +28,21 @@ public class ClientProxy extends CommonProxy {
 	public static File alarmSounds;
 	public static List<String> alarmList = new ArrayList<String>();
 
+	@Override
+	public void preinit() {
+	    StateMapperBase ignoreState = new StateMapperBase() {
+	      @Override
+	      protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
+	        return CamouflageBakedModel.variantTag;
+	      }
+	    };
+	    ModelLoader.setCustomStateMapper(ContentRegistry.doorController, ignoreState);
+	    MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
+	    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(OpenSecurity.MODID + ":door_controller", "inventory");
+	    final int DEFAULT_ITEM_SUBTYPE = 0;
+	    ModelLoader.setCustomModelResourceLocation(ContentRegistry.itemBlockDoorController, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+	}
+	
 	@Override
 	public void init(){
 		super.init();
@@ -46,7 +66,7 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.magReader, 0, "mag_reader");
 		registerBlockItem(ContentRegistry.secureDoor, 0, "secure_door");
 		registerBlockItem(ContentRegistry.privateSecureDoor, 0, "secure_private_door");
-		registerBlockItem(ContentRegistry.doorController, 0, "door_controller");
+		//registerBlockItem(ContentRegistry.doorController, 0, "door_controller");
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");
 	}

@@ -1,23 +1,5 @@
 {
-	"forge_marker": 1,
-	"defaults": {
-		"textures": {
-			"top": "opensecurity:blocks/door_controller",
-			"front": "opensecurity:blocks/door_controller",
-			"side": "opensecurity:blocks/door_controller"
-		},
-		"model": "minecraft:orientable"
-	},
-	"variants": {
-		"normal": [{}],
-		"inventory": [{
-			"transform": "forge:default-block"
-		}],
-		"facing": {
-			"north": {"model": "minecraft:orientable", "y": 180},
-			"south": {"model": "minecraft:orientable"},
-			"west": {"model": "minecraft:orientable", "y": 90},
-			"east": {"model": "minecraft:orientable", "y": 270}
-		}
-	}
+    "variants": {
+        "normal": { "model": "opensecurity:door_controller" }
+    }
 }
