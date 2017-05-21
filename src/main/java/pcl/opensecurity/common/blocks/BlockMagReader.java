@@ -41,19 +41,20 @@ public class BlockMagReader extends BlockOSBase {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side,
-			float hitX, float hitY, float hitZ) {
-		Item equipped = heldItem.getItem();
-		TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
-		if (!world.isRemote && equipped instanceof ItemMagCard) {
-			if (tile.doRead(heldItem, player, side.getIndex())) {
-				//world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 3, 1);
-			} else {
-				//world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 2, 1);
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+		if (heldItem != null) {
+			Item equipped = heldItem.getItem();
+			TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
+			if (!world.isRemote && equipped instanceof ItemMagCard) {
+				if (tile.doRead(heldItem, player, side.getIndex())) {
+					//world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 3, 1);
+				} else {
+					//world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 2, 1);
+				}
+				//world.scheduleBlockUpdate(xCoord, yCoord, zCoord, this, 30);
 			}
-			//world.scheduleBlockUpdate(xCoord, yCoord, zCoord, this, 30);
+			return true;
 		}
-		return true;
+		return false;
 	}
-
 }

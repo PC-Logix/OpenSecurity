@@ -16,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -31,6 +32,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.UnlistedPropertyCopiedBlock;
+import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
 
 public class BlockDoorController extends Block implements ITileEntityProvider {
@@ -71,7 +73,7 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		ItemStack equipped = heldItem;
 		TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
-		if (tileEntity == null || player.isSneaking()) {
+		if (tileEntity == null || player.isSneaking() || (heldItem != null && (heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor))) {
 			return false;
 		}
 		
@@ -93,8 +95,6 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 
 			}
 		}
-
-		
 		return true;
 	}
 
