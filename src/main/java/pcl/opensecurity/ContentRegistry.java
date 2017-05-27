@@ -22,6 +22,7 @@ import pcl.opensecurity.common.blocks.BlockBiometricReader;
 import pcl.opensecurity.common.blocks.BlockCardWriter;
 import pcl.opensecurity.common.blocks.BlockData;
 import pcl.opensecurity.common.blocks.BlockDoorController;
+import pcl.opensecurity.common.blocks.BlockKeypad;
 import pcl.opensecurity.common.blocks.BlockMagReader;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
 import pcl.opensecurity.common.blocks.BlockSecurePrivateDoor;
@@ -35,6 +36,7 @@ import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.common.tileentity.TileEntityDataBlock;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
+import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
@@ -47,6 +49,7 @@ public class ContentRegistry {
 	public static Block magReader;
 	public static Block secureDoor;
 	public static Block privateSecureDoor;
+	public static Block keypadBlock;
 
 	public static ItemCard itemRFIDCard;
 	public static ItemCard itemMagCard;
@@ -111,6 +114,11 @@ public class ContentRegistry {
 		registerBlock(magReader);
 		magReader.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityMagReader.class, "mag_reader");
+		
+		keypadBlock = new BlockKeypad(Material.IRON);
+		registerBlock(keypadBlock);
+		keypadBlock.setCreativeTab(creativeTab);
+		GameRegistry.registerTileEntity(TileEntityKeypad.class, "keypad");
 
 		//doorController = new BlockDoorController(Material.IRON);
 		//registerBlock(doorController);

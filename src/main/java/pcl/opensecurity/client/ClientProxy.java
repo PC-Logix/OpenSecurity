@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -14,21 +15,33 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.models.CamouflageBakedModel;
 import pcl.opensecurity.client.models.ModColourManager;
 import pcl.opensecurity.client.models.ModelBakeEventHandler;
+import pcl.opensecurity.client.renderer.RenderKeypad;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.items.ItemCard;
-
+import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 public class ClientProxy extends CommonProxy {
 	public static File alarmSounds;
 	public static List<String> alarmList = new ArrayList<String>();
 
+	@Override
+	public World getWorld(int dimId) {
+		World world = Minecraft.getMinecraft().world;
+		if (world.provider.getDimension() == dimId) {
+			return world;
+		}
+		return null;
+	}
+	
 	@Override
 	public void preinit() {
 	    StateMapperBase ignoreState = new StateMapperBase() {
@@ -54,11 +67,10 @@ public class ClientProxy extends CommonProxy {
 	}
 	
 	public void registerRenderers() {
-		//TileEntitySpecialRenderer<TileEntityRadio> radioRenderer = new RadioRenderer();
-		//ClientRegistry.bindTileEntitySpecialRenderer(pcl.OpenFM.TileEntity.TileEntityRadio.class, radioRenderer);
-		//OpenFM.logger.info("Registering TESR");		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
+		OpenSecurity.logger.info("Registering TESR");		
 	}
-
+	
 	@Override
 	public void registerItemRenderers() {
 		registerBlockItem(ContentRegistry.alarmBlock, 0, "alarm");
@@ -68,6 +80,7 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.magReader, 0, "mag_reader");
 		registerBlockItem(ContentRegistry.secureDoor, 0, "secure_door");
 		registerBlockItem(ContentRegistry.privateSecureDoor, 0, "secure_private_door");
+		registerBlockItem(ContentRegistry.keypadBlock, 0, "keypad");
 		//registerBlockItem(ContentRegistry.doorController, 0, "door_controller");
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");

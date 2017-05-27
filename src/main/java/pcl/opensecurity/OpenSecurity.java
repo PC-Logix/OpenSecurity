@@ -8,6 +8,10 @@ import java.util.List;
 import pcl.opensecurity.client.ClientProxy;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.SoundHandler;
+import pcl.opensecurity.networking.HandlerKeypadButton;
+import pcl.opensecurity.networking.OSPacketHandler;
+import pcl.opensecurity.networking.OSPacketHandler.PacketHandler;
+import pcl.opensecurity.networking.PacketKeypadButton;
 import pcl.opensecurity.client.CreativeTab;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +29,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity")
 public class OpenSecurity {
@@ -56,8 +61,11 @@ public class OpenSecurity {
 		proxy.registerItemRenderers();
 		SoundHandler.registerSounds();
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
-	    int packetID = 0;
 	    proxy.preinit();
+		proxy.registerRenderers();
+	    int packetID = 0;
+	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
+	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
 	    logger.info("Registered " + packetID + " packets");
 	    logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}

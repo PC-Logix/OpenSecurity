@@ -2,7 +2,9 @@ package pcl.opensecurity.common.blocks;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -16,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockOSBase extends BlockContainer {
+public class BlockOSBase  extends Block implements ITileEntityProvider {
 	protected Random random;
 	protected BlockOSBase(Material materialIn) {
 		super(materialIn);
