@@ -55,6 +55,21 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
     protected static final AxisAlignedBB WEST_AABB = new AxisAlignedBB(0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
     protected static final AxisAlignedBB EAST_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.1875D, 1.0D, 1.0D);
 
+	@Override
+    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) { }
+    
+	@Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return false;
+    }
+	
+	@Override
+    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
+    {
+		return false;
+    }
+	
     public BlockSecureDoor(Material materialIn)
     {
         super(materialIn);
@@ -128,31 +143,6 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
         return state.getBlock() == Blocks.IRON_DOOR ? MapColor.IRON : (state.getBlock() == Blocks.OAK_DOOR ? BlockPlanks.EnumType.OAK.getMapColor() : (state.getBlock() == Blocks.SPRUCE_DOOR ? BlockPlanks.EnumType.SPRUCE.getMapColor() : (state.getBlock() == Blocks.BIRCH_DOOR ? BlockPlanks.EnumType.BIRCH.getMapColor() : (state.getBlock() == Blocks.JUNGLE_DOOR ? BlockPlanks.EnumType.JUNGLE.getMapColor() : (state.getBlock() == Blocks.ACACIA_DOOR ? BlockPlanks.EnumType.ACACIA.getMapColor() : (state.getBlock() == Blocks.DARK_OAK_DOOR ? BlockPlanks.EnumType.DARK_OAK.getMapColor() : super.getMapColor(state)))))));
     }
 
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        if (this.blockMaterial == Material.IRON)
-        {
-            return false; //Allow items to interact with the door
-        }
-        else
-        {
-            BlockPos blockpos = state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.LOWER ? pos : pos.down();
-            IBlockState iblockstate = pos.equals(blockpos) ? state : worldIn.getBlockState(blockpos);
-
-            if (iblockstate.getBlock() != this)
-            {
-                return false;
-            }
-            else
-            {
-                state = iblockstate.cycleProperty(OPEN);
-                worldIn.setBlockState(blockpos, state, 10);
-                worldIn.markBlockRangeForRenderUpdate(blockpos, pos);
-                worldIn.playEvent(playerIn, ((Boolean)state.getValue(OPEN)).booleanValue() ? this.getOpenSound() : this.getCloseSound(), pos, 0);
-                return true;
-            }
-        }
-    }
 
     public void toggleDoor(World worldIn, BlockPos pos, boolean open)
     {
