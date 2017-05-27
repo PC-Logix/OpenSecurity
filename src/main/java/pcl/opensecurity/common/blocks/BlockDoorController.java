@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGlass;
+import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -71,28 +73,33 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		ItemStack equipped = heldItem;
-		TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
-		if (tileEntity == null || player.isSneaking() || (heldItem != null && (heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor))) {
-			return false;
+		if (heldItem == null) {
+			return true;
 		}
-		
-		//If the user is not the owner, or the user is not in creative drop out.
-		if(tileEntity.getOwner()!=null){
-			if(!tileEntity.getOwner().equals(player.getUniqueID().toString()) && !player.capabilities.isCreativeMode) {
-				if(!tileEntity.getOwner().isEmpty()) {
-					return true;
+		Block block = Block.getBlockFromItem(heldItem.getItem());
+		if (block.isOpaqueCube(block.getDefaultState()) || block instanceof BlockGlass || block instanceof BlockStainedGlass) {
+			ItemStack equipped = heldItem;
+			TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
+			if (tileEntity == null || player.isSneaking() || (heldItem != null && (heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor))) {
+				return false;
+			}
+			
+			//If the user is not the owner, or the user is not in creative drop out.
+			if(tileEntity.getOwner()!=null){
+				if(!tileEntity.getOwner().equals(player.getUniqueID().toString()) && !player.capabilities.isCreativeMode) {
+					if(!tileEntity.getOwner().isEmpty()) {
+						return true;
+					}
 				}
 			}
-		}
-		if(tileEntity.getOwner().equals(player.getUniqueID().toString()) || player.capabilities.isCreativeMode) {
-			if (equipped.getItem() instanceof ItemBlock) {
-				Block block = Block.getBlockFromItem(equipped.getItem());
-				tileEntity.overrideTexture(equipped);
-				world.scheduleUpdate(pos, this, 1);
-				world.notifyBlockUpdate(pos, this.getDefaultState(), this.getDefaultState(), 3);
-				return true;
+			if(tileEntity.getOwner().equals(player.getUniqueID().toString()) || player.capabilities.isCreativeMode) {
+				if (equipped.getItem() instanceof ItemBlock) {
+					tileEntity.overrideTexture(equipped);
+					world.scheduleUpdate(pos, this, 1);
+					world.notifyBlockUpdate(pos, this.getDefaultState(), this.getDefaultState(), 3);
+					return true;
 
+				}
 			}
 		}
 		return true;
