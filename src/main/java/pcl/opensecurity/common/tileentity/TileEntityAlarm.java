@@ -23,8 +23,6 @@ public class TileEntityAlarm extends TileEntityMachineBase implements ISoundTile
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
 	public Boolean computerPlaying = false;
-
-	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	
 	@Override
 	public Node node() {
@@ -48,6 +46,7 @@ public class TileEntityAlarm extends TileEntityMachineBase implements ISoundTile
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
+		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
 
 	public String getComponentName() {
