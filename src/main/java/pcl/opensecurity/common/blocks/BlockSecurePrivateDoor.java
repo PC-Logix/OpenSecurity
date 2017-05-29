@@ -6,7 +6,7 @@ public class BlockSecurePrivateDoor extends BlockSecureDoor {
 
 	public BlockSecurePrivateDoor(Material materialIn) {
 		super(materialIn);
-		setUnlocalizedName("secure_door");
+		setUnlocalizedName("private_secure_door");
 		setHardness(.5f);
 	}
 
