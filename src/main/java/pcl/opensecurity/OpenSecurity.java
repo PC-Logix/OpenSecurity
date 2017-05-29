@@ -62,6 +62,7 @@ public class OpenSecurity {
 		proxy.registerItemRenderers();
 		SoundHandler.registerSounds();
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
+	    rfidRange = cfg.rfidMaxRange;
 	    proxy.preinit();
 		proxy.registerRenderers();
 	    int packetID = 0;
@@ -76,6 +77,7 @@ public class OpenSecurity {
 	public void init(FMLInitializationEvent event) {
 		long time = System.nanoTime();
 		proxy.init();
+		ContentRegistry.init();
 		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 }

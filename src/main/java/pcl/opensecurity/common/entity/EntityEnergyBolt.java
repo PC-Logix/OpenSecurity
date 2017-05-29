@@ -26,7 +26,6 @@ public class EntityEnergyBolt extends EntityThrowable {
 	private float pitch = 0.0F;
 	private float damage = 0.0F;
 	private static DamageSource energy = new DamageSource("boltComputer");
-	private static final DataParameter<Float> DAMAGE = EntityDataManager.createKey(EntityEnergyBolt.class, DataSerializers.FLOAT);
 	static { energy.setProjectile(); }
 
 	public EntityEnergyBolt(World world) {

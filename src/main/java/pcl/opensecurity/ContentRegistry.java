@@ -9,15 +9,19 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDoor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import pcl.opensecurity.common.blocks.BlockAlarm;
 import pcl.opensecurity.common.blocks.BlockBiometricReader;
 import pcl.opensecurity.common.blocks.BlockCardWriter;
@@ -26,8 +30,10 @@ import pcl.opensecurity.common.blocks.BlockDoorController;
 import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 import pcl.opensecurity.common.blocks.BlockKeypad;
 import pcl.opensecurity.common.blocks.BlockMagReader;
+import pcl.opensecurity.common.blocks.BlockRFIDReader;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
 import pcl.opensecurity.common.blocks.BlockSecurePrivateDoor;
+import pcl.opensecurity.common.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.items.ItemCooldownUpgrade;
@@ -36,6 +42,7 @@ import pcl.opensecurity.common.items.ItemEnergyUpgrade;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemMovementUpgrade;
 import pcl.opensecurity.common.items.ItemRFIDCard;
+import pcl.opensecurity.common.items.ItemRFIDReaderCard;
 import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.items.ItemSecurePrivateDoor;
 import pcl.opensecurity.common.tileentity.TileEntityAlarm;
@@ -46,6 +53,7 @@ import pcl.opensecurity.common.tileentity.TileEntityDoorController;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
+import pcl.opensecurity.common.tileentity.TileEntityRFIDReader;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 public class ContentRegistry {
@@ -59,6 +67,7 @@ public class ContentRegistry {
 	public static Block privateSecureDoor;
 	public static Block keypadBlock;
 	public static Block energyTurret;
+	public static Block rfidReader;
 
 	public static ItemCard itemRFIDCard;
 	public static ItemCard itemMagCard;
@@ -67,6 +76,7 @@ public class ContentRegistry {
 	public static Item movementUpgradeItem;
 	public static Item cooldownUpgradeItem;
 	public static Item energyUpgradeItem;
+	public static Item rfidReaderCardItem;
 
 	public static BlockDoorController doorController;  // this holds the unique instance of your block
 	public static ItemBlock itemBlockDoorController;  // this holds the unique instance of the ItemBlock corresponding to your block
@@ -85,6 +95,7 @@ public class ContentRegistry {
 
 	//Called on mod init()
 	public static void init() {
+		li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
 		registerRecipes();
 	}
 
@@ -116,6 +127,10 @@ public class ContentRegistry {
 		movementUpgradeItem = new ItemMovementUpgrade();
 		GameRegistry.register(movementUpgradeItem.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "movementUpgrade" ) ) );
 		movementUpgradeItem.setCreativeTab(creativeTab);
+		
+		rfidReaderCardItem = new ItemRFIDReaderCard();
+		GameRegistry.register(rfidReaderCardItem.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "rfidReaderCard" ) ) );
+		rfidReaderCardItem.setCreativeTab(creativeTab);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -154,6 +169,11 @@ public class ContentRegistry {
 		registerBlock(energyTurret);
 		energyTurret.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityEnergyTurret.class, "energyTurret");
+		
+		rfidReader = new BlockRFIDReader(Material.IRON);
+		registerBlock(rfidReader);
+		rfidReader.setCreativeTab(creativeTab);
+		GameRegistry.registerTileEntity(TileEntityRFIDReader.class, "rfidReader");
 
 		secureDoor = new BlockSecureDoor(Material.IRON);
 		GameRegistry.registerBlock(secureDoor, ItemSecureDoor.class, "secure_door");
@@ -179,7 +199,174 @@ public class ContentRegistry {
 	}
 
 	private static void registerRecipes() {
+		// Vanilla Minecraft blocks/items
+		String iron = "ingotIron";
+		String diamond = "gemDiamond";
+		String redstone = "dustRedstone";
+		String obsidian = "obsidian";
+		String glass = "blockGlassColorless";
+		String stone = "blockStone";
+		ItemStack stone_button = new ItemStack(Blocks.STONE_BUTTON);
+		ItemStack paper = new ItemStack(Items.PAPER);
+		ItemStack noteblock = new ItemStack(Blocks.NOTEBLOCK);
+		ItemStack door = new ItemStack(Items.IRON_DOOR);
+		ItemStack gunpowder = new ItemStack(Items.GUNPOWDER);
+		ItemStack arrow = new ItemStack(Items.ARROW);
+		ItemStack piston = new ItemStack(Item.getItemFromBlock(Blocks.PISTON));
+		ItemStack water = new ItemStack(Items.WATER_BUCKET);
 
+		// Opencomputers blocks/items
+		String t2microchip = "oc:circuitChip2";
+		String t1microchip = "oc:circuitChip1";
+		String t1ram = "oc:ram1";
+		String pcb = "oc:materialCircuitBoardPrinted";
+		String controlunit = "oc:materialCU";
+		String wlancard = "oc:wlanCard";
+		String cardbase = "oc:materialCard";
+		String cable = "oc:cable";
+		String transistor = "oc:materialTransistor";
+		String numpad = "oc:materialNumPad";
+		String batteryUpgrade = "oc:batteryUpgrade1";
+		String oc_relay = "oc:relay";
+		ItemStack floppy = li.cil.oc.api.Items.get("floppy").createItemStack(1);
+		ItemStack datacard;
+		if (li.cil.oc.api.Items.get("dataCard").createItemStack(1) != null) {
+			datacard = li.cil.oc.api.Items.get("dataCard").createItemStack(1);
+		} else {
+			datacard = li.cil.oc.api.Items.get("dataCard1").createItemStack(1);
+		}
+		
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(rfidReaderCardItem, 1),
+				"MRM", 
+				" N ", 
+				"BC ", 
+				'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit));
+
+		/*
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(EntityDetectorBlock, 1),
+				"MRM", 
+				"   ", 
+				"BC ", 
+				'M', t2microchip, 'R', t1ram, 'B', cardbase, 'C', controlunit));
+		*/
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(rfidReader, 1),
+				" R ", 
+				"PFT", 
+				" C ", 
+				'F', rfidReaderCardItem, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip));
+		
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dataBlock, 1),
+				" D ", 
+				"PFT", 
+				" C ", 
+				'D', datacard, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(alarmBlock, 1),
+				" R ", 
+				"PNC", 
+				" T ", 
+				'N', noteblock, 'P', pcb, 'R', redstone, 'C', cable, 'T', t2microchip));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(cardWriter, 1),
+				"TRT", 
+				"SUS", 
+				"PC ", 
+				'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor, 'U', controlunit, 'R', t1ram));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(magReader, 1),
+				"T T", 
+				"S S", 
+				"PC ", 
+				'P', pcb, 'C', cable, 'T', t2microchip, 'S', transistor));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemRFIDCard, 6),
+				"P P", 
+				" S ", 
+				"PTP", 
+				'P', paper, 'S', transistor, 'T', t1microchip));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemMagCard, 6),
+				"P P", 
+				" S ", 
+				"P P", 
+				'P', paper, 'S', transistor));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(secureDoor, 1),
+				"TGT", 
+				"ODO", 
+				"SOS", 
+				'G', glass, 'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(privateSecureDoor, 1),
+				"TOT", 
+				"ODO", 
+				"SOS", 
+				'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(doorController, 1),
+				"TOT", 
+				"OCO", 
+				"SBS", 
+				'B', cable, 'C', controlunit, 'S', transistor, 'T', t2microchip, 'O', obsidian));
+
+/*		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(SwitchableHubBlock, 1),
+				"TBT", 
+				"BSB", 
+				"RBR", 
+				'B', cable, 'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(KVMBlock, 1),
+				" B ", 
+				"BSB", 
+				"RBR", 
+				'B', cable,  'S', oc_relay, 'R', transistor, 'T', t2microchip, 'O', obsidian));*/
+		
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(energyTurret, 1),
+        		"ABA",
+        		"BCB",
+        		"ABA",
+        		'A', iron, 'B', t2microchip, 'C', diamond));
+        
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(damageUpgradeItem, 1),
+        		"A A",
+        		" G ",
+        		"A A",
+        		'A', arrow, 'G', gunpowder));
+        
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(movementUpgradeItem, 1),
+        		"R R",
+        		" P ",
+        		"R R",
+        		'P', piston, 'R', redstone));
+        
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(cooldownUpgradeItem, 1),
+        		"R R",
+        		" W ",
+        		"R R",
+        		'W', water, 'R', redstone));
+        
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(energyUpgradeItem, 1),
+        		"R R",
+        		" B ",
+        		"R R",
+        		'B', batteryUpgrade, 'R', redstone));
+        
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(keypadBlock, 1),
+				"TIT", 
+				"INI",
+				"ICI", 
+				'T', transistor, 'N', numpad, 'C', t1microchip, 'I', iron));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(biometricReaderBlock, 1),
+				"SIS", 
+				"STS",
+				"SCS", 
+				'T', transistor, 'N', numpad, 'C', t1microchip, 'I', iron, 'S', stone));
+
+		OpenSecurity.logger.info("Registered Recipes");
 	}
 
 	/**

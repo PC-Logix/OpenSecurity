@@ -96,13 +96,15 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.privateSecureDoor, 0, "secure_private_door");
 		registerBlockItem(ContentRegistry.keypadBlock, 0, "keypad");
 		registerBlockItem(ContentRegistry.energyTurret, 0, "energyTurret");
-		//registerBlockItem(ContentRegistry.doorController, 0, "door_controller");
+		registerBlockItem(ContentRegistry.rfidReader, 0, "rfid_reader");
+
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");
 		registerItem(ContentRegistry.damageUpgradeItem, "damageUpgrade");
 		registerItem(ContentRegistry.movementUpgradeItem, "movementUpgrade");
 		registerItem(ContentRegistry.energyUpgradeItem, "energyUpgrade");
 		registerItem(ContentRegistry.cooldownUpgradeItem, "cooldownUpgrade");
+		registerItem(ContentRegistry.rfidReaderCardItem, "rfidReaderCard");
 	}
 	
 	public static void registerBlockItem(final Block block, int meta, final String blockName) {
