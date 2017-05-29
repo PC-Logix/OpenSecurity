@@ -1,29 +1,29 @@
 //Blocks
 tile.alarm.name=Alarm
-tile.rfidreader.name=RFID Reader
-tile.cardwriter.name=Card Writer
-tile.magreader.name=Magnetic Card Reader
+tile.rfid_reader.name=RFID Reader
+tile.card_writer.name=Card Writer
+tile.mag_reader.name=Magnetic Card Reader
 tile.entitydetector.name=Entity Detector
-tile.doorController.name=Door Controller
-tile.datablock.name=Data Block
+tile.door_controller.name=Door Controller
+tile.data_block.name=Data Block
 tile.switchablehub.name=Switchable Hub
 tile.displaypanel.name=Display Panel
 tile.kvm.name=KVM Switch
 tile.energyTurret.name=Energy Turret
-tile.keypadlock.name=Keypad
-tile.biometricreader.name=Biometric Reader
+tile.keypad.name=Keypad
+tile.biometric_reader.name=Biometric Reader
+tile.secure_door.name=Security Door
+tile.private_secure_door.name=Private Security Door
 //items
-item.rfidCard.name=RFID Card
-item.magCard.name=Magnetic Strip Card
+item.itemRFIDCard.name=RFID Card
+item.itemMagCard.name=Magnetic Strip Card
 item.rfidReaderCard.name=RFID Reader Card
 item.secureNetworkCard.name=Secure Network Card
-item.securityDoor.name=Security Door
-item.securityDoorPrivate.name=Private Security Door
 item.damageUpgrade.name=Damage Upgrade
 item.movementUpgrade.name=Movement Upgrade
 item.energyUpgrade.name=Energy Upgrade
 item.cooldownUpgrade.name=Cooldown Upgrade
-itemGroup.OpenSecurity=OpenSecurity
+itemGroup.OpenSecurity.tabOpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer
 gui.string.cardslot=Card Slot
@@ -33,6 +33,3 @@ gui.string.energyturret.damagemod=+Damage
 gui.string.energyturret.movementmod=+Movement
 gui.string.energyturret.cooldownmod=-Cooldown
 gui.string.energyturret.energymod=-Energy
-//OpenUpdater
-opensecurity.uptodate=OpenSecurity is up to date
-opensecurity.outdated=OpenSecurity is out dated
