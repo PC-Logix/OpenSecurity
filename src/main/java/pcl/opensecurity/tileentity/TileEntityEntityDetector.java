@@ -179,7 +179,7 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 
 	@Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each entity in range (excluding players), optional set range.", direct = true)
 	public Object[] scanEntities(Context context, Arguments args) {
-		range = args.optInteger(16, range);
+		range = args.optInteger(0, range);
 		offset = args.optBoolean(1, offset);
 		if (range > OpenSecurity.rfidRange) {
 			range = OpenSecurity.rfidRange;
