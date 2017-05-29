@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -83,7 +84,11 @@ public class EntityEnergyBolt extends EntityThrowable {
 			this.prevRotationPitch = this.rotationPitch;
 		}
 		BlockPos blockPos = new BlockPos((int)Math.floor(this.posX), (int)Math.floor(this.posY), (int)Math.floor(this.posZ));
-		if ((!this.world.isAirBlock(blockPos)) && 
+		if ((!this.world.isAirBlock(blockPos)) &&
+				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.GLASS)) &&
+				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.GLASS_PANE)) &&
+				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.STAINED_GLASS)) &&
+				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.STAINED_GLASS_PANE)) &&
 				(!(this.world.getBlockState(blockPos).getBlock() instanceof BlockEnergyTurret))) {
 			this.isDead = true;
 			}
