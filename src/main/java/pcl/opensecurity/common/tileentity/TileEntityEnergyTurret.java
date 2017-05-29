@@ -561,9 +561,9 @@ public class TileEntityEnergyTurret extends TileEntityMachineBase implements IIn
 			}
 
 			
-			//if (!((Connector)this.node).tryChangeBuffer(-energy*25)) {
-			//	throw new Exception("not enough energy");
-			//}
+			if (!(this.node).tryChangeBuffer(-energy*2)) {
+				throw new Exception("not enough energy");
+			}
 
 			this.tickCool = 100;
 			float p = getRealPitch();
