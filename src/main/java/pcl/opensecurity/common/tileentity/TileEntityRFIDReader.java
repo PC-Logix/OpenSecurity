@@ -8,6 +8,7 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
+import li.cil.oc.common.entity.Drone;
 import li.cil.oc.common.inventory.Inventory;
 import net.minecraft.entity.Entity;
 //import net.minecraft.client.audio.SoundCategory;
@@ -19,7 +20,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
-public class TileEntityRFIDReader extends TileEntityMachineBase {
+public class TileEntityRFIDReader extends TileEntityOSBase {
 
 	public String data;
 	public String eventName = "magData";
@@ -84,8 +85,8 @@ public class TileEntityRFIDReader extends TileEntityMachineBase {
 					}
 				} else if (entity instanceof li.cil.oc.common.entity.Drone) {
 					found = true;
-					li.cil.oc.common.entity.Drone em = (li.cil.oc.common.entity.Drone) entity;
-					Inventory droneInventory = em.mainInventory();
+					Drone em = (Drone) entity;
+					Inventory droneInventory = (Inventory) em.mainInventory();
 					int size = em.inventorySize();
 					for (int k = 0; k < size; k++) {
 						ItemStack st = droneInventory.getStackInSlot(k);

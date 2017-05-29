@@ -1,24 +1,17 @@
 package pcl.opensecurity.common.tileentity;
 
-import org.apache.commons.codec.binary.Base64;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ComponentConnector;
-import li.cil.oc.api.network.Environment;
-import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.SoundCategory;
-import pcl.opensecurity.common.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileEntityBiometricReader extends TileEntityMachineBase {
+public class TileEntityBiometricReader extends TileEntityOSBase {
 
 	public String data;
 	public String eventName = "bioReader";

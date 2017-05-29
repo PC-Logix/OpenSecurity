@@ -6,7 +6,6 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Connector;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
@@ -31,7 +30,7 @@ import pcl.opensecurity.common.items.ItemDamageUpgrade;
 import pcl.opensecurity.common.items.ItemEnergyUpgrade;
 import pcl.opensecurity.common.items.ItemMovementUpgrade;
 
-public class TileEntityEnergyTurret extends TileEntityMachineBase implements IInventory {
+public class TileEntityEnergyTurret extends TileEntityOSBase implements IInventory {
 
 	static final float maxShaftLengthForOneBlock = 0.5f;
 

@@ -22,17 +22,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import pcl.opensecurity.common.blocks.BlockAlarm;
-import pcl.opensecurity.common.blocks.BlockBiometricReader;
-import pcl.opensecurity.common.blocks.BlockCardWriter;
-import pcl.opensecurity.common.blocks.BlockData;
-import pcl.opensecurity.common.blocks.BlockDoorController;
-import pcl.opensecurity.common.blocks.BlockEnergyTurret;
-import pcl.opensecurity.common.blocks.BlockKeypad;
-import pcl.opensecurity.common.blocks.BlockMagReader;
-import pcl.opensecurity.common.blocks.BlockRFIDReader;
-import pcl.opensecurity.common.blocks.BlockSecureDoor;
-import pcl.opensecurity.common.blocks.BlockSecurePrivateDoor;
+import pcl.opensecurity.common.blocks.*;
 import pcl.opensecurity.common.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.items.ItemCard;
@@ -45,16 +35,7 @@ import pcl.opensecurity.common.items.ItemRFIDCard;
 import pcl.opensecurity.common.items.ItemRFIDReaderCard;
 import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.items.ItemSecurePrivateDoor;
-import pcl.opensecurity.common.tileentity.TileEntityAlarm;
-import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
-import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
-import pcl.opensecurity.common.tileentity.TileEntityDataBlock;
-import pcl.opensecurity.common.tileentity.TileEntityDoorController;
-import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
-import pcl.opensecurity.common.tileentity.TileEntityKeypad;
-import pcl.opensecurity.common.tileentity.TileEntityMagReader;
-import pcl.opensecurity.common.tileentity.TileEntityRFIDReader;
-import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
+import pcl.opensecurity.common.tileentity.*;
 
 public class ContentRegistry {
 	public static CreativeTabs creativeTab;
@@ -68,6 +49,7 @@ public class ContentRegistry {
 	public static Block keypadBlock;
 	public static Block energyTurret;
 	public static Block rfidReader;
+	public static Block entityDetector;
 
 	public static ItemCard itemRFIDCard;
 	public static ItemCard itemMagCard;
@@ -164,6 +146,11 @@ public class ContentRegistry {
 		registerBlock(keypadBlock);
 		keypadBlock.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityKeypad.class, "keypad");
+
+		entityDetector = new BlockEntityDetector(Material.IRON);
+		registerBlock(entityDetector);
+		entityDetector.setCreativeTab(creativeTab);
+		GameRegistry.registerTileEntity(TileEntityEntityDetector.class, "entity_detector");
 		
 		energyTurret = new BlockEnergyTurret(Material.IRON);
 		registerBlock(energyTurret);
@@ -243,13 +230,13 @@ public class ContentRegistry {
 				"BC ", 
 				'M', t2microchip, 'R', t1ram, 'N', wlancard, 'B', cardbase, 'C', controlunit));
 
-		/*
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(EntityDetectorBlock, 1),
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(entityDetector, 1),
 				"MRM", 
 				"   ", 
 				"BC ", 
 				'M', t2microchip, 'R', t1ram, 'B', cardbase, 'C', controlunit));
-		*/
+
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(rfidReader, 1),
 				" R ", 

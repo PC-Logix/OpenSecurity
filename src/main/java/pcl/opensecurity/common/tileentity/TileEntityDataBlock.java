@@ -13,7 +13,6 @@ import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
-import net.minecraft.nbt.NBTTagCompound;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -23,7 +22,7 @@ import pcl.opensecurity.OpenSecurity;
 
 import com.google.common.hash.Hashing;
 
-public class TileEntityDataBlock extends TileEntityMachineBase {
+public class TileEntityDataBlock extends TileEntityOSBase {
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
 	public TileEntityDataBlock() {

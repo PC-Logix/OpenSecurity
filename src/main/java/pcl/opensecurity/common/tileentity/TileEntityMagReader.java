@@ -4,17 +4,14 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Message;
-import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 //import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.items.ItemMagCard;
 
-public class TileEntityMagReader extends TileEntityMachineBase {
+public class TileEntityMagReader extends TileEntityOSBase {
 
 	public String data;
 	public String eventName = "magData";

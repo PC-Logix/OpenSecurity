@@ -19,13 +19,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.client.sounds.ISoundTile;
 import pcl.opensecurity.client.sounds.MachineSound;
 
-public class TileEntityMachineBase extends TileEntity implements ITickable, Environment {
+public class TileEntityOSBase extends TileEntity implements ITickable, Environment {
 	
 	public Boolean shouldPlay = false;
 	public ComponentConnector node;
 	public ManagedEnvironment oc_fs;
 	
-	public TileEntityMachineBase() {
+	public TileEntityOSBase() {
 		super();
 	}
 	

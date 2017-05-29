@@ -4,8 +4,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import com.jcraft.jogg.Packet;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -22,7 +20,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.networking.PacketKeypadButton;
 
-public class TileEntityKeypad extends TileEntityMachineBase {
+public class TileEntityKeypad extends TileEntityOSBase {
 	final static int MAX_LABEL_LENGTH = 3;
 	final static int MAX_DISPLAY_LENGTH = 8;
 

@@ -6,7 +6,6 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +17,7 @@ import net.minecraft.util.SoundEvent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
-public class TileEntityAlarm extends TileEntityMachineBase implements ISoundTile {
+public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;

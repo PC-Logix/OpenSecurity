@@ -132,7 +132,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 					} else if (entity instanceof li.cil.oc.common.entity.Drone) {
 						found = true;
 						li.cil.oc.common.entity.Drone em = (li.cil.oc.common.entity.Drone) entity;
-						Inventory droneInventory = em.mainInventory();
+						Inventory droneInventory = (Inventory) em.mainInventory();
 						int size = em.inventorySize();
 						for (int k = 0; k < size; k++) {
 							ItemStack st = droneInventory.getStackInSlot(k);

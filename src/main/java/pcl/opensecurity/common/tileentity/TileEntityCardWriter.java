@@ -7,7 +7,6 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Component;
-import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
@@ -28,7 +27,7 @@ import pcl.opensecurity.common.inventory.BasicInventory;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
-public class TileEntityCardWriter extends TileEntityMachineBase implements ITickable, ISidedInventory {
+public class TileEntityCardWriter extends TileEntityOSBase implements ITickable, ISidedInventory {
 
 	public static final int SIZE = 2;
 	private static final int[] SLOTS_TOP = new int[] {0};
