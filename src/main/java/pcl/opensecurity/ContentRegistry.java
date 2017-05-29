@@ -14,6 +14,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,12 +23,18 @@ import pcl.opensecurity.common.blocks.BlockBiometricReader;
 import pcl.opensecurity.common.blocks.BlockCardWriter;
 import pcl.opensecurity.common.blocks.BlockData;
 import pcl.opensecurity.common.blocks.BlockDoorController;
+import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 import pcl.opensecurity.common.blocks.BlockKeypad;
 import pcl.opensecurity.common.blocks.BlockMagReader;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
 import pcl.opensecurity.common.blocks.BlockSecurePrivateDoor;
+import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.items.ItemCard;
+import pcl.opensecurity.common.items.ItemCooldownUpgrade;
+import pcl.opensecurity.common.items.ItemDamageUpgrade;
+import pcl.opensecurity.common.items.ItemEnergyUpgrade;
 import pcl.opensecurity.common.items.ItemMagCard;
+import pcl.opensecurity.common.items.ItemMovementUpgrade;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.items.ItemSecurePrivateDoor;
@@ -36,6 +43,7 @@ import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.common.tileentity.TileEntityDataBlock;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
+import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
@@ -50,9 +58,15 @@ public class ContentRegistry {
 	public static Block secureDoor;
 	public static Block privateSecureDoor;
 	public static Block keypadBlock;
+	public static Block energyTurret;
 
 	public static ItemCard itemRFIDCard;
 	public static ItemCard itemMagCard;
+	
+	public static Item damageUpgradeItem;
+	public static Item movementUpgradeItem;
+	public static Item cooldownUpgradeItem;
+	public static Item energyUpgradeItem;
 
 	public static BlockDoorController doorController;  // this holds the unique instance of your block
 	public static ItemBlock itemBlockDoorController;  // this holds the unique instance of the ItemBlock corresponding to your block
@@ -66,6 +80,7 @@ public class ContentRegistry {
 		registerTabs();
 		registerBlocks();
 		registerItems();
+		registerEntities();
 	}
 
 	//Called on mod init()
@@ -73,7 +88,10 @@ public class ContentRegistry {
 		registerRecipes();
 	}
 
-	@SuppressWarnings("deprecation")
+	private static void registerEntities() {
+		EntityRegistry.registerModEntity(EntityEnergyBolt.class, "energybolt", 1, OpenSecurity.instance, 128, 1, true);
+	}
+	
 	private static void registerItems() {
 		itemRFIDCard = new ItemRFIDCard();
 		GameRegistry.register( itemRFIDCard.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "rfidcard" ) ) );
@@ -83,9 +101,21 @@ public class ContentRegistry {
 		GameRegistry.register( itemMagCard.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "magcard" ) ) );
 		itemMagCard.setCreativeTab(creativeTab);
 
-		//secureDoorItemBlock = new ItemSecureDoor(secureDoor);
-		//GameRegistry.register( secureDoorItemBlock.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "secure_door" ) ) );
-		//secureDoorItemBlock.setCreativeTab(creativeTab);
+		damageUpgradeItem = new ItemDamageUpgrade();
+		GameRegistry.register(damageUpgradeItem.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "damageUpgrade" ) ) );
+		damageUpgradeItem.setCreativeTab(creativeTab);
+		
+		cooldownUpgradeItem = new ItemCooldownUpgrade();
+		GameRegistry.register(cooldownUpgradeItem.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "cooldownUpgrade" ) ) );
+		cooldownUpgradeItem.setCreativeTab(creativeTab);
+		
+		energyUpgradeItem = new ItemEnergyUpgrade();
+		GameRegistry.register(energyUpgradeItem.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "energyUpgrade" ) ) );
+		energyUpgradeItem.setCreativeTab(creativeTab);
+		
+		movementUpgradeItem = new ItemMovementUpgrade();
+		GameRegistry.register(movementUpgradeItem.setRegistryName( new ResourceLocation( OpenSecurity.MODID, "movementUpgrade" ) ) );
+		movementUpgradeItem.setCreativeTab(creativeTab);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -119,10 +149,11 @@ public class ContentRegistry {
 		registerBlock(keypadBlock);
 		keypadBlock.setCreativeTab(creativeTab);
 		GameRegistry.registerTileEntity(TileEntityKeypad.class, "keypad");
-
-		//doorController = new BlockDoorController(Material.IRON);
-		//registerBlock(doorController);
-		//doorController.setCreativeTab(creativeTab);
+		
+		energyTurret = new BlockEnergyTurret(Material.IRON);
+		registerBlock(energyTurret);
+		energyTurret.setCreativeTab(creativeTab);
+		GameRegistry.registerTileEntity(TileEntityEnergyTurret.class, "energyTurret");
 
 		secureDoor = new BlockSecureDoor(Material.IRON);
 		GameRegistry.registerBlock(secureDoor, ItemSecureDoor.class, "secure_door");

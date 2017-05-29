@@ -1,0 +1,48 @@
+{
+	"credit": "Made with Blockbench, a free, modern block model editor by JannisX11",
+	"textures": {},
+	"elements": [
+		{
+			"name": "base",
+			"from": [0, 0, 0],
+			"to": [16, 6, 16],
+			"shade": true,
+			"faces": {}
+		},
+		{
+			"name": "pad",
+			"from": [4, 6, 4],
+			"to": [12, 7, 12],
+			"shade": true,
+			"faces": {}
+		},
+		{
+			"name": "shaft",
+			"from": [6.5, 7, 6.5],
+			"to": [7.5, 14, 9.5],
+			"shade": true,
+			"faces": {}
+		},
+		{
+			"name": "gun1",
+			"from": [7, 13, 6],
+			"to": [9, 15, 20],
+			"shade": true,
+			"faces": {}
+		},
+		{
+			"name": "cube",
+			"from": [6, 12, 0],
+			"to": [10, 16, 14],
+			"shade": true,
+			"faces": {}
+		},
+		{
+			"name": "shaft",
+			"from": [8.5, 7, 6.5],
+			"to": [9.5, 14, 9.5],
+			"shade": true,
+			"faces": {}
+		}
+	]
+}

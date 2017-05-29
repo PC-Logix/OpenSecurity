@@ -32,7 +32,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Mirror;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
@@ -157,7 +160,8 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
             {
                 worldIn.setBlockState(blockpos, iblockstate1.withProperty(OPEN, Boolean.valueOf(open)), 10);
                 worldIn.markBlockRangeForRenderUpdate(blockpos, pos);
-                worldIn.playEvent((EntityPlayer)null, open ? this.getOpenSound() : this.getCloseSound(), pos, 0);
+                worldIn.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5f, pos.getZ() + 0.5F, new SoundEvent(new ResourceLocation("opensecurity:security_door")), SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
+
             }
         }
     }

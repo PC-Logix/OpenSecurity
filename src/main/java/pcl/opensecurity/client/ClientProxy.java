@@ -4,9 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -15,6 +18,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,10 +30,15 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.models.CamouflageBakedModel;
 import pcl.opensecurity.client.models.ModColourManager;
 import pcl.opensecurity.client.models.ModelBakeEventHandler;
+import pcl.opensecurity.client.renderer.EnergyTurretRenderHelper;
+import pcl.opensecurity.client.renderer.RenderEnergyTurret;
+import pcl.opensecurity.client.renderer.RenderEntityEnergyBolt;
 import pcl.opensecurity.client.renderer.RenderKeypad;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
+import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.items.ItemCard;
+import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 public class ClientProxy extends CommonProxy {
 	public static File alarmSounds;
@@ -68,6 +79,9 @@ public class ClientProxy extends CommonProxy {
 	
 	public void registerRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
+		TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper();
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, RenderEntityEnergyBolt::new);
 		OpenSecurity.logger.info("Registering TESR");		
 	}
 	
@@ -81,9 +95,14 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.secureDoor, 0, "secure_door");
 		registerBlockItem(ContentRegistry.privateSecureDoor, 0, "secure_private_door");
 		registerBlockItem(ContentRegistry.keypadBlock, 0, "keypad");
+		registerBlockItem(ContentRegistry.energyTurret, 0, "energyTurret");
 		//registerBlockItem(ContentRegistry.doorController, 0, "door_controller");
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");
+		registerItem(ContentRegistry.damageUpgradeItem, "damageUpgrade");
+		registerItem(ContentRegistry.movementUpgradeItem, "movementUpgrade");
+		registerItem(ContentRegistry.energyUpgradeItem, "energyUpgrade");
+		registerItem(ContentRegistry.cooldownUpgradeItem, "cooldownUpgrade");
 	}
 	
 	public static void registerBlockItem(final Block block, int meta, final String blockName) {

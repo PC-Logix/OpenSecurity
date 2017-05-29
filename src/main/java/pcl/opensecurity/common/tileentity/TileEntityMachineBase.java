@@ -172,4 +172,9 @@ public class TileEntityMachineBase extends TileEntity implements ITickable, Envi
 
 	}
 
+	public boolean shouldPlaySound() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

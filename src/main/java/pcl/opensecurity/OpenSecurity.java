@@ -11,6 +11,7 @@ import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.networking.HandlerKeypadButton;
 import pcl.opensecurity.networking.OSPacketHandler;
 import pcl.opensecurity.networking.OSPacketHandler.PacketHandler;
+import pcl.opensecurity.networking.PacketBoltFire;
 import pcl.opensecurity.networking.PacketKeypadButton;
 import pcl.opensecurity.client.CreativeTab;
 
@@ -66,6 +67,7 @@ public class OpenSecurity {
 	    int packetID = 0;
 	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
 	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
+	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
 	    logger.info("Registered " + packetID + " packets");
 	    logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}

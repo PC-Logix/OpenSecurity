@@ -286,6 +286,7 @@ public class TileEntityCardWriter extends TileEntityMachineBase implements ITick
 		inv.writeToNBT(data);
 		return data;
 	}
+	
 	public boolean canInteractWith(EntityPlayer playerIn) {
 		// If we are too far away from this tile entity you cannot use it
 		return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
