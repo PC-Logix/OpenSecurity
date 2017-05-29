@@ -71,7 +71,7 @@ curseforge {
 	apiKey = curseforge_key
 	project {
 		id = "231687"
-		releaseType = "alpha"
+		releaseType = "release"
 		changelog = curse_changlog
 	}
 }
