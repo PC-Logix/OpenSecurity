@@ -112,5 +112,11 @@ public class EntityEnergyBolt extends EntityThrowable {
 	protected void onImpact(RayTraceResult result) {
 		// TODO Auto-generated method stub
 
-	}	
+	}
+
+	@Override
+	protected float getGravityVelocity()
+	{
+		return 0.00F;
+	}
 }
