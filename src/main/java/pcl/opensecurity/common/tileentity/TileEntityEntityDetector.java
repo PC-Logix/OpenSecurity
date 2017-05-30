@@ -60,7 +60,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
     @SuppressWarnings({ "rawtypes" })
     public Map<Integer, HashMap<String, Object>> scan(boolean players, boolean offset) {
         Entity entity;
-        Map<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
+        Map<Integer, HashMap<String, Object>> output = new HashMap<>();
         int index = 1;
         List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX() + 1, this.getPos().getY() + 1, this.getPos().getZ() + 1).expandXyz((double) range));
         if (!e.isEmpty()) {

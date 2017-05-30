@@ -29,8 +29,6 @@ public class Config {
 		ignoreUUIDs = config.getBoolean("ignoreUUIDs", "options", false, "RFID and Mag cards will return '-1' for UUIDs.  Allows for less secure security.");
 		registerBlockBreak = config.getBoolean("registerBlockBreak", "options", true, "If false the block break event will not be registered, which will leave Door Controllers and Security Doors able to be broken.");
 		turretReverseRotation = config.getBoolean("turretReverseRotation", "options", true, "If true - turrets should rotate as in old versions.");
-		magCardDisplayName = config.getBoolean("magCardDisplayName", "options", true, "If true - the Mag Card Reader will return the Minecraft Username of the player who swiped the card, false will return \"player\"");
-		biggerEEPROM = config.getBoolean("biggerEEPROMS", "options", false, "If enabled changes EEPROMS capacity to 8096 bytes (Only when flashed with the OS CardWriter!)");
 		if (config.hasChanged()) {
 			config.save();
 		}
