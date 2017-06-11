@@ -125,7 +125,7 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
 		int colorIn = args.optInteger(3, 0);
 		int color = Integer.parseInt("FFFFFF", 16);
 
-		if (colorIn > 0 && colorIn < 15) {
+		if (colorIn >= 0 && colorIn <= 15) {
 			switch(colorIn) {
 			case 0: color = Integer.parseInt("FFFFFF", 16); break;
 			case 1: color = Integer.parseInt("FFA500", 16); break;
