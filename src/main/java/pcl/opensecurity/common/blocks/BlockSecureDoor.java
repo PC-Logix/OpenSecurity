@@ -217,21 +217,6 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
                     this.dropBlockAsItem(worldIn, pos, state, 0);
                 }
             }
-            else
-            {
-                boolean flag = worldIn.isBlockPowered(pos) || worldIn.isBlockPowered(blockpos1);
-
-                if (blockIn != this && (flag || blockIn.getDefaultState().canProvidePower()))
-                {
-
-                    if (flag != ((Boolean)state.getValue(OPEN)).booleanValue())
-                    {
-                        worldIn.setBlockState(pos, state.withProperty(OPEN, Boolean.valueOf(flag)), 2);
-                        worldIn.markBlockRangeForRenderUpdate(pos, pos);
-                        worldIn.playEvent((EntityPlayer)null, flag ? this.getOpenSound() : this.getCloseSound(), pos, 0);
-                    }
-                }
-            }
         }
     }
 
