@@ -1,13 +1,13 @@
 package pcl.opensecurity.common.blocks;
 
-import java.util.Random;
-
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,25 +16,51 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.items.ItemMagCard;
-import pcl.opensecurity.common.tileentity.TileEntityAlarm;
-import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
+import pcl.opensecurity.util.IVariant;
 
-public class BlockMagReader extends BlockOSBase {
+import javax.annotation.Nullable;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Stream;
 
+public class BlockMagReader extends Block implements ITileEntityProvider {
 
 	public BlockMagReader(Material materialIn) {
 		super(materialIn);
 		setUnlocalizedName("mag_reader");
 		setRegistryName("mag_reader");
 		setHardness(.5f);
-		random = new Random();
 	}
 
+	public static final IProperty<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
+	
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, VARIANT);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(VARIANT, EnumType.byMetadata(meta));
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(VARIANT).getMeta();
+	}
+
+	@Override
+	public int damageDropped(IBlockState state) {
+		return getMetaFromState(state);
+	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityMagReader();
@@ -42,19 +68,64 @@ public class BlockMagReader extends BlockOSBase {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+		//player.sendMessage(new TextComponentString("meta " + getMetaFromState(state)));
+		world.scheduleBlockUpdate(pos, this, 20, 1);
 		if (heldItem != null) {
 			Item equipped = heldItem.getItem();
 			TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
 			if (!world.isRemote && equipped instanceof ItemMagCard) {
+				world.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.ACTIVE));
 				if (tile.doRead(heldItem, player, side.getIndex())) {
-					//world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 3, 1);
+					world.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.SUCCESS));
 				} else {
-					//world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 2, 1);
+					world.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.ERROR));
 				}
-				//world.scheduleBlockUpdate(xCoord, yCoord, zCoord, this, 30);
 			}
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+	worldIn.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.IDLE));
+	}
+	
+	public enum EnumType implements IVariant {
+		ACTIVE(0, "active"),
+		IDLE(1, "idle"),
+		SUCCESS(2, "success"),
+		ERROR(3, "error");
+
+		private static final EnumType[] META_LOOKUP = Stream.of(values()).sorted(Comparator.comparing(EnumType::getMeta)).toArray(EnumType[]::new);
+
+		private final int meta;
+		private final String name;
+
+		EnumType(int meta, String name) {
+			this.meta = meta;
+			this.name = name;
+		}
+
+		public int getMeta() {
+			return meta;
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		public static EnumType byMetadata(int meta) {
+			if (meta < 0 || meta >= META_LOOKUP.length) {
+				meta = 0;
+			}
+
+			return META_LOOKUP[meta];
+		}
+
+		public static String[] getNames() {
+			return Stream.of(META_LOOKUP).map(EnumType::getName).toArray(String[]::new);
+		}
 	}
 }

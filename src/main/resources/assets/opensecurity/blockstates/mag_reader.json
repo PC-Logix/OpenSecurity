@@ -13,11 +13,31 @@
 		"inventory": [{
 			"transform": "forge:default-block"
 		}],
-		"facing": {
-			"north": {"model": "minecraft:orientable", "y": 180},
-			"south": {"model": "minecraft:orientable"},
-			"west": {"model": "minecraft:orientable", "y": 90},
-			"east": {"model": "minecraft:orientable", "y": 270}
+		"variant": {
+			"success": {
+				"textures": {
+					"front": "opensecurity:blocks/magreader_success",
+					"side": "opensecurity:blocks/magreader_success"
+				}
+			},
+			"idle": {
+				"textures": {
+					"front": "opensecurity:blocks/mag_reader",
+					"side": "opensecurity:blocks/mag_reader"
+				}
+			},
+			"active": {
+				"textures": {
+					"front": "opensecurity:blocks/magreader_active",
+					"side": "opensecurity:blocks/magreader_active"
+				}
+			},
+			"error": {
+				"textures": {
+					"front": "opensecurity:blocks/magreader_error",
+					"side": "opensecurity:blocks/magreader_error"
+				}
+			}
 		}
 	}
 }
