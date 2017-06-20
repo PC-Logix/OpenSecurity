@@ -43,8 +43,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import pcl.opensecurity.ContentRegistry;
+import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 public class BlockSecureDoor extends Block implements ITileEntityProvider {

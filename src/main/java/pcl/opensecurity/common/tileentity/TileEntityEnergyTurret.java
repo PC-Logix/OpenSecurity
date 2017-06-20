@@ -1,7 +1,7 @@
 package pcl.opensecurity.common.tileentity;
 
 import javax.annotation.Nullable;
-import pcl.opensecurity.ContentRegistry;
+
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -24,6 +24,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.items.ItemCooldownUpgrade;
 import pcl.opensecurity.common.items.ItemDamageUpgrade;

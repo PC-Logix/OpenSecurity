@@ -20,8 +20,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
-import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
 public class RFIDReaderCardDriver extends DriverItem {

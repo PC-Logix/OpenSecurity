@@ -11,7 +11,7 @@ import net.minecraft.world.ColorizerGrass;
 import net.minecraft.world.biome.BiomeColorHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pcl.opensecurity.ContentRegistry;
+import pcl.opensecurity.common.ContentRegistry;
 
 /**
  * Registers {@link IBlockColor}/{@link IItemColor} handlers for this mod's blocks/items.

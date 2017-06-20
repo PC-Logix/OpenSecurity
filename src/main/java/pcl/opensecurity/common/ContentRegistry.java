@@ -1,4 +1,4 @@
-package pcl.opensecurity;
+package pcl.opensecurity.common;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,11 +17,13 @@ import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.blocks.*;
 import pcl.opensecurity.common.drivers.RFIDReaderCardDriver;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
@@ -69,12 +71,18 @@ public class ContentRegistry {
 
     // Called on mod preInit()
     public static void preInit() {
+    	registerEvents();
         registerTabs();
         registerBlocks();
         registerItems();
         registerEntities();
     }
 
+	private static void registerEvents() {
+		MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
+		OpenSecurity.logger.info("Registered Events");
+	}
+    
     //Called on mod init()
     public static void init() {
         li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());

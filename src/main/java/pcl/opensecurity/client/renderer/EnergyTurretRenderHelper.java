@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
-import pcl.opensecurity.ContentRegistry;
+import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 
 public class EnergyTurretRenderHelper extends TileEntityItemStackRenderer {

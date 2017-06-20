@@ -7,6 +7,7 @@ import java.util.List;
 
 import pcl.opensecurity.client.ClientProxy;
 import pcl.opensecurity.common.CommonProxy;
+import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.networking.HandlerKeypadButton;
 import pcl.opensecurity.networking.OSPacketHandler;
