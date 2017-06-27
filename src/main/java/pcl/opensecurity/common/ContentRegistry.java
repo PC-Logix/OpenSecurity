@@ -128,7 +128,7 @@ public class ContentRegistry {
         alarmBlock = new BlockAlarm(Material.IRON);
         registerBlock(alarmBlock);
         alarmBlock.setCreativeTab(creativeTab);
-        GameRegistry.registerTileEntity(TileEntityAlarm.class, "alarm");
+        GameRegistry.registerTileEntity(TileEntityAlarm.class, "os_alarm");
 
         biometricReaderBlock = new BlockBiometricReader(Material.IRON);
         registerBlock(biometricReaderBlock);
