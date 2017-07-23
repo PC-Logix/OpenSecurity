@@ -17,6 +17,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.tileentity.TileEntityDoorController;
+import pcl.opensecurity.util.BlockLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -37,10 +38,19 @@ public class BlockDoorController extends BlockOSBase {
 	@Override
 	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
 		TileEntity te = par1World.getTileEntity(x, y, z);
+		BlockLocation loc = BlockLocation.get(par1World, x, y, z);
+		((TileEntityDoorController) te).rescan(loc);
 		((TileEntityDoorController) te).setOwner(par5EntityLivingBase.getUniqueID().toString());
 		((TileEntityDoorController) te).overrideTexture(ContentRegistry.DoorControllerBlock, new ItemStack(Item.getItemFromBlock(ContentRegistry.DoorControllerBlock)), ForgeDirection.getOrientation(1));
 	}
 
+	@Override
+	public void onNeighborChange(IBlockAccess par1World, int x, int y, int z, int tileX, int tileY, int tileZ) {
+		TileEntity te = par1World.getTileEntity(tileX, tileY, tileZ);
+		BlockLocation loc = BlockLocation.get(par1World, tileX, tileY, tileZ);
+		((TileEntityDoorController) te).rescan(loc);
+	}
+	
 	@Override
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
 		TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(x, y, z);
