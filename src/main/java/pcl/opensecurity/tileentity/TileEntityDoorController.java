@@ -142,10 +142,10 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 		}
 	}
 
-	public void rescan(BlockLocation loc) {
+	public void rescan() {
 		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
-			block = worldObj.getBlock(loc.x + direction.offsetX, loc.y + direction.offsetY, loc.z + direction.offsetZ);
-			TileEntity te = worldObj.getTileEntity(loc.x + direction.offsetX, loc.y + direction.offsetY, loc.z + direction.offsetZ);
+			block = worldObj.getBlock(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+			TileEntity te = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
 			if (block instanceof BlockSecurityDoor) {
 				this.door = (BlockSecurityDoor) block;
 				doorCoordX = xCoord + direction.offsetX;
@@ -248,7 +248,7 @@ public class TileEntityDoorController extends TileEntityMachineBase implements E
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
 		BlockLocation loc = BlockLocation.get(worldObj, doorCoordX, doorCoordY, doorCoordZ);
-		rescan(loc);
+		rescan();
 		if (node.changeBuffer(-5) == 0) {
 			BlockSecurityDoor door = (BlockSecurityDoor) ContentRegistry.SecurityDoorBlock;
 
