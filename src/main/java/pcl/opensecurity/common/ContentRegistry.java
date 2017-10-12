@@ -200,7 +200,7 @@ public class ContentRegistry {
         String redstone = "dustRedstone";
         String obsidian = "obsidian";
         String glass = "blockGlassColorless";
-        String stone = "blockStone";
+        String stone = "stone";
         ItemStack stone_button = new ItemStack(Blocks.STONE_BUTTON);
         ItemStack paper = new ItemStack(Items.PAPER);
         ItemStack noteblock = new ItemStack(Blocks.NOTEBLOCK);
@@ -359,7 +359,7 @@ public class ContentRegistry {
                 "SIS",
                 "STS",
                 "SCS",
-                'T', transistor, 'N', numpad, 'C', t1microchip, 'I', iron, 'S', stone));
+                'T', transistor, 'C', t1microchip, 'I', iron, 'S', stone));
 
         OpenSecurity.logger.info("Registered Recipes");
     }

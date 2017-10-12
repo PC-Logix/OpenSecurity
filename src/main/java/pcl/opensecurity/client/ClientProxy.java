@@ -47,22 +47,22 @@ public class ClientProxy extends CommonProxy {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void preinit() {
-	    StateMapperBase ignoreState = new StateMapperBase() {
-	      @Override
-	      protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
-	        return CamouflageBakedModel.variantTag;
-	      }
-	    };
-	    ModelLoader.setCustomStateMapper(ContentRegistry.doorController, ignoreState);
-	    MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
-	    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(OpenSecurity.MODID + ":door_controller", "inventory");
-	    final int DEFAULT_ITEM_SUBTYPE = 0;
-	    ModelLoader.setCustomModelResourceLocation(ContentRegistry.itemBlockDoorController, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+		StateMapperBase ignoreState = new StateMapperBase() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
+				return CamouflageBakedModel.variantTag;
+			}
+		};
+		ModelLoader.setCustomStateMapper(ContentRegistry.doorController, ignoreState);
+		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
+		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(OpenSecurity.MODID + ":door_controller", "inventory");
+		final int DEFAULT_ITEM_SUBTYPE = 0;
+		ModelLoader.setCustomModelResourceLocation(ContentRegistry.itemBlockDoorController, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
 	}
-	
+
 	@Override
 	public void init(){
 		super.init();
@@ -71,7 +71,7 @@ public class ClientProxy extends CommonProxy {
 		mc.getItemColors().registerItemColorHandler( new CardColorHandler( ContentRegistry.itemMagCard ), ContentRegistry.itemMagCard );
 		ModColourManager.registerColourHandlers();
 	}
-	
+
 	public void registerRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
@@ -79,7 +79,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, RenderEntityEnergyBolt::new);
 		OpenSecurity.logger.info("Registering TESR");		
 	}
-	
+
 	@Override
 	public void registerItemRenderers() {
 		registerBlockItem(ContentRegistry.alarmBlock, 0, "alarm");
@@ -102,48 +102,49 @@ public class ClientProxy extends CommonProxy {
 		registerItem(ContentRegistry.cooldownUpgradeItem, "cooldownUpgrade");
 		registerItem(ContentRegistry.rfidReaderCardItem, "rfidReaderCard");
 	}
-	
+
 	public static void registerBlockItem(final Block block, int meta, final String blockName) {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(OpenSecurity.MODID + ":" + blockName, "inventory"));
 		OpenSecurity.logger.info("Registering " + blockName + " Item Renderer");
-    }
-	
+	}
+
 	public static void registerItem(final Item item, final String itemName)  {
 		ModelLoader.setCustomModelResourceLocation(item,  0, new ModelResourceLocation(OpenSecurity.MODID + ":" + itemName, "inventory"));
 		OpenSecurity.logger.info("Registering " + itemName + " Item Renderer");
-    }
-	
+	}
+
 	public void listFilesForFolder(final File folder) {
 		AlarmResource r = new AlarmResource();
 		int i = 1;
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	            listFilesForFolder(fileEntry);
-	        } else {
-	        	r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
-	        	i++;
-	        }
-	    }
-	    
-	    r.registerAsResourceLocation(); //finalise IResourcePack
+		if (folder.listFiles() != null) {
+			for (final File fileEntry : folder.listFiles()) {
+				if (fileEntry.isDirectory()) {
+					listFilesForFolder(fileEntry);
+				} else {
+					r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
+					i++;
+				}
+			}
+		}
+		r.registerAsResourceLocation(); //finalise IResourcePack
 	}
-	
-    @Override
-    public void registerSounds () {
+
+	@Override
+	public void registerSounds () {
 		File[] listOfFiles;
 		File alarmSounds = new File("./mods/OpenSecurity/assets/opensecurity/sounds/alarms");
 		if (alarmSounds.exists()) {
 			listOfFiles = alarmSounds.listFiles();
-			
-		    for (int i = 0; i < listOfFiles.length; i++) {
-		      if (listOfFiles[i].isFile()) {
-				alarmList.add(listOfFiles[i].getName());
-		      }
-		    }
+
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isFile()) {
+					alarmList.add(listOfFiles[i].getName());
+				}
+			}
 		}
-        listFilesForFolder(alarmSounds);
-    }
-    
+		listFilesForFolder(alarmSounds);
+	}
+
 
 	@SideOnly(Side.CLIENT)
 	private static class CardColorHandler implements IItemColor
