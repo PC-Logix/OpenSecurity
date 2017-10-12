@@ -50,33 +50,35 @@ public class ClientProxy extends CommonProxy {
 		TileEntitySpecialRenderer panelDisplayPanel = new RenderDisplayPanel();
 		ClientRegistry.bindTileEntitySpecialRenderer(pcl.opensecurity.tileentity.TileEntityDisplayPanel.class, panelDisplayPanel);
 
-	    RenderEnergyTurret turretRenderer = new RenderEnergyTurret();
-	    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, turretRenderer);
-	    MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ContentRegistry.energyTurretBlock), new RenderItemEnergyTurret(turretRenderer));
-	    RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, new RenderEntityEnergyBolt());
-		
-	    RenderKeypad keypadRenderer = new RenderKeypad();
+		RenderEnergyTurret turretRenderer = new RenderEnergyTurret();
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, turretRenderer);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ContentRegistry.energyTurretBlock), new RenderItemEnergyTurret(turretRenderer));
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, new RenderEntityEnergyBolt());
+
+		RenderKeypad keypadRenderer = new RenderKeypad();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypadLock.class, keypadRenderer);
 		MinecraftForgeClient.registerItemRenderer(new ItemStack(ContentRegistry.keypadLockBlock).getItem(), keypadRenderer);
-	    
+
 		OpenSecurity.logger.info("Registered TESRs");
 	}
-	
+
 	public void listFilesForFolder(final File folder) {
 		AlarmResource r = new AlarmResource();
 		int i = 1;
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	            listFilesForFolder(fileEntry);
-	        } else {
-	        	r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
-	        	i++;
-	            System.out.println(OpenSecurity.alarmSounds + File.separator + fileEntry.getName());
-	        }
-	    }
-	    r.registerAsResourceLocation(); //finalise IResourcePack
+		if (folder.listFiles() != null) {
+			for (final File fileEntry : folder.listFiles()) {
+				if (fileEntry.isDirectory()) {
+					listFilesForFolder(fileEntry);
+				} else {
+					r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
+					i++;
+					System.out.println(OpenSecurity.alarmSounds + File.separator + fileEntry.getName());
+				}
+			}
+		}
+		r.registerAsResourceLocation(); //finalise IResourcePack
 	}
-	
+
 	@Override
 	public World getWorld(int dimId) {
 		World world = Minecraft.getMinecraft().theWorld;
@@ -85,9 +87,9 @@ public class ClientProxy extends CommonProxy {
 		}
 		return null;
 	}
-	
-    @Override
-    public void registerSounds () {
-        listFilesForFolder(OpenSecurity.alarmSounds);
-    }
+
+	@Override
+	public void registerSounds () {
+		listFilesForFolder(OpenSecurity.alarmSounds);
+	}
 }

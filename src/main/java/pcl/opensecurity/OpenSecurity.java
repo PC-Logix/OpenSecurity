@@ -54,23 +54,24 @@ public class OpenSecurity {
 
 	public static List<String> alarmList = new ArrayList<String>();
 
-	
-	
+
+
 	public static SimpleNetworkWrapper network;
-	
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		long time = System.nanoTime();
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 		alarmSounds = new File("./mods/OpenSecurity/sounds/alarms/");
 		File[] listOfFiles = alarmSounds.listFiles();
-
-	    for (int i = 0; i < listOfFiles.length; i++) {
-	      if (listOfFiles[i].isFile()) {
-	        System.out.println("File " + listOfFiles[i].getName());
-	        alarmList.add(listOfFiles[i].getName());
-	      }
-	    }
+		if (listOfFiles != null) {
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isFile()) {
+					System.out.println("File " + listOfFiles[i].getName());
+					alarmList.add(listOfFiles[i].getName());
+				}
+			}
+		}
 		rfidRange = cfg.rfidMaxRange;
 		returnRealUUID = cfg.returnRealUUID;
 		enableplaySoundAt = cfg.enableplaySoundAt;
@@ -86,14 +87,14 @@ public class OpenSecurity {
 			}
 		}
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new OSGUIHandler());
-	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
-	    int packetID = 0;
-	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
-	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
-	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
-	    logger.info("Registered " + packetID + " packets");
-	    ContentRegistry.preInit();
-	    logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
+		network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
+		int packetID = 0;
+		network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
+		network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
+		network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
+		logger.info("Registered " + packetID + " packets");
+		ContentRegistry.preInit();
+		logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 
 	@EventHandler

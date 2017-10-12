@@ -228,7 +228,7 @@ public class ContentRegistry {
 		String redstone = "dustRedstone";
 		String obsidian = "obsidian";
 		String glass = "blockGlassColorless";
-		String stone = "blockStone";
+		String stone = "stone";
 		ItemStack stone_button = new ItemStack((Block)Block.blockRegistry.getObject("stone_button"));
 		ItemStack paper = new ItemStack(Items.paper);
 		ItemStack noteblock = new ItemStack(Blocks.noteblock);
@@ -383,7 +383,7 @@ public class ContentRegistry {
 				"SIS", 
 				"STS",
 				"SCS", 
-				'T', transistor, 'N', numpad, 'C', t1microchip, 'I', iron, 'S', stone));
+				'T', transistor, 'C', t1microchip, 'I', iron, 'S', stone));
 
 		GameRegistry.addShapelessRecipe(secureOS_disk, floppy, magCardItem);
 		OpenSecurity.logger.info("Registered Recipes");
