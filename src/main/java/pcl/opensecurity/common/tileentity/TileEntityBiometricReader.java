@@ -8,6 +8,7 @@ import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.util.EnumFacing;
+import pcl.opensecurity.common.inventory.BasicInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -16,8 +17,10 @@ public class TileEntityBiometricReader extends TileEntityOSBase {
 	public String data;
 	public String eventName = "bioReader";
 
-	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
-
+	public TileEntityBiometricReader() {
+		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	}
+	
 	@Override
 	public Node node() {
 		return node;
