@@ -30,11 +30,11 @@ def getGitRef() {
 }
 
 if (System.getenv("PROMOTED_NUMBER") != null)
-    ext.buildNumber += ".${System.getenv("PROMOTED_NUMBER")}"
+    ext.buildNumber = ".${System.getenv("PROMOTED_NUMBER")}"
 else if (System.getenv("BUILD_NUMBER") != null)
-    ext.buildNumber += ".${System.getenv("BUILD_NUMBER")}"
+    ext.buildNumber = ".${System.getenv("BUILD_NUMBER")}"
 else
-    ext.buildNumber += "+" + getGitRef()
+    ext.buildNumber = "+" + getGitRef()
 
 //if (System.getenv().BUILD_NUMBER != null)
 //	ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
