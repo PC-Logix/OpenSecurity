@@ -16,10 +16,30 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "MC1.10.2-1.0"
 
-if (System.getenv().BUILD_NUMBER != null)
-	ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
+def getGitRef() {
+  try {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+      commandLine 'git', 'rev-parse', '--short', 'HEAD'
+      standardOutput = stdout
+    }
+    return stdout.toString().trim()
+  } catch (Throwable e) {
+    return "unknown"
+  }
+}
+
+if (System.getenv("PROMOTED_NUMBER") != null)
+    ext.buildNumber += ".${System.getenv("PROMOTED_NUMBER")}"
+else if (System.getenv("BUILD_NUMBER") != null)
+    ext.buildNumber += ".${System.getenv("BUILD_NUMBER")}"
 else
-	ext.buildNumber = 0
+    ext.buildNumber += "+" + getGitRef()
+
+//if (System.getenv().BUILD_NUMBER != null)
+//	ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
+//else
+//	ext.buildNumber = 0
 
 group= "pcl.opensecurity" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "OpenSecurity"
