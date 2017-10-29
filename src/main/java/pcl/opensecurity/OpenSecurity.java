@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "." + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity")
+@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity")
 public class OpenSecurity {
 	public static final String MODID = "opensecurity";
 

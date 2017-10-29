@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 
-version = "MC1.10.2-1.0"
+version = "1.0"
 
 def getGitRef() {
   try {
@@ -107,7 +107,7 @@ processResources
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':project.version + "-" + project.ext.buildNumber, 'mcversion':project.minecraft.version
     }
         
     // copy everything else, thats not the mcmod.info
