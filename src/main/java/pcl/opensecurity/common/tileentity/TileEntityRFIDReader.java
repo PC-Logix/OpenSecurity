@@ -16,8 +16,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
 public class TileEntityRFIDReader extends TileEntityOSBase {
@@ -140,7 +142,7 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		range = range / 2;
 		
 		if (node.changeBuffer(-5 * range) == 0) {
-			//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner2", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.scanner2, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
 			return new Object[]{ scan(range) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };

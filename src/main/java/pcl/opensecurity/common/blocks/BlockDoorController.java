@@ -73,13 +73,16 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+		TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
 		if (heldItem == null) {
+			//System.out.println("TRYING TO TOGGLE!");
+			//tileEntity.toggle();
 			return true;
 		}
 		Block block = Block.getBlockFromItem(heldItem.getItem());
 		if (block.isFullCube(block.getDefaultState()) || block instanceof BlockGlass || block instanceof BlockStainedGlass) {
 			ItemStack equipped = heldItem;
-			TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
+			
 			if (tileEntity == null || player.isSneaking() || (heldItem != null && (heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor))) {
 				return false;
 			}

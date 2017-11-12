@@ -53,6 +53,33 @@ public class TileEntityDoorController extends TileEntityOSBase {
 		}
 	}
 
+
+	public void toggle() {
+		rescan(this.pos);
+		if(BlockDoor.isOpen(world, doorPos)) {
+			System.out.println("Door is open closing");
+			rescan(this.pos);
+			if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
+				TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
+				doorBlock.toggleDoor(world, doorPos, false);
+			} else if (doorBlockVanilla != null && doorBlockVanilla instanceof BlockDoor) {
+				doorBlockVanilla.toggleDoor(world, doorPos, false);
+				neighborDoorBlockVanilla.toggleDoor(world, neighborDoorPos, false);
+			}
+		} else {
+			System.out.println("Door is closed opening");
+			rescan(this.pos);
+			if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
+				System.out.println("Door was valid!");
+				TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
+				doorBlock.toggleDoor(world, doorPos, true);
+			} else if (doorBlockVanilla != null && doorBlockVanilla instanceof BlockDoor) {
+				doorBlockVanilla.toggleDoor(world, doorPos, true);
+				neighborDoorBlockVanilla.toggleDoor(world, neighborDoorPos, true);
+			}
+		}
+	}
+	
 	@Callback
 	public Object[] open(Context context, Arguments args) {
 		rescan(this.pos);
@@ -295,4 +322,5 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			return ContentRegistry.doorController.getDefaultState();
 		}
 	}
+
 }

@@ -14,9 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemMagCard;
 
 public class TileEntityMagReader extends TileEntityOSBase {
@@ -37,6 +39,7 @@ public class TileEntityMagReader extends TileEntityOSBase {
 			if(!world.isRemote){
 				//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
+        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.card_swipe, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
 		}
 		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.getTagCompound() != null && itemStack.getTagCompound().hasKey("data")) {
 			data = itemStack.getTagCompound().getString("data");

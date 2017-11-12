@@ -44,6 +44,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 public class BlockSecureDoor extends Block implements ITileEntityProvider {
@@ -111,30 +112,23 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
 
     /**
      * Used to determine ambient occlusion and culling when rebuilding chunks for render
-     */
+     */    
+    @Override
     public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
-
+    
+    @Override
     public boolean isPassable(IBlockAccess worldIn, BlockPos pos)
     {
         return isOpen(combineMetadata(worldIn, pos));
     }
-
+    
+    @Override
     public boolean isFullCube(IBlockState state)
     {
         return false;
-    }
-
-    private int getCloseSound()
-    {
-        return this.blockMaterial == Material.IRON ? 1011 : 1012;
-    }
-
-    private int getOpenSound()
-    {
-        return this.blockMaterial == Material.IRON ? 1005 : 1006;
     }
 
     /**
@@ -159,7 +153,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
             {
                 worldIn.setBlockState(blockpos, iblockstate1.withProperty(OPEN, Boolean.valueOf(open)), 10);
                 worldIn.markBlockRangeForRenderUpdate(blockpos, pos);
-                worldIn.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5f, pos.getZ() + 0.5F, new SoundEvent(new ResourceLocation("opensecurity:security_door")), SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
+                worldIn.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5f, pos.getZ() + 0.5F, SoundHandler.security_door, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
 
             }
         }

@@ -8,8 +8,10 @@ import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.SoundHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -94,7 +96,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
         }
         range = range / 2;
         if (node.changeBuffer(-5 * range) == 0) {
-            //worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner1", 1.0F, 1);
+        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.scanner1, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
             return new Object[]{ scan(true, offset) };
         } else {
             return new Object[] { false, "Not enough power in OC Network." };
@@ -110,7 +112,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
         }
         range = range / 2;
         if (node.changeBuffer(-5 * range) == 0) {
-            //worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:scanner1", 1.0F, 1);
+        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.scanner1, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
             return new Object[]{ scan(false, offset) };
         } else {
             return new Object[] { false, "Not enough power in OC Network." };

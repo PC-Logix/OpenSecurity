@@ -25,6 +25,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.items.ItemCooldownUpgrade;
 import pcl.opensecurity.common.items.ItemDamageUpgrade;
@@ -329,7 +330,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 
 		if (moveSound) {
 			if(soundTicks == 0) {
-				world.playSound(pos.getX(), pos.getY(), pos.getZ(), new SoundEvent(new ResourceLocation("opensecurity:turretMove")), SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F, false);
+				world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundHandler.turretMove, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F, false);
 			}
 			soundTicks++;
 			if (soundTicks > 5) {
@@ -573,7 +574,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			bolt.setPosition(this.pos.getX() + 0.5F, this.pos.getY() + dY, this.pos.getZ() + 0.5F);
 			bolt.setHeading(a, p);
 			bolt.setDamage(damage);
-			world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + dY, this.pos.getZ() + 0.5F, new SoundEvent(new ResourceLocation("opensecurity:turretFire")), SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
+			world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + dY, this.pos.getZ() + 0.5F, SoundHandler.turretFire, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
 
 			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 			getUpdateTag();

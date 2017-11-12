@@ -15,9 +15,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.networking.PacketKeypadButton;
 
 public class TileEntityKeypad extends TileEntityOSBase {
@@ -226,8 +228,8 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	}
 
 	public void pressedButton(EntityPlayer player, int buttonIndex) {
-		//if (shouldBeep)
-		//	worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D,  zCoord + 0.5D, "opensecurity:keypad_press", 0.4F, 1);
+		if (shouldBeep)
+            world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5f, pos.getZ() + 0.5F, SoundHandler.keypad_press, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
 		if (!world.isRemote) {
 			PacketKeypadButton packet = new PacketKeypadButton((short) 1, world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), buttonIndex);
 			EntityPlayerMP p=(EntityPlayerMP)player;			
