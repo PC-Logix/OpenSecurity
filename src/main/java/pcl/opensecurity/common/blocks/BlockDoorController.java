@@ -77,7 +77,7 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 			return true;
 		}
 		Block block = Block.getBlockFromItem(heldItem.getItem());
-		if (block.isOpaqueCube(block.getDefaultState()) || block instanceof BlockGlass || block instanceof BlockStainedGlass) {
+		if (block.isFullCube(block.getDefaultState()) || block instanceof BlockGlass || block instanceof BlockStainedGlass) {
 			ItemStack equipped = heldItem;
 			TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
 			if (tileEntity == null || player.isSneaking() || (heldItem != null && (heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor))) {
@@ -102,7 +102,7 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
