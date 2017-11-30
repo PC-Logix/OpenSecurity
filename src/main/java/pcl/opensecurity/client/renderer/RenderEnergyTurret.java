@@ -23,6 +23,7 @@ public class RenderEnergyTurret extends TileEntitySpecialRenderer<TileEntityEner
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		Minecraft.getMinecraft().renderEngine.bindTexture(this.textures);
 		GL11.glPushMatrix();
+		GL11.glDisable(GL11.GL_BLEND);
 		if(te!=null && te instanceof TileEntityEnergyTurret)
 		{
 			TileEntityEnergyTurret et = (TileEntityEnergyTurret)te;
@@ -30,6 +31,7 @@ public class RenderEnergyTurret extends TileEntitySpecialRenderer<TileEntityEner
 		}
 		else
 			this.model.render(0.0625F, true, 1.0F, 1.0F, 0F, 0F);
+		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 	}

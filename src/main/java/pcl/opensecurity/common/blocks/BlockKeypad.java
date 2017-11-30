@@ -3,6 +3,8 @@ package pcl.opensecurity.common.blocks;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -35,12 +37,12 @@ public class BlockKeypad extends BlockOSBase {
 
 	@Override
 	public boolean isBlockNormalCube(IBlockState blockState) {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isOpaqueCube(IBlockState blockState) {
-		return false;
+		return true;
 	}
 
 	@Override
