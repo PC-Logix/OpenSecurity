@@ -1,22 +1,15 @@
 package pcl.opensecurity.client.renderer;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.item.EntityBoat.Type;
-import net.minecraft.item.ItemStack;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.World;
-import pcl.opensecurity.common.ContentRegistry;
+import org.lwjgl.opengl.GL11;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad.ButtonState;
 
@@ -153,39 +146,22 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 	@Override
 	public void renderTileEntityAt(TileEntityKeypad tileEntity, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		//Temp fix until I can debug this.
-		//float light = tileEntity.getWorldObj().getLightBrightnessForSkyBlocks(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 15);
-		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, light, light);
-		int li = tileEntity.getWorld().getCombinedLight(tileEntity.getPos(), 15728640);
-		int i1 = li % 65536;
-		int j1 = li / 65536;
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) i1, (float) j1);
-		TileEntityKeypad te=(TileEntityKeypad)tileEntity;
-		Tessellator tessellator=Tessellator.getInstance();
-
-		int bx=te.getPos().getX(), by=te.getPos().getY(), bz=te.getPos().getZ();
-
-		World world=te.getWorld();
-        BlockPos bp = te.getPos();
-        //IBlockState b = access.getBlockState(bp);
-		//float brightness=ContentRegistry.keypadLockBlock.getLightValue(world, bx, by, bz);
-		int light=world.getLightFor(EnumSkyBlock.BLOCK, te.getPos());
-		
-		
-		//tessellator.setColorOpaque_F(brightness,brightness,brightness);
-		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(light&0xffff),(float)(light>>16));
-
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y,(float)z);
 		GL11.glTranslatef(.5f,0,.5f);
-		GL11.glRotatef(te.getAngle(),0f,1f,0f);
+		GL11.glRotatef(tileEntity.getAngle(),0f,1f,0f);
 		GL11.glTranslatef(-.5f,0,-.5f);
 
-		long time = world.getTotalWorldTime();
+		IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
+		EnumFacing facing = EnumFacing.getHorizontal(state.getBlock().getMetaFromState(state));
+		int li = tileEntity.getWorld().getCombinedLight(tileEntity.getPos().offset(facing.getOpposite()), 0);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, li % 65536, li / 65536);
+
+		long time = tileEntity.getWorld().getTotalWorldTime();
 
 		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
 
-		drawKeypadBlock(te, time);
+		drawKeypadBlock(tileEntity, time);
 
 		GL11.glPopMatrix();
 	}
