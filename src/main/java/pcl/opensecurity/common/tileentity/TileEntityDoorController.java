@@ -47,9 +47,9 @@ public class TileEntityDoorController extends TileEntityOSBase {
 	public Object[] isOpen(Context context, Arguments args) {
 		rescan(this.pos);
 		if(BlockDoor.isOpen(world, doorPos)) {
-			return new Object[] { true }
+			return new Object[] { true };
 		} else {
-			return new Object[] { false }
+			return new Object[] { false };
 		}
 	}
 	
