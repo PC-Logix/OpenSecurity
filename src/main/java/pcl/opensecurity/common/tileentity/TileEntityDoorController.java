@@ -44,6 +44,16 @@ public class TileEntityDoorController extends TileEntityOSBase {
 	}
 
 	@Callback
+	public Object[] isOpen(Context context, Arguments args) {
+		rescan(this.pos);
+		if(BlockDoor.isOpen(world, doorPos)) {
+			return new Object[] { true }
+		} else {
+			return new Object[] { false }
+		}
+	}
+	
+	@Callback
 	public Object[] toggle(Context context, Arguments args) {
 		rescan(this.pos);
 		if(BlockDoor.isOpen(world, doorPos)) {
