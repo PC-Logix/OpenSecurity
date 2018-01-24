@@ -93,4 +93,15 @@ public class BlockSecurityDoorPrivate extends BlockSecurityDoor {
 			return this.iconsLower[0];
 		}
 	}
+	@Override
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
+	{
+		return ContentRegistry.securityDoorPrivateItem;
+	}
+
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+		return new ItemStack(ContentRegistry.securityDoorPrivateItem);
+
+}
 }
