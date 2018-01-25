@@ -9,6 +9,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.ContentRegistry;
 import pcl.opensecurity.tileentity.TileEntitySecureDoor;
