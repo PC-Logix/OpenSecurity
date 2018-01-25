@@ -1,9 +1,12 @@
 package pcl.opensecurity.blocks;
 
+import java.util.Random;
+
 import net.minecraft.client.renderer.IconFlipped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
@@ -93,9 +96,9 @@ public class BlockSecurityDoorPrivate extends BlockSecurityDoor {
 			return this.iconsLower[0];
 		}
 	}
+	
 	@Override
-	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-	{
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
 		return ContentRegistry.securityDoorPrivateItem;
 	}
 
@@ -103,5 +106,5 @@ public class BlockSecurityDoorPrivate extends BlockSecurityDoor {
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
 		return new ItemStack(ContentRegistry.securityDoorPrivateItem);
 
-}
+	}
 }
