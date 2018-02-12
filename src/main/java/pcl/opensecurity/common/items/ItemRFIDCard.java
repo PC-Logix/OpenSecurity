@@ -21,7 +21,7 @@ public class ItemRFIDCard extends ItemCard {
 	
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target, EnumHand hand) {
-		if (!itemStack.hasTagCompound() || !stack.getTagCompound().hasKey("data")) {
+		if (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("data")) {
 			return super.itemInteractionForEntity(stack, playerIn, target, hand);
 		} else if (target instanceof EntityLiving) {
 			NBTTagCompound entityData = target.getEntityData();
