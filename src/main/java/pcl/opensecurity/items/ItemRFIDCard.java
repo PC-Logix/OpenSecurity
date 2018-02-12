@@ -33,8 +33,8 @@ public class ItemRFIDCard extends Item {
 	
 	@Override
 	public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase entity) {
-		if (!itemStack.stackTagCompound.hasKey("data")) {
-			return false;
+		if (!itemStack.hasTagCompound() || !itemStack.stackTagCompound.hasKey("data")) {
+			return super.itemInteractionForEntity(itemStack, player, entity);
 		} else if (entity instanceof EntityLiving) {
 			NBTTagCompound entityData = entity.getEntityData();
 			NBTTagCompound rfidData;
