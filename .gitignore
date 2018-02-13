@@ -92,6 +92,7 @@ pip-log.txt
 /eclipse/
 /runtime/
 /server_runtime/
+/out/
 *~
 *.lnk
 output.txt

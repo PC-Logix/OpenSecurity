@@ -20,7 +20,7 @@ public class CardInputSlot extends Slot
      */
     public boolean isItemValid(@Nullable ItemStack stack)
     {
-        return (stack.getItem() instanceof ItemCard);
+        return (stack.getItem() instanceof ItemCard || stack.getUnlocalizedName().equals("item.oc.EEPROM"));
     }
 
     public int getItemStackLimit(ItemStack stack)

@@ -134,7 +134,8 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
 					// checking for a empty one
 					if (getStackInSlot(x) == null) { // The slot is empty lets
 						// make us a new EEPROM
-						if (getStackInSlot(0).getItem() instanceof Item) {
+						System.out.println(getStackInSlot(0).getItem().getUnlocalizedName());
+						if (getStackInSlot(0).getUnlocalizedName().equals("item.oc.EEPROM")) {
 							//CardWriterItemStacks[x] = eepromItem;
 							NBTTagCompound oc_data = new NBTTagCompound();
 							NBTTagCompound our_data = new NBTTagCompound();
