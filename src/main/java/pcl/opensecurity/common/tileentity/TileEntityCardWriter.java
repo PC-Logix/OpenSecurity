@@ -1,7 +1,10 @@
 package pcl.opensecurity.common.tileentity;
 
+import java.util.Arrays;
 import java.util.UUID;
+import java.nio.charset.Charset;
 
+import li.cil.oc.Settings;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -10,6 +13,7 @@ import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
+import li.cil.oc.common.item.EEPROM;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
@@ -116,6 +120,54 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
 				node.sendToReachable("computer.signal", "cardRemove", "cardRemove");
 		}
 	}
+
+
+	@Callback
+	public Object[] flash(Context context, Arguments args) {
+		byte[] code = args.checkString(0).getBytes(Charset.forName("UTF-8"));
+		String title = args.checkString(1);
+		Boolean locked = args.checkBoolean(2);
+		ItemStack eepromItem = li.cil.oc.api.Items.get("eeprom").createItemStack(1);
+		if (code != null) {
+			if (getStackInSlot(0) != null) {
+				for (int x = 3; x <= 12; x++) { // Loop the 9 output slots
+					// checking for a empty one
+					if (getStackInSlot(x) == null) { // The slot is empty lets
+						// make us a new EEPROM
+						if (getStackInSlot(0).getItem() instanceof Item) {
+							//CardWriterItemStacks[x] = eepromItem;
+							NBTTagCompound oc_data = new NBTTagCompound();
+							NBTTagCompound our_data = new NBTTagCompound();
+							Integer biggerSizeCode = Settings.get().eepromSize()*2;
+							Integer biggerSizeData = Settings.get().eepromDataSize()*2;
+							if(!OpenSecurity.cfg.biggerEEPROM && code.length > Settings.get().eepromSize()) {
+								code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
+							} else if(OpenSecurity.cfg.biggerEEPROM && code.length > biggerSizeCode) {
+								code = Arrays.copyOfRange(code, 0, biggerSizeCode);
+							}
+							if(!OpenSecurity.cfg.biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
+								title = title.substring(0, Settings.get().eepromDataSize());
+							} else if(OpenSecurity.cfg.biggerEEPROM && title.length() > biggerSizeData) {
+								title = title.substring(0, biggerSizeData);
+							}
+							our_data.setByteArray("oc:eeprom", code);
+							our_data.setString("oc:label", title);
+							our_data.setBoolean("oc:readonly", locked);
+							oc_data.setTag("oc:data", our_data);
+							//CardWriterItemStacks[x].setTagCompound(oc_data);
+							decrStackSize(0, 1);
+							return new Object[] { true };
+						}
+						return new Object[] { false, "Item is not EEPROM" };
+					}
+				}
+				return new Object[] { false, "No Empty Slots" };
+			}
+			return new Object[] { false, "No EEPROM in slot" };
+		}
+		return new Object[] { false, "Data is Null" };
+	}
+
 
 	@Callback(doc = "function(string: data, string: displayName, boolean: locked, int: color):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data, the 3rd argument will set the color of the card, use OC's color api.", direct = true)
 	public Object[] write(Context context, Arguments args) {
