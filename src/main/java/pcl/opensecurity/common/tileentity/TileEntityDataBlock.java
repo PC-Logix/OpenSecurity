@@ -138,12 +138,12 @@ public class TileEntityDataBlock extends TileEntityOSBase {
 	}
 
 	@Callback(direct = true, limit = 32, doc = "function(data:string):string -- Applies rot13 to the data. ")
-	public Object[] rot13(Context context, Arguments args) throws Exception {
+	public Object[] rot13(Context context, Arguments args) {
 		return new Object[] { rot13(args.checkString(0)) };
 	}
 
 	@Callback(direct = true, limit = 32, doc = "function(plain-text:string, optional rounds:int):string -- Computes the bCryptHash of the input plaintext, optionally supply rounds (4-15)")
-	public Object[] bCryptHash(Context context, Arguments args) throws Exception {
+	public Object[] bCryptHash(Context context, Arguments args) {
 		int rounds = (int) args.optDouble(1, 10);
 		if (rounds < 4) {
 			rounds = 4;
@@ -155,7 +155,7 @@ public class TileEntityDataBlock extends TileEntityOSBase {
 	}
 	
 	@Callback(direct = true, limit = 32, doc = "function(plain-text:string, hash:string):boolean -- Checks bCrypt input vs hash supplied")
-	public Object[] bCryptCheck(Context context, Arguments args) throws Exception {
+	public Object[] bCryptCheck(Context context, Arguments args) {
 		return new Object[] { BCrypt.checkpw(args.checkString(0), args.checkString(1)) };
 	}
 	

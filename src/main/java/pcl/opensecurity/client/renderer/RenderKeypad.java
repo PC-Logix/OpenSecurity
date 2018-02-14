@@ -231,7 +231,7 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 
 		boolean[] pressed = new boolean[12];
 		for(int i=0; i<pressed.length; ++i)
-			pressed[i] = keylock!=null ? keylock.buttonStates[i].isPressed(time) : false;
+			pressed[i] = keylock != null && keylock.buttonStates[i].isPressed(time);
 
 		for (int i=0; i<12; ++i)
 			renderButtonGeometry(vertexbuffer, pressed[i]?texPixel*.75f:0f, buttons[i]);

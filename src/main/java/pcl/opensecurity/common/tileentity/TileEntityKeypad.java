@@ -109,19 +109,19 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	}
 
 	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a key is pressed")
-	public Object[] setEventName(Context context, Arguments args) throws Exception {
+	public Object[] setEventName(Context context, Arguments args) {
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
 	
 	@Callback(doc = "function(Boolean):boolean; Sets if the keys should beep when pressed")
-	public Object[] setShouldBeep(Context context, Arguments args) throws Exception {
+	public Object[] setShouldBeep(Context context, Arguments args) {
 		shouldBeep = args.checkBoolean(0);
 		return new Object[]{ true };
 	}
 
 	@Callback(doc = "function(String:text[, color:number]):boolean; Sets the display string (0-8 chars), color (0-7) - 1 bit per channel")
-	public Object[] setDisplay(Context context, Arguments args) throws Exception {
+	public Object[] setDisplay(Context context, Arguments args) {
 		String text = args.checkString(0);
 
 		displayColor = (byte)(args.optInteger(1, displayColor)&7);
@@ -135,7 +135,7 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	}
 	
 	@Callback(doc = "function(idx:number, text:string, color:number):boolean; Sets the key text (1-2 chars)")
-	public Object[] setKey(Context context, Arguments args) throws Exception {
+	public Object[] setKey(Context context, Arguments args) {
 		if(args.count()==0) throw new IllegalArgumentException("Not enough arguments");
 		if(args.isInteger(0))
 		{

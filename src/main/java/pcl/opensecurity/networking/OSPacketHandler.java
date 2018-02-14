@@ -50,10 +50,7 @@ public class OSPacketHandler implements IMessage {
             TileEntity te = ctx.getServerHandler().playerEntity.getEntityWorld().getTileEntity(new BlockPos(message.x, message.y, message.z));
             boolean isEnabled;
             int side = message.side;
-            if(message.isEnabled == 1)
-            	isEnabled = true;
-            else
-            	isEnabled = false;
+            isEnabled = message.isEnabled == 1;
             //if(te instanceof TileEntityKVM) {
 			//	((TileEntityKVM) te).setSide(side, isEnabled);
             //}

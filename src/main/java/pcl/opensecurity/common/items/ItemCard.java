@@ -21,7 +21,7 @@ public class ItemCard extends Item {
 	 */
 	public boolean hasColor(ItemStack stack) {
 		NBTTagCompound nbttagcompound = stack.getTagCompound();
-		return nbttagcompound != null && nbttagcompound.hasKey("display", 10) ? nbttagcompound.getCompoundTag("display").hasKey("color", 3) : false;
+		return (nbttagcompound != null && nbttagcompound.hasKey("display", 10)) && nbttagcompound.getCompoundTag("display").hasKey("color", 3);
 	}
 
 	/**

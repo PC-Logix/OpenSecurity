@@ -74,11 +74,11 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 			Item equipped = heldItem.getItem();
 			TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
 			if (!world.isRemote && equipped instanceof ItemMagCard) {
-				world.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.ACTIVE));
+				world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
 				if (tile.doRead(heldItem, player, side.getIndex())) {
-					world.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.SUCCESS));
+					world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
 				} else {
-					world.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.ERROR));
+					world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
 				}
 			}
 			return true;
@@ -88,7 +88,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 	
 	@Override
 	public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-	worldIn.setBlockState(pos, state.withProperty(this.VARIANT, EnumType.IDLE));
+	worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
 	}
 	
 	public enum EnumType implements IVariant {

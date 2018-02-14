@@ -42,12 +42,12 @@ public class AlarmResource implements IResourcePack {
     }
     
 	@Override
-	public <T extends IMetadataSection> T getPackMetadata(MetadataSerializer metadataSerializer, String metadataSectionName) throws IOException {
+	public <T extends IMetadataSection> T getPackMetadata(MetadataSerializer metadataSerializer, String metadataSectionName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-    public BufferedImage getPackImage() throws IOException {
+    public BufferedImage getPackImage() {
         return null; //don't need no image for this shit
     }
     
@@ -76,7 +76,7 @@ public class AlarmResource implements IResourcePack {
     	return new File(mc_dir.getAbsolutePath(),"/mods/OpenSecurity/assets/opensecurity/sounds/"+file.substring(7));
     }
     
-    private static InputStream generateSoundsJSON () throws IOException {
+    private static InputStream generateSoundsJSON () {
         JsonObject root = new JsonObject();
         for (Map.Entry<String, String> entry : sound_map.entrySet()) {
             JsonObject event = new JsonObject();

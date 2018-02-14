@@ -170,7 +170,7 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			if (te.getPass().isEmpty()) {
 				//password = args.checkString(0);
 				if (te instanceof TileEntitySecureDoor) {
-					((TileEntitySecureDoor) te).setPassword(args.checkString(0));
+					te.setPassword(args.checkString(0));
 					otherTE.setPassword(args.checkString(0));
 				}
 
@@ -178,7 +178,7 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			} else {
 				if (args.checkString(0).equals(te.getPass())) {
 					if (te instanceof TileEntitySecureDoor) {
-						((TileEntitySecureDoor) te).setPassword(args.checkString(1));
+						te.setPassword(args.checkString(1));
 						otherTE.setPassword(args.checkString(1));
 					}
 					return new Object[] { true, "Password Changed" };

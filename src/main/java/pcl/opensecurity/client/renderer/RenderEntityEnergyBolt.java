@@ -24,7 +24,7 @@ public class RenderEntityEnergyBolt extends Render<EntityEnergyBolt> {
 		bindEntityTexture(entity);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.0F, (float)y + 0.0F, (float)z + 0.0F);
-		this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F, ((EntityEnergyBolt)entity).getYaw(), -((EntityEnergyBolt)entity).getPitch());
+		this.model.render(null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F, entity.getYaw(), -entity.getPitch());
 		GL11.glPopMatrix();
 	}
 

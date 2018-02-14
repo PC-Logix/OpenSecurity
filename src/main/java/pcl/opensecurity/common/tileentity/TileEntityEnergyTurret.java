@@ -243,7 +243,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		if (node != null) {
 			if(node.network() == null)
 				Network.joinOrCreateNetwork(this);
-			if (power && !((Connector)this.node).tryChangeBuffer(-10)) {
+			if (power && !this.node.tryChangeBuffer(-10)) {
 				doPowerOff();
 			}
 		}
@@ -425,7 +425,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	}
 
 	@Callback(doc="function(length:boolean):number -- Extends gun shaft (0-2)")
-	public Object[] extendShaft(Context context, Arguments args) throws Exception {
+	public Object[] extendShaft(Context context, Arguments args) {
 		float setTo = setShaft((float)args.checkDouble(0));
 		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 		getUpdateTag();
@@ -433,7 +433,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		return new Object[] { setTo };
 	}
 	@Callback(doc="function():boolean -- Get gun shaft extension", direct=true)
-	public Object[] getShaftLength(Context context, Arguments args) throws Exception {
+	public Object[] getShaftLength(Context context, Arguments args) {
 		return new Object[] { this.shaft };
 	}
 
@@ -667,9 +667,8 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		if((slot == 0 || slot == 1) && item.getItem() == ContentRegistry.damageUpgradeItem) return true;
 		if((slot == 2 || slot == 3) && item.getItem() == ContentRegistry.movementUpgradeItem) return true;
 		if((slot == 4 || slot == 5) && item.getItem() == ContentRegistry.cooldownUpgradeItem) return true;
-		if((slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgradeItem) return true;
-		return false;
-	}
+        return (slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgradeItem;
+    }
 	
 	@Override
 	public int getField(int id) {

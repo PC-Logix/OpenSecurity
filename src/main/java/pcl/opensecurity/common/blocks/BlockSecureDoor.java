@@ -51,8 +51,8 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
  
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
     public static final PropertyBool OPEN = PropertyBool.create("open");
-    public static final PropertyEnum<BlockSecureDoor.EnumHingePosition> HINGE = PropertyEnum.<BlockSecureDoor.EnumHingePosition>create("hinge", BlockSecureDoor.EnumHingePosition.class);
-    public static final PropertyEnum<BlockSecureDoor.EnumDoorHalf> HALF = PropertyEnum.<BlockSecureDoor.EnumDoorHalf>create("half", BlockSecureDoor.EnumDoorHalf.class);
+    public static final PropertyEnum<BlockSecureDoor.EnumHingePosition> HINGE = PropertyEnum.create("hinge", BlockSecureDoor.EnumHingePosition.class);
+    public static final PropertyEnum<BlockSecureDoor.EnumDoorHalf> HALF = PropertyEnum.create("half", BlockSecureDoor.EnumDoorHalf.class);
     protected static final AxisAlignedBB SOUTH_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.1875D);
     protected static final AxisAlignedBB NORTH_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.8125D, 1.0D, 1.0D, 1.0D);
     protected static final AxisAlignedBB WEST_AABB = new AxisAlignedBB(0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
@@ -84,8 +84,8 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         state = state.getActualState(source, pos);
-        EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
-        boolean flag = !((Boolean)state.getValue(OPEN)).booleanValue();
+        EnumFacing enumfacing = state.getValue(FACING);
+        boolean flag = !state.getValue(OPEN).booleanValue();
         boolean flag1 = state.getValue(HINGE) == BlockSecureDoor.EnumHingePosition.RIGHT;
 
         switch (enumfacing)
@@ -149,7 +149,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
             BlockPos blockpos = iblockstate.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.LOWER ? pos : pos.down();
             IBlockState iblockstate1 = pos == blockpos ? iblockstate : worldIn.getBlockState(blockpos);
 
-            if (iblockstate1.getBlock() == this && ((Boolean)iblockstate1.getValue(OPEN)).booleanValue() != open)
+            if (iblockstate1.getBlock() == this && iblockstate1.getValue(OPEN).booleanValue() != open)
             {
                 worldIn.setBlockState(blockpos, iblockstate1.withProperty(OPEN, Boolean.valueOf(open)), 10);
                 worldIn.markBlockRangeForRenderUpdate(blockpos, pos);
@@ -224,7 +224,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
 
     public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
     {
-        return pos.getY() >= worldIn.getHeight() - 1 ? false : worldIn.getBlockState(pos.down()).isSideSolid(worldIn,  pos.down(), EnumFacing.UP) && super.canPlaceBlockAt(worldIn, pos) && super.canPlaceBlockAt(worldIn, pos.up());
+        return pos.getY() < worldIn.getHeight() - 1 && (worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP) && super.canPlaceBlockAt(worldIn, pos) && super.canPlaceBlockAt(worldIn, pos.up()));
     }
 
     public EnumPushReaction getMobilityFlag(IBlockState state)
@@ -319,7 +319,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      */
     public IBlockState withRotation(IBlockState state, Rotation rot)
     {
-        return state.getValue(HALF) != BlockSecureDoor.EnumDoorHalf.LOWER ? state : state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
+        return state.getValue(HALF) != BlockSecureDoor.EnumDoorHalf.LOWER ? state : state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     /**
@@ -328,7 +328,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      */
     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
     {
-        return mirrorIn == Mirror.NONE ? state : state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING))).cycleProperty(HINGE);
+        return mirrorIn == Mirror.NONE ? state : state.withRotation(mirrorIn.toRotation(state.getValue(FACING))).cycleProperty(HINGE);
     }
 
     /**
@@ -357,9 +357,9 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
         }
         else
         {
-            i = i | ((EnumFacing)state.getValue(FACING)).rotateY().getHorizontalIndex();
+            i = i | state.getValue(FACING).rotateY().getHorizontalIndex();
 
-            if (((Boolean)state.getValue(OPEN)).booleanValue())
+            if (state.getValue(OPEN).booleanValue())
             {
                 i |= 4;
             }
@@ -400,10 +400,10 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
 
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {HALF, FACING, OPEN, HINGE});
+        return new BlockStateContainer(this, HALF, FACING, OPEN, HINGE);
     }
 
-    public static enum EnumDoorHalf implements IStringSerializable
+    public enum EnumDoorHalf implements IStringSerializable
     {
         UPPER,
         LOWER;
@@ -419,7 +419,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
         }
     }
 
-    public static enum EnumHingePosition implements IStringSerializable
+    public enum EnumHingePosition implements IStringSerializable
     {
         LEFT,
         RIGHT;

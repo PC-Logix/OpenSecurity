@@ -8,7 +8,7 @@
     xml.changeSet.item.each { change ->
         changelog += "$change.author.fullName: $change.msg" + '\n'
     }
-	System.out.println(changelog);
+	System.out.println(changelog)
     allprojects {
         project.ext.changelog = changelog
     }

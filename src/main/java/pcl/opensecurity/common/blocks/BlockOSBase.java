@@ -48,7 +48,7 @@ public class BlockOSBase  extends Block implements ITileEntityProvider {
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		EnumFacing facing = (EnumFacing)state.getValue(PROPERTYFACING);
+		EnumFacing facing = state.getValue(PROPERTYFACING);
 		int facingbits = facing.getHorizontalIndex();
 		return facingbits;
 	}
@@ -62,7 +62,7 @@ public class BlockOSBase  extends Block implements ITileEntityProvider {
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new BlockStateContainer(this, new IProperty[] {PROPERTYFACING});
+		return new BlockStateContainer(this, PROPERTYFACING);
 	}
 	
 	@Override

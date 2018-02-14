@@ -29,6 +29,7 @@ public class Config {
 		ignoreUUIDs = config.getBoolean("ignoreUUIDs", "options", false, "RFID and Mag cards will return '-1' for UUIDs.  Allows for less secure security.");
 		registerBlockBreak = config.getBoolean("registerBlockBreak", "options", true, "If false the block break event will not be registered, which will leave Door Controllers and Security Doors able to be broken.");
 		turretReverseRotation = config.getBoolean("turretReverseRotation", "options", true, "If true - turrets should rotate as in old versions.");
+		biggerEEPROM = config.getBoolean("biggerEEPROM", "options", false, "if true allows EEPROMS written with the card writer to be twice the configured size default is 4KB * 2");
 		if (config.hasChanged()) {
 			config.save();
 		}

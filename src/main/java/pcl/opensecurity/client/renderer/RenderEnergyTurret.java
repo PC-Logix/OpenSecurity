@@ -26,7 +26,7 @@ public class RenderEnergyTurret extends TileEntitySpecialRenderer<TileEntityEner
 		GL11.glDisable(GL11.GL_BLEND);
 		if(te!=null && te instanceof TileEntityEnergyTurret)
 		{
-			TileEntityEnergyTurret et = (TileEntityEnergyTurret)te;
+			TileEntityEnergyTurret et = te;
 			this.model.render(0.0625F, et.isUpright(), et.shaft, et.barrel, et.getRealYaw(), et.getRealPitch());
 		}
 		else

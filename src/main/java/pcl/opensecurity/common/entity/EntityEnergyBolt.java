@@ -94,7 +94,7 @@ public class EntityEnergyBolt extends EntityThrowable {
 			}
 		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expandXyz(1.0D));
 		if (!list.isEmpty()) {
-			((Entity)list.get(0)).attackEntityFrom(energy, this.damage);
+			list.get(0).attackEntityFrom(energy, this.damage);
 			this.isDead = true;
 		}
 		this.posX += this.motionX;

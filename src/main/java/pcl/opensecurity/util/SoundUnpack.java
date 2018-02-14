@@ -33,7 +33,7 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 					Path p = Paths.get(name);
 					String file = p.getFileName().toString();
 					System.out.println("Extracting file: " + file);
-					try (FileOutputStream fos = new FileOutputStream(f + File.separator + file);){
+					try (FileOutputStream fos = new FileOutputStream(f + File.separator + file)){
 						byte[] buf = new byte[2048];
 						int r;
 						while(-1 != (r = oggStream.read(buf))) {

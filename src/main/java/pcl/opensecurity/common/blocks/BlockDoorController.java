@@ -119,7 +119,7 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		EnumFacing facing = (EnumFacing)state.getValue(PROPERTYFACING);
+		EnumFacing facing = state.getValue(PROPERTYFACING);
 		int facingbits = facing.getHorizontalIndex();
 		return facingbits;
 	}

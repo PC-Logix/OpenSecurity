@@ -75,7 +75,7 @@ public class TileEntityMagReader extends TileEntityOSBase {
 	}
 
 	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a card is swipped", direct = true)
-	public Object[] setEventName(Context context, Arguments args) throws Exception {
+	public Object[] setEventName(Context context, Arguments args) {
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
