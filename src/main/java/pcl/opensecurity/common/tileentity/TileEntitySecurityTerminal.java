@@ -104,9 +104,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //1
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 20,
-                    pos.getY() + 20,
-                    pos.getZ() + 20,
+                    pos.getX() + 8,
+                    pos.getY() + 8,
+                    pos.getZ() + 8,
                     25,
                     motionX,
                     motionY,
@@ -115,9 +115,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //2
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 20,
-                    pos.getY() + 20,
-                    pos.getZ() - 20,
+                    pos.getX() + 8,
+                    pos.getY() + 8,
+                    pos.getZ() - 8,
                     25,
                     motionX,
                     motionY,
@@ -126,9 +126,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //3
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 20,
-                    pos.getY() - 20,
-                    pos.getZ() - 20,
+                    pos.getX() - 8,
+                    pos.getY() - 8,
+                    pos.getZ() - 8,
                     25,
                     motionX,
                     motionY,
@@ -137,9 +137,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //4
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 20,
-                    pos.getY() + 20,
-                    pos.getZ() + 20,
+                    pos.getX() - 8,
+                    pos.getY() + 8,
+                    pos.getZ() + 8,
                     25,
                     motionX,
                     motionY,
@@ -148,9 +148,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //5
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 20,
-                    pos.getY() + 20,
-                    pos.getZ() - 20,
+                    pos.getX() - 8,
+                    pos.getY() + 8,
+                    pos.getZ() - 8,
                     25,
                     motionX,
                     motionY,
@@ -159,9 +159,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //6
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 20,
-                    pos.getY() - 20,
-                    pos.getZ() + 20,
+                    pos.getX() - 8,
+                    pos.getY() - 8,
+                    pos.getZ() + 8,
                     25,
                     motionX,
                     motionY,
@@ -170,9 +170,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //7
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 20,
-                    pos.getY() - 20,
-                    pos.getZ() - 20,
+                    pos.getX() + 8,
+                    pos.getY() - 8,
+                    pos.getZ() - 8,
                     25,
                     motionX,
                     motionY,
@@ -181,9 +181,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             //8
             wServer.spawnParticle(
                     EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 20,
-                    pos.getY() - 20,
-                    pos.getZ() + 20,
+                    pos.getX() + 8,
+                    pos.getY() - 8,
+                    pos.getZ() + 8,
                     25,
                     motionX,
                     motionY,

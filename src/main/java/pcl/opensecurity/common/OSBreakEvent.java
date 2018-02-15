@@ -40,7 +40,7 @@ public class OSBreakEvent {
 			}
 
             BlockPos eventPos = event.getPos();
-            Iterable<BlockPos> blocks = BlockPos.getAllInBox(eventPos.add(-20.0f, -20.0f, -20.0f), eventPos.add(20.0f, 20.0f, 20.0f));
+            Iterable<BlockPos> blocks = BlockPos.getAllInBox(eventPos.add(-8.0f, -8.0f, -8.0f), eventPos.add(8.0f, 8.0f, 8.0f));
 
             for (BlockPos pos : blocks) {
                 World world = event.getWorld();
