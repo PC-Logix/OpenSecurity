@@ -52,6 +52,7 @@ public class ContentRegistry {
     public static Block energyTurret;
     public static Block rfidReader;
     public static Block entityDetector;
+    public static Block securityTerminal;
 
     public static ItemCard itemRFIDCard;
     public static ItemCard itemMagCard;
@@ -184,6 +185,12 @@ public class ContentRegistry {
         GameRegistry.register(doorController);
 
         doorController.setCreativeTab(creativeTab);
+
+        securityTerminal = new BlockSecurityTerminal(Material.IRON);
+        registerBlock(securityTerminal);
+        securityTerminal.setCreativeTab(creativeTab);
+        GameRegistry.registerTileEntity(TileEntitySecurityTerminal.class, "security_terminal");
+
         // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
         itemBlockDoorController = new ItemBlock(doorController);
         itemBlockDoorController.setRegistryName(doorController.getRegistryName());

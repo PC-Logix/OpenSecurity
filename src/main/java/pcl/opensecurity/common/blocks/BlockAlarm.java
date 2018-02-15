@@ -27,7 +27,7 @@ public class BlockAlarm extends BlockOSBase {
 		setHardness(.5f);
 		random = new Random();
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityAlarm();

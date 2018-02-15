@@ -14,6 +14,7 @@ tile.keypad.name=Keypad
 tile.biometric_reader.name=Biometric Reader
 tile.secure_door.name=Security Door
 tile.private_secure_door.name=Private Security Door
+tile.security_terminal.name=Security Terminal
 //items
 item.itemRFIDCard.name=RFID Card
 item.itemMagCard.name=Magnetic Strip Card

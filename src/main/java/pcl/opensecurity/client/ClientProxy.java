@@ -93,6 +93,7 @@ public class ClientProxy extends CommonProxy {
 		registerBlockItem(ContentRegistry.energyTurret, 0, "energyTurret");
 		registerBlockItem(ContentRegistry.rfidReader, 0, "rfid_reader");
 		registerBlockItem(ContentRegistry.entityDetector, 0, "entity_detector");
+		registerBlockItem(ContentRegistry.securityTerminal, 0, "security_terminal");
 
 		registerItem(ContentRegistry.itemRFIDCard, "RFIDCard");
 		registerItem(ContentRegistry.itemMagCard, "MagCard");
