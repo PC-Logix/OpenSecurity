@@ -368,6 +368,12 @@ public class ContentRegistry {
                 "SCS",
                 'T', transistor, 'C', t1microchip, 'I', iron, 'S', stone));
 
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(securityTerminal, 1),
+                "SIS",
+                "STS",
+                "SCS",
+                'T', controlunit, 'C', t2microchip, 'I', iron, 'S', stone));
+
         OpenSecurity.logger.info("Registered Recipes");
     }
 

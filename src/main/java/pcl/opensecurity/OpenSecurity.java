@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import pcl.opensecurity.util.UsernameCache;
 
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity")
 public class OpenSecurity {
@@ -79,6 +80,7 @@ public class OpenSecurity {
 		long time = System.nanoTime();
 		proxy.init();
 		ContentRegistry.init();
+		UsernameCache.initCache(256);
 		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 }
