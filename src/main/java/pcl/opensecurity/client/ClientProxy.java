@@ -4,11 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -25,10 +26,7 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.models.CamouflageBakedModel;
 import pcl.opensecurity.client.models.ModColourManager;
 import pcl.opensecurity.client.models.ModelBakeEventHandler;
-import pcl.opensecurity.client.renderer.EnergyTurretRenderHelper;
-import pcl.opensecurity.client.renderer.RenderEnergyTurret;
-import pcl.opensecurity.client.renderer.RenderEntityEnergyBolt;
-import pcl.opensecurity.client.renderer.RenderKeypad;
+import pcl.opensecurity.client.renderer.*;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
@@ -50,6 +48,7 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void preinit() {
+		MinecraftForge.EVENT_BUS.register(this);
 		StateMapperBase ignoreState = new StateMapperBase() {
 			@Override
 			protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
@@ -61,6 +60,11 @@ public class ClientProxy extends CommonProxy {
 		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(OpenSecurity.MODID + ":door_controller", "inventory");
 		final int DEFAULT_ITEM_SUBTYPE = 0;
 		ModelLoader.setCustomModelResourceLocation(ContentRegistry.itemBlockDoorController, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+	}
+
+	@SubscribeEvent
+	public void renderWorldLastEvent(RenderWorldLastEvent evt) {
+		SecurityTerminalRender.showFoundTerminals(evt);
 	}
 
 	@Override

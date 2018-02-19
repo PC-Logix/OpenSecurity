@@ -49,7 +49,7 @@ public class OSBreakEvent {
                     TileEntitySecurityTerminal xEntity = (TileEntitySecurityTerminal) world.getTileEntity(pos);
                     if (getDistance(xEntity.rangeMod, event)) {
                         if(xEntity.getOwner()!=null && !xEntity.isUserAllowedToBypass(event.getPlayer().getUniqueID().toString()) && !xEntity.getOwner().isEmpty()){
-                            if (!event.getPlayer().canUseCommand(2,"") && xEntity.isEnabled()) {
+                            if (/*!event.getPlayer().canUseCommand(2,"") &&*/ xEntity.isEnabled()) {
                                 if (xEntity.usePower()) {
                                     event.setCanceled(true);
                                     event.getPlayer().sendMessage(new TextComponentString("Breaking blocks is not allowed as you are not the owner of this area."));

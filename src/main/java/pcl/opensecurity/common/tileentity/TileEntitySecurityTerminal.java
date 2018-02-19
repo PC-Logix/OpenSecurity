@@ -8,6 +8,9 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.EnumPacketDirection;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
 import pcl.opensecurity.util.UsernameCache;
@@ -111,6 +114,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
     public Object[] toggleParticle(Context context, Arguments args) {
         if (args.optString(0, "").equals(getPass())) {
             enableParticles = !enableParticles;
+            world.markBlockRangeForRenderUpdate(pos, pos);
+            world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+            world.scheduleBlockUpdate(pos,this.getBlockType(),0,0);
+            markDirty();
             return new Object[] { enableParticles };
         } else {
             return new Object[] { false, "Password incorrect" };
@@ -122,6 +129,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
         if (args.optString(0, "").equals(getPass())) {
             if (args.checkInteger(1) >= 1 && args.checkInteger(1) <= 4) {
                 rangeMod = args.checkInteger(1);
+                world.markBlockRangeForRenderUpdate(pos, pos);
+                world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+                world.scheduleBlockUpdate(pos,this.getBlockType(),0,0);
+                markDirty();
                 return new Object[] { true };
             }
             return new Object[] { false, "Range out of bounds 1-4" };
@@ -134,6 +145,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
     public Object[] enable(Context context, Arguments args) {
         if (args.optString(0, "").equals(getPass())) {
             enabled = true;
+            world.markBlockRangeForRenderUpdate(pos, pos);
+            world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+            world.scheduleBlockUpdate(pos,this.getBlockType(),0,0);
+            markDirty();
             return new Object[] { true };
         } else {
             return new Object[] { false, "Password incorrect" };
@@ -190,10 +205,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             WorldServer wServer = (WorldServer) world;
             //1
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 8 * rangeMod,
-                    pos.getY() + 8 * rangeMod,
-                    pos.getZ() + 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() + 8 * rangeMod +0.5f,
+                    pos.getY() + 8 * rangeMod +0.5f,
+                    pos.getZ() + 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -201,10 +216,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
                     0.5);
             //2
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 8 * rangeMod,
-                    pos.getY() + 8 * rangeMod,
-                    pos.getZ() - 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() + 8 * rangeMod +0.5f,
+                    pos.getY() + 8 * rangeMod +0.5f,
+                    pos.getZ() - 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -212,10 +227,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
                     0.5);
             //3
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 8 * rangeMod,
-                    pos.getY() - 8 * rangeMod,
-                    pos.getZ() - 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() - 8 * rangeMod +0.5f,
+                    pos.getY() - 8 * rangeMod +0.5f,
+                    pos.getZ() - 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -223,10 +238,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
                     0.5);
             //4
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 8 * rangeMod,
-                    pos.getY() + 8 * rangeMod,
-                    pos.getZ() + 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() - 8 * rangeMod +0.5f,
+                    pos.getY() + 8 * rangeMod +0.5f,
+                    pos.getZ() + 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -234,10 +249,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
                     0.5);
             //5
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 8 * rangeMod,
-                    pos.getY() + 8 * rangeMod,
-                    pos.getZ() - 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() - 8 * rangeMod +0.5f,
+                    pos.getY() + 8 * rangeMod +0.5f,
+                    pos.getZ() - 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -245,10 +260,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
                     0.5);
             //6
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() - 8 * rangeMod,
-                    pos.getY() - 8 * rangeMod,
-                    pos.getZ() + 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() - 8 * rangeMod +0.5f,
+                    pos.getY() - 8 * rangeMod +0.5f,
+                    pos.getZ() + 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -256,10 +271,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
                     0.5);
             //7
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 8 * rangeMod,
-                    pos.getY() - 8 * rangeMod,
-                    pos.getZ() - 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() + 8 * rangeMod +0.5f,
+                    pos.getY() - 8 * rangeMod +0.5f,
+                    pos.getZ() - 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -267,10 +282,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
                     0.5);
             //8
             wServer.spawnParticle(
-                    EnumParticleTypes.SMOKE_NORMAL,
-                    pos.getX() + 8 * rangeMod,
-                    pos.getY() - 8 * rangeMod,
-                    pos.getZ() + 8 * rangeMod,
+                    EnumParticleTypes.BARRIER,
+                    pos.getX() + 8 * rangeMod +0.5f,
+                    pos.getY() - 8 * rangeMod +0.5f,
+                    pos.getZ() + 8 * rangeMod +0.5f,
                     25,
                     motionX,
                     motionY,
@@ -281,7 +296,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
         ticksExisted++;
     }
 
-    private boolean isParticleEnabled() {
+    public boolean isParticleEnabled() {
         return enableParticles;
     }
 
@@ -295,6 +310,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
         this.password= nbt.getString("password");
         this.enabled=nbt.getBoolean("enabled");
         this.rangeMod=nbt.getInteger("rangeMod");
+        this.enableParticles=nbt.getBoolean("particles");
         this.allowedUsers=new ArrayList<String>(Arrays.asList(nbt.getString("allowedUsers").replaceAll(", $", "").split(", ")));
     }
 
@@ -310,9 +326,30 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
         nbt.setString("password", this.password);
         nbt.setBoolean("enabled", this.isEnabled());
         nbt.setInteger("rangeMod", this.rangeMod);
+        nbt.setBoolean("particles", this.isParticleEnabled());
         if (this.allowedUsers != null && this.allowedUsers.size() > 0)
             nbt.setString("allowedUsers", String.join(", ", this.allowedUsers).replaceAll(", $", ""));
         return nbt;
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return this.writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+    {
+        if(net.getDirection() == EnumPacketDirection.CLIENTBOUND)
+        {
+            readFromNBT(pkt.getNbtCompound());
+        }
     }
 
     public boolean isEnabled() {
