@@ -144,15 +144,15 @@ public class BlockSecurityDoor extends BlockDoor {
 				world.setBlockToAir(x, y, z);
 			}
 
-			if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z))
-			{
-				world.setBlockToAir(x, y, z);
-
-				if (world.getBlock(x, y + 1, z) == this)
-				{
-					world.setBlockToAir(x, y + 1, z);
-				}
-			}
+//			if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z))
+//			{
+//				world.setBlockToAir(x, y, z);
+//
+//				if (world.getBlock(x, y + 1, z) == this)
+//				{
+//					world.setBlockToAir(x, y + 1, z);
+//				}
+//			}
 		}
 		else //Bottom door block
 		{
