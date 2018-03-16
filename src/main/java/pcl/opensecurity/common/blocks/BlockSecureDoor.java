@@ -186,23 +186,14 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
             BlockPos blockpos1 = pos.up();
             IBlockState iblockstate1 = worldIn.getBlockState(blockpos1);
 
+            //Break bottom if top is broken.
             if (iblockstate1.getBlock() != this)
             {
                 worldIn.setBlockToAir(pos);
                 flag1 = true;
             }
 
-            if (!worldIn.getBlockState(pos.down()).isSideSolid(worldIn,  pos.down(), EnumFacing.UP))
-            {
-                worldIn.setBlockToAir(pos);
-                flag1 = true;
-
-                if (iblockstate1.getBlock() == this)
-                {
-                    worldIn.setBlockToAir(blockpos1);
-                }
-            }
-
+            //Drops item
             if (flag1)
             {
                 if (!worldIn.isRemote)
