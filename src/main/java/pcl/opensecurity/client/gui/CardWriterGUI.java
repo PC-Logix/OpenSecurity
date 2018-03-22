@@ -23,8 +23,8 @@ public class CardWriterGUI extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		// the parameters for drawString are: string, x, y, color
-		mc.fontRendererObj.drawString(I18n.translateToLocal("gui.string.cardslot"), 64, 20, 4210752);
-		mc.fontRendererObj.drawString(I18n.translateToLocal("gui.string.cardwriter"), 60, 5, 4210752);
+		mc.fontRenderer.drawString(I18n.translateToLocal("gui.string.cardslot"), 64, 20, 4210752);
+		mc.fontRenderer.drawString(I18n.translateToLocal("gui.string.cardwriter"), 60, 5, 4210752);
 	}
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {

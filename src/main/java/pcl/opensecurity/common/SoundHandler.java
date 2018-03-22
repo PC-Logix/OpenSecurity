@@ -2,6 +2,9 @@ package pcl.opensecurity.common;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pcl.opensecurity.client.sounds.AlarmResource;
 
@@ -37,6 +40,24 @@ public class SoundHandler {
     private static SoundEvent registerSound(String soundName)
     {
         final ResourceLocation soundID = new ResourceLocation(AlarmResource.PACK_NAME, soundName);
-        return GameRegistry.register(new SoundEvent(soundID).setRegistryName(soundID));
+        //return GameRegistry.register(new SoundEvent(soundID).setRegistryName(soundID));
+        return new SoundEvent(soundID).setRegistryName(soundID);
     }
+    
+	@Mod.EventBusSubscriber
+	public static class RegistrationHandler {
+		@SubscribeEvent
+		public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
+			event.getRegistry().registerAll(
+					turretMove,
+					turretFire,
+					keypad_press,
+					security_door,
+					scanner1,
+					scanner2,
+					scanner3,
+					card_swipe
+			);
+		}
+}
 }

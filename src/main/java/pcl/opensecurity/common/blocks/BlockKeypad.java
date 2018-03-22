@@ -51,7 +51,7 @@ public class BlockKeypad extends BlockOSBase {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		//BLLog.debug("Activate with hit at %f, %f, %f", hitX, hitY, hitZ);
 		if (player.isSneaking())
 			return false;

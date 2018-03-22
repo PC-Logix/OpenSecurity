@@ -52,7 +52,7 @@ public class BlockEnergyTurret extends BlockOSBase {
 	}
 	
 	@Override
-	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntityEnergyTurret te = (TileEntityEnergyTurret) worldIn.getTileEntity(pos);
 		te.rescan(pos);
 	}
@@ -64,7 +64,7 @@ public class BlockEnergyTurret extends BlockOSBase {
 	}
 	
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         // Only execute on the server
         if (world.isRemote) {
             return true;

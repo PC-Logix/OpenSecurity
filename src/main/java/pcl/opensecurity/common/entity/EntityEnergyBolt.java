@@ -92,7 +92,7 @@ public class EntityEnergyBolt extends EntityThrowable {
 				(!(this.world.getBlockState(blockPos).getBlock() instanceof BlockEnergyTurret))) {
 			this.isDead = true;
 			}
-		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expandXyz(1.0D));
+		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(this.motionX, this.motionY, this.motionZ).expand(1.0D,1.0D,1.0D));
 		if (!list.isEmpty()) {
 			list.get(0).attackEntityFrom(energy, this.damage);
 			this.isDead = true;

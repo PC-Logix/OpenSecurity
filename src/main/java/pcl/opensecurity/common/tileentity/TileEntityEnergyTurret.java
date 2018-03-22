@@ -188,7 +188,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
 			byte var5 = var4.getByte("Slot");
 			if (var5 >= 0 && var5 < this.ItemStacks.length) {
-				this.ItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+				this.ItemStacks[var5] = new ItemStack(var4);
 			}
 		}
 	}
@@ -607,11 +607,11 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	public ItemStack decrStackSize(int slot, int amt) {
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null) {
-			if (stack.stackSize <= amt) {
+			if (stack.getCount() <= amt) {
 				setInventorySlotContents(slot, null);
 			} else {
 				stack = stack.splitStack(amt);
-				if (stack.stackSize == 0) {
+				if (stack.getCount() == 0) {
 					setInventorySlotContents(slot, null);
 				}
 			}
@@ -633,8 +633,8 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
 		this.ItemStacks[i] = itemstack;
-		if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit()) {
-			itemstack.stackSize = this.getInventoryStackLimit();
+		if (itemstack != null && itemstack.getCount() > this.getInventoryStackLimit()) {
+			itemstack.setCount(this.getInventoryStackLimit());
 		}
 	}
 
@@ -692,6 +692,12 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	public void clear() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

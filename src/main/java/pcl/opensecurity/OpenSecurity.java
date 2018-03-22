@@ -34,7 +34,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import pcl.opensecurity.util.UsernameCache;
 
-@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber, dependencies = "required-after:OpenComputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity")
+@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber, dependencies = "required-after:opencomputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity")
 public class OpenSecurity {
 	public static final String MODID = "opensecurity";
 
@@ -60,13 +60,13 @@ public class OpenSecurity {
 		long time = System.nanoTime();
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 		ContentRegistry.preInit();
-		proxy.registerSounds();
-		proxy.registerItemRenderers();
+		//proxy.registerSounds();
+		//proxy.registerItemRenderers();
 		SoundHandler.registerSounds();
 	    network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
 	    rfidRange = cfg.rfidMaxRange;
-	    proxy.preinit();
-		proxy.registerRenderers();
+	    //proxy.preinit();
+		//proxy.registerRenderers();
 	    int packetID = 0;
 	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
 	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
@@ -78,7 +78,7 @@ public class OpenSecurity {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		long time = System.nanoTime();
-		proxy.init();
+		//proxy.init();
 		ContentRegistry.init();
 		UsernameCache.initCache(256);
 		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);

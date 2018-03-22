@@ -15,7 +15,7 @@ public class EnergyTurretRenderHelper extends TileEntityItemStackRenderer {
         Block block = Block.getBlockFromItem(itemStack.getItem());
 
         if (block == ContentRegistry.energyTurret) {
-            TileEntityRendererDispatcher.instance.renderTileEntityAt(this.turrettRender, 0.0D, 0.0D, 0.0D, 0.0F);
+            TileEntityRendererDispatcher.instance.render(this.turrettRender, 0.0D, 0.0D, 0.0D, 0.0F);
         }else {
             super.renderByItem(itemStack);
         }

@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
@@ -44,7 +45,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 		return Slot.Card;
 	}
 	
-	public class Environment extends li.cil.oc.api.prefab.ManagedEnvironment {
+	public class Environment extends li.cil.oc.api.prefab.AbstractManagedEnvironment {
 		public String data = null;
 		protected li.cil.oc.api.network.EnvironmentHost container = null;
 		protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("os_rfidreader").withConnector(32).create();
@@ -108,15 +109,15 @@ public class RFIDReaderCardDriver extends DriverItem {
 			Entity entity;
 			HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 			int index = 1;
-			List e = container.world().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(container.xPosition(), container.yPosition(), container.zPosition() + 1, container.xPosition() + 1, container.yPosition() + 1, container.zPosition()).expandXyz((double) range));
+			List e = container.world().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(container.xPosition(), container.yPosition(), container.zPosition() + 1, container.xPosition() + 1, container.yPosition() + 1, container.zPosition()).expand(range, range, range));
 			if (!e.isEmpty()) {
 				for (int i = 0; i <= e.size() - 1; i++) {
 					entity = (Entity) e.get(i);
 					if (entity instanceof EntityPlayerMP) {
 						found = true;
 						EntityPlayer em = (EntityPlayer) entity;
-						ItemStack[] playerInventory = em.inventory.mainInventory;
-						int size = playerInventory.length;
+						NonNullList<ItemStack> playerInventory = em.inventory.mainInventory;
+						int size = playerInventory.size();
 						for (int k = 0; k < size; k++) {
 							ItemStack st = em.inventory.getStackInSlot(k);
 							if (st != null && st.getItem() instanceof ItemRFIDCard && st.getTagCompound() != null && st.getTagCompound().hasKey("data")) {

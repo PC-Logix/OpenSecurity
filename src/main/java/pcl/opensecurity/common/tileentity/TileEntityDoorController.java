@@ -271,8 +271,8 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
 			byte var5 = var4.getByte("Slot");
 			if (var5 >= 0 && var5 < this.DoorControllerCamo.length) {
-				this.DoorControllerCamo[var5] = ItemStack.loadItemStackFromNBT(var4);
-				this.overrideTexture(ItemStack.loadItemStackFromNBT(var4));
+				this.DoorControllerCamo[var5] = new ItemStack(var4);
+				this.overrideTexture(new ItemStack(var4));
 			}
 		}
 	}

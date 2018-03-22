@@ -4,7 +4,7 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 plugins {
@@ -50,7 +50,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.10.2-12.18.3.2221"
+    version = "1.12.2-14.23.2.2631"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -58,7 +58,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "stable_29"
+    mappings = "snapshot_20171003"
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     replace "@VERSION@", project.version
 	replace "@BUILD@", project.ext.buildNumber
@@ -76,7 +76,7 @@ repositories {
 }
 
 dependencies {
-    deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.+"
+    deobfCompile "li.cil.oc:OpenComputers:MC1.12.2-1.7.+"
     compile 'org.mindrot:jbcrypt:0.3m'
 }
 

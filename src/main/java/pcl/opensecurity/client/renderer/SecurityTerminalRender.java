@@ -2,9 +2,9 @@ package pcl.opensecurity.client.renderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -65,7 +65,7 @@ public class SecurityTerminalRender {
         GlStateManager.color(1, 1, 1);
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
         float mx = pos.getX();
         float my = pos.getY();
         float mz = pos.getZ();
@@ -78,7 +78,7 @@ public class SecurityTerminalRender {
         GlStateManager.enableTexture2D();
     }
 
-    public static void renderHighLightedBlocksOutline(VertexBuffer buffer, float mx, float my, float mz, float range, float r, float g, float b, float a) {
+    public static void renderHighLightedBlocksOutline(BufferBuilder buffer, float mx, float my, float mz, float range, float r, float g, float b, float a) {
         //Bottom left
         buffer.pos(mx-range, my-range, mz-range).color(r, g, b, a).endVertex();
         buffer.pos(mx+range+1, my-range, mz-range).color(r, g, b, a).endVertex();

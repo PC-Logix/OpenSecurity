@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
@@ -64,15 +65,15 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		Entity entity;
 		HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 		int index = 1;
-		List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX() + 1, this.getPos().getY() + 1, this.getPos().getZ() + 1).expandXyz((double) range));
+		List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX() + 1, this.getPos().getY() + 1, this.getPos().getZ() + 1).expand(range,range,range));
 		if (!e.isEmpty()) {
 			for (int i = 0; i <= e.size() - 1; i++) {
 				entity = (Entity) e.get(i);
 				if (entity instanceof EntityPlayerMP) {
 					found = true;
 					EntityPlayer em = (EntityPlayer) entity;
-					ItemStack[] playerInventory = em.inventory.mainInventory;
-					int size = playerInventory.length;
+					NonNullList<ItemStack> playerInventory = em.inventory.mainInventory;
+					int size = playerInventory.size();
 					for (int k = 0; k < size; k++) {
 						ItemStack st = em.inventory.getStackInSlot(k);
 						if (st != null && st.getItem() instanceof ItemRFIDCard && st.getTagCompound() != null && st.getTagCompound().hasKey("data")) {

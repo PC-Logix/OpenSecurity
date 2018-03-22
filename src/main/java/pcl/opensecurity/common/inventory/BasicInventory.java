@@ -37,7 +37,7 @@ public class BasicInventory implements IInventory
 	@Override
 	public ItemStack decrStackSize(int slot, int num) {
 		if (slot < contents.length && contents[slot] != null) {
-			if (contents[slot].stackSize > num) {
+			if (contents[slot].getCount() > num) {
 				ItemStack output = contents[slot].splitStack(num);
 				markDirty();
 				return output;
@@ -66,8 +66,8 @@ public class BasicInventory implements IInventory
 		}
 		contents[slot] = newStack;
 
-		if (newStack != null && newStack.stackSize > this.getInventoryStackLimit()) {
-			newStack.stackSize = this.getInventoryStackLimit();
+		if (newStack != null && newStack.getCount() > this.getInventoryStackLimit()) {
+			newStack.setCount(this.getInventoryStackLimit());
 		}
 		markDirty();
 	}
@@ -135,7 +135,7 @@ public class BasicInventory implements IInventory
 	public void writeToNBT(NBTTagCompound tagCompound){
 		NBTTagList slots = new NBTTagList();
 		for (byte index = 0; index < this.contents.length; ++index) {
-			if (this.contents[index] != null && this.contents[index].stackSize > 0) {
+			if (this.contents[index] != null && this.contents[index].getCount() > 0) {
 				NBTTagCompound slot = new NBTTagCompound();
 				slots.appendTag(slot);
 				slot.setByte("Slot",index);
@@ -157,7 +157,7 @@ public class BasicInventory implements IInventory
 				index = slot.getByte("Slot");
 			}
 			if (index >= 0 && index < this.contents.length) {
-				setInventorySlotContents(index, ItemStack.loadItemStackFromNBT(slot));
+				setInventorySlotContents(index, new ItemStack(slot));
 			}
 		}
 	}
@@ -165,5 +165,11 @@ public class BasicInventory implements IInventory
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
 		return true;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

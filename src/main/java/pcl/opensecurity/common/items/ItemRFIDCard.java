@@ -35,7 +35,7 @@ public class ItemRFIDCard extends ItemCard {
 
 			rfidData.setString("data", stack.getTagCompound().getString("data"));
 			rfidData.setString("uuid", stack.getTagCompound().getString("uuid"));
-			--stack.stackSize;
+			stack.setCount((stack.getCount()-1));
 			return true;
 		} else {
 			return super.itemInteractionForEntity(stack, playerIn, target, hand);

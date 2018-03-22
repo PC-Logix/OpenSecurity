@@ -47,7 +47,7 @@ public class OSPacketHandler implements IMessage {
 
         @Override
         public IMessage onMessage(OSPacketHandler message, MessageContext ctx) {
-            TileEntity te = ctx.getServerHandler().playerEntity.getEntityWorld().getTileEntity(new BlockPos(message.x, message.y, message.z));
+            TileEntity te = ctx.getServerHandler().player.getEntityWorld().getTileEntity(new BlockPos(message.x, message.y, message.z));
             boolean isEnabled;
             int side = message.side;
             isEnabled = message.isEnabled == 1;

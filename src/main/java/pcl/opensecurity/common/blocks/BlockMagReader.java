@@ -9,6 +9,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -67,10 +68,11 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		//player.sendMessage(new TextComponentString("meta " + getMetaFromState(state)));
 		world.scheduleBlockUpdate(pos, this, 20, 1);
-		if (heldItem != null) {
+		ItemStack heldItem = player.getActiveItemStack();
+		if (heldItem == null && !heldItem.equals(Items.AIR)) {
 			Item equipped = heldItem.getItem();
 			TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
 			if (!world.isRemote && equipped instanceof ItemMagCard) {

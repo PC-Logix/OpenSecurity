@@ -62,7 +62,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
     public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) { }
     
 	@Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         return false;
     }
@@ -131,15 +131,6 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
         return false;
     }
 
-    /**
-     * Get the MapColor for this Block and the given BlockState
-     */
-    public MapColor getMapColor(IBlockState state)
-    {
-        return state.getBlock() == Blocks.IRON_DOOR ? MapColor.IRON : (state.getBlock() == Blocks.OAK_DOOR ? BlockPlanks.EnumType.OAK.getMapColor() : (state.getBlock() == Blocks.SPRUCE_DOOR ? BlockPlanks.EnumType.SPRUCE.getMapColor() : (state.getBlock() == Blocks.BIRCH_DOOR ? BlockPlanks.EnumType.BIRCH.getMapColor() : (state.getBlock() == Blocks.JUNGLE_DOOR ? BlockPlanks.EnumType.JUNGLE.getMapColor() : (state.getBlock() == Blocks.ACACIA_DOOR ? BlockPlanks.EnumType.ACACIA.getMapColor() : (state.getBlock() == Blocks.DARK_OAK_DOOR ? BlockPlanks.EnumType.DARK_OAK.getMapColor() : super.getMapColor(state)))))));
-    }
-
-
     public void toggleDoor(World worldIn, BlockPos pos, boolean open)
     {
         IBlockState iblockstate = worldIn.getBlockState(pos);
@@ -164,7 +155,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      * change. Cases may include when redstone power is updated, cactus blocks popping off due to a neighboring solid
      * block, etc.
      */
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn)
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
     {
         if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER)
         {
@@ -177,7 +168,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
             }
             else if (blockIn != this)
             {
-                iblockstate.neighborChanged(worldIn, blockpos, blockIn);
+                iblockstate.neighborChanged(worldIn, blockpos, blockIn, fromPos);
             }
         }
         else

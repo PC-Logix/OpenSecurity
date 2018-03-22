@@ -55,7 +55,7 @@ public class ItemSecureDoor extends ItemBlock
                 placeDoor(worldIn, pos, enumfacing, this.block, flag, playerIn);
                 SoundType soundtype = worldIn.getBlockState(pos).getBlock().getSoundType(worldIn.getBlockState(pos), worldIn, pos, playerIn);
                 worldIn.playSound(playerIn, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                --stack.stackSize;
+                stack.setCount((stack.getCount()-1));
                 return EnumActionResult.SUCCESS;
             }
             else
@@ -94,7 +94,7 @@ public class ItemSecureDoor extends ItemBlock
         worldIn.setBlockState(blockpos2, iblockstate.withProperty(BlockSecureDoor.HALF, BlockSecureDoor.EnumDoorHalf.UPPER), 2);
         TileEntitySecureDoor teUpper = (TileEntitySecureDoor) worldIn.getTileEntity(blockpos2);
         teUpper.setOwner(playerIn.getUniqueID().toString());
-        worldIn.notifyNeighborsOfStateChange(pos, door);
-        worldIn.notifyNeighborsOfStateChange(blockpos2, door);
+        worldIn.notifyNeighborsOfStateChange(pos, door, flag1);
+        worldIn.notifyNeighborsOfStateChange(blockpos2, door, flag1);
     }
 }

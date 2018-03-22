@@ -17,6 +17,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntityDoorController te = (TileEntityDoorController) worldIn.getTileEntity(pos);
 		te.rescan(pos);
 	}
@@ -72,8 +73,9 @@ public class BlockDoorController extends Block implements ITileEntityProvider {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (heldItem == null) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+		ItemStack heldItem = player.getActiveItemStack();
+		if (heldItem == null && !heldItem.equals(Items.AIR)) {
 			//System.out.println("TRYING TO TOGGLE!");
 			//tileEntity.toggle();
 			return true;

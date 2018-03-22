@@ -162,9 +162,9 @@ public class ClientProxy extends CommonProxy {
 		}
 
 		@Override
-		public int getColorFromItemstack(ItemStack stack, int layer)
-		{
-			return layer == 0 ? 0xFFFFFF : card.getColor(stack);
+		public int colorMultiplier(ItemStack stack, int tintIndex) {
+			// TODO Auto-generated method stub
+			return tintIndex == 0 ? 0xFFFFFF : card.getColor(stack);
 		}
 	}
 

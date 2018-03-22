@@ -27,13 +27,13 @@ public class BlockBiometricReader extends BlockOSBase {
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		TileEntityBiometricReader tile = (TileEntityBiometricReader) world.getTileEntity(pos);
-		if (!world.isRemote && side.getOpposite().getHorizontalIndex() == state.getBlock().getMetaFromState(state) && hand.equals(EnumHand.OFF_HAND)) {
-			tile.doRead(player, side);
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		TileEntityBiometricReader tile = (TileEntityBiometricReader) worldIn.getTileEntity(pos);
+		if (!worldIn.isRemote && facing.getOpposite().getHorizontalIndex() == state.getBlock().getMetaFromState(state) && hand.equals(EnumHand.OFF_HAND)) {
+			tile.doRead(playerIn, facing);
 			return true;
 		}
-        return side.getIndex() == state.getBlock().getMetaFromState(state);
+        return facing.getIndex() == state.getBlock().getMetaFromState(state);
     }
 	
 	@Override

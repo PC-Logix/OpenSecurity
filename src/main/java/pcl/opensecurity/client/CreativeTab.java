@@ -3,6 +3,7 @@ package pcl.opensecurity.client;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,7 +16,7 @@ public class CreativeTab extends CreativeTabs {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Item getTabIconItem() {
-		return Item.getItemFromBlock(Blocks.ANVIL);
+	public ItemStack getTabIconItem() {
+		return new ItemStack(Item.getItemFromBlock(ContentRegistry.alarmBlock));
 	}
 }

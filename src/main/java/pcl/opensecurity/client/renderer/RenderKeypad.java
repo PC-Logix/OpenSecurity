@@ -2,9 +2,9 @@ package pcl.opensecurity.client.renderer;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
@@ -55,7 +55,7 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 		display = new ButtonPosition( 4f, 12f, 8f, 2f);
 	}
 
-	public static void renderButtonGeometry(VertexBuffer vertexbuffer, float depth, ButtonPosition pos)
+	public static void renderButtonGeometry(BufferBuilder vertexbuffer, float depth, ButtonPosition pos)
 	{
 		float tx=texPixel*2;
 		float ty=texPixel*2;
@@ -142,9 +142,9 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 	{
 		super();
 	}
-
+	
 	@Override
-	public void renderTileEntityAt(TileEntityKeypad tileEntity, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TileEntityKeypad tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y,(float)z);
@@ -168,7 +168,7 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 
 	public void drawKeypadBlock(TileEntityKeypad keylock, long time) {
 		Tessellator tessellator=Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder vertexbuffer = tessellator.getBuffer();
 
 		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL); //tessellator.startDrawingQuads();
 		//tessellator.setNormal(0f, 0f, -1f);
