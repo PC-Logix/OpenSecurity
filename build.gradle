@@ -82,9 +82,9 @@ dependencies {
 
 def curseforge_key = 0
 def curse_changlog = "default"
-if (project.hasProperty('opensecurity_curseforge_key')) {
-	curseforge_key = project.opensecurity_curseforge_key
-	curse_changlog = project.changelog
+if (project.hasProperty('curseforge_key')) {
+	curseforge_key = project.curseforge_key
+	curse_changlog = project.promo-changelog
 }
 
 curseforge {
