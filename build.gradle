@@ -84,7 +84,7 @@ def curseforge_key = 0
 def curse_changlog = "default"
 if (project.hasProperty('curseforge_key')) {
 	curseforge_key = project.curseforge_key
-	curse_changlog = project.promo-changelog
+	curse_changlog = project.promochangelog
 }
 
 curseforge {
