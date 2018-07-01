@@ -1,7 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "opensecurity:items/magCard",
-		"layer1": "opensecurity:items/magCard_color"
-    }
-}

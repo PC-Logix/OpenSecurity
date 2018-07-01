@@ -52,8 +52,6 @@ public class ContentRegistry {
     public static Item energyUpgradeItem = new ItemEnergyUpgrade();
     public static Item movementUpgradeItem = new ItemMovementUpgrade();
 
-    public static ItemBlock itemBlockDoorController;  // this holds the unique instance of the ItemBlock corresponding to your block
-
     private ContentRegistry() {
     }
 

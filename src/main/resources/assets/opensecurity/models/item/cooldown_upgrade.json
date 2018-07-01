@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "opensecurity:items/movementUpgrade"
+        "layer0": "opensecurity:items/cooldown_upgrade"
     }
 }
