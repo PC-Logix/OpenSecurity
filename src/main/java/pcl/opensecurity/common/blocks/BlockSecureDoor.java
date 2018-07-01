@@ -1,41 +1,19 @@
 package pcl.opensecurity.common.blocks;
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import java.util.Random;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.BlockPlanks;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.EnumPushReaction;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
@@ -44,11 +22,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
-public class BlockSecureDoor extends Block implements ITileEntityProvider {
- 
+import javax.annotation.Nullable;
+import java.util.Random;
+
+public class BlockSecureDoor extends BlockOSBase {
+
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
     public static final PropertyBool OPEN = PropertyBool.create("open");
     public static final PropertyEnum<BlockSecureDoor.EnumHingePosition> HINGE = PropertyEnum.create("hinge", BlockSecureDoor.EnumHingePosition.class);
@@ -58,38 +40,41 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
     protected static final AxisAlignedBB WEST_AABB = new AxisAlignedBB(0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
     protected static final AxisAlignedBB EAST_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.1875D, 1.0D, 1.0D);
 
-	@Override
-    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) { }
-    
-	@Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        return false;
-    }
-	
-	@Override
-    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
-    {
-		return false;
-    }
-	
-    public BlockSecureDoor(Material materialIn)
-    {
-        super(materialIn);
-		setUnlocalizedName("secure_door");
-		setHardness(.5f);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(OPEN, Boolean.valueOf(false)).withProperty(HINGE, BlockSecureDoor.EnumHingePosition.LEFT).withProperty(HALF, BlockSecureDoor.EnumDoorHalf.LOWER));
+    public BlockSecureDoor() {
+        this(Reference.Names.BLOCK_SECURE_DOOR);
     }
 
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
+    BlockSecureDoor(String name) {
+        super(name, Material.IRON, 0.5f);
+        setDefaultState(
+                blockState.getBaseState()
+                        .withProperty(FACING, EnumFacing.NORTH)
+                        .withProperty(OPEN, false)
+                        .withProperty(HINGE, BlockSecureDoor.EnumHingePosition.LEFT)
+                        .withProperty(HALF, BlockSecureDoor.EnumDoorHalf.LOWER));
+    }
+
+    @Override
+    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        return false;
+    }
+
+    @Override
+    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
+        return false;
+    }
+
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         state = state.getActualState(source, pos);
         EnumFacing enumfacing = state.getValue(FACING);
         boolean flag = !state.getValue(OPEN).booleanValue();
         boolean flag1 = state.getValue(HINGE) == BlockSecureDoor.EnumHingePosition.RIGHT;
 
-        switch (enumfacing)
-        {
+        switch (enumfacing) {
             case EAST:
             default:
                 return flag ? EAST_AABB : (flag1 ? NORTH_AABB : SOUTH_AABB);
@@ -105,43 +90,36 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
     /**
      * Gets the localized name of this block. Used for the statistics page.
      */
-    public String getLocalizedName()
-    {
+    public String getLocalizedName() {
         return I18n.translateToLocal((this.getUnlocalizedName() + ".name").replaceAll("tile", "item"));
     }
 
     /**
      * Used to determine ambient occlusion and culling when rebuilding chunks for render
-     */    
+     */
     @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
-    
+
     @Override
-    public boolean isPassable(IBlockAccess worldIn, BlockPos pos)
-    {
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
         return isOpen(combineMetadata(worldIn, pos));
     }
-    
+
     @Override
-    public boolean isFullCube(IBlockState state)
-    {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
-    public void toggleDoor(World worldIn, BlockPos pos, boolean open)
-    {
+    public void toggleDoor(World worldIn, BlockPos pos, boolean open) {
         IBlockState iblockstate = worldIn.getBlockState(pos);
 
-        if (iblockstate.getBlock() == this)
-        {
+        if (iblockstate.getBlock() == this) {
             BlockPos blockpos = iblockstate.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.LOWER ? pos : pos.down();
             IBlockState iblockstate1 = pos == blockpos ? iblockstate : worldIn.getBlockState(blockpos);
 
-            if (iblockstate1.getBlock() == this && iblockstate1.getValue(OPEN).booleanValue() != open)
-            {
+            if (iblockstate1.getBlock() == this && iblockstate1.getValue(OPEN).booleanValue() != open) {
                 worldIn.setBlockState(blockpos, iblockstate1.withProperty(OPEN, Boolean.valueOf(open)), 10);
                 worldIn.markBlockRangeForRenderUpdate(blockpos, pos);
                 worldIn.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5f, pos.getZ() + 0.5F, SoundHandler.security_door, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
@@ -155,40 +133,30 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      * change. Cases may include when redstone power is updated, cactus blocks popping off due to a neighboring solid
      * block, etc.
      */
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
-    {
-        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER)
-        {
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER) {
             BlockPos blockpos = pos.down();
             IBlockState iblockstate = worldIn.getBlockState(blockpos);
 
-            if (iblockstate.getBlock() != this)
-            {
+            if (iblockstate.getBlock() != this) {
                 worldIn.setBlockToAir(pos);
-            }
-            else if (blockIn != this)
-            {
+            } else if (blockIn != this) {
                 iblockstate.neighborChanged(worldIn, blockpos, blockIn, fromPos);
             }
-        }
-        else
-        {
+        } else {
             boolean flag1 = false;
             BlockPos blockpos1 = pos.up();
             IBlockState iblockstate1 = worldIn.getBlockState(blockpos1);
 
             //Break bottom if top is broken.
-            if (iblockstate1.getBlock() != this)
-            {
+            if (iblockstate1.getBlock() != this) {
                 worldIn.setBlockToAir(pos);
                 flag1 = true;
             }
 
             //Drops item
-            if (flag1)
-            {
-                if (!worldIn.isRemote)
-                {
+            if (flag1) {
+                if (!worldIn.isRemote) {
                     this.dropBlockAsItem(worldIn, pos, state, 0);
                 }
             }
@@ -199,23 +167,19 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      * Get the Item that this Block should drop when harvested.
      */
     @Nullable
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
-    {
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER ? null : this.getItem();
     }
 
-    public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
-    {
+    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
         return pos.getY() < worldIn.getHeight() - 1 && (worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP) && super.canPlaceBlockAt(worldIn, pos) && super.canPlaceBlockAt(worldIn, pos.up()));
     }
 
-    public EnumPushReaction getMobilityFlag(IBlockState state)
-    {
+    public EnumPushReaction getMobilityFlag(IBlockState state) {
         return EnumPushReaction.DESTROY;
     }
 
-    public static int combineMetadata(IBlockAccess worldIn, BlockPos pos)
-    {
+    public static int combineMetadata(IBlockAccess worldIn, BlockPos pos) {
         IBlockState iblockstate = worldIn.getBlockState(pos);
         int i = iblockstate.getBlock().getMetaFromState(iblockstate);
         boolean flag = isTop(i);
@@ -230,30 +194,24 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
         return removeHalfBit(k) | (flag ? 8 : 0) | (flag1 ? 16 : 0) | (flag2 ? 32 : 0);
     }
 
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
-    {
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
         return new ItemStack(this.getItem());
     }
 
-	private Item getItem()
-	{
-		return new ItemStack(ContentRegistry.secureDoor).getItem();
-	}
+    private Item getItem() {
+        return new ItemStack(ContentRegistry.secureDoor).getItem();
+    }
 
-    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
-    {
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
         BlockPos blockpos = pos.down();
         BlockPos blockpos1 = pos.up();
 
-        if (player.capabilities.isCreativeMode && state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER && worldIn.getBlockState(blockpos).getBlock() == this)
-        {
+        if (player.capabilities.isCreativeMode && state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER && worldIn.getBlockState(blockpos).getBlock() == this) {
             worldIn.setBlockToAir(blockpos);
         }
 
-        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.LOWER && worldIn.getBlockState(blockpos1).getBlock() == this)
-        {
-            if (player.capabilities.isCreativeMode)
-            {
+        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.LOWER && worldIn.getBlockState(blockpos1).getBlock() == this) {
+            if (player.capabilities.isCreativeMode) {
                 worldIn.setBlockToAir(pos);
             }
 
@@ -262,8 +220,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
     }
 
     @SideOnly(Side.CLIENT)
-    public BlockRenderLayer getBlockLayer()
-    {
+    public BlockRenderLayer getBlockLayer() {
         return BlockRenderLayer.CUTOUT;
     }
 
@@ -271,23 +228,17 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      * Get the actual Block state of this Block at the given position. This applies properties not visible in the
      * metadata, such as fence connections.
      */
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
-    {
-        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.LOWER)
-        {
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.LOWER) {
             IBlockState iblockstate = worldIn.getBlockState(pos.up());
 
-            if (iblockstate.getBlock() == this)
-            {
+            if (iblockstate.getBlock() == this) {
                 state = state.withProperty(HINGE, iblockstate.getValue(HINGE));
             }
-        }
-        else
-        {
+        } else {
             IBlockState iblockstate1 = worldIn.getBlockState(pos.down());
 
-            if (iblockstate1.getBlock() == this)
-            {
+            if (iblockstate1.getBlock() == this) {
                 state = state.withProperty(FACING, iblockstate1.getValue(FACING)).withProperty(OPEN, iblockstate1.getValue(OPEN));
             }
         }
@@ -299,8 +250,7 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
      * blockstate.
      */
-    public IBlockState withRotation(IBlockState state, Rotation rot)
-    {
+    public IBlockState withRotation(IBlockState state, Rotation rot) {
         return state.getValue(HALF) != BlockSecureDoor.EnumDoorHalf.LOWER ? state : state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
@@ -308,41 +258,33 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
      * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
      * blockstate.
      */
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
-    {
+    public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
         return mirrorIn == Mirror.NONE ? state : state.withRotation(mirrorIn.toRotation(state.getValue(FACING))).cycleProperty(HINGE);
     }
 
     /**
      * Convert the given metadata into a BlockState for this Block
      */
-    public IBlockState getStateFromMeta(int meta)
-    {
+    public IBlockState getStateFromMeta(int meta) {
         return (meta & 8) > 0 ? this.getDefaultState().withProperty(HALF, BlockSecureDoor.EnumDoorHalf.UPPER).withProperty(HINGE, (meta & 1) > 0 ? BlockSecureDoor.EnumHingePosition.RIGHT : BlockSecureDoor.EnumHingePosition.LEFT) : this.getDefaultState().withProperty(HALF, BlockSecureDoor.EnumDoorHalf.LOWER).withProperty(FACING, EnumFacing.getHorizontal(meta & 3).rotateYCCW()).withProperty(OPEN, Boolean.valueOf((meta & 4) > 0));
     }
 
     /**
      * Convert the BlockState into the correct metadata value
      */
-    public int getMetaFromState(IBlockState state)
-    {
+    public int getMetaFromState(IBlockState state) {
         int i = 0;
 
-        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER)
-        {
+        if (state.getValue(HALF) == BlockSecureDoor.EnumDoorHalf.UPPER) {
             i = i | 8;
 
-            if (state.getValue(HINGE) == BlockSecureDoor.EnumHingePosition.RIGHT)
-            {
+            if (state.getValue(HINGE) == BlockSecureDoor.EnumHingePosition.RIGHT) {
                 i |= 1;
             }
-        }
-        else
-        {
+        } else {
             i = i | state.getValue(FACING).rotateY().getHorizontalIndex();
 
-            if (state.getValue(OPEN).booleanValue())
-            {
+            if (state.getValue(OPEN).booleanValue()) {
                 i |= 4;
             }
         }
@@ -350,75 +292,62 @@ public class BlockSecureDoor extends Block implements ITileEntityProvider {
         return i;
     }
 
-    protected static int removeHalfBit(int meta)
-    {
+    protected static int removeHalfBit(int meta) {
         return meta & 7;
     }
 
-    public static boolean isOpen(IBlockAccess worldIn, BlockPos pos)
-    {
+    public static boolean isOpen(IBlockAccess worldIn, BlockPos pos) {
         return isOpen(combineMetadata(worldIn, pos));
     }
 
-    public static EnumFacing getFacing(IBlockAccess worldIn, BlockPos pos)
-    {
+    public static EnumFacing getFacing(IBlockAccess worldIn, BlockPos pos) {
         return getFacing(combineMetadata(worldIn, pos));
     }
 
-    public static EnumFacing getFacing(int combinedMeta)
-    {
+    public static EnumFacing getFacing(int combinedMeta) {
         return EnumFacing.getHorizontal(combinedMeta & 3).rotateYCCW();
     }
 
-    protected static boolean isOpen(int combinedMeta)
-    {
+    protected static boolean isOpen(int combinedMeta) {
         return (combinedMeta & 4) != 0;
     }
 
-    protected static boolean isTop(int meta)
-    {
+    protected static boolean isTop(int meta) {
         return (meta & 8) != 0;
     }
 
-    protected BlockStateContainer createBlockState()
-    {
+    protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, HALF, FACING, OPEN, HINGE);
     }
 
-    public enum EnumDoorHalf implements IStringSerializable
-    {
+    public enum EnumDoorHalf implements IStringSerializable {
         UPPER,
         LOWER;
 
-        public String toString()
-        {
+        public String toString() {
             return this.getName();
         }
 
-        public String getName()
-        {
+        public String getName() {
             return this == UPPER ? "upper" : "lower";
         }
     }
 
-    public enum EnumHingePosition implements IStringSerializable
-    {
+    public enum EnumHingePosition implements IStringSerializable {
         LEFT,
         RIGHT;
 
-        public String toString()
-        {
+        public String toString() {
             return this.getName();
         }
 
-        public String getName()
-        {
+        public String getName() {
             return this == LEFT ? "left" : "right";
         }
     }
-	
-		@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileEntitySecureDoor();
-	}
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new TileEntitySecureDoor();
+    }
 }

@@ -1,17 +1,5 @@
 package pcl.opensecurity.client;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -22,6 +10,14 @@ import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.models.CamouflageBakedModel;
 import pcl.opensecurity.client.models.ModColourManager;
@@ -34,6 +30,10 @@ import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 public class ClientProxy extends CommonProxy {
 	public static List<String> alarmList = new ArrayList<String>();
 
@@ -59,7 +59,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
 		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(OpenSecurity.MODID + ":door_controller", "inventory");
 		final int DEFAULT_ITEM_SUBTYPE = 0;
-		ModelLoader.setCustomModelResourceLocation(ContentRegistry.itemBlockDoorController, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+		//ModelLoader.setCustomModelResourceLocation(ContentRegistry.itemBlockDoorController, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
 	}
 
 	@SubscribeEvent

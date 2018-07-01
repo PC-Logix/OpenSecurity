@@ -1,7 +1,6 @@
 package pcl.opensecurity.common.items;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
@@ -10,7 +9,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemCard extends Item {
+public abstract class ItemCard extends ItemOSBase {
+
+	ItemCard(String name) {
+		super(name);
+	}
 
 	public boolean hasOverlay(ItemStack stack) {
 		return getColor(stack) != 0x00FFFFFF;
