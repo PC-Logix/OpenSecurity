@@ -5,6 +5,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -96,18 +98,23 @@ public class ContentRegistry {
                 privateSecureDoor
         );
 
-        GameRegistry.registerTileEntity(TileEntityAlarm.class, Reference.Names.BLOCK_ALARM);
-        GameRegistry.registerTileEntity(TileEntityDoorController.class, Reference.Names.BLOCK_DOOR_CONTROLLER);
-        GameRegistry.registerTileEntity(TileEntitySecurityTerminal.class, Reference.Names.BLOCK_SECURITY_TERMINAL);
-        GameRegistry.registerTileEntity(TileEntityBiometricReader.class, Reference.Names.BLOCK_BIOMETRIC_READER);
-        GameRegistry.registerTileEntity(TileEntityDataBlock.class, Reference.Names.BLOCK_DATA);
-        GameRegistry.registerTileEntity(TileEntityCardWriter.class, Reference.Names.BLOCK_CARD_WRITER);
-        GameRegistry.registerTileEntity(TileEntityMagReader.class, Reference.Names.BLOCK_MAG_READER);
-        GameRegistry.registerTileEntity(TileEntityKeypad.class, Reference.Names.BLOCK_KEYPAD);
-        GameRegistry.registerTileEntity(TileEntityEntityDetector.class, Reference.Names.BLOCK_ENTITY_DETECTOR);
-        GameRegistry.registerTileEntity(TileEntityEnergyTurret.class, Reference.Names.BLOCK_ENERGY_TURRET);
-        GameRegistry.registerTileEntity(TileEntityRFIDReader.class, Reference.Names.BLOCK_RFID_READER);
-        GameRegistry.registerTileEntity(TileEntitySecureDoor.class, Reference.Names.BLOCK_SECURE_DOOR);
+        registerTileEntity(TileEntityAlarm.class, Reference.Names.BLOCK_ALARM);
+        registerTileEntity(TileEntityDoorController.class, Reference.Names.BLOCK_DOOR_CONTROLLER);
+        registerTileEntity(TileEntitySecurityTerminal.class, Reference.Names.BLOCK_SECURITY_TERMINAL);
+        registerTileEntity(TileEntityBiometricReader.class, Reference.Names.BLOCK_BIOMETRIC_READER);
+        registerTileEntity(TileEntityDataBlock.class, Reference.Names.BLOCK_DATA);
+        registerTileEntity(TileEntityCardWriter.class, Reference.Names.BLOCK_CARD_WRITER);
+        registerTileEntity(TileEntityMagReader.class, Reference.Names.BLOCK_MAG_READER);
+        registerTileEntity(TileEntityKeypad.class, Reference.Names.BLOCK_KEYPAD);
+        registerTileEntity(TileEntityEntityDetector.class, Reference.Names.BLOCK_ENTITY_DETECTOR);
+        registerTileEntity(TileEntityEnergyTurret.class, Reference.Names.BLOCK_ENERGY_TURRET);
+        registerTileEntity(TileEntityRFIDReader.class, Reference.Names.BLOCK_RFID_READER);
+        registerTileEntity(TileEntitySecureDoor.class, Reference.Names.BLOCK_SECURE_DOOR);
+    }
+
+    private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String key) {
+        // For better readability
+        GameRegistry.registerTileEntity(tileEntityClass, new ResourceLocation(OpenSecurity.MODID, key));
     }
 
     @SuppressWarnings("ConstantConditions")
