@@ -1,9 +1,11 @@
 package pcl.opensecurity.client;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
@@ -67,14 +69,6 @@ public class ClientProxy extends CommonProxy {
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(ContentRegistry.itemRFIDCard), ContentRegistry.itemRFIDCard);
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(ContentRegistry.itemMagCard), ContentRegistry.itemMagCard);
         ModColourManager.registerColourHandlers();
-
-        StateMapperBase ignoreState = new StateMapperBase() {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
-                return CamouflageBakedModel.variantTag;
-            }
-        };
-        ModelLoader.setCustomStateMapper(ContentRegistry.doorController, ignoreState);
     }
 
     @Override
@@ -99,9 +93,9 @@ public class ClientProxy extends CommonProxy {
         registerBlockItem(ContentRegistry.entityDetector, 0, Reference.Names.BLOCK_ENTITY_DETECTOR);
         registerBlockItem(ContentRegistry.energyTurret, 0, Reference.Names.BLOCK_ENERGY_TURRET);
         registerBlockItem(ContentRegistry.rfidReader, 0, Reference.Names.BLOCK_RFID_READER);
-        registerBlockItem(ContentRegistry.secureDoor, 0, Reference.Names.BLOCK_SECURE_DOOR);
-        registerBlockItem(ContentRegistry.privateSecureDoor, 0, Reference.Names.BLOCK_PRIVATE_SECURE_DOOR);
 
+        registerItem(ContentRegistry.secureDoorItem, Reference.Names.BLOCK_SECURE_DOOR);
+        registerItem(ContentRegistry.securePrivateDoorItem, Reference.Names.BLOCK_PRIVATE_SECURE_DOOR);
         registerItem(ContentRegistry.itemRFIDCard, Reference.Names.ITEM_RFID_CARD);
         registerItem(ContentRegistry.rfidReaderCardItem, Reference.Names.ITEM_RFID_READER_CARD);
         registerItem(ContentRegistry.itemMagCard, Reference.Names.ITEM_MAG_CARD);
@@ -109,6 +103,17 @@ public class ClientProxy extends CommonProxy {
         registerItem(ContentRegistry.movementUpgradeItem, Reference.Names.ITEM_MOVEMENT_UPGRADE);
         registerItem(ContentRegistry.energyUpgradeItem, Reference.Names.ITEM_ENERGY_UPGRADE);
         registerItem(ContentRegistry.cooldownUpgradeItem, Reference.Names.ITEM_COOLDOWN_UPGRADE);
+
+        StateMapperBase ignoreState = new StateMapperBase() {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
+                return CamouflageBakedModel.variantTag;
+            }
+        };
+
+        ModelLoader.setCustomStateMapper(ContentRegistry.doorController, ignoreState);
+        ModelLoader.setCustomStateMapper(ContentRegistry.secureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
+        ModelLoader.setCustomStateMapper(ContentRegistry.privateSecureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
     }
 
     private void registerBlockItem(final Block block, int meta, final String blockName) {

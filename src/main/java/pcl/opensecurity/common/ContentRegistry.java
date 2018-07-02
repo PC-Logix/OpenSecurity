@@ -46,6 +46,8 @@ public class ContentRegistry {
     public static ItemCard itemRFIDCard = new ItemRFIDCard();
     public static ItemCard itemMagCard = new ItemMagCard();
 
+    public static Item secureDoorItem = new ItemSecureDoor();
+    public static Item securePrivateDoorItem = new ItemSecurePrivateDoor();
     public static Item rfidReaderCardItem = new ItemRFIDReaderCard();
     public static Item damageUpgradeItem = new ItemDamageUpgrade();
     public static Item cooldownUpgradeItem = new ItemCooldownUpgrade();
@@ -129,12 +131,12 @@ public class ContentRegistry {
                 new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
                 new ItemBlock(entityDetector).setRegistryName(entityDetector.getRegistryName()),
                 new ItemBlock(energyTurret).setRegistryName(energyTurret.getRegistryName()),
-                new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName()),
-                new ItemSecureDoor(secureDoor).setRegistryName(secureDoor.getRegistryName()),
-                new ItemSecurePrivateDoor(privateSecureDoor).setRegistryName(privateSecureDoor.getRegistryName())
+                new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName())
         );
 
         event.getRegistry().registerAll(
+                secureDoorItem,
+                securePrivateDoorItem,
                 itemRFIDCard,
                 itemMagCard,
                 rfidReaderCardItem,
