@@ -27,11 +27,10 @@ public class CommonProxy {
     }
 
     public void preinit() {
-        // TODO Auto-generated method stub
-
+        registerRenderers();
     }
 
-    public void registerRenderers() {
+    protected void registerRenderers() {
         // TODO Auto-generated method stub
 
     }

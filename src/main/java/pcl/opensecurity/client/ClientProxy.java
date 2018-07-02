@@ -50,6 +50,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preinit() {
+        super.preinit();
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
     }
@@ -76,7 +77,8 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomStateMapper(ContentRegistry.doorController, ignoreState);
     }
 
-    public void registerRenderers() {
+    @Override
+    protected void registerRenderers() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
         TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper();
