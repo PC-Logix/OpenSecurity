@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -50,7 +51,7 @@ public class OpenSecurity {
 	public static boolean enableplaySoundAt = false;
 	public static boolean ignoreUUIDs = false;
 	public static boolean registerBlockBreakEvent = true;
-
+	private static ContentRegistry contentRegistry = new ContentRegistry();
 	public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
 	public static SimpleNetworkWrapper network;
@@ -58,6 +59,7 @@ public class OpenSecurity {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		long time = System.nanoTime();
+		MinecraftForge.EVENT_BUS.register(contentRegistry);
 		cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
 		ContentRegistry.preInit();
 		//proxy.registerSounds();
@@ -71,6 +73,8 @@ public class OpenSecurity {
 	    network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
 	    network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
 	    network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
+		FMLCommonHandler.instance().bus().register(instance);
+		MinecraftForge.EVENT_BUS.register(instance);
 	    logger.info("Registered " + packetID + " packets");
 	    logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
