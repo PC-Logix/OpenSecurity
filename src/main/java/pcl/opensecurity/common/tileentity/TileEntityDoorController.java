@@ -1,7 +1,5 @@
 package pcl.opensecurity.common.tileentity;
 
-import javax.annotation.Nullable;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -20,6 +18,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
+
+import javax.annotation.Nullable;
 
 public class TileEntityDoorController extends TileEntityOSBase {
 	BlockSecureDoor doorBlock;
@@ -69,21 +69,21 @@ public class TileEntityDoorController extends TileEntityOSBase {
 		if(BlockDoor.isOpen(world, doorPos)) {
 			System.out.println("Door is open closing");
 			rescan(this.pos);
-			if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
+			if (doorBlock != null) {
 				TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
 				doorBlock.toggleDoor(world, doorPos, false);
-			} else if (doorBlockVanilla != null && doorBlockVanilla instanceof BlockDoor) {
+			} else if (doorBlockVanilla != null) {
 				doorBlockVanilla.toggleDoor(world, doorPos, false);
 				neighborDoorBlockVanilla.toggleDoor(world, neighborDoorPos, false);
 			}
 		} else {
 			System.out.println("Door is closed opening");
 			rescan(this.pos);
-			if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
+			if (doorBlock != null) {
 				System.out.println("Door was valid!");
 				TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
 				doorBlock.toggleDoor(world, doorPos, true);
-			} else if (doorBlockVanilla != null && doorBlockVanilla instanceof BlockDoor) {
+			} else if (doorBlockVanilla != null) {
 				doorBlockVanilla.toggleDoor(world, doorPos, true);
 				neighborDoorBlockVanilla.toggleDoor(world, neighborDoorPos, true);
 			}
@@ -93,7 +93,7 @@ public class TileEntityDoorController extends TileEntityOSBase {
 	@Callback
 	public Object[] open(Context context, Arguments args) {
 		rescan(this.pos);
-		if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
+		if (doorBlock != null) {
 			TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
 			if (args.optString(0, "").equals(te.getPass())) {
 				doorBlock.toggleDoor(world, doorPos, true);
@@ -102,7 +102,7 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			} else {
 				return new Object[] { false, "Password incorrect" };
 			}
-		} else if (doorBlockVanilla != null && doorBlockVanilla instanceof BlockDoor) {
+		} else if (doorBlockVanilla != null) {
 			doorBlockVanilla.toggleDoor(world, doorPos, true);
 			neighborDoorBlockVanilla.toggleDoor(world, neighborDoorPos, true);
 			return new Object[] { true };
@@ -113,7 +113,7 @@ public class TileEntityDoorController extends TileEntityOSBase {
 	@Callback
 	public Object[] close(Context context, Arguments args) {
 		rescan(this.pos);
-		if (doorBlock != null && doorBlock instanceof BlockSecureDoor) {
+		if (doorBlock != null) {
 			TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorPos);
 			if (args.optString(0, "").equals(te.getPass())) {
 				doorBlock.toggleDoor(world, doorPos, false);
@@ -122,7 +122,7 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			} else {
 				return new Object[] { false, "Password incorrect" };
 			}
-		} else if (doorBlockVanilla != null && doorBlockVanilla instanceof BlockDoor) {
+		} else if (doorBlockVanilla != null) {
 			doorBlockVanilla.toggleDoor(world, doorPos, false);
 			neighborDoorBlockVanilla.toggleDoor(world, neighborDoorPos, false);
 			return new Object[] { true };
@@ -145,10 +145,8 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			TileEntitySecureDoor otherTE = (TileEntitySecureDoor) world.getTileEntity(getOtherDoorPart(doorPos));
 			//if (ownerUUID.equals(te.getOwner())) {
 			if (args.checkString(0).equals(te.getPass())) {
-				if (te instanceof TileEntitySecureDoor) {
-					te.setPassword("");
-					otherTE.setPassword("");
-				}
+				te.setPassword("");
+				otherTE.setPassword("");
 				return new Object[] { true, "Password Removed" };
 			} else {
 				return new Object[] { false, "Password was not removed" };
@@ -169,18 +167,14 @@ public class TileEntityDoorController extends TileEntityOSBase {
 			//if (ownerUUID.equals(te.getOwner())) {
 			if (te.getPass().isEmpty()) {
 				//password = args.checkString(0);
-				if (te instanceof TileEntitySecureDoor) {
-					te.setPassword(args.checkString(0));
-					otherTE.setPassword(args.checkString(0));
-				}
+				te.setPassword(args.checkString(0));
+				otherTE.setPassword(args.checkString(0));
 
 				return new Object[] { true, "Password set" };			
 			} else {
 				if (args.checkString(0).equals(te.getPass())) {
-					if (te instanceof TileEntitySecureDoor) {
-						te.setPassword(args.checkString(1));
-						otherTE.setPassword(args.checkString(1));
-					}
+					te.setPassword(args.checkString(1));
+					otherTE.setPassword(args.checkString(1));
 					return new Object[] { true, "Password Changed" };
 				} else {
 					return new Object[] { false, "Password was not changed" };

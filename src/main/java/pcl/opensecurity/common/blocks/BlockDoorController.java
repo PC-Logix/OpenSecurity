@@ -10,7 +10,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
@@ -69,16 +68,13 @@ public class BlockDoorController extends BlockOSBase {
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack heldItem = player.getActiveItemStack();
-        if (heldItem == null && !heldItem.equals(Items.AIR)) {
-            //System.out.println("TRYING TO TOGGLE!");
-            //tileEntity.toggle();
+        if (heldItem.isEmpty())
             return true;
-        }
+
         Block block = Block.getBlockFromItem(heldItem.getItem());
-        if (block != null && (block.isFullCube(block.getDefaultState()) || block instanceof BlockGlass || block instanceof BlockStainedGlass)) {
-            ItemStack equipped = heldItem;
+        if (block.isFullCube(block.getDefaultState()) || block instanceof BlockGlass || block instanceof BlockStainedGlass) {
             TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
-            if (tileEntity == null || player.isSneaking() || (heldItem != null && (heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor))) {
+            if (tileEntity == null || player.isSneaking() || heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor) {
                 return false;
             }
 
@@ -90,9 +86,9 @@ public class BlockDoorController extends BlockOSBase {
                     }
                 }
             }
-            if (tileEntity.getOwner().equals(player.getUniqueID().toString()) || player.capabilities.isCreativeMode) {
-                if (equipped.getItem() instanceof ItemBlock) {
-                    tileEntity.overrideTexture(equipped);
+            if ((tileEntity.getOwner() != null && tileEntity.getOwner().equals(player.getUniqueID().toString())) || player.capabilities.isCreativeMode) {
+                if (heldItem.getItem() instanceof ItemBlock) {
+                    tileEntity.overrideTexture(heldItem);
                     world.scheduleUpdate(pos, this, 1);
                     world.notifyBlockUpdate(pos, this.getDefaultState(), this.getDefaultState(), 3);
                     return true;

@@ -1,14 +1,10 @@
 package pcl.opensecurity.common.tileentity;
 
-import javax.annotation.Nullable;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Connector;
 import li.cil.oc.api.network.Visibility;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +17,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
@@ -31,6 +26,8 @@ import pcl.opensecurity.common.items.ItemCooldownUpgrade;
 import pcl.opensecurity.common.items.ItemDamageUpgrade;
 import pcl.opensecurity.common.items.ItemEnergyUpgrade;
 import pcl.opensecurity.common.items.ItemMovementUpgrade;
+
+import javax.annotation.Nullable;
 
 public class TileEntityEnergyTurret extends TileEntityOSBase implements IInventory {
 
@@ -56,9 +53,9 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 
 	private ItemStack[] ItemStacks = new ItemStack[12];
 
-	public TileEntityEnergyTurret() { 
+	public TileEntityEnergyTurret() {
 		super();
-		setSound(soundName); 
+		setSound(soundName);
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
 
@@ -108,11 +105,13 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		IBlockState blockDown = world.getBlockState(this.pos.offset(EnumFacing.DOWN));
 		IBlockState blockUp = world.getBlockState(this.pos.offset(EnumFacing.UP));
 
-		if (blockDown.getBlock() instanceof Block && !blockDown.getMaterial().equals(Material.AIR)) {
+		blockDown.getBlock();
+		if (!blockDown.getMaterial().equals(Material.AIR)) {
 			upRight = true;
 		}
 
-		if (blockUp.getBlock()  instanceof Block && !blockUp.getMaterial().equals(Material.AIR)) {
+		blockUp.getBlock();
+		if (!blockUp.getMaterial().equals(Material.AIR)) {
 			upRight = false;
 		}
 	}
@@ -264,7 +263,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			--tickCool;
 			--tickCool;
 		}
-		
+
 		--tickCool;
 
 		float tmpSetPitch=setpointPitch;
@@ -449,7 +448,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 			getUpdateTag();
 			markDirty();
-			return new Object[] { true };	
+			return new Object[] { true };
 		} else {
 			throw new Exception("powered off");
 		}
@@ -466,7 +465,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 			getUpdateTag();
 			markDirty();
-			return new Object[] { true };	
+			return new Object[] { true };
 		} else {
 			throw new Exception("powered off");
 		}
@@ -491,7 +490,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 			getUpdateTag();
 			markDirty();
-			return new Object[] { true };	
+			return new Object[] { true };
 		} else {
 			throw new Exception("powered off");
 		}
@@ -561,7 +560,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 				throw new Exception("gun hasn't cooled");
 			}
 
-			
+
 			if (!(this.node).tryChangeBuffer(-energy*2)) {
 				throw new Exception("not enough energy");
 			}
@@ -653,13 +652,13 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	@Override
 	public void openInventory(EntityPlayer player) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -669,7 +668,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		if((slot == 4 || slot == 5) && item.getItem() == ContentRegistry.cooldownUpgradeItem) return true;
         return (slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgradeItem;
     }
-	
+
 	@Override
 	public int getField(int id) {
 		// TODO Auto-generated method stub
@@ -679,7 +678,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	@Override
 	public void setField(int id, int value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -691,7 +690,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	@Override
 	public void clear() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -63,7 +62,7 @@ public class BlockMagReader extends BlockOSBase implements ITileEntityProvider {
         //player.sendMessage(new TextComponentString("meta " + getMetaFromState(state)));
         world.scheduleBlockUpdate(pos, this, 20, 1);
         ItemStack heldItem = player.getActiveItemStack();
-        if (heldItem == null && !heldItem.equals(Items.AIR)) {
+        if (!heldItem.isEmpty()) {
             Item equipped = heldItem.getItem();
             TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
             if (!world.isRemote && equipped instanceof ItemMagCard) {
