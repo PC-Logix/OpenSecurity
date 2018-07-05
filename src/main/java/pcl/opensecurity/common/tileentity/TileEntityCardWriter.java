@@ -1,9 +1,5 @@
 package pcl.opensecurity.common.tileentity;
 
-import java.util.Arrays;
-import java.util.UUID;
-import java.nio.charset.Charset;
-
 import li.cil.oc.Settings;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
@@ -13,11 +9,7 @@ import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
-import li.cil.oc.common.item.EEPROM;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -27,27 +19,34 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.inventory.BasicInventory;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
-public class TileEntityCardWriter extends TileEntityOSBase implements ITickable, ISidedInventory {
+import javax.annotation.Nonnull;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.UUID;
+
+public class TileEntityCardWriter extends TileEntityOSBase implements ITickable {
 
     public static final int SIZE = 2;
-    private static final int[] SLOTS_TOP = new int[] {0};
-    private static final int[] SLOTS_BOTTOM = new int[] {1};
-    private static final int[] SLOTS_SIDES = new int[] {1};
-    private final BasicInventory inv;
     public boolean hasCards = false;
 
-
+    private ItemStackHandler inventoryInput;
+    private ItemStackHandler inventoryOutput;
 
     public TileEntityCardWriter() {
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
         if (this.node() != null) {
             initOCFilesystem();
         }
-        inv = new BasicInventory(SIZE,"Processing",64);
+        inventoryInput = new ItemStackHandler(1);
+        inventoryOutput = new ItemStackHandler(1) {
+            @Override
+            protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+                return 1;
+            }
+        };
     }
 
     private String getComponentName() {
@@ -108,13 +107,13 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
     @Override
     public void update() {
         super.update();
-        if (!hasCards && getStackInSlot(0) != null) {
+        if (!hasCards && !inventoryInput.getStackInSlot(0).isEmpty()) {
             hasCards = true;
             if (node != null)
                 node.sendToReachable("computer.signal", "cardInsert", "cardInsert");
         }
 
-        if (hasCards && getStackInSlot(0) == null) {
+        if (hasCards && inventoryInput.getStackInSlot(0).isEmpty()) {
             hasCards = false;
             if (node != null)
                 node.sendToReachable("computer.signal", "cardRemove", "cardRemove");
@@ -128,46 +127,43 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
         String title = args.checkString(1);
         Boolean locked = args.checkBoolean(2);
         ItemStack eepromItem = li.cil.oc.api.Items.get("eeprom").createItemStack(1);
-        ItemStack outStack = null;
-        if (code != null) {
-            if (getStackInSlot(0) != null) {
-                // checking for a empty one
-                if (getStackInSlot(1) == null) { // The slot is empty lets
-                    // make us a new EEPROM
-                    System.out.println(getStackInSlot(0).getItem().getUnlocalizedName());
-                    if (getStackInSlot(0).getUnlocalizedName().equals("item.oc.EEPROM")) {
-                        //CardWriterItemStacks[x] = eepromItem;
-                        outStack = eepromItem;
-                        NBTTagCompound oc_data = new NBTTagCompound();
-                        NBTTagCompound our_data = new NBTTagCompound();
-                        Integer biggerSizeCode = Settings.get().eepromSize()*2;
-                        Integer biggerSizeData = Settings.get().eepromDataSize()*2;
-                        if(!OpenSecurity.cfg.biggerEEPROM && code.length > Settings.get().eepromSize()) {
-                            code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
-                        } else if(OpenSecurity.cfg.biggerEEPROM && code.length > biggerSizeCode) {
-                            code = Arrays.copyOfRange(code, 0, biggerSizeCode);
-                        }
-                        if(!OpenSecurity.cfg.biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
-                            title = title.substring(0, Settings.get().eepromDataSize());
-                        } else if(OpenSecurity.cfg.biggerEEPROM && title.length() > biggerSizeData) {
-                            title = title.substring(0, biggerSizeData);
-                        }
-                        our_data.setByteArray("oc:eeprom", code);
-                        our_data.setString("oc:label", title);
-                        our_data.setBoolean("oc:readonly", locked);
-                        oc_data.setTag("oc:data", our_data);
-                        outStack.setTagCompound(oc_data);
-                        setInventorySlotContents(1, outStack);
-                        decrStackSize(0, 1);
-                        return new Object[] { true };
+        ItemStack outStack;
+        if (!inventoryInput.getStackInSlot(0).isEmpty()) {
+            // checking for a empty one
+            if (inventoryOutput.getStackInSlot(0).isEmpty()) { // The slot is empty lets
+                // make us a new EEPROM
+                System.out.println(inventoryInput.getStackInSlot(0).getItem().getUnlocalizedName());
+                if (inventoryInput.getStackInSlot(0).getUnlocalizedName().equals("item.oc.EEPROM")) {
+                    //CardWriterItemStacks[x] = eepromItem;
+                    outStack = eepromItem;
+                    NBTTagCompound oc_data = new NBTTagCompound();
+                    NBTTagCompound our_data = new NBTTagCompound();
+                    Integer biggerSizeCode = Settings.get().eepromSize()*2;
+                    Integer biggerSizeData = Settings.get().eepromDataSize()*2;
+                    if(!OpenSecurity.cfg.biggerEEPROM && code.length > Settings.get().eepromSize()) {
+                        code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
+                    } else if(OpenSecurity.cfg.biggerEEPROM && code.length > biggerSizeCode) {
+                        code = Arrays.copyOfRange(code, 0, biggerSizeCode);
                     }
-                    return new Object[] { false, "Item is not EEPROM" };
+                    if(!OpenSecurity.cfg.biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
+                        title = title.substring(0, Settings.get().eepromDataSize());
+                    } else if(OpenSecurity.cfg.biggerEEPROM && title.length() > biggerSizeData) {
+                        title = title.substring(0, biggerSizeData);
+                    }
+                    our_data.setByteArray("oc:eeprom", code);
+                    our_data.setString("oc:label", title);
+                    our_data.setBoolean("oc:readonly", locked);
+                    oc_data.setTag("oc:data", our_data);
+                    outStack.setTagCompound(oc_data);
+                    inventoryOutput.setStackInSlot(0, outStack);
+                    inventoryInput.getStackInSlot(0).setCount(inventoryInput.getStackInSlot(0).getCount() - 1);
+                    return new Object[] { true };
                 }
-                return new Object[] { false, "No Empty Slots" };
+                return new Object[] { false, "Item is not EEPROM" };
             }
-            return new Object[] { false, "No EEPROM in slot" };
+            return new Object[] { false, "No Empty Slots" };
         }
-        return new Object[] { false, "Data is Null" };
+        return new Object[] { false, "No EEPROM in slot" };
     }
 
 
@@ -200,24 +196,26 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
                 default: color = Integer.parseInt("FFFFFF", 16); break;
             }
         }
-        ItemStack outStack = null;
+        ItemStack outStack;
         if (node.changeBuffer(-5) == 0) {
             if (data != null) {
-                if (getStackInSlot(0) != null) {
+                if (!inventoryInput.getStackInSlot(0).isEmpty()) {
                     // checking for a empty one
-                    if (getStackInSlot(1) == null) { // The slot is empty lets
+                    if (inventoryOutput.getStackInSlot(0).isEmpty()) { // The slot is empty lets
                         // make us a RFID
-                        if (getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
+                        if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
                             outStack = new ItemStack(ContentRegistry.itemRFIDCard);
                             if (data.length() > 64) {
                                 data = data.substring(0, 64);
                             }
-                        } else if (getStackInSlot(0).getItem() instanceof ItemMagCard) {
+                        } else if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemMagCard) {
                             outStack = new ItemStack(ContentRegistry.itemMagCard);
                             if (data.length() > 128) {
                                 data = data.substring(0, 128);
                             }
-                        }
+                        } else
+                             return new Object[] { false, "Wrong item in input slot" };
+
                         outStack.setTagCompound(new NBTTagCompound());
                         outStack.getTagCompound().setString("data", data);
                         if (!title.isEmpty()) {
@@ -250,9 +248,9 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
 
                         nbttagcompound1.setInteger("color", color);
 
-                        decrStackSize(0, 1);
+                        inventoryInput.getStackInSlot(0).setCount(inventoryInput.getStackInSlot(0).getCount() - 1);
+                        inventoryOutput.setStackInSlot(0, outStack);
 
-                        setInventorySlotContents(1, outStack);
                         return new Object[] { true,  outStack.getTagCompound().getString("uuid")};
                     }
                     return new Object[] { false, "No Empty Slots" };
@@ -275,65 +273,18 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
         }
     };
 
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     */
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    {
-        if (index == 2)
-        {
-            return false;
-        }
-        else if (index != 1)
-        {
-            return true;
-        }
-        else
-        {
-            //ItemStack itemstack = this.furnaceItemStacks[1];
-            // return isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack) && (itemstack == null || itemstack.getItem() != Items.BUCKET);
-        }
-        return false;
-    }
-
-    public int[] getSlotsForFace(EnumFacing side)
-    {
-        return side == EnumFacing.DOWN ? SLOTS_BOTTOM : (side == EnumFacing.UP ? SLOTS_TOP : SLOTS_SIDES);
-    }
-
-    /**
-     * Returns true if automation can insert the given item in the given slot from the given side.
-     */
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
-    {
-        return this.isItemValidForSlot(index, itemStackIn);
-    }
-
-    /**
-     * Returns true if automation can extract the given item in the given slot from the given side.
-     */
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    {
-        if (direction == EnumFacing.DOWN && index == 1)
-        {
-            Item item = stack.getItem();
-
-            return item == Items.WATER_BUCKET || item == Items.BUCKET;
-        }
-
-        return true;
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound data) {
         super.readFromNBT(data);
-        inv.readFromNBT(data);
+        inventoryInput.deserializeNBT(data.getCompoundTag("invIn"));
+        inventoryOutput.deserializeNBT(data.getCompoundTag("invOut"));
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound data) {
         super.writeToNBT(data);
-        inv.writeToNBT(data);
+        data.setTag("invIn", inventoryInput.serializeNBT());
+        data.setTag("invOut", inventoryOutput.serializeNBT());
         return data;
     }
 
@@ -343,109 +294,20 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable,
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.hasCapability(capability, facing);
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+        return (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.UP) ||  super.hasCapability(capability, facing);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) itemStackHandler;
+            if (facing == EnumFacing.DOWN)
+                return (T) inventoryOutput;
+            else if (facing != EnumFacing.UP)
+                return (T) inventoryInput;
         }
+
         return super.getCapability(capability, facing);
     }
-
-    @Override
-    public int getSizeInventory() {
-        return SIZE;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return inv.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return inv.decrStackSize(index, count);
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inv.setInventorySlotContents(index, stack);
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        // TODO Auto-generated method stub
-        return 64;
-    }
-
-    @Override
-    public boolean isUsableByPlayer(EntityPlayer player) {
-        return true;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getField(int id) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

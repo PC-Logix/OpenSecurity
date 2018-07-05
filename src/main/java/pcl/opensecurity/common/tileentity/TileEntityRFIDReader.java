@@ -1,8 +1,5 @@
 package pcl.opensecurity.common.tileentity;
 
-import java.util.HashMap;
-import java.util.List;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -11,7 +8,6 @@ import li.cil.oc.api.network.Visibility;
 import li.cil.oc.common.entity.Drone;
 import li.cil.oc.common.inventory.Inventory;
 import net.minecraft.entity.Entity;
-//import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -22,6 +18,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemRFIDCard;
+
+import java.util.HashMap;
+import java.util.List;
+
+//import net.minecraft.client.audio.SoundCategory;
 
 public class TileEntityRFIDReader extends TileEntityOSBase {
 
@@ -70,13 +71,12 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 			for (int i = 0; i <= e.size() - 1; i++) {
 				entity = (Entity) e.get(i);
 				if (entity instanceof EntityPlayerMP) {
-					found = true;
 					EntityPlayer em = (EntityPlayer) entity;
 					NonNullList<ItemStack> playerInventory = em.inventory.mainInventory;
 					int size = playerInventory.size();
 					for (int k = 0; k < size; k++) {
 						ItemStack st = em.inventory.getStackInSlot(k);
-						if (st != null && st.getItem() instanceof ItemRFIDCard && st.getTagCompound() != null && st.getTagCompound().hasKey("data")) {
+						if (st.getItem() instanceof ItemRFIDCard && st.getTagCompound() != null && st.getTagCompound().hasKey("data")) {
 							String localUUID;
 							if (!OpenSecurity.ignoreUUIDs) {
 								localUUID = st.getTagCompound().getString("uuid");
@@ -87,9 +87,8 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 						}
 					}
 				} else if (entity instanceof li.cil.oc.common.entity.Drone) {
-					found = true;
 					Drone em = (Drone) entity;
-					Inventory droneInventory = (Inventory) em.mainInventory();
+					Inventory droneInventory = em.mainInventory();
 					int size = em.inventorySize();
 					for (int k = 0; k < size; k++) {
 						ItemStack st = droneInventory.getStackInSlot(k);
@@ -106,7 +105,6 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 				}
 				NBTTagCompound tag = entity.getEntityData().getCompoundTag("rfidData");
 				if (tag.hasKey("data")) {
-					found = true;
 					String localUUID;
 					if (!OpenSecurity.ignoreUUIDs) {
 						localUUID = tag.getString("uuid");

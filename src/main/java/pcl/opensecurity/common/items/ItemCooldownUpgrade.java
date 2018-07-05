@@ -1,11 +1,10 @@
 package pcl.opensecurity.common.items;
 
-import net.minecraft.item.Item;
+import pcl.opensecurity.common.Reference;
 
-public class ItemCooldownUpgrade extends Item {
+public class ItemCooldownUpgrade extends ItemOSBase {
 
 	public ItemCooldownUpgrade() {
-		super();
-		setUnlocalizedName("cooldownUpgrade");
+		super(Reference.Names.ITEM_COOLDOWN_UPGRADE);
 	}
 }

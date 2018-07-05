@@ -3,6 +3,7 @@ package pcl.opensecurity.common.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntityEntityDetector;
 
 /**
@@ -10,12 +11,8 @@ import pcl.opensecurity.common.tileentity.TileEntityEntityDetector;
  */
 public class BlockEntityDetector extends BlockOSBase {
 
-    public BlockEntityDetector(Material materialIn) {
-        super(materialIn);
-        setUnlocalizedName("entity_detector");
-        setRegistryName("entity_detector");
-        setHardness(.5f);
-        // TODO Auto-generated constructor stub
+    public BlockEntityDetector() {
+        super(Reference.Names.BLOCK_ENTITY_DETECTOR, Material.IRON, 0.5f);
     }
 
     @Override

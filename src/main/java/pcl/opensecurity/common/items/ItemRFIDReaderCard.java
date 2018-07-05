@@ -1,10 +1,9 @@
 package pcl.opensecurity.common.items;
 
-import net.minecraft.item.Item;
+import pcl.opensecurity.common.Reference;
 
-public class ItemRFIDReaderCard extends Item {
+public class ItemRFIDReaderCard extends ItemOSBase {
 	public ItemRFIDReaderCard() {
-		super();
-		setUnlocalizedName("rfidReaderCard");
+		super(Reference.Names.ITEM_RFID_READER_CARD);
 	}
 }

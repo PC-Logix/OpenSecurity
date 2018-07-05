@@ -1,11 +1,9 @@
 package pcl.opensecurity.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
+import org.lwjgl.opengl.GL11;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.inventory.EnergyTurretContainer;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
@@ -45,7 +43,7 @@ public class EnergyTurretGUI  extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
 		// draw your Gui here, only thing you need to change is the path
-		ResourceLocation texture = new ResourceLocation(OpenSecurity.MODID, "textures/gui/energyTurret.png");
+		ResourceLocation texture = new ResourceLocation(OpenSecurity.MODID, "textures/gui/energy_turret.png");
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.renderEngine.bindTexture(texture);
 		int x = (width - xSize) / 2;

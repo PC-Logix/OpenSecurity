@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "opensecurity:items/rfidReaderCard"
+        "layer0": "opensecurity:items/rfid_reader_card"
     }
 }

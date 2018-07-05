@@ -1,38 +1,30 @@
 package pcl.opensecurity.common.tileentity;
 
-import javax.annotation.Nullable;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Connector;
 import li.cil.oc.api.network.Visibility;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
-import pcl.opensecurity.common.items.ItemCooldownUpgrade;
-import pcl.opensecurity.common.items.ItemDamageUpgrade;
-import pcl.opensecurity.common.items.ItemEnergyUpgrade;
-import pcl.opensecurity.common.items.ItemMovementUpgrade;
 
-public class TileEntityEnergyTurret extends TileEntityOSBase implements IInventory {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class TileEntityEnergyTurret extends TileEntityOSBase {
 
 	static final float maxShaftLengthForOneBlock = 0.5f;
 
@@ -54,12 +46,18 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 	public boolean armed = false;
 	boolean upRight = true;
 
-	private ItemStack[] ItemStacks = new ItemStack[12];
+	private ItemStackHandler inventory;
 
-	public TileEntityEnergyTurret() { 
+	public TileEntityEnergyTurret() {
 		super();
-		setSound(soundName); 
+		setSound(soundName);
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+		inventory = new ItemStackHandler(12) {
+			@Override
+			public int getSlotLimit(int slot) {
+				return 1;
+			}
+		};
 	}
 
 	public boolean isUpright()
@@ -77,10 +75,6 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 
 	public float getRealPitch() {
 		return ((float)Math.PI) * pitch / 180;
-	}
-
-	public int getSizeInventory() {
-		return this.ItemStacks.length;
 	}
 
 	@Override
@@ -108,13 +102,29 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		IBlockState blockDown = world.getBlockState(this.pos.offset(EnumFacing.DOWN));
 		IBlockState blockUp = world.getBlockState(this.pos.offset(EnumFacing.UP));
 
-		if (blockDown.getBlock() instanceof Block && !blockDown.getMaterial().equals(Material.AIR)) {
+		blockDown.getBlock();
+		if (!blockDown.getMaterial().equals(Material.AIR)) {
 			upRight = true;
 		}
 
-		if (blockUp.getBlock()  instanceof Block && !blockUp.getMaterial().equals(Material.AIR)) {
+		blockUp.getBlock();
+		if (!blockUp.getMaterial().equals(Material.AIR)) {
 			upRight = false;
 		}
+	}
+
+	@Override
+	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Nullable
+	@Override
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return (T) inventory;
+		return super.getCapability(capability, facing);
 	}
 
 	public void readFromNBT(NBTTagCompound tag) {
@@ -149,18 +159,8 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		tag.setFloat("barrel", this.barrel);
 		tag.setInteger("cool", this.tickCool);
 		tag.setBoolean("upright", upRight);
+		tag.setTag("inventory", inventory.serializeNBT());
 		writeSyncableDataToNBT(tag);
-
-		NBTTagList var2 = new NBTTagList();
-		for (int var3 = 0; var3 < this.ItemStacks.length; ++var3) {
-			if (this.ItemStacks[var3] != null) {
-				NBTTagCompound var4 = new NBTTagCompound();
-				var4.setByte("Slot", (byte) var3);
-				this.ItemStacks[var3].writeToNBT(var4);
-				var2.appendTag(var4);
-			}
-		}
-		tag.setTag("Items", var2);
 		return tag;
 	}
 
@@ -180,17 +180,8 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		this.barrel = tag.getFloat("barrel");
 		this.tickCool = tag.getInteger("cool");
 		this.upRight = tag.getBoolean("upright");
+		inventory.deserializeNBT(tag.getCompoundTag("inventory"));
 		readSyncableDataFromNBT(tag);
-
-		NBTTagList var2 = tag.getTagList("Items", tag.getId());
-		this.ItemStacks = new ItemStack[this.getSizeInventory()];
-		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
-			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
-			byte var5 = var4.getByte("Slot");
-			if (var5 >= 0 && var5 < this.ItemStacks.length) {
-				this.ItemStacks[var5] = new ItemStack(var4);
-			}
-		}
 	}
 
 	private void readSyncableDataFromNBT(NBTTagCompound tag) {
@@ -247,24 +238,21 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 				doPowerOff();
 			}
 		}
-		if (this.ItemStacks[2] != null && this.ItemStacks[2].getItem() instanceof ItemMovementUpgrade) {
+
+		if (!inventory.getStackInSlot(2).isEmpty()) {
 			movePerTick = movePerTick + 2.5F;
 		}
-		if (this.ItemStacks[3] != null && this.ItemStacks[3].getItem() instanceof ItemMovementUpgrade) {
+		if (!inventory.getStackInSlot(3).isEmpty()) {
 			movePerTick = movePerTick + 2.5F;
 		}
 
-		if (this.ItemStacks[4] != null && this.ItemStacks[4].getItem() instanceof ItemCooldownUpgrade) {
-			--tickCool;
-			--tickCool;
-			--tickCool;
+		if (!inventory.getStackInSlot(4).isEmpty()) {
+			tickCool -= 3;
 		}
-		if (this.ItemStacks[5] != null && this.ItemStacks[5].getItem() instanceof ItemCooldownUpgrade) {
-			--tickCool;
-			--tickCool;
-			--tickCool;
+		if (!inventory.getStackInSlot(5).isEmpty()) {
+			tickCool -= 3;
 		}
-		
+
 		--tickCool;
 
 		float tmpSetPitch=setpointPitch;
@@ -449,7 +437,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 			getUpdateTag();
 			markDirty();
-			return new Object[] { true };	
+			return new Object[] { true };
 		} else {
 			throw new Exception("powered off");
 		}
@@ -466,7 +454,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 			getUpdateTag();
 			markDirty();
-			return new Object[] { true };	
+			return new Object[] { true };
 		} else {
 			throw new Exception("powered off");
 		}
@@ -491,7 +479,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
 			getUpdateTag();
 			markDirty();
-			return new Object[] { true };	
+			return new Object[] { true };
 		} else {
 			throw new Exception("powered off");
 		}
@@ -542,18 +530,18 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 
 			float damage = 5F;
 
-			if (this.ItemStacks[0] != null && this.ItemStacks[0].getItem() instanceof ItemDamageUpgrade) {
+			if (!inventory.getStackInSlot(0).isEmpty()) {
 				damage = damage * 3F;
 			}
-			if (this.ItemStacks[1] != null && this.ItemStacks[1].getItem() instanceof ItemDamageUpgrade) {
+			if (!inventory.getStackInSlot(1).isEmpty()) {
 				damage = damage * 3F;
 			}
 
 			float energy = damage;
-			if (this.ItemStacks[6] != null && this.ItemStacks[6].getItem() instanceof ItemEnergyUpgrade) {
+			if (!inventory.getStackInSlot(6).isEmpty()) {
 				energy = energy * 0.7F;
 			}
-			if (this.ItemStacks[7] != null && this.ItemStacks[7].getItem() instanceof ItemEnergyUpgrade) {
+			if (!inventory.getStackInSlot(7).isEmpty()) {
 				energy = energy * 0.7F;
 			}
 
@@ -561,7 +549,7 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 				throw new Exception("gun hasn't cooled");
 			}
 
-			
+
 			if (!(this.node).tryChangeBuffer(-energy*2)) {
 				throw new Exception("not enough energy");
 			}
@@ -587,117 +575,4 @@ public class TileEntityEnergyTurret extends TileEntityOSBase implements IInvento
 		}
 
 	}
-
-	@Override
-	public String getName() {
-		return "os_energyturret";
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int index) {
-		return this.ItemStacks[index];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int amt) {
-		ItemStack stack = getStackInSlot(slot);
-		if (stack != null) {
-			if (stack.getCount() <= amt) {
-				setInventorySlotContents(slot, null);
-			} else {
-				stack = stack.splitStack(amt);
-				if (stack.getCount() == 0) {
-					setInventorySlotContents(slot, null);
-				}
-			}
-		}
-		return stack;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int i) {
-		if (getStackInSlot(i) != null) {
-			ItemStack var2 = getStackInSlot(i);
-			setInventorySlotContents(i, null);
-			return var2;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {
-		this.ItemStacks[i] = itemstack;
-		if (itemstack != null && itemstack.getCount() > this.getInventoryStackLimit()) {
-			itemstack.setCount(this.getInventoryStackLimit());
-		}
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack item) {
-		if((slot == 0 || slot == 1) && item.getItem() == ContentRegistry.damageUpgradeItem) return true;
-		if((slot == 2 || slot == 3) && item.getItem() == ContentRegistry.movementUpgradeItem) return true;
-		if((slot == 4 || slot == 5) && item.getItem() == ContentRegistry.cooldownUpgradeItem) return true;
-        return (slot == 6 || slot == 7) && item.getItem() == ContentRegistry.energyUpgradeItem;
-    }
-	
-	@Override
-	public int getField(int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getFieldCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

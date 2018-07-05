@@ -1,14 +1,11 @@
 package pcl.opensecurity.common.tileentity;
 
-import javax.annotation.Nullable;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.state.IBlockState;
-//import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,6 +17,11 @@ import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemMagCard;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+//import net.minecraft.client.audio.SoundCategory;
 
 public class TileEntityMagReader extends TileEntityOSBase {
 
@@ -34,14 +36,14 @@ public class TileEntityMagReader extends TileEntityOSBase {
 		return "os_magreader";
 	}
 	
-	public boolean doRead(ItemStack itemStack, EntityPlayer em, int side) {
-		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard /*&& this.blockMetadata == 0*/) {
+	public boolean doRead(@Nonnull ItemStack itemStack, EntityPlayer em, int side) {
+		if (itemStack.getItem() instanceof ItemMagCard /*&& this.blockMetadata == 0*/) {
 			if(!world.isRemote){
 				//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
         	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.card_swipe, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
 		}
-		if (itemStack != null && itemStack.getItem() instanceof ItemMagCard && itemStack.getTagCompound() != null && itemStack.getTagCompound().hasKey("data")) {
+		if (itemStack.getItem() instanceof ItemMagCard && itemStack.getTagCompound() != null && itemStack.getTagCompound().hasKey("data")) {
 			data = itemStack.getTagCompound().getString("data");
 			String uuid = itemStack.getTagCompound().getString("uuid");
 			String user;

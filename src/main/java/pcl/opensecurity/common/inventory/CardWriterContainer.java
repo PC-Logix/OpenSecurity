@@ -1,27 +1,27 @@
 package pcl.opensecurity.common.inventory;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnaceFuel;
-import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import pcl.opensecurity.common.inventory.slot.CardInputSlot;
+import pcl.opensecurity.common.inventory.slot.CardOutputSlot;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 
-public class CardWriterContainer  extends Container {
+import javax.annotation.Nonnull;
+
+public class CardWriterContainer extends Container {
 
     private TileEntityCardWriter te;
 
     public CardWriterContainer(IInventory playerInventory, TileEntityCardWriter te) {
         this.te = te;
 
-		// This container references items out of our own inventory (the 9 slots we hold ourselves)
+        // This container references items out of our own inventory (the 9 slots we hold ourselves)
         // as well as the slots from the player inventory so that the user can transfer items between
         // both inventories. The two calls below make sure that slots are defined for both inventories.
         addOwnSlots();
@@ -47,13 +47,14 @@ public class CardWriterContainer  extends Container {
     }
 
     private void addOwnSlots() {
-        //IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        IItemHandler sideHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.EAST);
+        this.addSlotToContainer(new CardInputSlot(te, sideHandler, 0, 80, 36));
 
-        this.addSlotToContainer(new CardInputSlot(te, 0, 80, 36));
-        this.addSlotToContainer(new CardOutputSlot(te, 1, 80, 87));
+        IItemHandler bottomHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+        this.addSlotToContainer(new CardOutputSlot(te, bottomHandler, 0, 80, 87));
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         ItemStack itemstack = null;
@@ -65,24 +66,24 @@ public class CardWriterContainer  extends Container {
 
             if (index < TileEntityCardWriter.SIZE) {
                 if (!this.mergeItemStack(itemstack1, TileEntityCardWriter.SIZE, this.inventorySlots.size(), true)) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             } else if (!this.mergeItemStack(itemstack1, 0, TileEntityCardWriter.SIZE, false)) {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             if (itemstack1.getCount() == 0) {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             } else {
                 slot.onSlotChanged();
             }
         }
 
-        return itemstack;
+        return itemstack != null ? itemstack : super.transferStackInSlot(playerIn, index);
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
+    public boolean canInteractWith(@Nonnull EntityPlayer playerIn) {
         return te.canInteractWith(playerIn);
     }
 }

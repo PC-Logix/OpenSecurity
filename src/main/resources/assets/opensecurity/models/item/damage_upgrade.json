@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "opensecurity:items/damageUpgrade"
+        "layer0": "opensecurity:items/damage_upgrade"
     }
 }

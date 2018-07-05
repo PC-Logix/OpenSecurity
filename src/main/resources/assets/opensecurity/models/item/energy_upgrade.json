@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "opensecurity:items/energyUpgrade"
+        "layer0": "opensecurity:items/energy_upgrade"
     }
 }

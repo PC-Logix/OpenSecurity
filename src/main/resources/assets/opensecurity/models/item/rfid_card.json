@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "opensecurity:items/rfid_card",
+		"layer1": "opensecurity:items/rfid_card_color"
+    }
+}
