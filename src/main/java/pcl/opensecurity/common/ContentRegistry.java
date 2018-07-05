@@ -19,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -42,7 +41,6 @@ import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.items.ItemSecurePrivateDoor;
 import pcl.opensecurity.common.tileentity.*;
 
-@Mod.EventBusSubscriber
 public class ContentRegistry {
     public static CreativeTabs creativeTab;
     public static Block alarmBlock;
@@ -70,25 +68,12 @@ public class ContentRegistry {
     public static BlockDoorController doorController;  // this holds the unique instance of your block
     public static ItemBlock itemBlockDoorController;  // this holds the unique instance of the ItemBlock corresponding to your block
 
-    public ContentRegistry() {}
+    private ContentRegistry() {}
 
-	public static Item init(Item item, String name)
-	{
-		return item.setUnlocalizedName(name).setRegistryName("opensecurity:" + name);
-	}
-    
-	public static Block init(Block block, String name)
-	{
-		return block.setUnlocalizedName(name).setRegistryName("opensecurity:" + name);
-	}
-    
     public static final Set<Block> blocks = new HashSet<>();
 
     // Called on mod preInit()
     public static void preInit() {
-    	alarmBlock = init(new BlockAlarm(Material.IRON), "alarm");
-    	GameRegistry.registerTileEntity(TileEntityAlarm.class, "os_alarm");
-        alarmBlock.setCreativeTab(creativeTab);
     	registerEvents();
         registerTabs();
         //registerBlocks();
@@ -143,7 +128,10 @@ public class ContentRegistry {
 
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<Block> register) {
+        alarmBlock = new BlockAlarm(Material.IRON);
         register.getRegistry().register(alarmBlock);
+        alarmBlock.setCreativeTab(creativeTab);
+        GameRegistry.registerTileEntity(TileEntityAlarm.class, "os_alarm");
 
 //        biometricReaderBlock = new BlockBiometricReader(Material.IRON);
 //        register.getRegistry().register(biometricReaderBlock);
