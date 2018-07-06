@@ -1,6 +1,7 @@
 package pcl.opensecurity;
 
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -46,11 +47,14 @@ public class OpenSecurity {
 
     public static SimpleNetworkWrapper network;
 
+    private static ContentRegistry contentRegistry = new ContentRegistry();
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         long time = System.nanoTime();
         cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
         ContentRegistry.preInit();
+    	MinecraftForge.EVENT_BUS.register(contentRegistry);
         //proxy.registerSounds();
         //proxy.registerItemRenderers();
         SoundHandler.registerSounds();
