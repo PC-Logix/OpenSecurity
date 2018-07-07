@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -14,6 +15,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
@@ -23,10 +26,14 @@ import java.util.Comparator;
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class BlockMagReader extends BlockOSBase implements ITileEntityProvider {
+public class BlockMagReader extends Block implements ITileEntityProvider {
 
     public BlockMagReader() {
-        super(Reference.Names.BLOCK_MAG_READER, Material.IRON, 0.5f);
+        super(Material.IRON);
+        setUnlocalizedName(Reference.Names.BLOCK_MAG_READER);
+        setRegistryName(OpenSecurity.MODID, Reference.Names.BLOCK_MAG_READER);
+        setHardness(0.5f);
+        setCreativeTab(ContentRegistry.creativeTab);
     }
 
     public static final IProperty<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
@@ -61,7 +68,7 @@ public class BlockMagReader extends BlockOSBase implements ITileEntityProvider {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         //player.sendMessage(new TextComponentString("meta " + getMetaFromState(state)));
         world.scheduleBlockUpdate(pos, this, 20, 1);
-        ItemStack heldItem = player.getActiveItemStack();
+        ItemStack heldItem = player.getHeldItemMainhand();
         if (!heldItem.isEmpty()) {
             Item equipped = heldItem.getItem();
             TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
