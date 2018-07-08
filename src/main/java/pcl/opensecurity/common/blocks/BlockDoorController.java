@@ -67,7 +67,7 @@ public class BlockDoorController extends BlockOSBase {
     @SuppressWarnings("deprecation")
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        ItemStack heldItem = player.getActiveItemStack();
+        ItemStack heldItem = player.getHeldItemMainhand();
         if (heldItem.isEmpty())
             return true;
 
