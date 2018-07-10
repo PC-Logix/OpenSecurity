@@ -43,17 +43,19 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
             name = ((EntityPlayer) entity).getDisplayNameString();
         else
             name = entity.getName();
-        node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity);
+        
         value.put("name", name);
         value.put("range", rangeToEntity);
         if (!offset) {
             value.put("x", entity.posX);
             value.put("y", entity.posY);
             value.put("z", entity.posZ);
+            node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity, entity.posX, entity.posY, entity.posZ);
         } else {
             value.put("x", entity.posX - this.getPos().getX());
             value.put("y", entity.posY - this.getPos().getY());
             value.put("z", entity.posZ - this.getPos().getZ());
+            node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity, entity.posX - this.getPos().getX(), entity.posY - this.getPos().getY(), entity.posZ - this.getPos().getZ());
         }
 
         return value;
