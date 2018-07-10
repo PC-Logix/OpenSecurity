@@ -101,14 +101,16 @@ public class TileEntityEntityDetector extends TileEntityMachineBase implements E
 			name = ((EntityPlayer) entity).getDisplayName();
 		else
 			name = entity.getCommandSenderName();
-		node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity);
+		
 		value.put("name", name);
 		value.put("range", rangeToEntity);
 		if (!offset) {
+			node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity, entity.posX, entity.posY, entity.posZ);
 			value.put("x", entity.posX);
 			value.put("y", entity.posY);
 			value.put("z", entity.posZ);
 		} else {
+			node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity, entity.posX - this.xCoord, entity.posY - this.yCoord, entity.posZ - this.zCoord);
 			value.put("x", entity.posX - this.xCoord);
 			value.put("y", entity.posY - this.yCoord);
 			value.put("z", entity.posZ - this.zCoord);
