@@ -20,10 +20,12 @@ apply plugin: 'forge'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-if (System.getenv().BUILD_NUMBER != null)
-	ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
+if (System.getenv("PROMOTED_NUMBER") != null)
+    ext.buildNumber = "${System.getenv("PROMOTED_NUMBER")}"
+else if (System.getenv("BUILD_NUMBER") != null)
+    ext.buildNumber = "${System.getenv("BUILD_NUMBER")}"
 else
-	ext.buildNumber = 0
+ext.buildNumber = "+" + getGitRef()
 
 version = "1.0"
 group = "pcl.OpenSecurity"
