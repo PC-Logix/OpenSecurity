@@ -21,9 +21,9 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 if (System.getenv("PROMOTED_NUMBER") != null)
-    ext.buildNumber = "${System.getenv("PROMOTED_NUMBER")}"
+    ext.buildNumber = System.getenv().PROMOTED_NUMBER?.toInteger()
 else if (System.getenv("BUILD_NUMBER") != null)
-    ext.buildNumber = "${System.getenv("BUILD_NUMBER")}"
+    ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
 else
 ext.buildNumber = "+" + getGitRef()
 
