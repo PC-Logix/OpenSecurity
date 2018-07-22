@@ -17,13 +17,13 @@ public class BuildInfo {
 	public static int getBuildNumber() {
 		if (buildNumber.equals("@" + "BUILD" + "@"))
 			return 0;
-		return Integer.parseInt(buildNumber);
+		return new Double(buildNumber).intValue();
 	}
 	
 	public static int getVersionNumber() {
 		if (versionNumber.equals("@" + "VERSION" + "@"))
 			return 0;
-		return Integer.parseInt(versionNumber);
+		return new Double(versionNumber).intValue();
 	}
 
 	public static boolean isDevelopmentEnvironment() {
