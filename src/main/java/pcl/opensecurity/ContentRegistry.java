@@ -183,11 +183,11 @@ public class ContentRegistry {
 		KVMBlock.setCreativeTab(CreativeTab);
 		GameRegistry.registerTileEntity(TileEntityKVM.class, OpenSecurity.MODID + ".KVMTE");
 
-		if (BuildInfo.getVersionNumber() == 0) {
-			DisplayPanelBlock = new BlockDisplayPanel();
-			GameRegistry.registerBlock(DisplayPanelBlock, OpenSecurity.MODID + ".DisplayPanel");
-			DisplayPanelBlock.setCreativeTab(CreativeTab);
-		}
+//		if (BuildInfo.getVersionNumber() == 0) {
+//			DisplayPanelBlock = new BlockDisplayPanel();
+//			GameRegistry.registerBlock(DisplayPanelBlock, OpenSecurity.MODID + ".DisplayPanel");
+//			DisplayPanelBlock.setCreativeTab(CreativeTab);
+//		}
 		
 		GameRegistry.registerTileEntity(TileEntityDisplayPanel.class, OpenSecurity.MODID + ".DisplayPanelTE");
 		
