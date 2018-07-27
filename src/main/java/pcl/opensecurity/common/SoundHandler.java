@@ -21,8 +21,8 @@ public class SoundHandler {
 	public static SoundEvent card_swipe;
 	
 	public static void registerSounds() {
-        turretMove 	= registerSound("turretMove");
-        turretFire 	= registerSound("turretFire");
+        turretMove 	= registerSound("turretmove");
+        turretFire 	= registerSound("turretfire");
         keypad_press 	= registerSound("keypad_press");
         security_door  = registerSound("security_door");
         scanner1 = registerSound("scanner1");

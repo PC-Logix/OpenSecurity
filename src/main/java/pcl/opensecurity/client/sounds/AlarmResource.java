@@ -28,15 +28,18 @@ public class AlarmResource implements IResourcePack {
     public static Map<String,String> sound_map = new HashMap<String,String>();
     private static File mc_dir = Minecraft.getMinecraft().mcDataDir;
 
+    @Override
     public InputStream getInputStream(ResourceLocation resourceLocation) throws IOException {
-        if (resourceLocation.getResourcePath().equals("sounds.json")) return generateSoundsJSON();
+        if (resourceLocation.getResourcePath().equals("sounds.json")) 
+        	return generateSoundsJSON();
+        
         return getResourceStream(resourceLocation);
     }
-    
+    @Override    
     public boolean resourceExists(ResourceLocation l) {
         return isResourceFromThisPack(l) && (l.getResourcePath().equals("sounds.json") || isResourceFromThisPack(l) && getRealPath(l.getResourcePath()).exists());
     }
-    
+    @Override    
     public Set<String> getResourceDomains() {
         return Sets.newHashSet(getPackName());
     }
@@ -46,11 +49,11 @@ public class AlarmResource implements IResourcePack {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+    @Override	
     public BufferedImage getPackImage() {
         return null; //don't need no image for this shit
     }
-    
+    @Override    
     public String getPackName() {
         return PACK_NAME;
     }
@@ -100,6 +103,7 @@ public class AlarmResource implements IResourcePack {
     public void registerAsResourceLocation () {
      	List<IResourcePack> defaultResourcePacks = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "defaultResourcePacks", "field_110449_ao");
     	defaultResourcePacks.add(this);
+    	Minecraft.getMinecraft().refreshResources();
     }
    
 }

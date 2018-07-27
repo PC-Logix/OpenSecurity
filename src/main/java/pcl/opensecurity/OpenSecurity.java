@@ -55,8 +55,7 @@ public class OpenSecurity {
         cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
         ContentRegistry.preInit();
     	MinecraftForge.EVENT_BUS.register(contentRegistry);
-        //proxy.registerSounds();
-        //proxy.registerItemRenderers();
+        proxy.registerSounds();
         SoundHandler.registerSounds();
         network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
         rfidRange = cfg.rfidMaxRange;
@@ -79,7 +78,7 @@ public class OpenSecurity {
     }
 
     @SubscribeEvent
-    public static void onRegsiterModels(ModelRegistryEvent event) {
+    public static void onRegisterModels(ModelRegistryEvent event) {
         proxy.registerModels();
     }
 }
