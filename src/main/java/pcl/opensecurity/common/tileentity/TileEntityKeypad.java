@@ -158,7 +158,7 @@ public class TileEntityKeypad extends TileEntityOSBase {
 				}
 				if (colors!=null)
 				{
-					val = colors.get(id);
+					val = Integer.parseInt((String) colors.get(id));
 					if(val!=null && val instanceof Number)
 					{
 						Number color = (Number)val;
