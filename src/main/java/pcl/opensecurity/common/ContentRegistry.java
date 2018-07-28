@@ -172,7 +172,7 @@ public class ContentRegistry {
         ItemStack t2microchip = li.cil.oc.api.Items.get("chip2").createItemStack(1);
         ItemStack t1microchip = li.cil.oc.api.Items.get("chip1").createItemStack(1);
         ItemStack t1ram = li.cil.oc.api.Items.get("ram1").createItemStack(1);
-        ItemStack pcb = li.cil.oc.api.Items.get("circuitboard").createItemStack(1);
+        ItemStack pcb = li.cil.oc.api.Items.get("printedcircuitboard").createItemStack(1);
         ItemStack controlunit = li.cil.oc.api.Items.get("cu").createItemStack(1);
         ItemStack wlancard = li.cil.oc.api.Items.get("wlancard1").createItemStack(1);
         ItemStack cardbase = li.cil.oc.api.Items.get("card").createItemStack(1);
@@ -241,13 +241,13 @@ public class ContentRegistry {
                 "P P",
                 'P', paper, 'S', transistor).setRegistryName(OpenSecurity.MODID,itemMagCard.getUnlocalizedName()));
 
-        event.getRegistry().register(new ShapedOreRecipe(secureDoor.getRegistryName(), new ItemStack(secureDoor, 1),
+        event.getRegistry().register(new ShapedOreRecipe(secureDoor.getRegistryName(), new ItemStack(secureDoorItem, 1),
                 "TGT",
                 "ODO",
                 "SOS",
                 'G', glass, 'D', door, 'S', transistor, 'T', t2microchip, 'O', obsidian).setRegistryName(OpenSecurity.MODID,secureDoor.getUnlocalizedName()));
 
-        event.getRegistry().register(new ShapedOreRecipe(privateSecureDoor.getRegistryName(), new ItemStack(privateSecureDoor, 1),
+        event.getRegistry().register(new ShapedOreRecipe(privateSecureDoor.getRegistryName(), new ItemStack(securePrivateDoorItem, 1),
                 "TOT",
                 "ODO",
                 "SOS",
