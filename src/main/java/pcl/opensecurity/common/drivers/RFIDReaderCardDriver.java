@@ -109,7 +109,7 @@ public class RFIDReaderCardDriver extends DriverItem {
 			Entity entity;
 			HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 			int index = 1;
-			List e = container.world().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(container.xPosition(), container.yPosition(), container.zPosition() + 1, container.xPosition() + 1, container.yPosition() + 1, container.zPosition()).expand(range, range, range));
+			List e = container.world().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(container.xPosition(), container.yPosition(), container.zPosition(), container.xPosition(), container.yPosition(), container.zPosition()).grow(range, range, range));
 			if (!e.isEmpty()) {
 				for (int i = 0; i <= e.size() - 1; i++) {
 					entity = (Entity) e.get(i);

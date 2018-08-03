@@ -66,7 +66,7 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		Entity entity;
 		HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 		int index = 1;
-		List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX() + 1, this.getPos().getY() + 1, this.getPos().getZ() + 1).expand(range,range,range));
+		List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ()).grow(range,range,range));
 		if (!e.isEmpty()) {
 			for (int i = 0; i <= e.size() - 1; i++) {
 				entity = (Entity) e.get(i);
