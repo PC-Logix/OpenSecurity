@@ -66,7 +66,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
         Entity entity;
         Map<Integer, HashMap<String, Object>> output = new HashMap<>();
         int index = 1;
-        List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX() + 1, this.getPos().getY() + 1, this.getPos().getZ() + 1).grow(range));
+        List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ()).grow(range));
         if (!e.isEmpty()) {
             for (int i = 0; i <= e.size() - 1; i++) {
                 entity = (Entity) e.get(i);
@@ -89,7 +89,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
         return new Object[] { this.getPos().getX(), this.getPos().getY(), this.getPos().getZ() };
     }
 
-    @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each player in range, optional set range.", direct = true)
+    @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each player in range, optional set range.")
     public Object[] scanPlayers(Context context, Arguments args) {
         range = args.optInteger(0, range);
         offset = args.optBoolean(1, offset);
@@ -105,7 +105,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
         }
     }
 
-    @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each entity in range (excluding players), optional set range.", direct = true)
+    @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each entity in range (excluding players), optional set range.")
     public Object[] scanEntities(Context context, Arguments args) {
         range = args.optInteger(0, range);
         offset = args.optBoolean(1, offset);
