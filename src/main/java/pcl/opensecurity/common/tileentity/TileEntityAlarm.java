@@ -1,7 +1,5 @@
 package pcl.opensecurity.common.tileentity;
 
-import javax.annotation.Nullable;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -17,12 +15,16 @@ import net.minecraft.util.SoundEvent;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
+import javax.annotation.Nullable;
+import java.util.Arrays;
+
 public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 
-	public String soundName = "klaxon1";
-	public float volume = 1.0F;
-	public Boolean computerPlaying = false;
-	
+	private static final String[] AVAILABLE_SOUNDS = { "klaxon1", "klaxon2" };
+	private String soundName = AVAILABLE_SOUNDS[0];
+	private float volume = 1.0F;
+	private Boolean computerPlaying = false;
+
 	@Override
 	public Node node() {
 		return node;
@@ -41,7 +43,7 @@ public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 		if (node != null)
 			node.remove();
 	}
-	
+
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
@@ -73,14 +75,14 @@ public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 		return getSoundRes();
 	}
 
-	public void setShouldStart(boolean b) {
+	private void setShouldStart() {
 		setShouldPlay(true);
 		world.notifyBlockUpdate(this.pos, world.getBlockState(this.pos), world.getBlockState(this.pos), 3);
 		getUpdateTag();
 		markDirty();
 	}
 
-	public void setShouldStop(boolean b) {
+	private void setShouldStop() {
 		setShouldPlay(false);
 		world.notifyBlockUpdate(this.pos, world.getBlockState(this.pos), world.getBlockState(this.pos), 3);
 		getUpdateTag();
@@ -100,9 +102,17 @@ public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 		}
 	}
 
+	@Callback(doc = "fucntion(): table; Returns the list of available sound names", direct = true)
+	public Object[] getAvailableSounds(Context context, Arguments args) {
+		return new Object[] { AVAILABLE_SOUNDS };
+	}
+
 	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
-	public Object[] setAlarm(Context context, Arguments args) {
+	public Object[] setAlarm(Context context, Arguments args) throws Exception {
 		String alarm = args.checkString(0);
+		if (!Arrays.asList(AVAILABLE_SOUNDS).contains(alarm)) {
+			throw new Exception("alarm '" + alarm + "' not found");
+		}
 		soundName = alarm;
 		setSound(alarm);
 		getUpdateTag();
@@ -112,17 +122,15 @@ public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 
 	@Callback(doc = "function():string; Activates the alarm", direct = true)
 	public Object[] activate(Context context, Arguments args) {
-		this.setShouldStart(true);
+		this.setShouldStart();
 		computerPlaying = true;
-		setShouldPlay(true);
 		return new Object[] { "Ok" };
 	}
 
 	@Callback(doc = "function():string; Deactivates the alarm", direct = true)
 	public Object[] deactivate(Context context, Arguments args) {
-		this.setShouldStop(true);
+		this.setShouldStop();
 		computerPlaying = false;
-		setShouldPlay(false);
 		return new Object[] { "Ok" };
 	}
 
