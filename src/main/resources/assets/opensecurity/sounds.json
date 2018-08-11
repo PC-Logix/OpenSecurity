@@ -6,5 +6,7 @@
 	"scanner1": {"category": "block","sounds": [{"name": "opensecurity:scanner1","stream": false}]},
 	"scanner2": {"category": "block","sounds": [{"name": "opensecurity:scanner2","stream": false}]},
 	"scanner3": {"category": "block","sounds": [{"name": "opensecurity:scanner3","stream": false}]},
-	"card_swipe": {"category": "block","sounds": [{"name": "opensecurity:card_swipe","stream": false}]}
+	"card_swipe": {"category": "block","sounds": [{"name": "opensecurity:card_swipe","stream": false}]},
+	"klaxon1": {"category": "block", "sounds": [{"name": "opensecurity:alarms/klaxon1", "stream": false}]},
+	"klaxon2": {"category": "block", "sounds": [{"name": "opensecurity:alarms/klaxon2", "stream": false}]}
 }
