@@ -58,6 +58,7 @@ public class OpenSecurity {
         proxy.registerSounds();
         SoundHandler.registerSounds();
         network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
+        registerBlockBreakEvent = cfg.registerBlockBreak;
         rfidRange = cfg.rfidMaxRange;
         proxy.preinit();
         int packetID = 0;
