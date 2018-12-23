@@ -7,23 +7,51 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
+import pcl.opensecurity.common.protection.IProtection;
+import pcl.opensecurity.common.protection.Protection;
 
-public class TileEntitySecureDoor extends TileEntity implements Environment, ITickable {
+public class TileEntitySecureDoor extends TileEntity implements Environment, ITickable, IProtection {
 	
 	protected Node node = Network.newNode(this, Visibility.Network).create();
 	
 	String ownerUUID = "";
 	String password = "";
 
-	public TileEntitySecureDoor() {
+	public TileEntitySecureDoor() {}
 
+	@Override
+	public void validate(){
+		super.validate();
+		Protection.addArea(getWorld(), new AxisAlignedBB(getPos()), getPos());
 	}
+
+	@Override
+	public void invalidate() {
+		Protection.removeArea(getWorld(), getPos());
+		super.invalidate();
+	}
+
+	@Override
+	public boolean isProtected(Entity entityIn, Protection.UserAction action){
+		if(!action.equals(Protection.UserAction.explode) && ownerUUID.length() > 0 && entityIn.getUniqueID().toString().equals(ownerUUID))
+			return false;
+
+		if(entityIn != null && entityIn instanceof EntityPlayer)
+			((EntityPlayer) entityIn).sendStatusMessage(new TextComponentString("this block is protected"), false);
+
+		return true;
+	}
+
 
 	public void setOwner(String UUID) {
 		this.ownerUUID = UUID;

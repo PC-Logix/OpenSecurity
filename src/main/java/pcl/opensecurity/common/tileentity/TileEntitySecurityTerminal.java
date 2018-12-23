@@ -7,12 +7,18 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
+import pcl.opensecurity.common.protection.IProtection;
+import pcl.opensecurity.common.protection.Protection;
 import pcl.opensecurity.util.UsernameCache;
 
 import java.io.IOException;
@@ -20,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class TileEntitySecurityTerminal extends TileEntityOSBase {
+public class TileEntitySecurityTerminal extends TileEntityOSBase implements IProtection {
     public void setOwner(String UUID) {
         this.ownerUUID = UUID;
     }
@@ -38,6 +44,37 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
 
     public TileEntitySecurityTerminal(){
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(128).create();
+    }
+
+    @Override
+    public void validate(){
+        super.validate();
+        Protection.addArea(getWorld(), getArea(), getPos());
+    }
+
+    @Override
+    public void invalidate() {
+        Protection.removeArea(getWorld(), getPos());
+        super.invalidate();
+    }
+
+    @Override
+    public boolean isProtected(Entity entityIn, Protection.UserAction action){
+        if(!action.equals(Protection.UserAction.explode) && isUserAllowedToBypass(entityIn.getUniqueID().toString()))
+            return false;
+
+        if(!usePower())
+            return false;
+
+        if(entityIn != null && entityIn instanceof EntityPlayer)
+            ((EntityPlayer) entityIn).sendStatusMessage(new TextComponentString("this block is protected"), false);
+
+        return true;
+    }
+
+    private AxisAlignedBB getArea(){
+        int rangeMod = this.rangeMod * 8;
+        return new AxisAlignedBB(getPos().add(-rangeMod, -rangeMod, -rangeMod), getPos().add(rangeMod, rangeMod, rangeMod).add(1, 1, 1));
     }
 
     public boolean isUserAllowedToBypass(String uuid) {
@@ -128,11 +165,14 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
     public Object[] setRange(Context context, Arguments args) {
         if (args.optString(0, "").equals(getPass())) {
             if (args.checkInteger(1) >= 1 && args.checkInteger(1) <= 4) {
-                rangeMod = args.checkInteger(1);
-                world.markBlockRangeForRenderUpdate(pos, pos);
-                world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
-                world.scheduleBlockUpdate(pos,this.getBlockType(),0,0);
-                markDirty();
+                if(rangeMod != args.checkInteger(1)) {
+                    rangeMod = args.checkInteger(1);
+                    Protection.updateArea(getWorld(), getPos(), getArea());
+                    world.markBlockRangeForRenderUpdate(pos, pos);
+                    world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+                    world.scheduleBlockUpdate(pos, this.getBlockType(), 0, 0);
+                    markDirty();
+                }
                 return new Object[] { true };
             }
             return new Object[] { false, "Range out of bounds 1-4" };
@@ -183,6 +223,14 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             return new Object[] { false, "Password incorrect" };
         }
     }
+
+    /* only for debug *//*
+    @Callback(doc = "function():boolean; removes all terminals from cache", direct = true)
+    public Object[] removeAllTerminals(Context context, Arguments args) {
+        Protection.get(getWorld()).clear();
+        return new Object[] { true };
+    }
+    */
 
     public void setPass(String pass) {
         this.password = pass;
