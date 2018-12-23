@@ -43,7 +43,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     public int rangeMod = 1;
 
     public TileEntitySecurityTerminal(){
-        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(128).create();
+        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32000).create();
     }
 
     @Override

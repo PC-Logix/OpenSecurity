@@ -182,6 +182,7 @@ public class ContentRegistry {
         ItemStack batteryUpgrade = li.cil.oc.api.Items.get("batteryupgrade1").createItemStack(1);
         ItemStack oc_relay = li.cil.oc.api.Items.get("relay").createItemStack(1);
         ItemStack floppy = li.cil.oc.api.Items.get("floppy").createItemStack(1);
+        ItemStack capacitor = li.cil.oc.api.Items.get("capacitor").createItemStack(1);
         ItemStack datacard = li.cil.oc.api.Items.get("datacard1").createItemStack(1);
 
 
@@ -314,10 +315,10 @@ public class ContentRegistry {
                 'T', transistor, 'C', t1microchip, 'I', iron, 'S', stone).setRegistryName(OpenSecurity.MODID,biometricReaderBlock.getUnlocalizedName()));
 
         event.getRegistry().register(new ShapedOreRecipe(securityTerminal.getRegistryName(), new ItemStack(securityTerminal, 1),
-                "SIS",
-                "STS",
-                "SCS",
-                'T', controlunit, 'C', t2microchip, 'I', iron, 'S', stone).setRegistryName(OpenSecurity.MODID,securityTerminal.getUnlocalizedName()));
+                "cIc",
+                "cTc",
+                "cCc",
+                'T', controlunit, 'C', t2microchip, 'I', iron, 'c', capacitor).setRegistryName(OpenSecurity.MODID,securityTerminal.getUnlocalizedName()));
 
         OpenSecurity.logger.info("Registered Recipes");
     }
