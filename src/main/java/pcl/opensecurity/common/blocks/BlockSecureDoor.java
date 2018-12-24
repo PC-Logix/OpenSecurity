@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -9,6 +10,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
@@ -91,6 +93,43 @@ public class BlockSecureDoor extends BlockDoor {
         }
 
         return super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
+
+
+    //vanilla method without redstone...
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos){
+        if (state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER) {
+            BlockPos blockpos = pos.down();
+            IBlockState iblockstate = worldIn.getBlockState(blockpos);
+
+            if (iblockstate.getBlock() != this)
+                worldIn.setBlockToAir(pos);
+            else if (blockIn != this)
+                iblockstate.neighborChanged(worldIn, blockpos, blockIn, fromPos);
+        }
+        else {
+            boolean flag1 = false;
+            BlockPos blockpos1 = pos.up();
+            IBlockState iblockstate1 = worldIn.getBlockState(blockpos1);
+
+            if (iblockstate1.getBlock() != this){
+                worldIn.setBlockToAir(pos);
+                flag1 = true;
+            }
+
+            if (!worldIn.getBlockState(pos.down()).isSideSolid(worldIn,  pos.down(), EnumFacing.UP)) {
+                worldIn.setBlockToAir(pos);
+                flag1 = true;
+
+                if (iblockstate1.getBlock() == this)
+                    worldIn.setBlockToAir(blockpos1);
+            }
+
+            if (flag1 && !worldIn.isRemote)
+                this.dropBlockAsItem(worldIn, pos, state, 0);
+
+        }
     }
 
 
