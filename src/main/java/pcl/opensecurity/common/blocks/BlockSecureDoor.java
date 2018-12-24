@@ -90,8 +90,7 @@ public class BlockSecureDoor extends BlockDoor {
                 return false;
         }
 
-        this.onBlockHarvested(world, pos, state, player);
-        return world.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
 
