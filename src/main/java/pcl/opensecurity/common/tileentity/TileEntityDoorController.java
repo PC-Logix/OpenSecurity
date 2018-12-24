@@ -20,6 +20,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockSecureDoor;
 import pcl.opensecurity.common.protection.IProtection;
@@ -322,28 +324,7 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 		nbt.setTag("Items", var2);
 		return nbt;
 	}
-	
-	@Override
-	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
-	}
 
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-		readFromNBT(packet.getNbtCompound());
-	}
-
-	@Override
-	public void handleUpdateTag(NBTTagCompound tag) {
-		this.readFromNBT(tag);
-	}
-	
 	public void overrideTexture(ItemStack equipped) {
 		DoorControllerCamo[0] = equipped;
 	}
@@ -354,6 +335,31 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 		} else {
 			return ContentRegistry.doorController.getDefaultState();
 		}
+	}
+
+
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), 0, writeToNBT(new NBTTagCompound()));
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
+	}
+
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+
+
+	@Override
+	public void handleUpdateTag(NBTTagCompound tag) {
+		this.readFromNBT(tag);
 	}
 
 }

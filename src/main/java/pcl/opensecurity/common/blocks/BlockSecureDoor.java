@@ -4,6 +4,7 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,11 +17,14 @@ import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.Reference;
+import pcl.opensecurity.common.protection.Protection;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
+
+import static pcl.opensecurity.common.protection.Protection.UserAction.mine;
 
 @SuppressWarnings("deprecation")
 public class BlockSecureDoor extends BlockDoor {
@@ -74,4 +78,21 @@ public class BlockSecureDoor extends BlockDoor {
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntitySecureDoor();
     }
+
+    @Override
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest){
+        if(Protection.isProtected(player, mine, pos))
+            return false;
+
+        TileEntity te = world.getTileEntity(pos);
+        if(te instanceof TileEntitySecureDoor){
+            if(!((TileEntitySecureDoor) te).getOwner().equals(player.getUniqueID().toString()))
+                return false;
+        }
+
+        this.onBlockHarvested(world, pos, state, player);
+        return world.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
+    }
+
+
 }

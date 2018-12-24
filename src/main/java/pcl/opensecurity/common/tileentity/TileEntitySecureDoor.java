@@ -5,20 +5,28 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import li.cil.repack.org.luaj.vm2.ast.Str;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import pcl.opensecurity.common.blocks.BlockSecureDoor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
+import static net.minecraft.block.BlockDoor.HALF;
 
 public class TileEntitySecureDoor extends TileEntity implements Environment, ITickable, IProtection {
 	
@@ -43,39 +51,41 @@ public class TileEntitySecureDoor extends TileEntity implements Environment, ITi
 
 	@Override
 	public boolean isProtected(Entity entityIn, Protection.UserAction action){
-		if(!action.equals(Protection.UserAction.explode) && ownerUUID.length() > 0 && entityIn.getUniqueID().toString().equals(ownerUUID))
+		if(!action.equals(Protection.UserAction.explode) && entityIn.getUniqueID().toString().equals(ownerUUID))
 			return false;
 
 		if(entityIn != null && entityIn instanceof EntityPlayer)
-			((EntityPlayer) entityIn).sendStatusMessage(new TextComponentString("this block is protected"), false);
+			((EntityPlayer) entityIn).sendStatusMessage(new TextComponentString("this door is protected"), true);
 
 		return true;
 	}
 
+	public ArrayList<TileEntitySecureDoor> getDoorTiles(){
+		ArrayList<TileEntitySecureDoor> doorTEs = new ArrayList<>();
+		doorTEs.add(this);
+
+		int offset = getWorld().getBlockState(getPos()).getValue(HALF).equals(BlockDoor.EnumDoorHalf.UPPER) ? -1 : 1;
+
+		TileEntity teDoorOtherPart = world.getTileEntity(getPos().add(0, offset, 0));
+		if(teDoorOtherPart instanceof TileEntitySecureDoor)
+			doorTEs.add((TileEntitySecureDoor) teDoorOtherPart);
+		else
+			Logger.getLogger(OpenSecurity.MODID).warning("failed to get all door Tiles");
+
+		return doorTEs;
+	}
+
 
 	public void setOwner(String UUID) {
-		this.ownerUUID = UUID;
+		for(TileEntitySecureDoor door : getDoorTiles())
+			door.ownerUUID = UUID;
 	}
 
 	public void setPassword(String pass) {
-		this.password = pass;
-		for (EnumFacing direction : EnumFacing.VALUES) {
-			BlockPos neighbourPos = this.pos.offset(direction); // Offset the block's position by 1 block in the current direction
-			IBlockState neighbourState = world.getBlockState(neighbourPos); // Get the IBlockState at the neighboring position
-			Block neighbourBlock = neighbourState.getBlock(); // Get the IBlockState's Block
-			if (neighbourBlock instanceof BlockSecureDoor){ // If the neighbouring block is a Door Block,
-				TileEntity te = world.getTileEntity(neighbourPos);
-				if (te instanceof TileEntitySecureDoor && !te.equals(this) && ((TileEntitySecureDoor) te).getOwner().equals(this.ownerUUID)) {
-					((TileEntitySecureDoor) te).setSlavePassword(this.password);	
-				}
-			}
-		}
+		for(TileEntitySecureDoor door : getDoorTiles())
+			door.password = pass;
 	}
 
-	public void setSlavePassword(String pass) {
-		this.password = pass;
-	}
-	
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
@@ -124,32 +134,36 @@ public class TileEntitySecureDoor extends TileEntity implements Environment, ITi
 		if (node != null && node.network() == null) {
 			Network.joinOrCreateNetwork(this);
 		}
-		
-		if (world.getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ())) instanceof TileEntitySecureDoor) {
-			TileEntitySecureDoor lowerDoor = (TileEntitySecureDoor) world.getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
-			//System.out.println(lowerDoor.getPos());
-			if (ownerUUID == null) {
-				ownerUUID = lowerDoor.ownerUUID;
-			}
-			if (password.isEmpty()) {
-				setPassword(lowerDoor.getPass());
-			}
-		}
-		if (world.getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())) instanceof TileEntitySecureDoor) {
-			TileEntitySecureDoor upperDoor = (TileEntitySecureDoor) world.getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()));
-			//System.out.println(upperDoor.getPos());
-			if (ownerUUID == null) {
-				ownerUUID = upperDoor.ownerUUID;
-			}
-			if (password.isEmpty()) {
-				setPassword(upperDoor.getPass());
-			}
-		}
 	}
 
 	@Override
 	public Node node() {
 		return node;
+	}
+
+
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), 0, writeToNBT(new NBTTagCompound()));
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
+	}
+
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+
+
+	@Override
+	public void handleUpdateTag(NBTTagCompound tag) {
+		this.readFromNBT(tag);
 	}
 
 }

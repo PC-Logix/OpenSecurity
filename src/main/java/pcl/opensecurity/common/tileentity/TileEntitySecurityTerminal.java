@@ -24,11 +24,13 @@ import pcl.opensecurity.util.UsernameCache;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class TileEntitySecurityTerminal extends TileEntityOSBase implements IProtection {
     public void setOwner(String UUID) {
         this.ownerUUID = UUID;
+        allowedUsers.add(this.ownerUUID);
     }
 
     public String getOwner() {
