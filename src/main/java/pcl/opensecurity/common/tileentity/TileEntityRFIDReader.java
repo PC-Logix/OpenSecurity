@@ -101,8 +101,6 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		return cards;
 	}
 
-
-
 	@SuppressWarnings({ "rawtypes" })
 	public HashMap<Integer, HashMap<String, Object>> scan(int range) {
 		boolean found = false;
@@ -111,7 +109,7 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		//world.scheduleBlockUpdate(this.xCoord, this.yCoord, this.zCoord, block, 20);
 		HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 		int index = 1;
-		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().add(-range, -range, -range), this.getPos().add(range, range, range)))){
+		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().add(-range, -range, -range), this.getPos().add(range+1, range+1, range+1)))){
 			if (entity instanceof EntityPlayer) {
 				for(RFIDCard card : scanInventory(((EntityPlayer) entity).inventory))
 					if(card.tag.isValid)
