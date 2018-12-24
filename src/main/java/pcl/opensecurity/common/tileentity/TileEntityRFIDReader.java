@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
@@ -58,22 +59,33 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		return value;
 	}
 
-	static class RFIDCard{
+	static class RFIDTag{
 		public boolean locked;
 		public String localUUID;
 		public String dataTag;
+		public boolean isValid = false;
+
+		public RFIDTag(NBTTagCompound nbt){
+			if(nbt == null || !nbt.hasKey("data"))
+				return;
+
+			localUUID = OpenSecurity.ignoreUUIDs ? nbt.getString("uuid") : "-1";
+
+			dataTag = nbt.getString("data");
+			locked = nbt.getBoolean("locked");
+
+			isValid = true;
+		}
+	}
+
+	static class RFIDCard{
+		RFIDTag tag;
 
 		public RFIDCard(ItemStack st){
 			if (!(st.getItem() instanceof ItemRFIDCard))
 				return;
 
-			if(st.getTagCompound() == null || !st.getTagCompound().hasKey("data"))
-				return;
-
-			localUUID = OpenSecurity.ignoreUUIDs ? st.getTagCompound().getString("uuid") : "-1";
-
-			dataTag = st.getTagCompound().getString("data");
-			locked = st.getTagCompound().getBoolean("locked");
+			tag = new RFIDTag(st.getTagCompound());
 		}
 	}
 
@@ -102,12 +114,19 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().add(-range, -range, -range), this.getPos().add(range, range, range)))){
 			if (entity instanceof EntityPlayer) {
 				for(RFIDCard card : scanInventory(((EntityPlayer) entity).inventory))
-					output.put(index++, info(entity, card.dataTag, card.localUUID, card.locked));
+					if(card.tag.isValid)
+						output.put(index++, info(entity, card.tag.dataTag, card.tag.localUUID, card.tag.locked));
 			}
 			else if (entity instanceof li.cil.oc.common.entity.Drone) {
 				for(RFIDCard card : scanInventory(((Drone) entity).mainInventory()))
-					output.put(index++, info(entity, card.dataTag, card.localUUID, card.locked));
+					if(card.tag.isValid)
+						output.put(index++, info(entity, card.tag.dataTag, card.tag.localUUID, card.tag.locked));
 			}
+
+			RFIDTag entityTag = new RFIDTag(entity.getEntityData().getCompoundTag("rfidData"));
+			if(entityTag.isValid)
+				output.put(index++, info(entity, entityTag.dataTag, entityTag.localUUID, entityTag.locked));
+
 		}
 
 		//if (found) {
