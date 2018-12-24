@@ -1,6 +1,7 @@
 package pcl.opensecurity.common.protection;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -178,6 +179,9 @@ public class Protection extends WorldSavedData {
     }
 
     public static boolean isProtected(Entity entityIn, UserAction action, BlockPos blockPos){
+        if(entityIn instanceof EntityPlayer && ((EntityPlayer) entityIn).isCreative())
+            return false;
+
         ProtectionAreaChunk protection = get(entityIn.world).getProtection(blockPos);
 
         if(protection == null)
