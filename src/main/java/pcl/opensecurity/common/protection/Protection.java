@@ -10,6 +10,9 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
+import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.networking.PacketProtectionAdd;
+import pcl.opensecurity.networking.PacketProtectionRemove;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +26,9 @@ public class Protection extends WorldSavedData {
 
     public enum UserAction { mine, explode, place, interactTE, interactHostile, interactAnimal }
 
+    static Protection clientInstance = new Protection();
+
+    public int clientInstanceWorld = Integer.MAX_VALUE;
 
     public Protection(){
         super(DATA_NAME);
@@ -33,51 +39,55 @@ public class Protection extends WorldSavedData {
     }
 
     public static Protection get(World world) {
-        MapStorage storage = world.getPerWorldStorage();
-        Protection instance = (Protection) storage.getOrLoadData(Protection.class, DATA_NAME);
+        if(!world.isRemote) {
+            MapStorage storage = world.getPerWorldStorage();
+            Protection instance = (Protection) storage.getOrLoadData(Protection.class, DATA_NAME);
 
-        if (instance == null) {
-            instance = new Protection();
-            storage.setData(DATA_NAME, instance);
+            if (instance == null) {
+                instance = new Protection();
+                storage.setData(DATA_NAME, instance);
+            }
+
+            return instance;
         }
-
-        return instance;
+        else {
+            if(clientInstance.clientInstanceWorld != world.provider.getDimension()){
+                clientInstance = new Protection();
+                clientInstance.clientInstanceWorld = world.provider.getDimension();
+            }
+            return clientInstance;
+        }
     }
 
     // add protection
     public static boolean addArea(World world, AxisAlignedBB area, BlockPos controller){
-        if(world.isRemote)
-            return false;
-
         if(get(world).isProtectedArea(area))
             return false;
 
+
+
         for(ChunkPos chunk : getChunks(area)) {
             AxisAlignedBB newArea = area.intersect(new AxisAlignedBB(chunk.getXStart(), 0, chunk.getZStart(), chunk.getXEnd() + 1, 256, chunk.getZEnd() + 1));
-            get(world).addAreaToChunk(chunk, newArea, controller);
+            get(world).addAreaToChunk(chunk, new ProtectionAreaChunk(newArea, controller));
         }
 
         get(world).markDirty();
+
+        if(!world.isRemote) {
+            PacketProtectionAdd packet = new PacketProtectionAdd(world, controller, area);
+            OpenSecurity.network.sendToDimension(packet, world.provider.getDimension());
+        }
+
         return true;
     }
 
-    private void addAreaToChunk(ChunkPos chunkPos, AxisAlignedBB area, BlockPos controller){
+    private void addAreaToChunk(ChunkPos chunkPos, ProtectionAreaChunk pac){
         if(!chunkAreas.containsKey(chunkPos))
             chunkAreas.put(chunkPos, new ArrayList<>());
 
-        chunkAreas.get(chunkPos).add(new ProtectionAreaChunk(area, controller));
+        chunkAreas.get(chunkPos).add(pac);
     }
 
-
-    // remove protection
-    public static void removeArea(World world, AxisAlignedBB area){
-        if(!get(world).isProtectedArea(area)) return;
-
-        for(ChunkPos chunk : get(world).getChunks(area))
-            get(world).removeAreaFromChunk(chunk, area.union(new AxisAlignedBB(chunk.getXStart(), 0, chunk.getZStart(), chunk.getXEnd(), 0, chunk.getZEnd())));
-
-        get(world).markDirty();
-    }
 
     // remove protection
     public static void removeArea(World world, BlockPos controller){
@@ -88,7 +98,20 @@ public class Protection extends WorldSavedData {
                     return;
                 }
 
+
         get(world).markDirty();
+
+        if(!world.isRemote) {
+            PacketProtectionRemove packet = new PacketProtectionRemove(world, controller);
+            OpenSecurity.network.sendToDimension(packet, world.provider.getDimension());
+        }
+    }
+
+    private void removeAreaFromChunk(ChunkPos chunkPos, AxisAlignedBB area){
+        if(!chunkAreas.containsKey(chunkPos))
+            return;
+
+        chunkAreas.get(chunkPos).remove(getProtection(area));
     }
 
     // update protection
@@ -101,13 +124,6 @@ public class Protection extends WorldSavedData {
     public void clear(){
         chunkAreas = new HashMap<>();
         markDirty();
-    }
-
-    private void removeAreaFromChunk(ChunkPos chunkPos, AxisAlignedBB area){
-        if(!chunkAreas.containsKey(chunkPos))
-            return;
-
-        chunkAreas.get(chunkPos).remove(getProtection(area));
     }
 
 
@@ -137,9 +153,10 @@ public class Protection extends WorldSavedData {
 
             int iA = 0;
             for(ProtectionAreaChunk area : chunkData.getValue())
-                chunkTag.setTag("area" + iA, area.writeToNBT(new NBTTagCompound()));
+                chunkTag.setTag("area" + iA++, area.writeToNBT(new NBTTagCompound()));
 
-            compound.setTag("chunk" + iC, chunkTag);
+            if(iA > 0)
+                compound.setTag("chunk" + iC++, chunkTag);
         }
 
         return compound;

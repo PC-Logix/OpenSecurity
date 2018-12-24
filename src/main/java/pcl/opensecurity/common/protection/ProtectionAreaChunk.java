@@ -4,6 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
+
 public class ProtectionAreaChunk {
     BlockPos controller;
     AxisAlignedBB area;

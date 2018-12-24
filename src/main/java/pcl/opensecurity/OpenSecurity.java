@@ -18,11 +18,7 @@ import org.apache.logging.log4j.Logger;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
-import pcl.opensecurity.networking.HandlerKeypadButton;
-import pcl.opensecurity.networking.OSPacketHandler;
-import pcl.opensecurity.networking.OSPacketHandler.PacketHandler;
-import pcl.opensecurity.networking.PacketBoltFire;
-import pcl.opensecurity.networking.PacketKeypadButton;
+import pcl.opensecurity.networking.*;
 import pcl.opensecurity.util.UsernameCache;
 
 @Mod.EventBusSubscriber
@@ -62,9 +58,13 @@ public class OpenSecurity {
         rfidRange = cfg.rfidMaxRange;
         proxy.preinit();
         int packetID = 0;
-        network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
+        network.registerMessage(OSPacketHandler.PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
         network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
         network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
+        network.registerMessage(PacketProtectionAdd.Handler.class, PacketProtectionAdd.class, packetID++, Side.CLIENT);
+        network.registerMessage(PacketProtectionRemove.Handler.class, PacketProtectionRemove.class, packetID++, Side.CLIENT);
+        network.registerMessage(PacketProtectionSync.Handler.class, PacketProtectionSync.class, packetID++, Side.CLIENT);
+
         logger.info("Registered " + packetID + " packets");
         logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
     }
