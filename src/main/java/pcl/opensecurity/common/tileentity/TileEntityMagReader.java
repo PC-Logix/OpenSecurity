@@ -8,7 +8,6 @@ import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.SoundCategory;
@@ -19,7 +18,6 @@ import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemMagCard;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 //import net.minecraft.client.audio.SoundCategory;
 
@@ -80,24 +78,6 @@ public class TileEntityMagReader extends TileEntityOSBase {
 	public Object[] setEventName(Context context, Arguments args) {
 		eventName = args.checkString(0);
 		return new Object[]{ true };
-	}
-	
-	@Override
-	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tagCom = super.getUpdateTag();
-		this.writeToNBT(tagCom);
-		return tagCom;
-	}
-
-	@Override
-	public void handleUpdateTag(NBTTagCompound tag) {
-		this.readFromNBT(tag);
 	}
 
 	@Override

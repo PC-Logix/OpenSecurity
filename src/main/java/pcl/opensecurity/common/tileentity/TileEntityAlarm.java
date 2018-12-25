@@ -1,16 +1,11 @@
 package pcl.opensecurity.common.tileentity;
 
-import javax.annotation.Nullable;
-
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -18,30 +13,10 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.ISoundTile;
 
 public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
-
 	public String soundName = "klaxon1";
 	public float volume = 1.0F;
 	public Boolean computerPlaying = false;
-	
-	@Override
-	public Node node() {
-		return node;
-	}
 
-	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
-		if (node != null)
-			node.remove();
-	}
-
-	@Override
-	public void invalidate() {
-		super.invalidate();
-		if (node != null)
-			node.remove();
-	}
-	
 	public TileEntityAlarm() {
 		super();
 		setSound(soundName);
@@ -50,11 +25,6 @@ public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 
 	public String getComponentName() {
 		return "os_alarm";
-	}
-
-	@Override
-	public boolean getShouldPlay() {
-		return shouldPlay;
 	}
 
 	@Override
@@ -176,24 +146,4 @@ public class TileEntityAlarm extends TileEntityOSBase implements ISoundTile {
 		return tag;
 	}
 
-	@Override
-	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-		readFromNBT(packet.getNbtCompound());
-	}
-
-	@Override
-	public void handleUpdateTag(NBTTagCompound tag) {
-		this.readFromNBT(tag);
-	}
 }

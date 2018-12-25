@@ -38,25 +38,6 @@ public class TileEntityDataBlock extends TileEntityOSBase {
 		((Component) oc_fs.node()).setVisibility(Visibility.Neighbors);
 	}
 
-	@Override
-	public Node node() {
-		return node;
-	}
-
-	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
-		if (node != null)
-			node.remove();
-	}
-
-	@Override
-	public void invalidate() {
-		super.invalidate();
-		if (node != null)
-			node.remove();
-	}
-
 	private static String getComponentName() {
 		return "os_datablock";
 	}

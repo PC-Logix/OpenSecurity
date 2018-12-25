@@ -8,8 +8,6 @@ import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -38,7 +36,6 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 	public int tickCool = 0;
 	public boolean onPoint = true;
 	private float movePerTick = 0.005F;
-	public Boolean shouldPlay = false;
 	public String soundName = "turretMove";
 	public float volume = 1.0F;
 	public int soundTicks = 0;
@@ -75,11 +72,6 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 
 	public float getRealPitch() {
 		return ((float)Math.PI) * pitch / 180;
-	}
-
-	@Override
-	public boolean shouldPlaySound() {
-		return shouldPlay;
 	}
 
 	@Override
@@ -192,25 +184,6 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 	private void writeSyncableDataToNBT(NBTTagCompound tag) {
 		tag.setString("soundName", soundName);
 		tag.setFloat("volume", volume);
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
-	}
-
-	@Nullable
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound nbtTag = new NBTTagCompound();
-		this.writeToNBT(nbtTag);
-		return new SPacketUpdateTileEntity(getPos(), 1, nbtTag);
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-		// Here we get the packet from the server and read it into our client side tile entity
-		this.readFromNBT(packet.getNbtCompound());
 	}
 
 	@Override

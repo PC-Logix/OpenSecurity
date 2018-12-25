@@ -10,9 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.EnumPacketDirection;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentString;
@@ -24,7 +21,6 @@ import pcl.opensecurity.util.UsernameCache;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class TileEntitySecurityTerminal extends TileEntityOSBase implements IProtection {
@@ -380,26 +376,6 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
         if (this.allowedUsers != null && this.allowedUsers.size() > 0)
             nbt.setString("allowedUsers", String.join(", ", this.allowedUsers).replaceAll(", $", ""));
         return nbt;
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        return this.writeToNBT(new NBTTagCompound());
-    }
-
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
-    {
-        if(net.getDirection() == EnumPacketDirection.CLIENTBOUND)
-        {
-            readFromNBT(pkt.getNbtCompound());
-        }
     }
 
     public boolean isEnabled() {

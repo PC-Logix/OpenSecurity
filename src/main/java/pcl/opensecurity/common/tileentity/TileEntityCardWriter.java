@@ -82,29 +82,6 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     }
 
     @Override
-    public Node node() {
-        return node;
-    }
-
-    @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
-        if(node != null) {
-            node.remove();
-        }
-    }
-
-    @Override
-    public void invalidate() {
-        super.invalidate();
-        if(node != null) {
-            node.remove();
-        }
-    }
-
-
-
-    @Override
     public void update() {
         super.update();
         if (!hasCards && !inventoryInput.getStackInSlot(0).isEmpty()) {

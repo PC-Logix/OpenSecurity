@@ -4,13 +4,10 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.ComponentConnector;
-import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import pcl.opensecurity.common.SoundHandler;
-import pcl.opensecurity.common.inventory.BasicInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -21,25 +18,6 @@ public class TileEntityBiometricReader extends TileEntityOSBase {
 
 	public TileEntityBiometricReader() {
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
-	}
-	
-	@Override
-	public Node node() {
-		return node;
-	}
-
-	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
-		if (node != null)
-			node.remove();
-	}
-
-	@Override
-	public void invalidate() {
-		super.invalidate();
-		if (node != null)
-			node.remove();
 	}
 
 	private static String getComponentName() {
