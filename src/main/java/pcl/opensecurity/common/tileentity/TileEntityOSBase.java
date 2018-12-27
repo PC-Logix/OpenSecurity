@@ -12,15 +12,11 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.sounds.ISoundTile;
-import pcl.opensecurity.client.sounds.MachineSound;
 
 public abstract class TileEntityOSBase extends TileEntity implements ITickable, Environment {
 	public ComponentConnector node;
