@@ -5,8 +5,6 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Component;
-import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +26,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class TileEntityCardWriter extends TileEntityOSBase implements ITickable {
-
     public static final int SIZE = 2;
     public boolean hasCards = false;
 
@@ -36,9 +33,10 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     private ItemStackHandler inventoryOutput;
 
     public TileEntityCardWriter() {
+        super("os_cardwriter");
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
         if (this.node() != null) {
-            initOCFilesystem();
+            initOCFilesystem("/lua/cardwriter/", "cardwriter");
         }
         inventoryInput = new ItemStackHandler(1);
         inventoryOutput = new ItemStackHandler(1) {
@@ -47,22 +45,6 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
                 return 1;
             }
         };
-    }
-
-    private String getComponentName() {
-        // TODO Auto-generated method stub
-        return "os_cardwriter";
-    }
-
-    private Object oc_fs;
-
-    protected ManagedEnvironment oc_fs(){
-        return (ManagedEnvironment) this.oc_fs;
-    }
-
-    private void initOCFilesystem() {
-        oc_fs = li.cil.oc.api.FileSystem.asManagedEnvironment(li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/cardwriter/"), "cardwriter");
-        ((Component) oc_fs().node()).setVisibility(Visibility.Network);
     }
 
     @Override

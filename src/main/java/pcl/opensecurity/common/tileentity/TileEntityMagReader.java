@@ -5,14 +5,9 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemMagCard;
@@ -22,18 +17,14 @@ import javax.annotation.Nonnull;
 //import net.minecraft.client.audio.SoundCategory;
 
 public class TileEntityMagReader extends TileEntityOSBase {
-
 	public String data;
-	public String eventName = "magData";
+	private String eventName = "magData";
 	
 	public TileEntityMagReader() {
+		super("os_magreader");
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
 
-	private static String getComponentName() {
-		return "os_magreader";
-	}
-	
 	public boolean doRead(@Nonnull ItemStack itemStack, EntityPlayer em, int side) {
 		if (itemStack.getItem() instanceof ItemMagCard /*&& this.blockMetadata == 0*/) {
 			if(!world.isRemote){
@@ -78,23 +69,5 @@ public class TileEntityMagReader extends TileEntityOSBase {
 	public Object[] setEventName(Context context, Arguments args) {
 		eventName = args.checkString(0);
 		return new Object[]{ true };
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-			readFromNBT(packet.getNbtCompound());
-			IBlockState state = this.world.getBlockState(this.pos);
-			this.world.notifyBlockUpdate(pos, state, state, 3);
-	}
-	
-	public boolean writeNBTToDescriptionPacket()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
-	{
-		return (oldState.getBlock() != newState.getBlock());
 	}
 }

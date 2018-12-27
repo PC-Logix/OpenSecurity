@@ -20,21 +20,16 @@ import pcl.opensecurity.common.items.ItemRFIDCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 //import net.minecraft.client.audio.SoundCategory;
 
 public class TileEntityRFIDReader extends TileEntityOSBase {
-
 	public String data;
 	public String eventName = "magData";
 	
 	public TileEntityRFIDReader() {
+		super("os_rfidreader");
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
-	}
-
-	private static String getComponentName() {
-		return "os_rfidreader";
 	}
 	
 	// Thanks gamax92 from #oc for the following 2 methods...

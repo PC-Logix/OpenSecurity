@@ -32,15 +32,16 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     public String getOwner() {
         return this.ownerUUID;
     }
-    String ownerUUID = "";
-    ArrayList<String> allowedUsers = new ArrayList<String>();
+    private String ownerUUID = "";
+    private ArrayList<String> allowedUsers = new ArrayList<String>();
     private String password = "";
     public Block block;
     private Boolean enabled = false;
-    boolean enableParticles = false;
+    private boolean enableParticles = false;
     public int rangeMod = 1;
 
     public TileEntitySecurityTerminal(){
+        super("os_securityterminal");
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32000).create();
     }
 
@@ -77,10 +78,6 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
 
     public boolean isUserAllowedToBypass(String uuid) {
         return uuid.equals(ownerUUID) || allowedUsers.contains(uuid);
-    }
-
-    private static String getComponentName() {
-        return "os_securityterminal";
     }
 
     @Callback(doc = "function():boolean; Returns the status of the block", direct = true)
@@ -349,9 +346,6 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        if (node != null && node.host() == this) {
-            node.load(nbt.getCompoundTag("oc:node"));
-        }
         this.ownerUUID = nbt.getString("owner");
         this.password= nbt.getString("password");
         this.enabled=nbt.getBoolean("enabled");
@@ -363,11 +357,6 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        if (node != null && node.host() == this) {
-            final NBTTagCompound nodeNbt = new NBTTagCompound();
-            node.save(nodeNbt);
-            nbt.setTag("oc:node", nodeNbt);
-        }
         nbt.setString("owner", this.ownerUUID);
         nbt.setString("password", this.password);
         nbt.setBoolean("enabled", this.isEnabled());
@@ -383,10 +372,6 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     }
 
     public Boolean usePower() {
-        if (node.tryChangeBuffer(-10 * rangeMod)) {
-            return true;
-        } else {
-            return false;
-        }
+        return node.tryChangeBuffer(-10 * rangeMod);
     }
 }

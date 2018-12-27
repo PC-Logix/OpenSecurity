@@ -25,20 +25,21 @@ import pcl.opensecurity.common.protection.Protection;
 
 
 public class TileEntityDoorController extends TileEntityOSBase implements IProtection {
-	BlockSecureDoor doorBlock;
-	BlockSecureDoor neighborDoorBlock;
-	BlockDoor doorBlockVanilla;
-	BlockDoor neighborDoorBlockVanilla;
-	TileEntity te;
-	BlockPos doorPos;
-	BlockPos neighborDoorPos;
-	public ItemStack[] DoorControllerCamo = new ItemStack[1];
+	private BlockSecureDoor doorBlock;
+	private BlockSecureDoor neighborDoorBlock;
+	private BlockDoor doorBlockVanilla;
+	private BlockDoor neighborDoorBlockVanilla;
+	private BlockPos doorPos;
+	private BlockPos neighborDoorPos;
+	private ItemStack[] DoorControllerCamo = new ItemStack[1];
 	
 	private String password = "";
-	String ownerUUID = "";
+	private String ownerUUID = "";
+
 	public Block block;
 
 	public TileEntityDoorController(){
+		super("os_doorcontroller");
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
 
@@ -63,10 +64,6 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 			((EntityPlayer) entityIn).sendStatusMessage(new TextComponentString("this block is protected"), false);
 
 		return true;
-	}
-
-	private static String getComponentName() {
-		return "os_doorcontroller";
 	}
 
 	@Callback
@@ -231,6 +228,7 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	}
 
 	public void rescan(BlockPos pos) {
+		TileEntity te;
 		doorBlock = null;
 		neighborDoorBlock = null;
 		doorBlockVanilla = null;
@@ -280,9 +278,6 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		if (node != null && node.host() == this) {
-			node.load(nbt.getCompoundTag("oc:node"));
-		}
 		this.ownerUUID = nbt.getString("owner");
 		this.password = nbt.getString("password");
 		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
@@ -300,11 +295,6 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		if (node != null && node.host() == this) {
-			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
-			nbt.setTag("oc:node", nodeNbt);
-		}
 		nbt.setString("owner", this.ownerUUID);
 		nbt.setString("password", this.password);
 		NBTTagList var2 = new NBTTagList();

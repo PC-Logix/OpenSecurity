@@ -22,7 +22,7 @@ import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileEntityEnergyTurret extends TileEntityOSBase {
+public class TileEntityEnergyTurret extends TileEntityOSSound {
 
 	static final float maxShaftLengthForOneBlock = 0.5f;
 
@@ -36,8 +36,6 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 	public int tickCool = 0;
 	public boolean onPoint = true;
 	private float movePerTick = 0.005F;
-	public String soundName = "turretMove";
-	public float volume = 1.0F;
 	public int soundTicks = 0;
 	public boolean power = false;
 	public boolean armed = false;
@@ -46,8 +44,8 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 	private ItemStackHandler inventory;
 
 	public TileEntityEnergyTurret() {
-		super();
-		setSound(soundName);
+		super("os_energyturret");
+		setSound("turretMove");
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 		inventory = new ItemStackHandler(12) {
 			@Override
@@ -74,21 +72,6 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 		return ((float)Math.PI) * pitch / 180;
 	}
 
-	@Override
-	public String getSoundName() {
-		return soundName;
-	}
-
-	@Override
-	public float getVolume() {
-		return volume;
-	}
-
-	@Override
-	public ResourceLocation setSound(String sound) {
-		setSoundRes(new ResourceLocation(OpenSecurity.MODID + ":" + sound));
-		return getSoundRes();
-	}
 
 	public void rescan(BlockPos pos) {
 		IBlockState blockDown = world.getBlockState(this.pos.offset(EnumFacing.DOWN));
@@ -129,17 +112,8 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 		return write(tag);
 	}
 
-	private static String getComponentName() {
-		return "os_energyturret";
-	}
-
 	private NBTTagCompound write(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		if (node != null && node.host() == this) {
-			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
-			tag.setTag("oc:node", nodeNbt);
-		}
 		tag.setBoolean("powered", this.power);
 		tag.setBoolean("armed", this.armed);
 		tag.setFloat("yaw", this.yaw);
@@ -158,9 +132,6 @@ public class TileEntityEnergyTurret extends TileEntityOSBase {
 
 	private void read(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		if (node != null && node.host() == this) {
-			node.load(tag.getCompoundTag("oc:node"));
-		}
 		this.power = tag.getBoolean("powered");
 		this.armed = tag.getBoolean("armed");
 		this.yaw = tag.getFloat("yaw");

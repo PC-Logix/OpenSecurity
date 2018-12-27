@@ -21,17 +21,14 @@ import java.util.Map;
  * Created by Michi on 5/29/2017.
  */
 public class TileEntityEntityDetector extends TileEntityOSBase {
-
-    public int range = OpenSecurity.rfidRange;
-    public boolean offset = false;
+    private int range = OpenSecurity.rfidRange;
+    private boolean offset = false;
 
     public TileEntityEntityDetector() {
+        super("os_entdetector");
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
     }
 
-    private static String getComponentName() {
-        return "os_entdetector";
-    }
 
     // Thanks gamax92 from #oc for the following 2 methods...
     private HashMap<String, Object> info(Entity entity, boolean offset) {

@@ -37,13 +37,10 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	public byte displayColor = 7;
 
 	public ButtonState[] buttonStates;
-	
-	private static String getComponentName() {
-		return "os_keypad";
-	}
+
 	
 	public TileEntityKeypad(){
-		super();
+		super("os_keypad");
 		buttonStates=new ButtonState[] { 
 				new ButtonState(), new ButtonState(), new ButtonState(),
 				new ButtonState(), new ButtonState(), new ButtonState(),
@@ -62,9 +59,6 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		if (node != null && node.host() == this) {
-			node.load(nbt.getCompoundTag("oc:node"));
-		}
 		if (nbt.hasKey("eventName") && !nbt.getString("eventName").isEmpty()) {
 			eventName = nbt.getString("eventName");
 		} else {
@@ -88,12 +82,6 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-
-		if (node != null && node.host() == this) {
-			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
-			nbt.setTag("oc:node", nodeNbt);
-		}
 		nbt.setString("eventName", eventName);
 		for(int i=0;i<12;++i)
 			nbt.setString("btn:"+i, buttonLabels[i]);

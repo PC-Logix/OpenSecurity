@@ -12,24 +12,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class TileEntityBiometricReader extends TileEntityOSBase {
-
 	public String data;
-	public String eventName = "bioReader";
+	private String eventName = "bioReader";
 
 	public TileEntityBiometricReader() {
+		super("os_biometric");
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
-	}
-
-	private static String getComponentName() {
-		return "os_biometric";
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		if (node != null && node.host() == this) {
-			node.load(nbt.getCompoundTag("oc:node"));
-		}
 		if (nbt.hasKey("eventName") && !nbt.getString("eventName").isEmpty()) {
 			eventName = nbt.getString("eventName");
 		} else {
@@ -40,12 +33,6 @@ public class TileEntityBiometricReader extends TileEntityOSBase {
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		
-		if (node != null && node.host() == this) {
-			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
-			nbt.setTag("oc:node", nodeNbt);
-		}
 		nbt.setString("eventName", eventName);
 		return nbt;
 	}
