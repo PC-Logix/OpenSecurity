@@ -8,10 +8,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.protection.Protection;
 
-import java.util.logging.Logger;
 
 public class PacketProtectionSync implements IMessage {
     NBTTagCompound protection;
