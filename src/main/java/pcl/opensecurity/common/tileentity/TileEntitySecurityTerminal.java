@@ -14,14 +14,11 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
-import pcl.opensecurity.util.UsernameCache;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 
 public class TileEntitySecurityTerminal extends TileEntityOSBase implements IProtection {
     public void setOwner(String UUID) {
@@ -91,7 +88,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
             if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
                 allowedUsers.add(args.checkString(1));
             } else {
-                GameProfile gameprofile = world.getMinecraftServer().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
+                GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
 
                 if (gameprofile == null)
                 {
@@ -112,7 +109,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
             if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
                 allowedUsers.remove(args.checkString(1));
             } else {
-                GameProfile gameprofile = world.getMinecraftServer().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
+                GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
 
                 if (gameprofile == null)
                 {
@@ -203,17 +200,14 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     @Callback(doc = "function(String:password):boolean; returns a comma delimited string of current allowed users.", direct = true)
     public Object[] getAllowedUsers(Context context, Arguments args) {
         if (args.optString(0, "").equals(getPass())) {
-            try {
-                String users = "";
-                for (String user : allowedUsers) {
-                    users = UsernameCache.getBlocking(UUID.fromString(user)) + ", ";
-                }
-                users = users.replaceAll(", $", "");
-                return new Object[] {users};
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new Object[] { e.getMessage() };
+            HashMap<UUID, String> users = new HashMap<>();
+            for (String user : allowedUsers) {
+                UUID uuid = UUID.fromString(user);
+                GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
+                if(gameProfile != null)
+                    users.put(uuid, gameProfile.getName());
             }
+            return new Object[] { users.values().toArray() };
         } else {
             return new Object[] { false, "Password incorrect" };
         }
