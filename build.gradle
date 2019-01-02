@@ -71,13 +71,12 @@ jar.manifest = manifest { attributes(
 ) }
 repositories {
     maven {
-        name = "OC repo"
+        name = "OpenComputers"
         url = "http://maven.cil.li/"
     }
 }
 
 def openComputersVersion = "MC1.12.2-1.7.+"
-def rftoolsVersion = "1.12-7.58"
 
 dependencies {
     deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"

@@ -83,13 +83,15 @@ public class BlockSecureDoor extends BlockDoor {
 
     @Override
     public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest){
-        if(Protection.isProtected(player, mine, pos))
-            return false;
-
-        TileEntity te = world.getTileEntity(pos);
-        if(te instanceof TileEntitySecureDoor){
-            if(!((TileEntitySecureDoor) te).getOwner().equals(player.getUniqueID().toString()))
+        if(!player.isCreative()) {
+            if (Protection.isProtected(player, mine, pos))
                 return false;
+
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileEntitySecureDoor) {
+                if (!((TileEntitySecureDoor) te).getOwner().equals(player.getUniqueID().toString()))
+                    return false;
+            }
         }
 
         return super.removedByPlayer(state, world, pos, player, willHarvest);

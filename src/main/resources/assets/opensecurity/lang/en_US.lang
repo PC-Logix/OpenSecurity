@@ -27,6 +27,7 @@ item.movement_upgrade.name=Movement Upgrade
 item.energy_upgrade.name=Energy Upgrade
 item.cooldown_upgrade.name=Cooldown Upgrade
 item.nanodna.name=NanoDNA
+item.doorcontroller_upgrade.name=Door Controller Upgrade
 itemGroup.OpenSecurity.tabOpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer

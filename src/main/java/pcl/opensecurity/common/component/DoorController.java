@@ -62,7 +62,7 @@ public class DoorController {
         if(doorResponses.size() == 0)
             return new Object[] { false, "No Security door found" };
         else
-            return doorResponses.toArray();
+            return new Object[] { doorResponses.toArray() };
     }
 
     static public Object[] isOpen(World world, BlockPos controller) {

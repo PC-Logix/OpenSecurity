@@ -27,6 +27,9 @@ public class OSBreakEvent {
 		if(!OpenSecurity.registerBlockBreakEvent)
 	    	return;
 
+		if(event.getPlayer().isCreative())
+			return;
+
 		if(Protection.isProtected(event.getPlayer(), Protection.UserAction.mine, event.getPos()))
 			event.setCanceled(true);
 	}
