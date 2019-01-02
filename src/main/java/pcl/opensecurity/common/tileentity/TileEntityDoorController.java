@@ -4,6 +4,8 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.EnvironmentHost;
+import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -13,21 +15,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.component.DoorController;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
 
 
-public class TileEntityDoorController extends TileEntityOSBase implements IProtection {
+public class TileEntityDoorController extends TileEntityOSBase implements IProtection, ManagedEnvironment {
 	private ItemStack[] DoorControllerCamo = new ItemStack[1];
 	private String ownerUUID = "";
+
 
 	public TileEntityDoorController(){
 		super("os_doorcontroller");
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
+
+	public TileEntityDoorController(EnvironmentHost host){
+		super("os_doorcontroller", host);
+		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	}
+
 
 	@Override
 	public void validate(){
@@ -96,15 +107,6 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	}
 
 	@Override
-	public void update() {
-		super.update();
-		if (node != null && node.network() == null) {
-			Network.joinOrCreateNetwork(this);
-		}
-	}
-
-
-	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		this.ownerUUID = nbt.getString("owner");
@@ -148,5 +150,35 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 			return ContentRegistry.doorController.getDefaultState();
 		}
 	}
+
+
+	@Override
+	public World getWorld(){
+		if(isUpgrade)
+			return container.world();
+
+		return super.getWorld();
+	}
+
+
+	@Override
+	public BlockPos getPos(){
+		if(isUpgrade)
+			return new BlockPos(container.xPosition(), container.yPosition(), container.zPosition());
+
+		return super.getPos();
+	}
+
+	//only upgrade related methods
+
+	@Override
+	public boolean canUpdate(){ return true; }
+
+	@Override
+	public void load(NBTTagCompound var1){}
+
+	@Override
+	public void save(NBTTagCompound var1){}
+
 
 }

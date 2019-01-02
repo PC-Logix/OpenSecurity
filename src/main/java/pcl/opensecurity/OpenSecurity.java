@@ -1,5 +1,7 @@
 package pcl.opensecurity;
 
+import li.cil.oc.api.driver.DriverItem;
+import li.cil.oc.api.driver.EnvironmentProvider;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -17,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
+import pcl.opensecurity.common.drivers.DoorControllerDriver;
 import pcl.opensecurity.networking.*;
 
 @Mod.EventBusSubscriber
@@ -31,6 +34,8 @@ public class OpenSecurity {
 
     @SidedProxy(clientSide = "pcl.opensecurity.client.ClientProxy", serverSide = "pcl.opensecurity.common.CommonProxy")
     public static CommonProxy proxy;
+
+    static DoorControllerDriver doorControllerDriver = new DoorControllerDriver();
 
     public static final String GUIFACTORY = "pcl.opensecurity.client.config.ConfigGUI";
 
@@ -82,6 +87,10 @@ public class OpenSecurity {
         long time = System.nanoTime();
         proxy.init();
         ContentRegistry.init();
+
+        li.cil.oc.api.Driver.add((EnvironmentProvider) doorControllerDriver);
+        li.cil.oc.api.Driver.add((DriverItem) doorControllerDriver);
+
 
         if(OpenSecurity.debug)
             logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);

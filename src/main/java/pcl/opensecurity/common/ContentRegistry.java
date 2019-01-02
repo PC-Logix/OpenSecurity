@@ -54,6 +54,8 @@ public class ContentRegistry {
     public static Block nanoFogTerminal = new BlockNanoFogTerminal();
     public static BlockNanoFog nanoFog = new BlockNanoFog();
 
+    public static Item doorControllerItem;
+
     // TODO: block and item names normalization
     public static ItemRFIDCard itemRFIDCard = new ItemRFIDCard();
     public static ItemMagCard itemMagCard = new ItemMagCard();
@@ -147,9 +149,12 @@ public class ContentRegistry {
     @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+
+        doorControllerItem = new ItemBlock(doorController).setRegistryName(doorController.getRegistryName());
+
         event.getRegistry().registerAll(
+                doorControllerItem,
                 new ItemBlock(alarmBlock).setRegistryName(alarmBlock.getRegistryName()),
-                new ItemBlock(doorController).setRegistryName(doorController.getRegistryName()),
                 new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName()),
                 new ItemBlock(biometricReaderBlock).setRegistryName(biometricReaderBlock.getRegistryName()),
                 new ItemBlock(dataBlock).setRegistryName(dataBlock.getRegistryName()),

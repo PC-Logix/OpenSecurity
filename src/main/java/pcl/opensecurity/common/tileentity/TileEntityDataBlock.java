@@ -31,16 +31,16 @@ public class TileEntityDataBlock extends TileEntityOSBase {
 	@Override
 	public void onConnect(final Node node) {
 		if (node.host() instanceof Context) {
-			node.connect(oc_fs.node());
+			node.connect(oc_fs().node());
 		}
 	}
 
 	@Override
 	public void onDisconnect(final Node node) {
 		if (node.host() instanceof Context) {
-			node.disconnect(oc_fs.node());
+			node.disconnect(oc_fs().node());
 		} else if (node == this.node) {
-			oc_fs.node().remove();
+			oc_fs().node().remove();
 		}
 	}
 

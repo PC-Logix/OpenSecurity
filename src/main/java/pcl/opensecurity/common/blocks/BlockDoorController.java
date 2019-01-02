@@ -1,5 +1,14 @@
 package pcl.opensecurity.common.blocks;
 
+import li.cil.oc.api.driver.DriverItem;
+import li.cil.oc.api.driver.EnvironmentProvider;
+import li.cil.oc.api.driver.item.HostAware;
+import li.cil.oc.api.driver.item.Slot;
+import li.cil.oc.api.internal.Microcontroller;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.EnvironmentHost;
+import li.cil.oc.api.network.ManagedEnvironment;
+import li.cil.oc.common.Tier;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockStainedGlass;
@@ -13,6 +22,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;

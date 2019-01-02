@@ -20,13 +20,21 @@ import pcl.opensecurity.OpenSecurity;
 
 public abstract class TileEntityOSBase extends TileEntity implements ITickable, Environment {
 	public ComponentConnector node;
-	public ManagedEnvironment oc_fs;
+	private ManagedEnvironment oc_fs;
 
-	protected final String componentName;
+	protected EnvironmentHost container;
+	private final String componentName;
+	protected boolean isUpgrade = false;
 
 	public TileEntityOSBase(String name) {
 		super();
 		componentName = name;
+	}
+
+	public TileEntityOSBase(String name, EnvironmentHost host) {
+		isUpgrade = true;
+		componentName = name;
+		container = host;
 	}
 
 	@Override
