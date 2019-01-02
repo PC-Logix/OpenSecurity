@@ -13,6 +13,10 @@ import pcl.opensecurity.common.protection.ProtectionAreaChunk;
 
 
 public class PacketProtectionRemove extends PacketProtectionAdd {
+    public PacketProtectionRemove() {
+        //better keep this if you dont want to break this network packet
+    }
+
     public PacketProtectionRemove(World world, BlockPos controller) {
         ProtectionAreaChunk pac = new ProtectionAreaChunk(new AxisAlignedBB(0, 0, 0, 0, 0, 0), controller);
         protection = pac.writeToNBT(new NBTTagCompound());
