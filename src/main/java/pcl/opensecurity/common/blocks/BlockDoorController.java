@@ -45,7 +45,6 @@ public class BlockDoorController extends BlockOSBase {
     @Override
     public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
         TileEntityDoorController te = (TileEntityDoorController) worldIn.getTileEntity(pos);
-        te.rescan(pos);
     }
 
     /**
@@ -54,7 +53,6 @@ public class BlockDoorController extends BlockOSBase {
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntity te = worldIn.getTileEntity(pos);
         ((TileEntityDoorController) te).setOwner(placer.getUniqueID().toString());
-        ((TileEntityDoorController) te).rescan(pos);
         //((TileEntityDoorController) te).overrideTexture(ContentRegistry.doorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.doorController)), ForgeDirection.getOrientation(1));
     }
 
