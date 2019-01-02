@@ -8,6 +8,7 @@ import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemMagCard;
@@ -44,7 +45,7 @@ public class TileEntityMagReader extends TileEntityOSBase {
 				} else {
 					localUUID = "-1";
 				}
-				if (OpenSecurity.cfg.magCardDisplayName) {
+				if (Config.getConfig().getCategory("general").get("magCardDisplayName").getBoolean()) {
 					user = em.getDisplayNameString();
 				} else {
 					user = "player";

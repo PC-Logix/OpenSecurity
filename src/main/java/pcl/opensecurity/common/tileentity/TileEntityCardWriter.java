@@ -15,6 +15,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.items.ItemMagCard;
@@ -94,19 +95,20 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
                 System.out.println(inventoryInput.getStackInSlot(0).getItem().getUnlocalizedName());
                 if (inventoryInput.getStackInSlot(0).getUnlocalizedName().equals("item.oc.EEPROM")) {
                     //CardWriterItemStacks[x] = eepromItem;
+                    boolean biggerEEPROM = Config.getConfig().getCategory("general").get("biggerEEPROM").getBoolean();
                     outStack = eepromItem;
                     NBTTagCompound oc_data = new NBTTagCompound();
                     NBTTagCompound our_data = new NBTTagCompound();
                     Integer biggerSizeCode = Settings.get().eepromSize()*2;
                     Integer biggerSizeData = Settings.get().eepromDataSize()*2;
-                    if(!OpenSecurity.cfg.biggerEEPROM && code.length > Settings.get().eepromSize()) {
+                    if(!biggerEEPROM && code.length > Settings.get().eepromSize()) {
                         code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
-                    } else if(OpenSecurity.cfg.biggerEEPROM && code.length > biggerSizeCode) {
+                    } else if(biggerEEPROM && code.length > biggerSizeCode) {
                         code = Arrays.copyOfRange(code, 0, biggerSizeCode);
                     }
-                    if(!OpenSecurity.cfg.biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
+                    if(!biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
                         title = title.substring(0, Settings.get().eepromDataSize());
-                    } else if(OpenSecurity.cfg.biggerEEPROM && title.length() > biggerSizeData) {
+                    } else if(biggerEEPROM && title.length() > biggerSizeData) {
                         title = title.substring(0, biggerSizeData);
                     }
                     our_data.setByteArray("oc:eeprom", code);

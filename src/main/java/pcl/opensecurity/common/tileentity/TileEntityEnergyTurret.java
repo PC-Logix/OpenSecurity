@@ -9,14 +9,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 
 import javax.annotation.Nonnull;
@@ -62,7 +61,7 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 
 	public float getRealYaw() {
 		//return ((float)Math.PI) * yaw / 180;
-		if (OpenSecurity.cfg.turretReverseRotation)
+		if (Config.getConfig().getCategory("general").get("turretReverseRotation").getBoolean())
 			return ((float)Math.PI) * (0 - yaw) / 180; // TODO: set legacy compatible offset (90? -90?)
 		else
 			return ((float)Math.PI) * yaw / 180;

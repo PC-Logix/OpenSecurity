@@ -1,8 +1,4 @@
-/**
- *
- */
 package pcl.opensecurity.common;
-
 
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;

@@ -1,5 +1,7 @@
 package pcl.opensecurity.common.protection;
-
+/**
+ * @author ben_mkiv
+ */
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;

@@ -112,24 +112,23 @@ public abstract class TileEntityOSBase extends TileEntity implements ITickable, 
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
+		return writeToNBT(super.getUpdateTag());
 	}
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
+		return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		if(net.getDirection() == EnumPacketDirection.CLIENTBOUND)
-			readFromNBT(pkt.getNbtCompound());
+		readFromNBT(pkt.getNbtCompound());
 	}
 
 	@Override
 	public void handleUpdateTag(NBTTagCompound tag) {
-		this.readFromNBT(tag);
+		readFromNBT(tag);
 	}
 
 

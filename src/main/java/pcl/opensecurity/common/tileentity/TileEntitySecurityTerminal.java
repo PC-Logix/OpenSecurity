@@ -82,7 +82,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
         return new Object[] { isEnabled() };
     }
 
-    @Callback(doc = "function(String:Username):boolean; Adds the Minecraft User as an allowed user.", direct = true)
+    @Callback(doc = "function(String:Password, String:Username):boolean; Adds the Minecraft User as an allowed user.", direct = true)
     public Object[] addUser(Context context, Arguments args) {
         if (args.checkString(0).equals(getPass())) {
             if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {

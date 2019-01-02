@@ -18,7 +18,8 @@ import java.util.ArrayList;
 public class OSBreakEvent {
 	
 	public OSBreakEvent() {
-		OpenSecurity.logger.info("Registering BreakEvent");
+		if(OpenSecurity.debug)
+			OpenSecurity.logger.info("Registering BreakEvent");
 	}
 
 	@SubscribeEvent(priority=EventPriority.NORMAL)

@@ -1,5 +1,7 @@
 package pcl.opensecurity.common.protection;
-
+/**
+ * @author ben_mkiv
+ */
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

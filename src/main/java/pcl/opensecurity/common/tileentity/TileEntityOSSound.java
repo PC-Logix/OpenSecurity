@@ -16,7 +16,7 @@ public class TileEntityOSSound extends TileEntityOSBase {
     protected ResourceLocation soundRes;
     protected float volume = 1.0F;
     protected Boolean computerPlaying = false;
-    protected String soundName;
+    protected String soundName = "";
 
     public TileEntityOSSound(String name){
         super(name);

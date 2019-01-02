@@ -11,17 +11,23 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.client.renderer.NanoFogSwarmRenderer;
 import pcl.opensecurity.common.blocks.*;
 import pcl.opensecurity.common.drivers.RFIDReaderCardDriver;
+import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.*;
 
@@ -45,10 +51,12 @@ public class ContentRegistry {
     public static Block rfidReader = new BlockRFIDReader();
     public static Block secureDoor = new BlockSecureDoor();
     public static Block privateSecureDoor = new BlockSecurePrivateDoor();
+    public static Block nanoFogTerminal = new BlockNanoFogTerminal();
+    public static BlockNanoFog nanoFog = new BlockNanoFog();
 
     // TODO: block and item names normalization
-    public static ItemCard itemRFIDCard = new ItemRFIDCard();
-    public static ItemCard itemMagCard = new ItemMagCard();
+    public static ItemRFIDCard itemRFIDCard = new ItemRFIDCard();
+    public static ItemMagCard itemMagCard = new ItemMagCard();
 
     public static Item secureDoorItem = new ItemSecureDoor();
     public static Item securePrivateDoorItem = new ItemSecurePrivateDoor();
@@ -58,6 +66,8 @@ public class ContentRegistry {
     public static Item energyUpgradeItem = new ItemEnergyUpgrade();
     public static Item movementUpgradeItem = new ItemMovementUpgrade();
 
+    public static Item nanoDNAItem = new ItemNanoDNA();
+
     public ContentRegistry() {
     }
 
@@ -66,12 +76,12 @@ public class ContentRegistry {
     // Called on mod preInit()
     public static void preInit() {
         registerEvents();
-        registerEntities();
     }
 
     private static void registerEvents() {
         MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
-        OpenSecurity.logger.info("Registered Events");
+        if(OpenSecurity.debug)
+            OpenSecurity.logger.info("Registered Events");
     }
 
     //Called on mod init()
@@ -79,9 +89,18 @@ public class ContentRegistry {
         li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
     }
 
-    private static void registerEntities() {
-        //EntityRegistry.registerModEntity(EntityEnergyBolt.class, "energybolt", 1, OpenSecurity.instance, 128, 1, true);
+
+    @SubscribeEvent
+    public void registerEntities(RegistryEvent.Register<EntityEntry> event){
+        EntityRegistry.registerModEntity(new ResourceLocation(OpenSecurity.MODID, EntityNanoFogSwarm.NAME), EntityNanoFogSwarm.class, EntityNanoFogSwarm.NAME, 2, OpenSecurity.instance, 80, 3, true);
     }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void registerModels(ModelRegistryEvent event) {
+        RenderingRegistry.registerEntityRenderingHandler(EntityNanoFogSwarm.class, NanoFogSwarmRenderer.FACTORY);
+    }
+
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -98,8 +117,11 @@ public class ContentRegistry {
                 energyTurret,
                 rfidReader,
                 secureDoor,
-                privateSecureDoor
+                privateSecureDoor,
+                nanoFogTerminal,
+                nanoFog
         );
+
 
         registerTileEntity(TileEntityAlarm.class, Reference.Names.BLOCK_ALARM);
         registerTileEntity(TileEntityDoorController.class, Reference.Names.BLOCK_DOOR_CONTROLLER);
@@ -113,6 +135,8 @@ public class ContentRegistry {
         registerTileEntity(TileEntityEnergyTurret.class, Reference.Names.BLOCK_ENERGY_TURRET);
         registerTileEntity(TileEntityRFIDReader.class, Reference.Names.BLOCK_RFID_READER);
         registerTileEntity(TileEntitySecureDoor.class, Reference.Names.BLOCK_SECURE_DOOR);
+        registerTileEntity(TileEntityNanoFogTerminal.class, Reference.Names.BLOCK_NANOFOG_TERMINAL);
+        registerTileEntity(TileEntityNanoFog.class, Reference.Names.BLOCK_NANOFOG);
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String key) {
@@ -134,7 +158,9 @@ public class ContentRegistry {
                 new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
                 new ItemBlock(entityDetector).setRegistryName(entityDetector.getRegistryName()),
                 new ItemBlock(energyTurret).setRegistryName(energyTurret.getRegistryName()),
-                new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName())
+                new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName()),
+                new ItemBlock(nanoFogTerminal).setRegistryName(nanoFogTerminal.getRegistryName()),
+                new ItemBlock(nanoFog).setRegistryName(nanoFog.getRegistryName())
         );
 
         event.getRegistry().registerAll(
@@ -146,7 +172,8 @@ public class ContentRegistry {
                 damageUpgradeItem,
                 cooldownUpgradeItem,
                 energyUpgradeItem,
-                movementUpgradeItem
+                movementUpgradeItem,
+                nanoDNAItem
         );
     }
 
@@ -175,6 +202,7 @@ public class ContentRegistry {
         ItemStack pcb = li.cil.oc.api.Items.get("printedcircuitboard").createItemStack(1);
         ItemStack controlunit = li.cil.oc.api.Items.get("cu").createItemStack(1);
         ItemStack wlancard = li.cil.oc.api.Items.get("wlancard1").createItemStack(1);
+        ItemStack wlancard2 = li.cil.oc.api.Items.get("wlancard2").createItemStack(1);
         ItemStack cardbase = li.cil.oc.api.Items.get("card").createItemStack(1);
         ItemStack cable = li.cil.oc.api.Items.get("cable").createItemStack(1);
         ItemStack transistor = li.cil.oc.api.Items.get("transistor").createItemStack(1);
@@ -184,6 +212,8 @@ public class ContentRegistry {
         ItemStack floppy = li.cil.oc.api.Items.get("floppy").createItemStack(1);
         ItemStack capacitor = li.cil.oc.api.Items.get("capacitor").createItemStack(1);
         ItemStack datacard = li.cil.oc.api.Items.get("datacard1").createItemStack(1);
+        ItemStack nanomachines = li.cil.oc.api.Items.get("nanomachines").createItemStack(1);
+        ItemStack chameliumBlock = li.cil.oc.api.Items.get("chameliumblock").createItemStack(1);
 
 
         event.getRegistry().register(new ShapedOreRecipe(rfidReaderCardItem.getRegistryName(), new ItemStack(rfidReaderCardItem, 1),
@@ -320,17 +350,30 @@ public class ContentRegistry {
                 "cCc",
                 'T', controlunit, 'C', t2microchip, 'I', iron, 'c', capacitor).setRegistryName(OpenSecurity.MODID,securityTerminal.getUnlocalizedName()));
 
-        OpenSecurity.logger.info("Registered Recipes");
+
+        event.getRegistry().register(new ShapedOreRecipe(nanoFogTerminal.getRegistryName(), new ItemStack(nanoFogTerminal, 1),
+                "SWS",
+                "CTC",
+                "ccc",
+                'T', controlunit, 'C', t2microchip, 'W', wlancard2, 'S', transistor, 'c', capacitor).setRegistryName(OpenSecurity.MODID, nanoFogTerminal.getUnlocalizedName()));
+
+        event.getRegistry().register(new ShapedOreRecipe(nanoDNAItem.getRegistryName(), new ItemStack(nanoDNAItem, 16),
+                "CCC",
+                "CNC",
+                "CCC",
+                'N', nanomachines, 'C', chameliumBlock).setRegistryName(OpenSecurity.MODID,nanoDNAItem.getUnlocalizedName()));
+
+        if(OpenSecurity.debug)
+            if(OpenSecurity.debug)
+                OpenSecurity.logger.info("Registered Recipes");
     }
 
     private static CreativeTabs getCreativeTab() {
         return new CreativeTabs("tabOpenSecurity") {
-            @SideOnly(Side.CLIENT)
             public ItemStack getTabIconItem() {
                 return new ItemStack(Item.getItemFromBlock(dataBlock));
             }
 
-            @SideOnly(Side.CLIENT)
             public String getTranslatedTabLabel() {
                 return I18n.translateToLocal("itemGroup.OpenSecurity.tabOpenSecurity");
             }

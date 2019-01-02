@@ -47,7 +47,7 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
     @Override
     public IBlockState getStateFromMeta(int meta) {
         EnumFacing facing = EnumFacing.getHorizontal(meta);
-        return this.getDefaultState().withProperty(PROPERTYFACING, facing);
+        return getDefaultState().withProperty(PROPERTYFACING, facing);
     }
 
     @Override
@@ -70,6 +70,6 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         EnumFacing enumfacing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
-        return this.getDefaultState().withProperty(PROPERTYFACING, enumfacing);
+        return getDefaultState().withProperty(PROPERTYFACING, enumfacing);
     }
 }
