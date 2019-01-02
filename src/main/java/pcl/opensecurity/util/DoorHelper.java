@@ -15,7 +15,7 @@ public class DoorHelper {
 
     // scans the blockposition for any surrounding doors, if it found a door it will start a scan for a neighbourdoor
     // so dont parse the blockposition of any door to this!
-    public static HashMap<BlockPos, BlockDoor> getDoors(World world, BlockPos pos, boolean searchMaindoor) {
+    private static HashMap<BlockPos, BlockDoor> getDoors(World world, BlockPos pos, boolean searchMaindoor) {
         HashMap<BlockPos, BlockDoor> doors = new HashMap<>();
 
         for (EnumFacing direction : EnumFacing.VALUES) {
@@ -37,15 +37,5 @@ public class DoorHelper {
 
         return doors;
     }
-
-    /*
-    for(Map.Entry<BlockPos, BlockDoor> doorSet : DoorHelper.getDoors(getWorld(), getPos()).entrySet()){
-        if(doorSet.getValue() instanceof BlockSecureDoor){
-
-        } else {
-
-        }
-    }
-    */
 
 }

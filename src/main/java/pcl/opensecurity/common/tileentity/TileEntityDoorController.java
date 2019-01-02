@@ -6,7 +6,6 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,24 +13,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.blocks.BlockSecureDoor;
 import pcl.opensecurity.common.component.DoorController;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
-import pcl.opensecurity.util.DoorHelper;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 
 public class TileEntityDoorController extends TileEntityOSBase implements IProtection {
 	private ItemStack[] DoorControllerCamo = new ItemStack[1];
 	private String ownerUUID = "";
-	//private DoorController controller;
-
 
 	public TileEntityDoorController(){
 		super("os_doorcontroller");
@@ -41,7 +32,6 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	@Override
 	public void validate(){
 		super.validate();
-		//controller = new DoorController();
 		Protection.addArea(getWorld(), new AxisAlignedBB(getPos()), getPos());
 	}
 
@@ -66,114 +56,37 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 
 	@Callback
 	public Object[] isOpen(Context context, Arguments args) {
-		ArrayList<Boolean> states = new ArrayList<>();
-
-		for(Map.Entry<BlockPos, BlockDoor> doorSet : DoorHelper.getDoors(getWorld(), getPos()).entrySet())
-			states.add(BlockDoor.isOpen(world, doorSet.getKey()));
-
-		return new Object[] { states.toArray() };
+		return DoorController.isOpen(getWorld(), getPos());
 	}
 
 	@Callback
 	public Object[] toggle(Context context, Arguments args) {
-		for(Map.Entry<BlockPos, BlockDoor> doorSet : DoorHelper.getDoors(getWorld(), getPos()).entrySet()){
-			if(BlockDoor.isOpen(world, doorSet.getKey()))
-				return close(context, args);
-			else
-				return open(context, args);
-		}
-
-		return new Object[]{ false, "couldnt find any door" };
+		return DoorController.toggle(getWorld(), getPos(), args.optString(0, ""));
 	}
 
 	@Callback
 	public Object[] open(Context context, Arguments args) {
-		return setDoorStates(true, args.optString(0, ""));
+		return DoorController.setDoorStates(getWorld(), getPos(), true, args.optString(0, ""));
 	}
 
 	@Callback
 	public Object[] close(Context context, Arguments args) {
-		return setDoorStates(false, args.optString(0, ""));
-	}
-
-
-	private Object[] setDoorStates(boolean open, String password){
-		ArrayList<Object[]> doorResponses = new ArrayList<>();
-		for(Map.Entry<BlockPos, BlockDoor> doorSet : DoorHelper.getDoors(getWorld(), getPos()).entrySet()){
-			if(doorSet.getValue() instanceof BlockSecureDoor) {
-				TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorSet.getKey());
-				if (password.equals(te.getPass())) {
-					doorSet.getValue().toggleDoor(world, doorSet.getKey(), open);
-					doorResponses.add(new Object[] { true });
-				} else {
-					doorResponses.add(new Object[] { false, "Password incorrect" });
-				}
-			}
-			else {
-				doorSet.getValue().toggleDoor(world, doorSet.getKey(), open);
-				doorResponses.add(new Object[] { true });
-			}
-		}
-
-		if(doorResponses.size() == 0)
-			return new Object[] { false, "No Security door found" };
-		else
-			return doorResponses.toArray();
+		return DoorController.setDoorStates(getWorld(), getPos(), false, args.optString(0, ""));
 	}
 
 	@Callback
 	public Object[] removePassword(Context context, Arguments args) {
-		return setDoorPasswords(args.checkString(0), "");
+		return DoorController.setDoorPasswords(getWorld(), getPos(), args.checkString(0), "");
 	}
 
 	@Callback
 	public Object[] setPassword(Context context, Arguments args) {
-		return setDoorPasswords(args.checkString(0), args.checkString(1));
-	}
-
-	Object[] setDoorPasswords(String oldPass, String newPass){
-		ArrayList<Object[]> doorResponses = new ArrayList<>();
-		for(Map.Entry<BlockPos, BlockDoor> doorSet : DoorHelper.getDoors(getWorld(), getPos()).entrySet()){
-			if(!(doorSet.getValue() instanceof BlockSecureDoor))
-				continue;
-
-			TileEntitySecureDoor te = (TileEntitySecureDoor) world.getTileEntity(doorSet.getKey());
-			TileEntitySecureDoor otherTE = (TileEntitySecureDoor) world.getTileEntity(getOtherDoorPart(doorSet.getKey()));
-			if (te.getPass().isEmpty()) {
-				te.setPassword(newPass);
-				otherTE.setPassword(newPass);
-				doorResponses.add(new Object[] { true, "Password set" });
-			} else {
-				if (oldPass.equals(te.getPass())) {
-					te.setPassword(newPass);
-					otherTE.setPassword(newPass);
-					doorResponses.add(new Object[] { true, "Password Changed" });
-				} else {
-					doorResponses.add(new Object[] { false, "Password was not changed" });
-				}
-			}
-		}
-
-		if(doorResponses.size() == 0)
-			return new Object[] { false, "No Security door found" };
-		else
-			return new Object[] { doorResponses.toArray() };
+		return DoorController.setDoorPasswords(getWorld(), getPos(), args.checkString(0), args.checkString(1));
 	}
 
 
 
-	// DoorController Methods
-
-
-	BlockPos getOtherDoorPart(BlockPos thisPos) {
-		if (world.getTileEntity(new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ()))  instanceof TileEntitySecureDoor){
-			return new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ());
-		} else {
-			return new BlockPos(thisPos.getX(), thisPos.getY() - 1, thisPos.getZ());
-		}
-	}
-
-
+	// DoorControllerTile Methods
 	public void setOwner(String UUID) {
 		this.ownerUUID = UUID;
 	}

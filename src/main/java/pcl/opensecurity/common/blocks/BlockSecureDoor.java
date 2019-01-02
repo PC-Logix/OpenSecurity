@@ -95,6 +95,14 @@ public class BlockSecureDoor extends BlockDoor {
         return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
+    public static BlockPos getOtherDoorPart(World world, BlockPos thisPos) {
+        if (world.getTileEntity(new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ()))  instanceof TileEntitySecureDoor){
+            return new BlockPos(thisPos.getX(), thisPos.getY() + 1, thisPos.getZ());
+        } else {
+            return new BlockPos(thisPos.getX(), thisPos.getY() - 1, thisPos.getZ());
+        }
+    }
+
 
     //vanilla method without redstone...
     @Override
