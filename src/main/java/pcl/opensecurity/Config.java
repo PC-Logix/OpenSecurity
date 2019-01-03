@@ -9,6 +9,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -65,7 +66,8 @@ public class Config extends PermissionAPI {
 		Property rfidMaxRange = config.get("general", "rfidMaxRange", 16);
 		rfidMaxRange.setMinValue(1);
 		rfidMaxRange.setMaxValue(64);
-		rfidMaxRange.setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class);
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			rfidMaxRange.setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class);
 		rfidMaxRange.setLanguageKey("gui.config.general.rfidMaxRange");
 		rfidMaxRange.setComment("The maximum range of the RFID Reader in blocks");
 		rfidMaxRange.setRequiresMcRestart(true);
@@ -78,7 +80,8 @@ public class Config extends PermissionAPI {
 		Property nanoFogSwarmResolution = config.get("client", "nanoFogSwarmResolution", 8);
 		nanoFogSwarmResolution.setMinValue(2);
 		nanoFogSwarmResolution.setMaxValue(16);
-		nanoFogSwarmResolution.setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class);
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			nanoFogSwarmResolution.setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class);
 		nanoFogSwarmResolution.setLanguageKey("gui.config.client.nanoFogSwarmResolution");
 		nanoFogSwarmResolution.setComment("The resolution used to render Nanofog Swarms");
 		nanoFogSwarmResolution.setRequiresMcRestart(true);

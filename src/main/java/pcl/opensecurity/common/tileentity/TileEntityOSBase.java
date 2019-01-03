@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.tileentity;
 
+import li.cil.oc.api.API;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -7,7 +8,6 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
 
-public abstract class TileEntityOSBase extends TileEntity implements ITickable, Environment {
+public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEnvironment {
 	public ComponentConnector node;
 	private ManagedEnvironment oc_fs;
 
@@ -35,11 +35,12 @@ public abstract class TileEntityOSBase extends TileEntity implements ITickable, 
 		isUpgrade = true;
 		componentName = name;
 		container = host;
+		setupNode();
 	}
 
 	@Override
 	public void update() {
-		if (node != null && node.network() == null) {
+		if (node() != null && node().network() == null) {
 			Network.joinOrCreateNetwork(this);
 		}
 	}
@@ -145,5 +146,50 @@ public abstract class TileEntityOSBase extends TileEntity implements ITickable, 
 		return oldState.getBlock() != newSate.getBlock();
 	}
 
+	// methods used for upgrades
+
+	public void setupNode() {
+		if (this.node() == null) {
+			this.node = API.network.newNode(this, Visibility.Network).withConnector().withComponent(this.getComponentName()).create();
+		}
+	}
+
+	@Override
+	public boolean canUpdate(){ return false; }
+
+	@Override
+	public void load(NBTTagCompound nbt) {
+		this.setupNode();
+		if (nbt != null && nbt.hasKey("node") && node() != null) {
+			node().load(nbt.getCompoundTag("node"));
+		}
+	}
+
+	@Override
+	public void save(NBTTagCompound nbt) {
+		this.setupNode();
+		if (node() != null && nbt != null) {
+			NBTTagCompound nodeTag = new NBTTagCompound();
+			node().save(nodeTag);
+			nbt.setTag("node", nodeTag);
+		}
+	}
+
+	@Override
+	public World getWorld(){
+		if(isUpgrade)
+			return container.world();
+
+		return super.getWorld();
+	}
+
+
+	@Override
+	public BlockPos getPos(){
+		if(isUpgrade)
+			return new BlockPos(container.xPosition(), container.yPosition(), container.zPosition());
+
+		return super.getPos();
+	}
 
 }
