@@ -157,6 +157,20 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 		markDirty();
 		return new Object[]{ true };
 	}
+
+		@Callback(doc = "function(String:text[, color:number]):boolean; Sets the display string (0-8 chars), color (0-7) - 1 bit per channel")
+	public Object[] setDisplay(Context context, Arguments args) throws Exception {
+		String text = args.checkString(0);
+
+		displayColor = (byte)(args.optInteger(1, displayColor)&7);
+
+		displayText = trimString(text, MAX_DISPLAY_LENGTH);
+
+		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		markDirty();
+		return new Object[]{ true };
+	}
+	
 	@Callback(doc = "function(idx:number, text:string, color:number):boolean; Sets the key text (1-2 chars)")
 	public Object[] setKey(Context context, Arguments args) throws Exception {
 		if(args.count()==0) throw new IllegalArgumentException("Not enough arguments");
