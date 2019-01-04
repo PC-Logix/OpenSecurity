@@ -15,6 +15,15 @@ buildscript {
     }
 }
 
+def getGitRef = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 apply plugin: 'forge'
 
 sourceCompatibility = 1.7
