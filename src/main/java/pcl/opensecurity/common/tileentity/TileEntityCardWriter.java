@@ -92,7 +92,7 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
             if (inventoryOutput.getStackInSlot(0).isEmpty()) { // The slot is empty lets
                 // make us a new EEPROM
                 System.out.println(inventoryInput.getStackInSlot(0).getItem().getUnlocalizedName());
-                if (inventoryInput.getStackInSlot(0).getUnlocalizedName().equals("item.oc.EEPROM")) {
+                if (inventoryInput.getStackInSlot(0).getItem().equals(li.cil.oc.api.Items.get("eeprom").item())) {
                     //CardWriterItemStacks[x] = eepromItem;
                     boolean biggerEEPROM = Config.getConfig().getCategory("general").get("biggerEEPROM").getBoolean();
                     outStack = eepromItem;
