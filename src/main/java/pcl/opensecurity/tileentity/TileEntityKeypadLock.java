@@ -182,7 +182,7 @@ public class TileEntityKeypadLock extends TileEntityMachineBase implements Envir
 				}
 				if (colors!=null)
 				{
-					val = Integer.parseInt((String) colors.get(id));
+					val = colors.get(id);
 					if(val!=null && val instanceof Number)
 					{
 						Number color = (Number)val;
