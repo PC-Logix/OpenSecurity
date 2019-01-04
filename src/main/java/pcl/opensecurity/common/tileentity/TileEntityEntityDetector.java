@@ -21,11 +21,11 @@ import java.util.Map;
  * Created by Michi on 5/29/2017.
  */
 public class TileEntityEntityDetector extends TileEntityOSBase {
-    private int range = OpenSecurity.rfidRange;
+    private int range = OpenSecurity.entityDetectorMaxRange;
 
     public TileEntityEntityDetector() {
         super("os_entdetector");
-        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(OpenSecurity.rfidRange * OpenSecurity.rfidRange).create();
+        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(5 * OpenSecurity.entityDetectorMaxRange).create();
     }
     
     public TileEntityEntityDetector(EnvironmentHost host){
@@ -63,7 +63,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
         for(Entity entity : getWorld().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(getPos(), getPos()).grow(range))){
             if(players && entity instanceof EntityPlayer) {
                 output.put(index++, info(entity, offset));
-            } else if(!players) {
+            } else if(!players && !(entity instanceof EntityPlayer)) {
                 output.put(index++, info(entity, offset));
             }
         }
@@ -73,7 +73,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
     @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each player in range, optional set range.")
     public Object[] scanPlayers(Context context, Arguments args) {
 
-        range = Math.min(OpenSecurity.rfidRange, args.optInteger(0, range));
+        range = Math.min(OpenSecurity.entityDetectorMaxRange, args.optInteger(0, range));
 
         if(!consumeEnergy(range))
             return new Object[] { false, "Not enough power in OC Network." };
@@ -86,7 +86,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
     @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each entity in range (excluding players), optional set range.")
     public Object[] scanEntities(Context context, Arguments args) {
 
-        range = Math.min(OpenSecurity.rfidRange, args.optInteger(0, range));
+        range = Math.min(OpenSecurity.entityDetectorMaxRange, args.optInteger(0, range));
 
         if(!consumeEnergy(range))
             return new Object[] { false, "Not enough power in OC Network." };
@@ -97,7 +97,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
     }
 
     private boolean consumeEnergy(int range){
-        return node.changeBuffer(-range * range) == 0;
+        return node.changeBuffer(-5 * range) == 0;
     }
 
 }

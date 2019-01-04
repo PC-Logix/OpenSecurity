@@ -11,7 +11,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.protection.Protection;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 import javax.annotation.Nonnull;

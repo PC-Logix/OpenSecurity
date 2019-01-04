@@ -22,9 +22,7 @@ public class CommonProxy {
         NetworkRegistry.INSTANCE.registerGuiHandler(OpenSecurity.instance, new GuiHandler());
     }
 
-    public void preinit() {
-        registerRenderers();
-    }
+    public void preinit() {}
 
     protected void registerRenderers() {
         // TODO Auto-generated method stub

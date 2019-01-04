@@ -1,8 +1,5 @@
 package pcl.opensecurity.common.tileentity;
 
-import li.cil.oc.api.Network;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

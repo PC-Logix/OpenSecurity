@@ -1,5 +1,7 @@
 package pcl.opensecurity.common;
 
+import li.cil.oc.api.driver.DriverItem;
+import li.cil.oc.api.driver.EnvironmentProvider;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -10,23 +12,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.renderer.NanoFogSwarmRenderer;
 import pcl.opensecurity.common.blocks.*;
-import pcl.opensecurity.common.drivers.RFIDReaderCardDriver;
+import pcl.opensecurity.common.drivers.*;
+import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.*;
@@ -55,6 +53,10 @@ public class ContentRegistry {
     public static BlockNanoFog nanoFog = new BlockNanoFog();
 
     public static Item doorControllerItem;
+    public static Item entityDetectorItem;
+    public static Item rfidReaderItem;
+    public static Item alarmItem;
+
 
     // TODO: block and item names normalization
     public static ItemRFIDCard itemRFIDCard = new ItemRFIDCard();
@@ -82,27 +84,35 @@ public class ContentRegistry {
 
     private static void registerEvents() {
         MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
+
         if(OpenSecurity.debug)
             OpenSecurity.logger.info("Registered Events");
     }
 
     //Called on mod init()
     public static void init() {
-        li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
+        li.cil.oc.api.Driver.add((EnvironmentProvider) DoorControllerDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) DoorControllerDriver.driver);
+
+        li.cil.oc.api.Driver.add((EnvironmentProvider) EntityDetectorDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) EntityDetectorDriver.driver);
+
+        li.cil.oc.api.Driver.add((EnvironmentProvider) AlarmDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) AlarmDriver.driver);
+
+        //block/upgrade
+        li.cil.oc.api.Driver.add((EnvironmentProvider) RFIDReaderDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) RFIDReaderDriver.driver);
+        //card
+        li.cil.oc.api.Driver.add(RFIDReaderCardDriver.driver);
     }
 
 
     @SubscribeEvent
     public void registerEntities(RegistryEvent.Register<EntityEntry> event){
-        EntityRegistry.registerModEntity(new ResourceLocation(OpenSecurity.MODID, EntityNanoFogSwarm.NAME), EntityNanoFogSwarm.class, EntityNanoFogSwarm.NAME, 2, OpenSecurity.instance, 80, 3, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(OpenSecurity.MODID, EntityEnergyBolt.NAME), EntityEnergyBolt.class, EntityEnergyBolt.NAME, 0, OpenSecurity.instance, 80, 3, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(OpenSecurity.MODID, EntityNanoFogSwarm.NAME), EntityNanoFogSwarm.class, EntityNanoFogSwarm.NAME, 1, OpenSecurity.instance, 80, 3, true);
     }
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void registerModels(ModelRegistryEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(EntityNanoFogSwarm.class, NanoFogSwarmRenderer.FACTORY);
-    }
-
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -149,21 +159,23 @@ public class ContentRegistry {
     @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-
+        alarmItem = new ItemBlock(alarmBlock).setRegistryName(alarmBlock.getRegistryName());
         doorControllerItem = new ItemBlock(doorController).setRegistryName(doorController.getRegistryName());
+        entityDetectorItem = new ItemBlock(entityDetector).setRegistryName(entityDetector.getRegistryName());
+        rfidReaderItem = new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName());
 
         event.getRegistry().registerAll(
                 doorControllerItem,
-                new ItemBlock(alarmBlock).setRegistryName(alarmBlock.getRegistryName()),
+                entityDetectorItem,
+                rfidReaderItem,
+                alarmItem,
                 new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName()),
                 new ItemBlock(biometricReaderBlock).setRegistryName(biometricReaderBlock.getRegistryName()),
                 new ItemBlock(dataBlock).setRegistryName(dataBlock.getRegistryName()),
                 new ItemBlock(cardWriter).setRegistryName(cardWriter.getRegistryName()),
                 new ItemBlock(magReader).setRegistryName(magReader.getRegistryName()),
                 new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
-                new ItemBlock(entityDetector).setRegistryName(entityDetector.getRegistryName()),
                 new ItemBlock(energyTurret).setRegistryName(energyTurret.getRegistryName()),
-                new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName()),
                 new ItemBlock(nanoFogTerminal).setRegistryName(nanoFogTerminal.getRegistryName()),
                 new ItemBlock(nanoFog).setRegistryName(nanoFog.getRegistryName())
         );
@@ -380,7 +392,7 @@ public class ContentRegistry {
             }
 
             public String getTranslatedTabLabel() {
-                return I18n.translateToLocal("itemGroup.OpenSecurity.tabOpenSecurity");
+                return new TextComponentString("itemGroup.OpenSecurity.tabOpenSecurity").getUnformattedText();
             }
         };
     }

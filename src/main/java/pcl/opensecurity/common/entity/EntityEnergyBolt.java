@@ -1,8 +1,6 @@
 package pcl.opensecurity.common.entity;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,7 +8,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -22,6 +19,8 @@ import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 import java.util.List;
 
 public class EntityEnergyBolt extends EntityThrowable {
+	public static final String NAME = "energyBolt";
+
 	private int life = 600;
 	private float yaw = 0.0F;
 	private float pitch = 0.0F;
@@ -29,9 +28,13 @@ public class EntityEnergyBolt extends EntityThrowable {
 	private static DamageSource energy = new DamageSource("boltComputer");
 	static { energy.setProjectile(); }
 
+	private static final DataParameter<Boolean> NOTICEMESENPAI = EntityDataManager.<Boolean>createKey(EntityEnergyBolt.class, DataSerializers.BOOLEAN);
+
 	public EntityEnergyBolt(World world) {
 		super(world);
 		setSize(0.5F, 0.5F);
+		setNoGravity(true);
+		setEntityInvulnerable(true);
 	}
 
 	public void setHeading(float yaw, float pitch) {
@@ -44,8 +47,8 @@ public class EntityEnergyBolt extends EntityThrowable {
 		this.damage = damageIn;
 	}
 
-	protected void entityInit() { 
-
+	protected void entityInit() {
+		this.dataManager.register(NOTICEMESENPAI, true);
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class EntityEnergyBolt extends EntityThrowable {
 	public void onUpdate() {
 		super.onUpdate();
 		if (0 >= --this.life) {
-			this.isDead = true;
+			setDead();
 		}
 
 		if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
@@ -116,12 +119,11 @@ public class EntityEnergyBolt extends EntityThrowable {
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
-	protected float getGravityVelocity()
-	{
-		return 0.00F;
+	public boolean shouldRenderInPass(int pass){
+		return pass == 1;
 	}
+
 }

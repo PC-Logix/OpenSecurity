@@ -73,8 +73,8 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 
 
 	public void rescan(BlockPos pos) {
-		IBlockState blockDown = world.getBlockState(this.pos.offset(EnumFacing.DOWN));
-		IBlockState blockUp = world.getBlockState(this.pos.offset(EnumFacing.UP));
+		IBlockState blockDown = getWorld().getBlockState(getPos().offset(EnumFacing.DOWN));
+		IBlockState blockUp = getWorld().getBlockState(getPos().offset(EnumFacing.UP));
 
 		blockDown.getBlock();
 		if (!blockDown.getMaterial().equals(Material.AIR)) {
@@ -103,34 +103,6 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		read(tag);
-	}
-
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
-		return write(tag);
-	}
-
-	private NBTTagCompound write(NBTTagCompound tag) {
-		super.writeToNBT(tag);
-		tag.setBoolean("powered", this.power);
-		tag.setBoolean("armed", this.armed);
-		tag.setFloat("yaw", this.yaw);
-		tag.setFloat("syaw", this.setpointYaw);
-		tag.setFloat("pitch", this.pitch);
-		tag.setFloat("spitch", this.setpointPitch);
-		tag.setFloat("shaft", this.shaft);
-		tag.setFloat("sshaft", this.setShaft);
-		tag.setFloat("barrel", this.barrel);
-		tag.setInteger("cool", this.tickCool);
-		tag.setBoolean("upright", upRight);
-		tag.setTag("inventory", inventory.serializeNBT());
-		writeSyncableDataToNBT(tag);
-		return tag;
-	}
-
-	private void read(NBTTagCompound tag) {
-		super.readFromNBT(tag);
 		this.power = tag.getBoolean("powered");
 		this.armed = tag.getBoolean("armed");
 		this.yaw = tag.getFloat("yaw");
@@ -143,17 +115,25 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 		this.tickCool = tag.getInteger("cool");
 		this.upRight = tag.getBoolean("upright");
 		inventory.deserializeNBT(tag.getCompoundTag("inventory"));
-		readSyncableDataFromNBT(tag);
 	}
 
-	private void readSyncableDataFromNBT(NBTTagCompound tag) {
-		soundName = tag.getString("soundName");
-		volume = tag.getFloat("volume");
-	}
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
 
-	private void writeSyncableDataToNBT(NBTTagCompound tag) {
-		tag.setString("soundName", soundName);
-		tag.setFloat("volume", volume);
+		tag.setBoolean("powered", this.power);
+		tag.setBoolean("armed", this.armed);
+		tag.setFloat("yaw", this.yaw);
+		tag.setFloat("syaw", this.setpointYaw);
+		tag.setFloat("pitch", this.pitch);
+		tag.setFloat("spitch", this.setpointPitch);
+		tag.setFloat("shaft", this.shaft);
+		tag.setFloat("sshaft", this.setShaft);
+		tag.setFloat("barrel", this.barrel);
+		tag.setInteger("cool", this.tickCool);
+		tag.setBoolean("upright", upRight);
+		tag.setTag("inventory", inventory.serializeNBT());
+
+		return tag;
 	}
 
 	@Override
@@ -309,8 +289,8 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 		if (newExt>2F) {
 			newExt = 2F;
 		}
-		int otherY = this.pos.getY()+(isUpright()?1:-1);
-		if(newExt>maxShaftLengthForOneBlock && (otherY<0 || otherY>255 /*|| world.isAirBlock(this.pos.getX(), otherY, this.pos.getZ())*/))
+		int otherY = getPos().getY()+(isUpright()?1:-1);
+		if(newExt>maxShaftLengthForOneBlock && (otherY<0 || otherY>255 /*|| world.isAirBlock(getPos().getX(), otherY, getPos().getZ())*/))
 		{
 			return maxShaftLengthForOneBlock;
 		}
@@ -330,16 +310,12 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 		{
 			setShaft = newlen;
 
-			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+			getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 			getUpdateTag();
 			markDirty();
 		}
 
 		return newlen;
-	}
-
-	public void setShouldStart(boolean b) {
-		shouldPlay = b;
 	}
 
 	void setYaw(float value)
@@ -358,7 +334,7 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 	@Callback(doc="function(length:boolean):number -- Extends gun shaft (0-2)")
 	public Object[] extendShaft(Context context, Arguments args) {
 		float setTo = setShaft((float)args.checkDouble(0));
-		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+		getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 		getUpdateTag();
 		markDirty();
 		return new Object[] { setTo };
@@ -371,13 +347,12 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint (Yaw ranges (0.0..360) Pitch ranges (-45..90))")
 	public Object[] moveTo(Context context, Arguments args) throws Exception {
 		if (power) {
-			soundName = "turretMove";
-			setSound(soundName);
-			this.setShouldStart(true);
+			setSound("turretMove");
+			setShouldPlay(true);
 
 			setYaw((float)args.checkDouble(0));
 			setPitch((float)args.checkDouble(1));
-			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+			getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 			getUpdateTag();
 			markDirty();
 			return new Object[] { true };
@@ -389,12 +364,11 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint (Yaw ranges (0.0..360) Pitch ranges (-45..90))")
 	public Object[] moveBy(Context context, Arguments args) throws Exception {
 		if (power) {
-			soundName = "turretMove";
-			setSound(soundName);
-			this.setShouldStart(true);
+			setSound("turretMove");
+			setShouldPlay(true);
 			setYaw((float)args.checkDouble(0) + yaw);
 			setPitch((float)args.checkDouble(1) + pitch);
-			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+			getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 			getUpdateTag();
 			markDirty();
 			return new Object[] { true };
@@ -406,9 +380,8 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 	@Callback(doc="function(yaw:number, pitch:number) -- Changes the gun's setpoint in radians")
 	public Object[] moveToRadians(Context context, Arguments args) throws Exception {
 		if (power) {
-			soundName = "turretMove";
-			setSound(soundName);
-			this.setShouldStart(true);
+			setSound("turretMove");
+			setShouldPlay(true);
 
 			double rad = args.checkDouble(0);
 			double deg = rad*180/Math.PI;
@@ -419,7 +392,7 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 			setYaw((float)deg);
 			setPitch((float)deg2);
 
-			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+			getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 			getUpdateTag();
 			markDirty();
 			return new Object[] { true };
@@ -434,7 +407,7 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 		if (armed!=newArmed)
 		{
 			armed = newArmed;
-			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+			getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 			getUpdateTag();
 			markDirty();
 		}
@@ -444,7 +417,7 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 	@Callback
 	public Object[] powerOn(Context context, Arguments args) {
 		power = true;
-		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+		getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 		getUpdateTag();
 		markDirty();
 		return new Object[] { true };
@@ -455,7 +428,7 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 		setPitch(pitch);
 		setYaw(yaw);
 		setShaft(shaft);
-		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+		getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
 		getUpdateTag();
 		markDirty();
 	}
@@ -468,54 +441,52 @@ public class TileEntityEnergyTurret extends TileEntityOSSound {
 
 	@Callback(doc="function():table -- Fires the gun.  More damage means longer cooldown and more energy draw. Returns true for success and throws error with a message for failure")
 	public Object[] fire(Context context, Arguments args) throws Exception {
-		if (power) {
-			if (!armed || barrel<1F) throw new Exception("Not armed");
+		if (!power)
+			return new Object[] { false, "powered off" };
 
-			float damage = 5F;
+		if (!armed || barrel < 1F)
+			return new Object[] { false, "not armed" };
 
-			if (!inventory.getStackInSlot(0).isEmpty()) {
-				damage = damage * 3F;
-			}
-			if (!inventory.getStackInSlot(1).isEmpty()) {
-				damage = damage * 3F;
-			}
+		if (this.tickCool > 0)
+			return new Object[] { false, "gun hasn't cooled" };
 
-			float energy = damage;
-			if (!inventory.getStackInSlot(6).isEmpty()) {
-				energy = energy * 0.7F;
-			}
-			if (!inventory.getStackInSlot(7).isEmpty()) {
-				energy = energy * 0.7F;
-			}
+		float damage = 5F;
 
-			if (this.tickCool > 0) {
-				throw new Exception("gun hasn't cooled");
-			}
-
-
-			if (!(this.node).tryChangeBuffer(-energy*2)) {
-				throw new Exception("not enough energy");
-			}
-
-			this.tickCool = 100;
-			float p = getRealPitch();
-			float a = getRealYaw() + (float)Math.PI;
-			EntityEnergyBolt bolt = new EntityEnergyBolt(this.world);
-			float dY = 0.5F + (isUpright() ? 1F : -1F) * (0.125F + shaft*0.375F);
-			bolt.setPosition(this.pos.getX() + 0.5F, this.pos.getY() + dY, this.pos.getZ() + 0.5F);
-			bolt.setHeading(a, p);
-			bolt.setDamage(damage);
-			world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + dY, this.pos.getZ() + 0.5F, SoundHandler.turretFire, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
-
-			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
-			getUpdateTag();
-			markDirty();
-
-			this.world.spawnEntity(bolt);
-			return new Object[] { true };
-		} else {
-			throw new Exception("powered off");
+		if (!inventory.getStackInSlot(0).isEmpty()) {
+			damage = damage * 3F;
 		}
+		if (!inventory.getStackInSlot(1).isEmpty()) {
+			damage = damage * 3F;
+		}
+
+		float energy = damage;
+		if (!inventory.getStackInSlot(6).isEmpty()) {
+			energy*= 0.7F;
+		}
+		if (!inventory.getStackInSlot(7).isEmpty()) {
+			energy*= 0.7F;
+		}
+
+		if (!(this.node).tryChangeBuffer(-energy*2))
+			return new Object[] { false, "not enough energy" };
+
+		this.tickCool = 100;
+		float p = getRealPitch();
+		float a = getRealYaw() + (float)Math.PI;
+		EntityEnergyBolt bolt = new EntityEnergyBolt(getWorld());
+		float dY = 0.5F + (isUpright() ? 1F : -1F) * (0.125F + shaft*0.375F);
+		bolt.setPositionAndUpdate(getPos().getX() + 0.5F, getPos().getY() + dY, getPos().getZ() + 0.5F);
+		bolt.setHeading(a, p);
+		bolt.setDamage(damage);
+		world.playSound(null, getPos().add(0.5, 0.5, 0.5), SoundHandler.turretFire, SoundCategory.BLOCKS, 15.5F, 1.0F);
+
+		getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 2);
+		getUpdateTag();
+		markDirty();
+
+		getWorld().spawnEntity(bolt);
+		return new Object[] { true };
+
 
 	}
 }

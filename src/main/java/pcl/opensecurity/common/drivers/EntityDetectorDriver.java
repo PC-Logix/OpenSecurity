@@ -1,10 +1,9 @@
 package pcl.opensecurity.common.drivers;
-/* based on Computronics code */
+
 import li.cil.oc.api.driver.DriverItem;
 import li.cil.oc.api.driver.EnvironmentProvider;
 import li.cil.oc.api.driver.item.HostAware;
 import li.cil.oc.api.driver.item.Slot;
-import li.cil.oc.api.internal.Microcontroller;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.ManagedEnvironment;
@@ -12,30 +11,33 @@ import li.cil.oc.common.Tier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.blocks.BlockDoorController;
-import pcl.opensecurity.common.tileentity.TileEntityDoorController;
+import pcl.opensecurity.common.blocks.BlockEntityDetector;
+import pcl.opensecurity.common.tileentity.TileEntityEntityDetector;
 
-public class DoorControllerDriver extends BlockDoorController implements DriverItem, EnvironmentProvider, HostAware {
-    public static DoorControllerDriver driver = new DoorControllerDriver();
+public class EntityDetectorDriver extends BlockEntityDetector implements DriverItem, EnvironmentProvider, HostAware {
+    public static EntityDetectorDriver driver = new EntityDetectorDriver();
 
     @Override
     public boolean worksWith(ItemStack stack) {
-        return stack.getItem().equals(ContentRegistry.doorControllerItem);
+        return stack.getItem().equals(ContentRegistry.entityDetectorItem);
     }
 
     @Override
     public boolean worksWith(ItemStack stack, Class<? extends EnvironmentHost> host) {
-        return worksWith(stack) && Microcontroller.class.isAssignableFrom(host);
+        if(!worksWith(stack))
+            return false;
+
+        return true;
     }
 
     @Override
     public Class<? extends Environment> getEnvironment(ItemStack stack) {
-        return worksWith(stack) ? TileEntityDoorController.class : null;
+        return worksWith(stack) ? TileEntityEntityDetector.class : null;
     }
 
     @Override
     public ManagedEnvironment createEnvironment(ItemStack stack, EnvironmentHost container) {
-        return new TileEntityDoorController(container);
+        return new TileEntityEntityDetector(container);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class DoorControllerDriver extends BlockDoorController implements DriverI
 
     @Override
     public int tier(ItemStack stack) {
-        return Tier.One();
+        return Tier.Three();
     }
 
     @Override
@@ -62,3 +64,5 @@ public class DoorControllerDriver extends BlockDoorController implements DriverI
         return nbt.getCompoundTag("oc:data");
     }
 }
+
+

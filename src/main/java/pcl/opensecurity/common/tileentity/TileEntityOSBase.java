@@ -60,7 +60,10 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
+
+		if(!isUpgrade)
+			super.readFromNBT(nbt);
+
 		if (node != null && node.host() == this) {
 			node.load(nbt.getCompoundTag("oc:node"));
 		}
@@ -71,7 +74,10 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
+
+		if(!isUpgrade)
+			nbt = super.writeToNBT(nbt);
+
 		if (node != null && node.host() == this) {
 			final NBTTagCompound nodeNbt = new NBTTagCompound();
 			node.save(nodeNbt);
@@ -82,6 +88,7 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 			oc_fs.node().save(fsNbt);
 			nbt.setTag("oc:fs", fsNbt);
 		}
+
 		return nbt;
 	}
 
@@ -160,19 +167,13 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 	@Override
 	public void load(NBTTagCompound nbt) {
 		this.setupNode();
-		if (nbt != null && nbt.hasKey("node") && node() != null) {
-			node().load(nbt.getCompoundTag("node"));
-		}
+		readFromNBT(nbt);
 	}
 
 	@Override
 	public void save(NBTTagCompound nbt) {
 		this.setupNode();
-		if (node() != null && nbt != null) {
-			NBTTagCompound nodeTag = new NBTTagCompound();
-			node().save(nodeTag);
-			nbt.setTag("node", nodeTag);
-		}
+		nbt = writeToNBT(nbt);
 	}
 
 	@Override

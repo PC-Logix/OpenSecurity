@@ -1,7 +1,5 @@
 package pcl.opensecurity;
 
-import li.cil.oc.api.driver.DriverItem;
-import li.cil.oc.api.driver.EnvironmentProvider;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -19,8 +17,14 @@ import org.apache.logging.log4j.Logger;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
-import pcl.opensecurity.common.drivers.DoorControllerDriver;
 import pcl.opensecurity.networking.*;
+import pcl.opensecurity.util.ServerResourcePackFactory;
+
+import java.util.HashSet;
+
+// todo: merge camo code of NanoFog and DoorController (duplicated code)
+// todo: fix alarm
+// todo: update wiki
 
 @Mod.EventBusSubscriber
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber,
@@ -35,15 +39,16 @@ public class OpenSecurity {
     @SidedProxy(clientSide = "pcl.opensecurity.client.ClientProxy", serverSide = "pcl.opensecurity.common.CommonProxy")
     public static CommonProxy proxy;
 
-    static DoorControllerDriver doorControllerDriver = new DoorControllerDriver();
-
     public static final String GUIFACTORY = "pcl.opensecurity.client.config.ConfigGUI";
+
+    public static final String ASSETSPATH = "mods/OpenSecurity/assets/opensecurity";
 
     public static boolean debug = false;
     public static int rfidRange;
-    public static boolean enableplaySoundAt = false;
+    public static int entityDetectorMaxRange;
     public static boolean ignoreUUIDs = false;
     public static boolean registerBlockBreakEvent = true;
+    public static HashSet<String> alarmList = new HashSet<>();
 
     public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
@@ -64,14 +69,13 @@ public class OpenSecurity {
 
         registerBlockBreakEvent = Config.getConfig().getCategory("general").get("registerBlockBreak").getBoolean();
         rfidRange = Config.getConfig().getCategory("general").get("rfidMaxRange").getInt();
+        entityDetectorMaxRange = Config.getConfig().getCategory("general").get("entityDetectorMaxRange").getInt();
         debug = Config.getConfig().getCategory("general").get("enableDebugMessages").getBoolean();
 
         proxy.preinit();
 
         int packetID = 0;
-        network.registerMessage(OSPacketHandler.PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
         network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
-        network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
         network.registerMessage(PacketProtectionAdd.Handler.class, PacketProtectionAdd.class, packetID++, Side.CLIENT);
         network.registerMessage(PacketProtectionRemove.Handler.class, PacketProtectionRemove.class, packetID++, Side.CLIENT);
         network.registerMessage(PacketProtectionSync.Handler.class, PacketProtectionSync.class, packetID++, Side.CLIENT);
@@ -87,10 +91,6 @@ public class OpenSecurity {
         long time = System.nanoTime();
         proxy.init();
         ContentRegistry.init();
-
-        li.cil.oc.api.Driver.add((EnvironmentProvider) doorControllerDriver);
-        li.cil.oc.api.Driver.add((DriverItem) doorControllerDriver);
-
 
         if(OpenSecurity.debug)
             logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);

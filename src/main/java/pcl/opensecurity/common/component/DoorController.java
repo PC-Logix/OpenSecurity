@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class DoorController {
-
+    //this was outsourced as i thought that would be needed for the upgrade, could be merged back, but however...
     static public Object[] setDoorPasswords(World world, BlockPos controller, String oldPass, String newPass){
         ArrayList<Object[]> doorResponses = new ArrayList<>();
         for(Map.Entry<BlockPos, BlockDoor> doorSet : DoorHelper.getDoors(world, controller).entrySet()){

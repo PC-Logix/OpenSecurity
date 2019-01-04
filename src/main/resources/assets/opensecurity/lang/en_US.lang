@@ -53,5 +53,6 @@ gui.config.general.turretReverseRotation=turret rotation inversed
 gui.config.general.biggerEEPROM=increase eeprom size
 gui.config.general.rfidMaxRange=RFID range
 gui.config.general.instantNanoFog=instant NanoFog
+gui.config.general.entityDetectorMaxRange=Entity Detector range
 
 gui.config.client.nanoFogSwarmResolution=NanoFog Swarm Resolution

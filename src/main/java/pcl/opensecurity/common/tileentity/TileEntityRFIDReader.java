@@ -4,6 +4,7 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.common.entity.Drone;
 import net.minecraft.entity.Entity;
@@ -31,13 +32,16 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		super("os_rfidreader");
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
+
+	public TileEntityRFIDReader(EnvironmentHost host){
+		super("os_rfidreader", host);
+	}
 	
 	// Thanks gamax92 from #oc for the following 2 methods...
 	private HashMap<String, Object> info(Entity entity, String data, String uuid, boolean locked) {
 		HashMap<String, Object> value = new HashMap<String, Object>();
 
 		double rangeToEntity = entity.getDistance(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ());
-
 
 		String name;
 		if (entity instanceof EntityPlayerMP)
@@ -64,7 +68,7 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 			if(nbt == null || !nbt.hasKey("data"))
 				return;
 
-			localUUID = OpenSecurity.ignoreUUIDs ? nbt.getString("uuid") : "-1";
+			localUUID = OpenSecurity.ignoreUUIDs ? "-1" : nbt.getString("uuid");
 
 			dataTag = nbt.getString("data");
 			locked = nbt.getBoolean("locked");
@@ -97,14 +101,13 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public HashMap<Integer, HashMap<String, Object>> scan(int range) {
-		boolean found = false;
-		//world.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
-		//Block block = world.getBlock(this.xCoord, this.yCoord, this.zCoord);
-		//world.scheduleBlockUpdate(this.xCoord, this.yCoord, this.zCoord, block, 20);
+	private HashMap<Integer, HashMap<String, Object>> scan(int range) {
+		//getWorld().setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
+		//Block block = getWorld().getBlock(this.xCoord, this.yCoord, this.zCoord);
+		//getWorld().scheduleBlockUpdate(this.xCoord, this.yCoord, this.zCoord, block, 20);
 		HashMap<Integer, HashMap<String, Object>> output = new HashMap<Integer, HashMap<String, Object>>();
 		int index = 1;
-		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().add(-range, -range, -range), this.getPos().add(range+1, range+1, range+1)))){
+		for(Entity entity : this.getWorld().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().add(-range, -range, -range), this.getPos().add(range+1, range+1, range+1)))){
 			if (entity instanceof EntityPlayer) {
 				for(RFIDCard card : scanInventory(((EntityPlayer) entity).inventory))
 					if(card.tag.isValid)
@@ -123,9 +126,9 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		}
 
 		//if (found) {
-		//	world.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
+		//	getWorld().setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
 		//} else {
-		//	world.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 3, 3);
+		//	getWorld().setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 3, 3);
 		//}
 
 		return output;
@@ -139,13 +142,10 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 	
 	@Callback(doc = "function(optional:int:range):string; pushes a signal \"rfidData\" for each found rfid on all players in range, optional set range.")
 	public Object[] scan(Context context, Arguments args) {
-		int range = args.optInteger(0, OpenSecurity.rfidRange);
-		if (range > OpenSecurity.rfidRange) {
-			range = OpenSecurity.rfidRange;
-		}
+		int range = Math.min(OpenSecurity.rfidRange, args.optInteger(0, OpenSecurity.rfidRange));
 
 		if (node.changeBuffer(-5 * range) == 0) {
-        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.scanner2, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
+        	getWorld().playSound(null, this.getPos().add(0.5, 0.5, 0.5), SoundHandler.scanner2, SoundCategory.BLOCKS, 15.5F, 1.0F);
 			return new Object[]{ scan(range) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };

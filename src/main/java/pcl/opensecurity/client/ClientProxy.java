@@ -33,21 +33,19 @@ import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.Reference;
-import pcl.opensecurity.common.blocks.BlockNanoFog;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
+import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.nanofog.BakedModelLoader;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 import pcl.opensecurity.manual.ManualPathProvider;
+import pcl.opensecurity.util.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-    public static List<String> alarmList = new ArrayList<String>();
 
     @SubscribeEvent
     public void renderWorldLastEvent(RenderWorldLastEvent evt) {
@@ -70,17 +68,31 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preinit() {
+        super.preinit();
         Config.clientPreInit();
 
 
         ModelNanoFogSwarm.setupResolution(Config.getConfig().getCategory("client").get("nanoFogSwarmResolution").getInt());
 
-        super.preinit();
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
 
+
+
         ModelLoaderRegistry.registerLoader(new BakedModelLoader());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
+        TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper();
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, RenderEntityEnergyBolt::new);
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityNanoFogSwarm.class, NanoFogSwarmRenderer.FACTORY);
+
+        if(OpenSecurity.debug)
+            OpenSecurity.logger.info("Registered renderers/models");
     }
 
     @Override
@@ -91,16 +103,6 @@ public class ClientProxy extends CommonProxy {
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(ContentRegistry.itemMagCard), ContentRegistry.itemMagCard);
         ModColourManager.registerColourHandlers();
         ManualPathProvider.initialize();
-    }
-
-    @Override
-    protected void registerRenderers() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
-        TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper();
-        RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, RenderEntityEnergyBolt::new);
-        if(OpenSecurity.debug)
-            OpenSecurity.logger.info("Registering TESR");
     }
 
     @Override
@@ -157,19 +159,13 @@ public class ClientProxy extends CommonProxy {
             OpenSecurity.logger.info("Registering " + itemName + " Item Renderer");
     }
 
-    private void listFilesForFolder(final File folder) {
+    private void listFilesForPath(final File path) {
         AlarmResource r = new AlarmResource();
         int i = 1;
-        if (folder.listFiles() != null) {
-            for (final File fileEntry : folder.listFiles()) {
-                if (fileEntry.isDirectory()) {
-                    listFilesForFolder(fileEntry);
-                } else {
-                    r.addSoundReferenceMapping(i, fileEntry.getName()); //add map soundlocation -> recordX
-                    i++;
-                }
-            }
-        }
+
+        for(File fileEntry : FileUtils.listFilesForPath(path.getPath()))
+            r.addSoundReferenceMapping(i++, fileEntry.getName()); //add map soundlocation -> recordX
+
         r.registerAsResourceLocation(); //finalise IResourcePack
     }
 
@@ -177,16 +173,15 @@ public class ClientProxy extends CommonProxy {
     public void registerSounds() {
         File[] listOfFiles;
         File alarmSounds = new File("./mods/OpenSecurity/assets/opensecurity/sounds/alarms");
-        if (alarmSounds.exists()) {
-            listOfFiles = alarmSounds.listFiles();
 
-            for (int i = 0; i < listOfFiles.length; i++) {
-                if (listOfFiles[i].isFile()) {
-                    alarmList.add(listOfFiles[i].getName());
-                }
-            }
-        }
-        listFilesForFolder(alarmSounds);
+        if (!alarmSounds.exists())
+            return;
+
+        for(File file : alarmSounds.listFiles())
+            if (file.isFile())
+                OpenSecurity.alarmList.add(file.getName());
+
+        listFilesForPath(alarmSounds);
     }
 
     private static class CardColorHandler implements IItemColor {
