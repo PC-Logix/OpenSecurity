@@ -7,6 +7,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.common.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,7 +40,6 @@ public class TileEntityBiometricReader extends TileEntityOSBase {
 
 	public void doRead(EntityPlayer entityplayer, EnumFacing side) {
 		node.sendToReachable("computer.signal", eventName, entityplayer.getUniqueID().toString());
-		world.playSound(null, this.pos, SoundHandler.scanner3, SoundCategory.BLOCKS, 0.4F, 1);
 	}
 
 	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent", direct = true)

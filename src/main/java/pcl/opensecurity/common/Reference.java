@@ -18,6 +18,7 @@ public class Reference {
         public static final String BLOCK_PRIVATE_SECURE_DOOR = "private_secure_door";
         public static final String BLOCK_NANOFOG_TERMINAL = "nanofog_terminal";
         public static final String BLOCK_NANOFOG = "nanofog";
+        public static final String BLOCK_CARDDOCK = "card_dock";
 
 
         public static final String ITEM_RFID_CARD = "rfid_card";

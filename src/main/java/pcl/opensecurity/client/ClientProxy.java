@@ -113,6 +113,7 @@ public class ClientProxy extends CommonProxy {
         registerBlockItem(ContentRegistry.biometricReaderBlock, 0, Reference.Names.BLOCK_BIOMETRIC_READER);
         registerBlockItem(ContentRegistry.dataBlock, 0, Reference.Names.BLOCK_DATA);
         registerBlockItem(ContentRegistry.cardWriter, 0, Reference.Names.BLOCK_CARD_WRITER);
+        registerBlockItem(ContentRegistry.cardDock, 0, Reference.Names.BLOCK_CARDDOCK);
         registerBlockItem(ContentRegistry.magReader, 0, Reference.Names.BLOCK_MAG_READER);
         registerBlockItem(ContentRegistry.keypadBlock, 0, Reference.Names.BLOCK_KEYPAD);
         registerBlockItem(ContentRegistry.entityDetector, 0, Reference.Names.BLOCK_ENTITY_DETECTOR);

@@ -50,6 +50,8 @@ public class ContentRegistry {
     public static Block secureDoor = new BlockSecureDoor();
     public static Block privateSecureDoor = new BlockSecurePrivateDoor();
     public static Block nanoFogTerminal = new BlockNanoFogTerminal();
+    public static Block cardDock = new BlockCardDock();
+
     public static BlockNanoFog nanoFog = new BlockNanoFog();
 
     public static Item doorControllerItem;
@@ -118,6 +120,7 @@ public class ContentRegistry {
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
                 alarmBlock,
+                cardDock,
                 doorController,
                 securityTerminal,
                 biometricReaderBlock,
@@ -134,8 +137,8 @@ public class ContentRegistry {
                 nanoFog
         );
 
-
         registerTileEntity(TileEntityAlarm.class, Reference.Names.BLOCK_ALARM);
+        registerTileEntity(TileEntityCardDock.class, Reference.Names.BLOCK_CARDDOCK);
         registerTileEntity(TileEntityDoorController.class, Reference.Names.BLOCK_DOOR_CONTROLLER);
         registerTileEntity(TileEntitySecurityTerminal.class, Reference.Names.BLOCK_SECURITY_TERMINAL);
         registerTileEntity(TileEntityBiometricReader.class, Reference.Names.BLOCK_BIOMETRIC_READER);
@@ -169,15 +172,16 @@ public class ContentRegistry {
                 entityDetectorItem,
                 rfidReaderItem,
                 alarmItem,
-                new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName()),
                 new ItemBlock(biometricReaderBlock).setRegistryName(biometricReaderBlock.getRegistryName()),
-                new ItemBlock(dataBlock).setRegistryName(dataBlock.getRegistryName()),
+                new ItemBlock(cardDock).setRegistryName(cardDock.getRegistryName()),
                 new ItemBlock(cardWriter).setRegistryName(cardWriter.getRegistryName()),
-                new ItemBlock(magReader).setRegistryName(magReader.getRegistryName()),
-                new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
+                new ItemBlock(dataBlock).setRegistryName(dataBlock.getRegistryName()),
                 new ItemBlock(energyTurret).setRegistryName(energyTurret.getRegistryName()),
+                new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
+                new ItemBlock(magReader).setRegistryName(magReader.getRegistryName()),
+                new ItemBlock(nanoFog).setRegistryName(nanoFog.getRegistryName()),
                 new ItemBlock(nanoFogTerminal).setRegistryName(nanoFogTerminal.getRegistryName()),
-                new ItemBlock(nanoFog).setRegistryName(nanoFog.getRegistryName())
+                new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName())
         );
 
         event.getRegistry().registerAll(
@@ -213,6 +217,7 @@ public class ContentRegistry {
         ItemStack water = new ItemStack(Items.WATER_BUCKET);
 
         // Opencomputers blocks/items
+        ItemStack t3microchip = li.cil.oc.api.Items.get("chip3").createItemStack(1);
         ItemStack t2microchip = li.cil.oc.api.Items.get("chip2").createItemStack(1);
         ItemStack t1microchip = li.cil.oc.api.Items.get("chip1").createItemStack(1);
         ItemStack t1ram = li.cil.oc.api.Items.get("ram1").createItemStack(1);
@@ -231,6 +236,8 @@ public class ContentRegistry {
         ItemStack datacard = li.cil.oc.api.Items.get("datacard1").createItemStack(1);
         ItemStack nanomachines = li.cil.oc.api.Items.get("nanomachines").createItemStack(1);
         ItemStack chameliumBlock = li.cil.oc.api.Items.get("chameliumblock").createItemStack(1);
+        ItemStack cardContainerTier3 = li.cil.oc.api.Items.get("cardcontainer3").createItemStack(1);
+        ItemStack componentBus1 = li.cil.oc.api.Items.get("componentbus1").createItemStack(1);
 
 
         event.getRegistry().register(new ShapedOreRecipe(rfidReaderCardItem.getRegistryName(), new ItemStack(rfidReaderCardItem, 1),
@@ -379,6 +386,12 @@ public class ContentRegistry {
                 "CNC",
                 "CCC",
                 'N', nanomachines, 'C', chameliumBlock).setRegistryName(OpenSecurity.MODID,nanoDNAItem.getUnlocalizedName()));
+
+        event.getRegistry().register(new ShapedOreRecipe(cardDock.getRegistryName(), new ItemStack(cardDock, 1),
+                "mCm",
+                "MPb",
+                "ici",
+                'b', componentBus1, 'c', cable, 'C', cardContainerTier3, 'P', pcb, 'i', iron, 'm', t2microchip, 'M', t3microchip).setRegistryName(OpenSecurity.MODID,cardDock.getUnlocalizedName()));
 
         if(OpenSecurity.debug)
             if(OpenSecurity.debug)

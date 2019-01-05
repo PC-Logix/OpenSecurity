@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
 
@@ -78,8 +79,6 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
         if(!consumeEnergy(range))
             return new Object[] { false, "Not enough power in OC Network." };
 
-        getWorld().playSound(null, getPos().add(0.5, 0.5, 0.5), SoundHandler.scanner1, SoundCategory.BLOCKS, 15 + 0.5F, 1.0F);
-
         return new Object[]{ scan(true, getPos()) };
     }
 
@@ -90,8 +89,6 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
 
         if(!consumeEnergy(range))
             return new Object[] { false, "Not enough power in OC Network." };
-
-        getWorld().playSound(null, getPos().add(0.5, 0.5, 0.5), SoundHandler.scanner1, SoundCategory.BLOCKS, 15 + 0.5F, 1.0F);
 
         return new Object[]{ scan(false, getPos()) };
     }

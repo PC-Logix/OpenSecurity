@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemRFIDCard;
@@ -145,8 +146,7 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		int range = Math.min(OpenSecurity.rfidRange, args.optInteger(0, OpenSecurity.rfidRange));
 
 		if (node.changeBuffer(-5 * range) == 0) {
-        	getWorld().playSound(null, this.getPos().add(0.5, 0.5, 0.5), SoundHandler.scanner2, SoundCategory.BLOCKS, 15.5F, 1.0F);
-			return new Object[]{ scan(range) };
+        	return new Object[]{ scan(range) };
 		} else {
 			return new Object[] { false, "Not enough power in OC Network." };
 		}

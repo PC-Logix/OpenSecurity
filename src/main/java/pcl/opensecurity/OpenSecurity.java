@@ -20,7 +20,11 @@ import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.networking.*;
 import pcl.opensecurity.util.ServerResourcePackFactory;
 
+import java.io.File;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 // todo: merge camo code of NanoFog and DoorController (duplicated code)
 // todo: fix alarm
@@ -100,4 +104,6 @@ public class OpenSecurity {
     public static void onRegisterModels(ModelRegistryEvent event) {
         proxy.registerModels();
     }
+
+
 }

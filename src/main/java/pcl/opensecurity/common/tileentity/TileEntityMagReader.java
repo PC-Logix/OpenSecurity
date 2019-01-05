@@ -27,12 +27,6 @@ public class TileEntityMagReader extends TileEntityOSBase {
 	}
 
 	public boolean doRead(@Nonnull ItemStack itemStack, EntityPlayer em, int side) {
-		if (itemStack.getItem() instanceof ItemMagCard /*&& this.blockMetadata == 0*/) {
-			if(!world.isRemote){
-				//worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D,  this.zCoord + 0.5D, "opensecurity:card_swipe", 0.5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
-			}
-        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.card_swipe, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
-		}
 		if (itemStack.getItem() instanceof ItemMagCard && itemStack.getTagCompound() != null && itemStack.getTagCompound().hasKey("data")) {
 			data = itemStack.getTagCompound().getString("data");
 			String uuid = itemStack.getTagCompound().getString("uuid");

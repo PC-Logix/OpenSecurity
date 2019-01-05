@@ -61,31 +61,31 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 
-		if(!isUpgrade)
+		if(!isUpgrade) // dont read TileData for Upgrades/Cards
 			super.readFromNBT(nbt);
 
-		if (node != null && node.host() == this) {
-			node.load(nbt.getCompoundTag("oc:node"));
+		if (node() != null && node().host() == this) {
+			node().load(nbt.getCompoundTag("oc:node"));
 		}
-		if (oc_fs != null && oc_fs.node() != null) {
-			oc_fs.node().load(nbt.getCompoundTag("oc:fs"));
+		if (oc_fs() != null && oc_fs().node() != null) {
+			oc_fs().node().load(nbt.getCompoundTag("oc:fs"));
 		}
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 
-		if(!isUpgrade)
+		if(!isUpgrade) // dont write TileData for Upgrades/Cards
 			nbt = super.writeToNBT(nbt);
 
-		if (node != null && node.host() == this) {
+		if (node() != null && node().host() == this) {
 			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
+			node().save(nodeNbt);
 			nbt.setTag("oc:node", nodeNbt);
 		}
-		if (oc_fs != null && oc_fs.node() != null) {
+		if (oc_fs() != null && oc_fs().node() != null) {
 			final NBTTagCompound fsNbt = new NBTTagCompound();
-			oc_fs.node().save(fsNbt);
+			oc_fs().node().save(fsNbt);
 			nbt.setTag("oc:fs", fsNbt);
 		}
 
@@ -157,7 +157,7 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 
 	public void setupNode() {
 		if (this.node() == null) {
-			this.node = API.network.newNode(this, Visibility.Network).withConnector().withComponent(this.getComponentName()).create();
+			this.node = API.network.newNode(this, Visibility.Neighbors).withConnector().withComponent(this.getComponentName()).create();
 		}
 	}
 

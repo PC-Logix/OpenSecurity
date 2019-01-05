@@ -7,12 +7,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pcl.opensecurity.client.gui.CardDockGUI;
 import pcl.opensecurity.client.gui.CardWriterGUI;
 import pcl.opensecurity.client.gui.EnergyTurretGUI;
 import pcl.opensecurity.client.gui.NanoFogTerminalGUI;
+import pcl.opensecurity.common.inventory.CardDockContainer;
 import pcl.opensecurity.common.inventory.CardWriterContainer;
 import pcl.opensecurity.common.inventory.EnergyTurretContainer;
 import pcl.opensecurity.common.inventory.NanoFogTerminalContainer;
+import pcl.opensecurity.common.tileentity.TileEntityCardDock;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityNanoFogTerminal;
@@ -29,6 +32,8 @@ public class GuiHandler implements IGuiHandler {
             return new EnergyTurretContainer(player.inventory, (TileEntityEnergyTurret) te);
         } else if (te instanceof TileEntityNanoFogTerminal) {
             return new NanoFogTerminalContainer(player.inventory, (TileEntityNanoFogTerminal) te);
+        } else if (te instanceof TileEntityCardDock) {
+            return new CardDockContainer(player.inventory, (TileEntityCardDock) te);
         }
         return null;
     }
@@ -47,6 +52,9 @@ public class GuiHandler implements IGuiHandler {
         } else if (te instanceof TileEntityNanoFogTerminal) {
             TileEntityNanoFogTerminal containerTileEntity = (TileEntityNanoFogTerminal) te;
             return new NanoFogTerminalGUI(containerTileEntity, new NanoFogTerminalContainer(player.inventory, containerTileEntity));
+        } else if (te instanceof TileEntityCardDock) {
+            TileEntityCardDock containerTileEntity = (TileEntityCardDock) te;
+            return new CardDockGUI(containerTileEntity, new CardDockContainer(player.inventory, containerTileEntity));
         }
         return null;
     }

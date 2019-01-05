@@ -5,11 +5,17 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.sounds.AlarmResource;
+
+import java.io.File;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class SoundHandler {
 	
-	public static SoundEvent klaxon1;
 	public static SoundEvent turretMove;
 	public static SoundEvent turretFire;
 	public static SoundEvent keypad_press;
@@ -42,7 +48,7 @@ public class SoundHandler {
         //return GameRegistry.register(new SoundEvent(soundID).setRegistryName(soundID));
         return new SoundEvent(soundID).setRegistryName(soundID);
     }
-    
+
 	@Mod.EventBusSubscriber
 	public static class RegistrationHandler {
 		@SubscribeEvent

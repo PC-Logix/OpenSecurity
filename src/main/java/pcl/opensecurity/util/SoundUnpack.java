@@ -31,6 +31,7 @@ public class SoundUnpack implements IFMLLoadingPlugin, IFMLCallHook {
 			while(entries.hasMoreElements()) {
 				final String name = entries.nextElement().getName();
 				if (name.startsWith(jarAssetsPath) && name.endsWith(".ogg")) { //filter according to the path
+					OpenSecurity.alarmList.add(name); //not so nice to do that here, but if it works it works
 					InputStream oggStream = SoundUnpack.class.getClassLoader().getResourceAsStream(name);
 					Path p = Paths.get(name);
 					String file = p.getFileName().toString();
