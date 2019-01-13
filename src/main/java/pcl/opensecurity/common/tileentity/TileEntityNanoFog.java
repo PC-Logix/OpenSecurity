@@ -90,6 +90,8 @@ public class TileEntityNanoFog extends TileEntity {
         return mimic;
     }
 
+
+    @Deprecated
     void setCamoBlock(Block block, int meta) {
         this.camoId = Block.getIdFromBlock(block);
         this.camoMeta = meta;
@@ -155,6 +157,7 @@ public class TileEntityNanoFog extends TileEntity {
     }
 
     @Override
+    @Deprecated
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         camoId = tagCompound.getInteger("camoId");

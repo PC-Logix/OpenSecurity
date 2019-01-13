@@ -136,6 +136,8 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 		DoorControllerCamo[0] = equipped;
 	}
 
+
+	@Deprecated
 	public IBlockState getBlockFromNBT() {
 		if (DoorControllerCamo[0] != null) {
 			return Block.getBlockFromItem(DoorControllerCamo[0].getItem()).getStateFromMeta(DoorControllerCamo[0].getMetadata());

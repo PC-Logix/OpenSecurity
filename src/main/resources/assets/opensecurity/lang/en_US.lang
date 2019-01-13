@@ -17,7 +17,6 @@ tile.biometric_reader.name=Biometric Reader
 tile.secure_door.name=Security Door
 tile.private_secure_door.name=Private Security Door
 tile.security_terminal.name=Security Terminal
-tile.card_dock.name=Card Dock
 //items
 item.rfid_card.name=RFID Card
 item.mag_card.name=Magnetic Strip Card
@@ -32,7 +31,6 @@ item.doorcontroller_upgrade.name=Door Controller Upgrade
 itemGroup.OpenSecurity.tabOpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer
-gui.string.cardslot=Card Slot
 gui.string.kvm=KVM Switch Control
 gui.string.energyturret=Energy Turret
 gui.string.energyturret.damagemod=+Damage

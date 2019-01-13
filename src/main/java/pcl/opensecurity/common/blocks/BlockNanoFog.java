@@ -62,6 +62,7 @@ public class BlockNanoFog extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB entityBoundingBox, @Nonnull List<AxisAlignedBB> stacks, Entity entity, boolean isActualState) {
         if(!canEntityPass(world, pos, entity))
             super.addCollisionBoxToList(state, world, pos, entityBoundingBox, stacks, entity, isActualState);
@@ -76,6 +77,7 @@ public class BlockNanoFog extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         IBlockState block = world.getBlockState(pos.offset(side));
         TileEntityNanoFog te = getTE(world, pos);
@@ -117,21 +119,25 @@ public class BlockNanoFog extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     // this is used to determine if a player should take damage from standing inside a wall
     public boolean causesSuffocation(IBlockState state){ return false; }
 
@@ -151,6 +157,7 @@ public class BlockNanoFog extends Block implements ITileEntityProvider {
 
     @Override
     @Nonnull
+    @Deprecated
     public EnumPushReaction getMobilityFlag(IBlockState state) {
         return EnumPushReaction.BLOCK;
     }

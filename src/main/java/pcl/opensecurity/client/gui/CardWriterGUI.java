@@ -2,7 +2,7 @@ package pcl.opensecurity.client.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentString;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.inventory.CardWriterContainer;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
@@ -23,8 +23,8 @@ public class CardWriterGUI extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		// the parameters for drawString are: string, x, y, color
-		mc.fontRenderer.drawString(I18n.translateToLocal("gui.string.cardslot"), 64, 20, 4210752);
-		mc.fontRenderer.drawString(I18n.translateToLocal("gui.string.cardwriter"), 60, 5, 4210752);
+		mc.fontRenderer.drawString(new TextComponentString("gui.string.cardslot").getUnformattedText(), 64, 20, 4210752);
+		mc.fontRenderer.drawString(new TextComponentString("gui.string.cardwriter").getUnformattedText(), 60, 5, 4210752);
 	}
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {

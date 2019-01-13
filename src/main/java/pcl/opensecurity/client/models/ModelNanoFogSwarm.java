@@ -6,7 +6,6 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 
 
@@ -49,6 +48,10 @@ public abstract class ModelNanoFogSwarm extends ModelBase {
 
     public static void drawCube(float scale){
         scale/=2f;
+
+        ModelCube.drawCube(-scale, -scale, -scale, scale, scale, scale);
+
+        /*
         GlStateManager.glBegin(GL11.GL_QUADS);
         GlStateManager.glVertex3f(scale,scale,-scale);   // Top Right Of The Quad (Top)
         GlStateManager.glVertex3f(-scale,scale,-scale);  // Top Left Of The Quad (Top)
@@ -79,7 +82,7 @@ public abstract class ModelNanoFogSwarm extends ModelBase {
         GlStateManager.glVertex3f(scale,scale,scale);    // Top Left Of The Quad (Right)
         GlStateManager.glVertex3f(scale,-scale,scale);   // Bottom Left Of The Quad (Right)
         GlStateManager.glVertex3f(scale,-scale,-scale);   // Bottom Right Of The Quad (Right)
-        GlStateManager.glEnd();
+        GlStateManager.glEnd();*/
     }
 
 }

@@ -409,6 +409,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
         return updateShieldBlock(pos, material, metadata);
     }
 
+    @Deprecated
     private String updateShieldBlock(BlockPos pos, String material, int metadata){
         TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
 

@@ -79,10 +79,10 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
 
 
-
         ModelLoaderRegistry.registerLoader(new BakedModelLoader());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
+
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
         TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper();
@@ -113,7 +113,6 @@ public class ClientProxy extends CommonProxy {
         registerBlockItem(ContentRegistry.biometricReaderBlock, 0, Reference.Names.BLOCK_BIOMETRIC_READER);
         registerBlockItem(ContentRegistry.dataBlock, 0, Reference.Names.BLOCK_DATA);
         registerBlockItem(ContentRegistry.cardWriter, 0, Reference.Names.BLOCK_CARD_WRITER);
-        registerBlockItem(ContentRegistry.cardDock, 0, Reference.Names.BLOCK_CARDDOCK);
         registerBlockItem(ContentRegistry.magReader, 0, Reference.Names.BLOCK_MAG_READER);
         registerBlockItem(ContentRegistry.keypadBlock, 0, Reference.Names.BLOCK_KEYPAD);
         registerBlockItem(ContentRegistry.entityDetector, 0, Reference.Names.BLOCK_ENTITY_DETECTOR);
@@ -124,6 +123,9 @@ public class ClientProxy extends CommonProxy {
         // BlockNanoFog uses custom texture/model loader for shield blocks
         ContentRegistry.nanoFog.initModel();
         registerBlockItem(ContentRegistry.nanoFog, 0, Reference.Names.BLOCK_NANOFOG);
+
+
+
 
         registerItem(ContentRegistry.secureDoorItem, Reference.Names.BLOCK_SECURE_DOOR);
         registerItem(ContentRegistry.securePrivateDoorItem, Reference.Names.BLOCK_PRIVATE_SECURE_DOOR);
@@ -151,13 +153,13 @@ public class ClientProxy extends CommonProxy {
     private void registerBlockItem(final Block block, int meta, final String blockName) {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(block.getRegistryName().toString()));
         if(OpenSecurity.debug)
-            OpenSecurity.logger.info("Registering " + blockName + " Item Renderer");
+            OpenSecurity.logger.info("Registering Renderer for block '" + blockName + "'");
     }
 
     private void registerItem(final Item item, final String itemName) {
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(OpenSecurity.MODID + ":" + itemName));
         if(OpenSecurity.debug)
-            OpenSecurity.logger.info("Registering " + itemName + " Item Renderer");
+            OpenSecurity.logger.info("Registering Renderer for Item '" + itemName + "'");
     }
 
     private void listFilesForPath(final File path) {
@@ -172,7 +174,6 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerSounds() {
-        File[] listOfFiles;
         File alarmSounds = new File("./mods/OpenSecurity/assets/opensecurity/sounds/alarms");
 
         if (!alarmSounds.exists())

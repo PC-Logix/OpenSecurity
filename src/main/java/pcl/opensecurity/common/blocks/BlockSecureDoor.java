@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
@@ -67,7 +67,7 @@ public class BlockSecureDoor extends BlockDoor {
     @Nonnull
     public String getLocalizedName() {
         // Copied from block class in order to override the superclass' behavior
-        return I18n.translateToLocal(this.getUnlocalizedName() + ".name");
+        return new TextComponentString(this.getUnlocalizedName() + ".name").getUnformattedText();
     }
 
     @Override

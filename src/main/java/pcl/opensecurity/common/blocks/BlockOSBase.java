@@ -38,6 +38,7 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
@@ -45,6 +46,7 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         EnumFacing facing = EnumFacing.getHorizontal(meta);
         return getDefaultState().withProperty(PROPERTYFACING, facing);
@@ -58,6 +60,7 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         return state;
     }
@@ -68,6 +71,7 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         EnumFacing enumfacing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
         return getDefaultState().withProperty(PROPERTYFACING, enumfacing);
