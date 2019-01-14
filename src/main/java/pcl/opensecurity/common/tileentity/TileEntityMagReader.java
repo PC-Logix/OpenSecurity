@@ -39,7 +39,7 @@ public class TileEntityMagReader extends TileEntityOSBase {
 				} else {
 					localUUID = "-1";
 				}
-				if (Config.getConfig().getCategory("general").get("magCardDisplayName").getBoolean()) {
+				if (!Config.getConfig().getCategory("general").get("ignoreUUIDs").getBoolean()) {
 					user = em.getDisplayNameString();
 				} else {
 					user = "player";
