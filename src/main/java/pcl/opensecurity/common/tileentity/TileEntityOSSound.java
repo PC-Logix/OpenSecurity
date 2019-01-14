@@ -25,21 +25,29 @@ public class TileEntityOSSound extends TileEntityOSBase {
     public TileEntityOSSound(String name, EnvironmentHost host){
         super(name, host);
     }
-    
+
+
+    @Override
+    public void invalidate(){
+        setShouldPlay(false);
+
+        if(getWorld().isRemote)
+            updateSound();
+
+        super.invalidate();
+    }
+
     @Override
     public void update() {
         super.update();
-        if (!hasSound())
-            return;
 
-        if(!isUpgrade && getWorld().isRemote)
+        if(getWorld().isRemote)
             updateSound();
-
-    }    
+    }
 
     @SideOnly(Side.CLIENT)
     private void updateSound() {
-        if (!hasSound())
+        if (!hasSound() || isUpgrade)
             return;
 
         if (getShouldPlay()) {
@@ -52,10 +60,10 @@ public class TileEntityOSSound extends TileEntityOSBase {
 
     @SideOnly(Side.CLIENT)
     public void playSoundNow() {
-        if(sound == null)
+        if(sound == null) {
             sound = new MachineSound(soundRes, getPos(), getVolume(), getPitch(), shouldRepeat());
-
-        FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
+            FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
+        }
     }
 
     @Override
