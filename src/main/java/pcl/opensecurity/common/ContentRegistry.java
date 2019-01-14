@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -395,7 +395,7 @@ public class ContentRegistry {
             }
 
             public String getTranslatedTabLabel() {
-                return new TextComponentString("itemGroup.OpenSecurity.tabOpenSecurity").getUnformattedText();
+                return new TextComponentTranslation("itemGroup.OpenSecurity.tabOpenSecurity").getUnformattedText();
             }
         };
     }

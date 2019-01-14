@@ -1,8 +1,9 @@
 package pcl.opensecurity.client.gui;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.inventory.CardWriterContainer;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
@@ -20,12 +21,17 @@ public class CardWriterGUI extends GuiContainer {
         ySize = HEIGHT;
     }
 
-	@Override
+    void drawCenteredString(String string, int y, int color){
+        FontRenderer fr = mc.fontRenderer;
+        fr.drawString(string, getXSize()/2 - fr.getStringWidth(string)/2, y, color);
+    }
+
+    @Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
-		// the parameters for drawString are: string, x, y, color
-		mc.fontRenderer.drawString(new TextComponentString("gui.string.cardslot").getUnformattedText(), 64, 20, 4210752);
-		mc.fontRenderer.drawString(new TextComponentString("gui.string.cardwriter").getUnformattedText(), 60, 5, 4210752);
+        drawCenteredString(new TextComponentTranslation("gui.string.cardslot").getUnformattedText(), 20, 4210752);
+        drawCenteredString(new TextComponentTranslation("gui.string.cardwriter").getUnformattedText(), 5, 4210752);
 	}
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         mc.getTextureManager().bindTexture(background);

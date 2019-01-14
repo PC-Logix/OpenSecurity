@@ -31,6 +31,7 @@ item.doorcontroller_upgrade.name=Door Controller Upgrade
 itemGroup.OpenSecurity.tabOpenSecurity=OpenSecurity
 //guis
 gui.string.cardwriter=Card Writer
+gui.string.cardslot=Card Slot
 gui.string.kvm=KVM Switch Control
 gui.string.energyturret=Energy Turret
 gui.string.energyturret.damagemod=+Damage
