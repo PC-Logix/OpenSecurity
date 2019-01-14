@@ -37,8 +37,13 @@ public class PacketProtectionAdd implements IMessage {
     public static class Handler implements IMessageHandler<PacketProtectionAdd, IMessage> {
         @Override
         public IMessage onMessage(PacketProtectionAdd message, MessageContext ctx) {
-            ProtectionAreaChunk pac = new ProtectionAreaChunk(message.protection);
-            Protection.addArea(Minecraft.getMinecraft().player.world, pac.getArea(), pac.getControllerPosition());
+            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+                public void run() {
+                        ProtectionAreaChunk pac = new ProtectionAreaChunk(message.protection);
+                        Protection.addArea(Minecraft.getMinecraft().player.world, pac.getArea(), pac.getControllerPosition());
+                    }
+                });
+
             return null;
         }
     }

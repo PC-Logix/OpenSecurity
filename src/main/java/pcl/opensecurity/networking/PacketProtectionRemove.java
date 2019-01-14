@@ -25,8 +25,12 @@ public class PacketProtectionRemove extends PacketProtectionAdd {
     public static class Handler implements IMessageHandler<PacketProtectionRemove, IMessage> {
         @Override
         public IMessage onMessage(PacketProtectionRemove message, MessageContext ctx) {
-            ProtectionAreaChunk pac = new ProtectionAreaChunk(message.protection);
-            Protection.removeArea(Minecraft.getMinecraft().player.world, pac.getControllerPosition());
+            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+                public void run() {
+                    ProtectionAreaChunk pac = new ProtectionAreaChunk(message.protection);
+                    Protection.removeArea(Minecraft.getMinecraft().player.world, pac.getControllerPosition());
+                }
+            });
             return null;
         }
     }
