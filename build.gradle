@@ -122,7 +122,7 @@ processResources
 
 task syncGitWiki(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
     dir = file("src/main/resources/assets/opensecurity/doc")
-    uri = 'https://github.com/ben-mkiv/OpenSecurity.wiki.git'
+    uri = 'https://github.com/PC-Logix/OpenSecurity.wiki.git'
     treeish = "origin/master"
     forceFetch = true
 }
