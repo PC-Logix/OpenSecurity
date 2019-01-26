@@ -16,6 +16,8 @@ public class Reference {
         public static final String BLOCK_RFID_READER = "rfid_reader";
         public static final String BLOCK_SECURE_DOOR = "secure_door";
         public static final String BLOCK_PRIVATE_SECURE_DOOR = "private_secure_door";
+        public static final String BLOCK_NANOFOG_TERMINAL = "nanofog_terminal";
+        public static final String BLOCK_NANOFOG = "nanofog";
 
         public static final String ITEM_RFID_CARD = "rfid_card";
         public static final String ITEM_RFID_READER_CARD = "rfid_reader_card";
@@ -24,5 +26,6 @@ public class Reference {
         public static final String ITEM_COOLDOWN_UPGRADE = "cooldown_upgrade";
         public static final String ITEM_ENERGY_UPGRADE = "energy_upgrade";
         public static final String ITEM_MOVEMENT_UPGRADE = "movement_upgrade";
+        public static final String ITEM_NANODNA = "nanodna";
     }
 }

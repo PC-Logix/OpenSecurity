@@ -4,18 +4,15 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.io.input.NullInputStream;
-
-import pcl.opensecurity.OpenSecurity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.data.IMetadataSection;
@@ -100,6 +97,7 @@ public class AlarmResource implements IResourcePack {
         sound_map.put(PACK_NAME + recordNum,pathToSound);
     }
 
+    @SideOnly(Side.CLIENT)
     public void registerAsResourceLocation () {
      	List<IResourcePack> defaultResourcePacks = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "defaultResourcePacks", "field_110449_ao");
     	defaultResourcePacks.add(this);

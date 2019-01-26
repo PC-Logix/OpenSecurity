@@ -8,9 +8,7 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.ComponentConnector;
-import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 
@@ -18,69 +16,34 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.mindrot.jbcrypt.BCrypt;
 
-import pcl.opensecurity.OpenSecurity;
-
 import com.google.common.hash.Hashing;
 
 public class TileEntityDataBlock extends TileEntityOSBase {
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 
 	public TileEntityDataBlock() {
+		super("os_datablock");
 		if (this.node() != null) {
-			initOCFilesystem();
+			initOCFilesystem("/lua/datablock/", "datablock");
 		}
-	}
-
-	private li.cil.oc.api.network.ManagedEnvironment oc_fs;
-
-	private void initOCFilesystem() {
-		oc_fs = li.cil.oc.api.FileSystem.asManagedEnvironment(li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/datablock/"), "datablock");
-		((Component) oc_fs.node()).setVisibility(Visibility.Neighbors);
-	}
-
-	@Override
-	public Node node() {
-		return node;
-	}
-
-	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
-		if (node != null)
-			node.remove();
-	}
-
-	@Override
-	public void invalidate() {
-		super.invalidate();
-		if (node != null)
-			node.remove();
-	}
-
-	private static String getComponentName() {
-		return "os_datablock";
 	}
 
 	@Override
 	public void onConnect(final Node node) {
 		if (node.host() instanceof Context) {
-			node.connect(oc_fs.node());
+			node.connect(oc_fs().node());
 		}
 	}
 
 	@Override
 	public void onDisconnect(final Node node) {
 		if (node.host() instanceof Context) {
-			node.disconnect(oc_fs.node());
+			node.disconnect(oc_fs().node());
 		} else if (node == this.node) {
-			oc_fs.node().remove();
+			oc_fs().node().remove();
 		}
 	}
 
-	@Override
-	public void onMessage(Message arg0) {
-
-	}
 
 	@Callback(direct = true, doc = "function():number -- The maximum size of data that can be passed to other functions of the card.")
 	public Object[] getLimit(Context context, Arguments args) {

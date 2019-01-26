@@ -15,6 +15,6 @@ public class CardInputSlot extends BaseSlot<TileEntityCardWriter> {
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
-        return (stack.getItem() instanceof ItemCard || stack.getUnlocalizedName().equals("item.oc.EEPROM"));
+        return (stack.getItem() instanceof ItemCard || stack.getItem().equals(li.cil.oc.api.Items.get("eeprom").item()));
     }
 }

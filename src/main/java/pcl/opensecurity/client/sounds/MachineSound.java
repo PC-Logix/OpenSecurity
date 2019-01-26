@@ -5,6 +5,9 @@ import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MachineSound extends PositionedSound implements ITickableSound {
 
@@ -28,7 +31,11 @@ public class MachineSound extends PositionedSound implements ITickableSound {
 	public void update() {
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void endPlaying() {
+		if(sound != null)
+			FMLClientHandler.instance().getClient().getSoundHandler().stopSound(this);
+
 		donePlaying = true;
 	}
 

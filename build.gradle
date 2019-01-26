@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.palominolabs.gradle.task:gradle-git-clone-task:0.0.3'
     }
 }
 plugins {
@@ -70,13 +71,15 @@ jar.manifest = manifest { attributes(
 ) }
 repositories {
     maven {
-        name = "OC repo"
+        name = "OpenComputers"
         url = "http://maven.cil.li/"
     }
 }
 
+def openComputersVersion = "MC1.12.2-1.7.+"
+
 dependencies {
-    deobfCompile "li.cil.oc:OpenComputers:MC1.12.2-1.7.+"
+    deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"
     compile 'org.mindrot:jbcrypt:0.3m'
 }
 
@@ -115,3 +118,12 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+
+task syncGitWiki(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
+    dir = file("src/main/resources/assets/opensecurity/doc")
+    uri = 'https://github.com/ben-mkiv/OpenSecurity.wiki.git'
+    treeish = "origin/master"
+    forceFetch = true
+}
+

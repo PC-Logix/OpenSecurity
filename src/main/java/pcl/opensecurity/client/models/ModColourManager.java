@@ -57,6 +57,7 @@ public class ModColourManager {
 	 * @param blockColors The BlockColors instance
 	 * @param itemColors  The ItemColors instance
 	 */
+	@Deprecated
 	private static void registerItemColourHandlers(final BlockColors blockColors, final ItemColors itemColors) {
 		// Use the Block's colour handler for an ItemBlock
 		final IItemColor itemBlockColourHandler = (stack, tintIndex) -> {

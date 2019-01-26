@@ -2,7 +2,6 @@ package pcl.opensecurity;
 
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -18,15 +17,23 @@ import org.apache.logging.log4j.Logger;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
-import pcl.opensecurity.networking.HandlerKeypadButton;
-import pcl.opensecurity.networking.OSPacketHandler;
-import pcl.opensecurity.networking.OSPacketHandler.PacketHandler;
-import pcl.opensecurity.networking.PacketBoltFire;
-import pcl.opensecurity.networking.PacketKeypadButton;
-import pcl.opensecurity.util.UsernameCache;
+import pcl.opensecurity.networking.*;
+import pcl.opensecurity.util.ServerResourcePackFactory;
+
+import java.io.File;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+// todo: merge camo code of NanoFog and DoorController (duplicated code)
+// todo: fix alarm
+// todo: update wiki
 
 @Mod.EventBusSubscriber
-@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber, dependencies = "required-after:opencomputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity")
+@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber,
+        dependencies = "required-after:opencomputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity",
+        guiFactory = OpenSecurity.GUIFACTORY)
 public class OpenSecurity {
     public static final String MODID = "opensecurity";
 
@@ -35,13 +42,17 @@ public class OpenSecurity {
 
     @SidedProxy(clientSide = "pcl.opensecurity.client.ClientProxy", serverSide = "pcl.opensecurity.common.CommonProxy")
     public static CommonProxy proxy;
-    public static Config cfg = null;
+
+    public static final String GUIFACTORY = "pcl.opensecurity.client.config.ConfigGUI";
+
+    public static final String ASSETSPATH = "mods/OpenSecurity/assets/opensecurity";
 
     public static boolean debug = false;
     public static int rfidRange;
-    public static boolean enableplaySoundAt = false;
+    public static int entityDetectorMaxRange;
     public static boolean ignoreUUIDs = false;
     public static boolean registerBlockBreakEvent = true;
+    public static HashSet<String> alarmList = new HashSet<>();
 
     public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
@@ -52,21 +63,31 @@ public class OpenSecurity {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         long time = System.nanoTime();
-        cfg = new Config(new Configuration(event.getSuggestedConfigurationFile()));
         ContentRegistry.preInit();
     	MinecraftForge.EVENT_BUS.register(contentRegistry);
         proxy.registerSounds();
         SoundHandler.registerSounds();
         network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
-        registerBlockBreakEvent = cfg.registerBlockBreak;
-        rfidRange = cfg.rfidMaxRange;
+
+        Config.preInit();
+
+        registerBlockBreakEvent = Config.getConfig().getCategory("general").get("registerBlockBreak").getBoolean();
+        rfidRange = Config.getConfig().getCategory("general").get("rfidMaxRange").getInt();
+        entityDetectorMaxRange = Config.getConfig().getCategory("general").get("entityDetectorMaxRange").getInt();
+        debug = Config.getConfig().getCategory("general").get("enableDebugMessages").getBoolean();
+
         proxy.preinit();
+
         int packetID = 0;
-        network.registerMessage(PacketHandler.class, OSPacketHandler.class, packetID++, Side.SERVER);
         network.registerMessage(HandlerKeypadButton.class, PacketKeypadButton.class, packetID++, Side.CLIENT);
-        network.registerMessage(PacketBoltFire.class, PacketBoltFire.class, packetID++, Side.CLIENT);
-        logger.info("Registered " + packetID + " packets");
-        logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
+        network.registerMessage(PacketProtectionAdd.Handler.class, PacketProtectionAdd.class, packetID++, Side.CLIENT);
+        network.registerMessage(PacketProtectionRemove.Handler.class, PacketProtectionRemove.class, packetID++, Side.CLIENT);
+        network.registerMessage(PacketProtectionSync.Handler.class, PacketProtectionSync.class, packetID++, Side.CLIENT);
+
+        if(OpenSecurity.debug) {
+            logger.info("Registered " + packetID + " packets");
+            logger.info("Finished pre-init in %d ms", (System.nanoTime() - time) / 1000000);
+        }
     }
 
     @EventHandler
@@ -74,12 +95,15 @@ public class OpenSecurity {
         long time = System.nanoTime();
         proxy.init();
         ContentRegistry.init();
-        UsernameCache.initCache(256);
-        logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
+
+        if(OpenSecurity.debug)
+            logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
     }
 
     @SubscribeEvent
     public static void onRegisterModels(ModelRegistryEvent event) {
         proxy.registerModels();
     }
+
+
 }

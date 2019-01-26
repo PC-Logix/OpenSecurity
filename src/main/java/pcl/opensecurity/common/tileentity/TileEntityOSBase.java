@@ -1,136 +1,98 @@
 package pcl.opensecurity.common.tileentity;
 
+import li.cil.oc.api.API;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.ComponentConnector;
-import li.cil.oc.api.network.Environment;
-import li.cil.oc.api.network.ManagedEnvironment;
-import li.cil.oc.api.network.Message;
-import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.*;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pcl.opensecurity.client.sounds.ISoundTile;
-import pcl.opensecurity.client.sounds.MachineSound;
+import pcl.opensecurity.OpenSecurity;
 
-public class TileEntityOSBase extends TileEntity implements ITickable, Environment {
-	
-	public Boolean shouldPlay = false;
+public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEnvironment {
 	public ComponentConnector node;
-	public ManagedEnvironment oc_fs;
-	
-	public TileEntityOSBase() {
+	private ManagedEnvironment oc_fs;
+
+	protected EnvironmentHost container;
+	private final String componentName;
+	protected boolean isUpgrade = false;
+
+	public TileEntityOSBase(String name) {
 		super();
+		componentName = name;
 	}
-	
+
+	public TileEntityOSBase(String name, EnvironmentHost host) {
+		isUpgrade = true;
+		componentName = name;
+		container = host;
+		setupNode();
+	}
+
 	@Override
 	public void update() {
-		if (node != null && node.network() == null) {
+		if (node() != null && node().network() == null) {
 			Network.joinOrCreateNetwork(this);
 		}
-		if (world.isRemote && hasSound()) {
-			updateSound();
-		}
 	}
 
-	// Sound related, thanks to EnderIO code for this!
-
-	@SideOnly(Side.CLIENT)
-	private MachineSound sound;
-
-	private ResourceLocation soundRes;
-
-	public String getSoundName() {
-		return null;
+	protected ManagedEnvironment oc_fs(){
+		return this.oc_fs;
 	}
 
-	public ResourceLocation setSound(String sound) {
-		return null;
+	protected void initOCFilesystem(String path, String name) {
+		oc_fs = li.cil.oc.api.FileSystem.asManagedEnvironment(li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, path), name);
+		((Component) oc_fs().node()).setVisibility(Visibility.Network);
 	}
 
-	public ResourceLocation getSoundRes() {
-		return soundRes;
-	}
-
-	public boolean getShouldPlay() {
-		return shouldPlay;
-	}
-
-	public void setShouldPlay(boolean b) {
-		shouldPlay = b;
-	}
-	
-	public boolean hasSound() {
-		return getSoundName() != null;
-	}
-
-	public float getVolume() {
-		return 1.0f;
-	}
-
-	public float getPitch() {
-		return 1.0f;
-	}
-
-	public boolean shouldRepeat() {
-		return getShouldPlay();
+	protected String getComponentName() {
+		return componentName;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		if (node != null && node.host() == this) {
-			node.load(nbt.getCompoundTag("oc:node"));
-		}
-		if (oc_fs != null && oc_fs.node() != null) {
-			oc_fs.node().load(nbt.getCompoundTag("oc:fs"));
-		}
 
+		if(!isUpgrade) // dont read TileData for Upgrades/Cards
+			super.readFromNBT(nbt);
+
+		if (node() != null && node().host() == this) {
+			node().load(nbt.getCompoundTag("oc:node"));
+		}
+		if (oc_fs() != null && oc_fs().node() != null) {
+			oc_fs().node().load(nbt.getCompoundTag("oc:fs"));
+		}
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
-		if (node != null && node.host() == this) {
+
+		if(!isUpgrade) // dont write TileData for Upgrades/Cards
+			nbt = super.writeToNBT(nbt);
+
+		if (node() != null && node().host() == this) {
 			final NBTTagCompound nodeNbt = new NBTTagCompound();
-			node.save(nodeNbt);
+			node().save(nodeNbt);
 			nbt.setTag("oc:node", nodeNbt);
 		}
-		if (oc_fs != null && oc_fs.node() != null) {
+		if (oc_fs() != null && oc_fs().node() != null) {
 			final NBTTagCompound fsNbt = new NBTTagCompound();
-			oc_fs.node().save(fsNbt);
+			oc_fs().node().save(fsNbt);
 			nbt.setTag("oc:fs", fsNbt);
 		}
+
 		return nbt;
 	}
-	
-	@SideOnly(Side.CLIENT)
-	public void updateSound() {
-		if (hasSound()) {
-			if ((getShouldPlay()) && !isInvalid()) {
-				if (sound == null && this instanceof ISoundTile) {
-						ISoundTile tile = (ISoundTile) this;
-						soundRes = new ResourceLocation("opensecurity:" + tile.getSoundName());
-						sound = new MachineSound(soundRes, this.getPos(), getVolume(), getPitch(), shouldRepeat());
-						FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
-				}
-			} else if (sound != null) {
-				sound.endPlaying();
-				sound = null;
-			}
-		}
-	}
 
-	public void setSoundRes(ResourceLocation soundRes) {
-		this.soundRes = soundRes;
-	}
-	
+
 	@Callback
 	public Object[] greet(Context context, Arguments args) {
 		return new Object[] { "Lasciate ogne speranza, voi ch'entrate" };
@@ -156,25 +118,79 @@ public class TileEntityOSBase extends TileEntity implements ITickable, Environme
 	}
 
 	@Override
-	public void onConnect(Node arg0) {
-		// TODO Auto-generated method stub
+	public void onConnect(Node arg0) {}
 
+	@Override
+	public void onDisconnect(final Node node) {}
+
+	@Override
+	public void onMessage(Message arg0) {}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(super.getUpdateTag());
 	}
 
 	@Override
-	public void onDisconnect(final Node node) {
-
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
 	}
 
 	@Override
-	public void onMessage(Message arg0) {
-		// TODO Auto-generated method stub
-
+	@SideOnly(Side.CLIENT)
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
 	}
 
-	public boolean shouldPlaySound() {
-		// TODO Auto-generated method stub
-		return false;
+	@Override
+	public void handleUpdateTag(NBTTagCompound tag) {
+		readFromNBT(tag);
+	}
+
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return oldState.getBlock() != newSate.getBlock();
+	}
+
+	// methods used for upgrades
+
+	public void setupNode() {
+		if (this.node() == null) {
+			this.node = API.network.newNode(this, Visibility.Neighbors).withConnector().withComponent(this.getComponentName()).create();
+		}
+	}
+
+	@Override
+	public boolean canUpdate(){ return false; }
+
+	@Override
+	public void load(NBTTagCompound nbt) {
+		this.setupNode();
+		readFromNBT(nbt);
+	}
+
+	@Override
+	public void save(NBTTagCompound nbt) {
+		this.setupNode();
+		nbt = writeToNBT(nbt);
+	}
+
+	@Override
+	public World getWorld(){
+		if(isUpgrade)
+			return container.world();
+
+		return super.getWorld();
+	}
+
+
+	@Override
+	public BlockPos getPos(){
+		if(isUpgrade)
+			return new BlockPos(container.xPosition(), container.yPosition(), container.zPosition());
+
+		return super.getPos();
 	}
 
 }

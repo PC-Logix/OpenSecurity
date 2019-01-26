@@ -1,5 +1,7 @@
 package pcl.opensecurity.common;
 
+import li.cil.oc.api.driver.DriverItem;
+import li.cil.oc.api.driver.EnvironmentProvider;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -10,18 +12,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.blocks.*;
-import pcl.opensecurity.common.drivers.RFIDReaderCardDriver;
+import pcl.opensecurity.common.drivers.*;
+import pcl.opensecurity.common.entity.EntityEnergyBolt;
+import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.*;
 
@@ -45,10 +49,20 @@ public class ContentRegistry {
     public static Block rfidReader = new BlockRFIDReader();
     public static Block secureDoor = new BlockSecureDoor();
     public static Block privateSecureDoor = new BlockSecurePrivateDoor();
+    public static Block nanoFogTerminal = new BlockNanoFogTerminal();
+
+
+    public static BlockNanoFog nanoFog = new BlockNanoFog();
+
+    public static Item doorControllerItem;
+    public static Item entityDetectorItem;
+    public static Item rfidReaderItem;
+    public static Item alarmItem;
+
 
     // TODO: block and item names normalization
-    public static ItemCard itemRFIDCard = new ItemRFIDCard();
-    public static ItemCard itemMagCard = new ItemMagCard();
+    public static ItemRFIDCard itemRFIDCard = new ItemRFIDCard();
+    public static ItemMagCard itemMagCard = new ItemMagCard();
 
     public static Item secureDoorItem = new ItemSecureDoor();
     public static Item securePrivateDoorItem = new ItemSecurePrivateDoor();
@@ -58,6 +72,8 @@ public class ContentRegistry {
     public static Item energyUpgradeItem = new ItemEnergyUpgrade();
     public static Item movementUpgradeItem = new ItemMovementUpgrade();
 
+    public static Item nanoDNAItem = new ItemNanoDNA();
+
     public ContentRegistry() {
     }
 
@@ -66,21 +82,39 @@ public class ContentRegistry {
     // Called on mod preInit()
     public static void preInit() {
         registerEvents();
-        registerEntities();
     }
 
     private static void registerEvents() {
         MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
-        OpenSecurity.logger.info("Registered Events");
+
+        if(OpenSecurity.debug)
+            OpenSecurity.logger.info("Registered Events");
     }
 
     //Called on mod init()
     public static void init() {
-        li.cil.oc.api.Driver.add(new RFIDReaderCardDriver());
+        li.cil.oc.api.Driver.add((EnvironmentProvider) DoorControllerDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) DoorControllerDriver.driver);
+
+        li.cil.oc.api.Driver.add((EnvironmentProvider) EntityDetectorDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) EntityDetectorDriver.driver);
+
+        li.cil.oc.api.Driver.add((EnvironmentProvider) AlarmDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) AlarmDriver.driver);
+
+        //block/upgrade
+        li.cil.oc.api.Driver.add((EnvironmentProvider) RFIDReaderDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) RFIDReaderDriver.driver);
+
+        //card
+        li.cil.oc.api.Driver.add(RFIDReaderCardDriver.driver);
     }
 
-    private static void registerEntities() {
-        //EntityRegistry.registerModEntity(EntityEnergyBolt.class, "energybolt", 1, OpenSecurity.instance, 128, 1, true);
+
+    @SubscribeEvent
+    public void registerEntities(RegistryEvent.Register<EntityEntry> event){
+        EntityRegistry.registerModEntity(new ResourceLocation(OpenSecurity.MODID, EntityEnergyBolt.NAME), EntityEnergyBolt.class, EntityEnergyBolt.NAME, 0, OpenSecurity.instance, 80, 3, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(OpenSecurity.MODID, EntityNanoFogSwarm.NAME), EntityNanoFogSwarm.class, EntityNanoFogSwarm.NAME, 1, OpenSecurity.instance, 80, 3, true);
     }
 
     @SubscribeEvent
@@ -98,7 +132,9 @@ public class ContentRegistry {
                 energyTurret,
                 rfidReader,
                 secureDoor,
-                privateSecureDoor
+                privateSecureDoor,
+                nanoFogTerminal,
+                nanoFog
         );
 
         registerTileEntity(TileEntityAlarm.class, Reference.Names.BLOCK_ALARM);
@@ -113,6 +149,8 @@ public class ContentRegistry {
         registerTileEntity(TileEntityEnergyTurret.class, Reference.Names.BLOCK_ENERGY_TURRET);
         registerTileEntity(TileEntityRFIDReader.class, Reference.Names.BLOCK_RFID_READER);
         registerTileEntity(TileEntitySecureDoor.class, Reference.Names.BLOCK_SECURE_DOOR);
+        registerTileEntity(TileEntityNanoFogTerminal.class, Reference.Names.BLOCK_NANOFOG_TERMINAL);
+        registerTileEntity(TileEntityNanoFog.class, Reference.Names.BLOCK_NANOFOG);
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String key) {
@@ -123,18 +161,25 @@ public class ContentRegistry {
     @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+        alarmItem = new ItemBlock(alarmBlock).setRegistryName(alarmBlock.getRegistryName());
+        doorControllerItem = new ItemBlock(doorController).setRegistryName(doorController.getRegistryName());
+        entityDetectorItem = new ItemBlock(entityDetector).setRegistryName(entityDetector.getRegistryName());
+        rfidReaderItem = new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName());
+
         event.getRegistry().registerAll(
-                new ItemBlock(alarmBlock).setRegistryName(alarmBlock.getRegistryName()),
-                new ItemBlock(doorController).setRegistryName(doorController.getRegistryName()),
-                new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName()),
+                doorControllerItem,
+                entityDetectorItem,
+                rfidReaderItem,
+                alarmItem,
                 new ItemBlock(biometricReaderBlock).setRegistryName(biometricReaderBlock.getRegistryName()),
-                new ItemBlock(dataBlock).setRegistryName(dataBlock.getRegistryName()),
                 new ItemBlock(cardWriter).setRegistryName(cardWriter.getRegistryName()),
-                new ItemBlock(magReader).setRegistryName(magReader.getRegistryName()),
-                new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
-                new ItemBlock(entityDetector).setRegistryName(entityDetector.getRegistryName()),
+                new ItemBlock(dataBlock).setRegistryName(dataBlock.getRegistryName()),
                 new ItemBlock(energyTurret).setRegistryName(energyTurret.getRegistryName()),
-                new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName())
+                new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
+                new ItemBlock(magReader).setRegistryName(magReader.getRegistryName()),
+                new ItemBlock(nanoFog).setRegistryName(nanoFog.getRegistryName()),
+                new ItemBlock(nanoFogTerminal).setRegistryName(nanoFogTerminal.getRegistryName()),
+                new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName())
         );
 
         event.getRegistry().registerAll(
@@ -146,7 +191,8 @@ public class ContentRegistry {
                 damageUpgradeItem,
                 cooldownUpgradeItem,
                 energyUpgradeItem,
-                movementUpgradeItem
+                movementUpgradeItem,
+                nanoDNAItem
         );
     }
 
@@ -175,6 +221,7 @@ public class ContentRegistry {
         ItemStack pcb = li.cil.oc.api.Items.get("printedcircuitboard").createItemStack(1);
         ItemStack controlunit = li.cil.oc.api.Items.get("cu").createItemStack(1);
         ItemStack wlancard = li.cil.oc.api.Items.get("wlancard1").createItemStack(1);
+        ItemStack wlancard2 = li.cil.oc.api.Items.get("wlancard2").createItemStack(1);
         ItemStack cardbase = li.cil.oc.api.Items.get("card").createItemStack(1);
         ItemStack cable = li.cil.oc.api.Items.get("cable").createItemStack(1);
         ItemStack transistor = li.cil.oc.api.Items.get("transistor").createItemStack(1);
@@ -182,7 +229,11 @@ public class ContentRegistry {
         ItemStack batteryUpgrade = li.cil.oc.api.Items.get("batteryupgrade1").createItemStack(1);
         ItemStack oc_relay = li.cil.oc.api.Items.get("relay").createItemStack(1);
         ItemStack floppy = li.cil.oc.api.Items.get("floppy").createItemStack(1);
+        ItemStack capacitor = li.cil.oc.api.Items.get("capacitor").createItemStack(1);
         ItemStack datacard = li.cil.oc.api.Items.get("datacard1").createItemStack(1);
+        ItemStack nanomachines = li.cil.oc.api.Items.get("nanomachines").createItemStack(1);
+        ItemStack chameliumBlock = li.cil.oc.api.Items.get("chameliumblock").createItemStack(1);
+
 
 
         event.getRegistry().register(new ShapedOreRecipe(rfidReaderCardItem.getRegistryName(), new ItemStack(rfidReaderCardItem, 1),
@@ -314,24 +365,37 @@ public class ContentRegistry {
                 'T', transistor, 'C', t1microchip, 'I', iron, 'S', stone).setRegistryName(OpenSecurity.MODID,biometricReaderBlock.getUnlocalizedName()));
 
         event.getRegistry().register(new ShapedOreRecipe(securityTerminal.getRegistryName(), new ItemStack(securityTerminal, 1),
-                "SIS",
-                "STS",
-                "SCS",
-                'T', controlunit, 'C', t2microchip, 'I', iron, 'S', stone).setRegistryName(OpenSecurity.MODID,securityTerminal.getUnlocalizedName()));
+                "cIc",
+                "cTc",
+                "cCc",
+                'T', controlunit, 'C', t2microchip, 'I', iron, 'c', capacitor).setRegistryName(OpenSecurity.MODID,securityTerminal.getUnlocalizedName()));
 
-        OpenSecurity.logger.info("Registered Recipes");
+
+        event.getRegistry().register(new ShapedOreRecipe(nanoFogTerminal.getRegistryName(), new ItemStack(nanoFogTerminal, 1),
+                "SWS",
+                "CTC",
+                "ccc",
+                'T', controlunit, 'C', t2microchip, 'W', wlancard2, 'S', transistor, 'c', capacitor).setRegistryName(OpenSecurity.MODID, nanoFogTerminal.getUnlocalizedName()));
+
+        event.getRegistry().register(new ShapedOreRecipe(nanoDNAItem.getRegistryName(), new ItemStack(nanoDNAItem, 16),
+                "CCC",
+                "CNC",
+                "CCC",
+                'N', nanomachines, 'C', chameliumBlock).setRegistryName(OpenSecurity.MODID,nanoDNAItem.getUnlocalizedName()));
+
+        if(OpenSecurity.debug)
+            if(OpenSecurity.debug)
+                OpenSecurity.logger.info("Registered Recipes");
     }
 
     private static CreativeTabs getCreativeTab() {
         return new CreativeTabs("tabOpenSecurity") {
-            @SideOnly(Side.CLIENT)
             public ItemStack getTabIconItem() {
                 return new ItemStack(Item.getItemFromBlock(dataBlock));
             }
 
-            @SideOnly(Side.CLIENT)
             public String getTranslatedTabLabel() {
-                return I18n.translateToLocal("itemGroup.OpenSecurity.tabOpenSecurity");
+                return new TextComponentTranslation("itemGroup.OpenSecurity.tabOpenSecurity").getUnformattedText();
             }
         };
     }

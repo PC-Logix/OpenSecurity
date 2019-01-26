@@ -34,21 +34,25 @@ public class BlockEnergyTurret extends BlockOSBase {
 
     @Override
     @SideOnly(Side.CLIENT)
+    @Deprecated
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isBlockNormalCube(IBlockState blockState) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState blockState) {
         return false;
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
         TileEntityEnergyTurret te = (TileEntityEnergyTurret) worldIn.getTileEntity(pos);
         te.rescan(pos);

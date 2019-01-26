@@ -43,9 +43,8 @@ public class BlockDoorController extends BlockOSBase {
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        TileEntityDoorController te = (TileEntityDoorController) worldIn.getTileEntity(pos);
-        te.rescan(pos);
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor){
+        TileEntityDoorController te = (TileEntityDoorController) world.getTileEntity(pos);
     }
 
     /**
@@ -54,11 +53,11 @@ public class BlockDoorController extends BlockOSBase {
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntity te = worldIn.getTileEntity(pos);
         ((TileEntityDoorController) te).setOwner(placer.getUniqueID().toString());
-        ((TileEntityDoorController) te).rescan(pos);
         //((TileEntityDoorController) te).overrideTexture(ContentRegistry.doorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.doorController)), ForgeDirection.getOrientation(1));
     }
 
     @Override
+    @Deprecated
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         EnumFacing enumfacing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
         return this.getDefaultState().withProperty(PROPERTYFACING, enumfacing);
@@ -114,6 +113,7 @@ public class BlockDoorController extends BlockOSBase {
     // set to true because this block is opaque and occupies the entire 1x1x1 space
     // not strictly required because the default (super method) is true
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState iBlockState) {
         return false;
     }
@@ -123,6 +123,7 @@ public class BlockDoorController extends BlockOSBase {
     // set to true because this block occupies the entire 1x1x1 space
     // not strictly required because the default (super method) is true
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState iBlockState) {
         return true;
     }
@@ -130,6 +131,7 @@ public class BlockDoorController extends BlockOSBase {
     // render using an IBakedModel
     // not strictly required because the default (super method) is MODEL.
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
         return EnumBlockRenderType.MODEL;
     }
@@ -166,6 +168,7 @@ public class BlockDoorController extends BlockOSBase {
     }
 
     @Override
+    @Deprecated
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         return state;  //for debugging - useful spot for a breakpoint.  Not necessary.
     }
@@ -182,6 +185,7 @@ public class BlockDoorController extends BlockOSBase {
     // 4) If still a tie, look again for spans on both sides, counting adjacent camouflage blocks as a span
     // 5) If still a tie, in decreasing order of preference: NORTH, SOUTH, EAST, WEST, DOWN, UP
     // 6) If no suitable adjacent blocks, return Block.air
+    @Deprecated
     private IBlockState getCamoFromNBT(IBlockAccess world, BlockPos blockPos) {
         TileEntityDoorController te = (TileEntityDoorController) world.getTileEntity(blockPos);
         final IBlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();

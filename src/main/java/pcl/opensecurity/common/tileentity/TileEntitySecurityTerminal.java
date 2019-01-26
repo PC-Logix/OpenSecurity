@@ -7,45 +7,74 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.EnumPacketDirection;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
-import pcl.opensecurity.util.UsernameCache;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import pcl.opensecurity.common.protection.IProtection;
+import pcl.opensecurity.common.protection.Protection;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 
-public class TileEntitySecurityTerminal extends TileEntityOSBase {
+public class TileEntitySecurityTerminal extends TileEntityOSBase implements IProtection {
     public void setOwner(String UUID) {
         this.ownerUUID = UUID;
+        allowedUsers.add(this.ownerUUID);
     }
 
     public String getOwner() {
         return this.ownerUUID;
     }
-    String ownerUUID = "";
-    ArrayList<String> allowedUsers = new ArrayList<String>();
+    private String ownerUUID = "";
+    private ArrayList<String> allowedUsers = new ArrayList<String>();
     private String password = "";
     public Block block;
     private Boolean enabled = false;
-    boolean enableParticles = false;
+    private boolean enableParticles = false;
     public int rangeMod = 1;
 
     public TileEntitySecurityTerminal(){
-        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(128).create();
+        super("os_securityterminal");
+        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32000).create();
+    }
+
+    @Override
+    public void validate(){
+        super.validate();
+        Protection.addArea(getWorld(), getArea(), getPos());
+    }
+
+    @Override
+    public void invalidate() {
+        Protection.removeArea(getWorld(), getPos());
+        super.invalidate();
+    }
+
+    @Override
+    public boolean isProtected(Entity entityIn, Protection.UserAction action){
+        if(!action.equals(Protection.UserAction.explode) && isUserAllowedToBypass(entityIn.getUniqueID().toString()))
+            return false;
+
+        if(!usePower())
+            return false;
+
+        if(entityIn != null && entityIn instanceof EntityPlayer)
+            ((EntityPlayer) entityIn).sendStatusMessage(new TextComponentString("this block is protected"), false);
+
+        return true;
+    }
+
+    private AxisAlignedBB getArea(){
+        int rangeMod = this.rangeMod * 8;
+        return new AxisAlignedBB(getPos().add(-rangeMod, -rangeMod, -rangeMod), getPos().add(rangeMod, rangeMod, rangeMod).add(1, 1, 1));
     }
 
     public boolean isUserAllowedToBypass(String uuid) {
         return uuid.equals(ownerUUID) || allowedUsers.contains(uuid);
-    }
-
-    private static String getComponentName() {
-        return "os_securityterminal";
     }
 
     @Callback(doc = "function():boolean; Returns the status of the block", direct = true)
@@ -53,13 +82,13 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
         return new Object[] { isEnabled() };
     }
 
-    @Callback(doc = "function(String:Username):boolean; Adds the Minecraft User as an allowed user.", direct = true)
+    @Callback(doc = "function(String:Password, String:Username):boolean; Adds the Minecraft User as an allowed user.", direct = true)
     public Object[] addUser(Context context, Arguments args) {
         if (args.checkString(0).equals(getPass())) {
             if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
                 allowedUsers.add(args.checkString(1));
             } else {
-                GameProfile gameprofile = world.getMinecraftServer().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
+                GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
 
                 if (gameprofile == null)
                 {
@@ -80,7 +109,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
             if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
                 allowedUsers.remove(args.checkString(1));
             } else {
-                GameProfile gameprofile = world.getMinecraftServer().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
+                GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
 
                 if (gameprofile == null)
                 {
@@ -128,11 +157,14 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
     public Object[] setRange(Context context, Arguments args) {
         if (args.optString(0, "").equals(getPass())) {
             if (args.checkInteger(1) >= 1 && args.checkInteger(1) <= 4) {
-                rangeMod = args.checkInteger(1);
-                world.markBlockRangeForRenderUpdate(pos, pos);
-                world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
-                world.scheduleBlockUpdate(pos,this.getBlockType(),0,0);
-                markDirty();
+                if(rangeMod != args.checkInteger(1)) {
+                    rangeMod = args.checkInteger(1);
+                    Protection.updateArea(getWorld(), getPos(), getArea());
+                    world.markBlockRangeForRenderUpdate(pos, pos);
+                    world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+                    world.scheduleBlockUpdate(pos, this.getBlockType(), 0, 0);
+                    markDirty();
+                }
                 return new Object[] { true };
             }
             return new Object[] { false, "Range out of bounds 1-4" };
@@ -168,21 +200,26 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
     @Callback(doc = "function(String:password):boolean; returns a comma delimited string of current allowed users.", direct = true)
     public Object[] getAllowedUsers(Context context, Arguments args) {
         if (args.optString(0, "").equals(getPass())) {
-            try {
-                String users = "";
-                for (String user : allowedUsers) {
-                    users = UsernameCache.getBlocking(UUID.fromString(user)) + ", ";
-                }
-                users = users.replaceAll(", $", "");
-                return new Object[] {users};
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new Object[] { e.getMessage() };
+            HashMap<UUID, String> users = new HashMap<>();
+            for (String user : allowedUsers) {
+                UUID uuid = UUID.fromString(user);
+                GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
+                if(gameProfile != null)
+                    users.put(uuid, gameProfile.getName());
             }
+            return new Object[] { users.values().toArray() };
         } else {
             return new Object[] { false, "Password incorrect" };
         }
     }
+
+    /* only for debug *//*
+    @Callback(doc = "function():boolean; removes all terminals from cache", direct = true)
+    public Object[] removeAllTerminals(Context context, Arguments args) {
+        Protection.get(getWorld()).clear();
+        return new Object[] { true };
+    }
+    */
 
     public void setPass(String pass) {
         this.password = pass;
@@ -303,9 +340,6 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        if (node != null && node.host() == this) {
-            node.load(nbt.getCompoundTag("oc:node"));
-        }
         this.ownerUUID = nbt.getString("owner");
         this.password= nbt.getString("password");
         this.enabled=nbt.getBoolean("enabled");
@@ -317,11 +351,6 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        if (node != null && node.host() == this) {
-            final NBTTagCompound nodeNbt = new NBTTagCompound();
-            node.save(nodeNbt);
-            nbt.setTag("oc:node", nodeNbt);
-        }
         nbt.setString("owner", this.ownerUUID);
         nbt.setString("password", this.password);
         nbt.setBoolean("enabled", this.isEnabled());
@@ -332,35 +361,11 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase {
         return nbt;
     }
 
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        return this.writeToNBT(new NBTTagCompound());
-    }
-
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
-    {
-        if(net.getDirection() == EnumPacketDirection.CLIENTBOUND)
-        {
-            readFromNBT(pkt.getNbtCompound());
-        }
-    }
-
     public boolean isEnabled() {
         return enabled;
     }
 
     public Boolean usePower() {
-        if (node.tryChangeBuffer(-10 * rangeMod)) {
-            return true;
-        } else {
-            return false;
-        }
+        return node.tryChangeBuffer(-10 * rangeMod);
     }
 }

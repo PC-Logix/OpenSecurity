@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "opensecurity:nanofog_flat"
+  },
+  "variants": {
+    "normal": [{ }],
+    "inventory": [{ }]
+  }
+}

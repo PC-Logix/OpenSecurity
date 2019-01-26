@@ -4,121 +4,97 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.SoundHandler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Michi on 5/29/2017.
  */
 public class TileEntityEntityDetector extends TileEntityOSBase {
-
-    public int range = OpenSecurity.rfidRange;
-    public boolean offset = false;
+    private int range = OpenSecurity.entityDetectorMaxRange;
 
     public TileEntityEntityDetector() {
-        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+        super("os_entdetector");
+        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(5 * OpenSecurity.entityDetectorMaxRange).create();
     }
-
-    private static String getComponentName() {
-        return "os_entdetector";
+    
+    public TileEntityEntityDetector(EnvironmentHost host){
+        super("os_entdetector", host);
     }
 
     // Thanks gamax92 from #oc for the following 2 methods...
-    private HashMap<String, Object> info(Entity entity, boolean offset) {
+    private HashMap<String, Object> info(Entity entity, BlockPos offset) {
         HashMap<String, Object> value = new HashMap<String, Object>();
 
-        double rangeToEntity = entity.getDistance(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ());
+        double rangeToEntity = entity.getDistance(getPos().getX(), getPos().getY(), getPos().getZ());
         String name;
-        if (entity instanceof EntityPlayerMP)
+        if (entity instanceof EntityPlayer)
             name = ((EntityPlayer) entity).getDisplayNameString();
         else
             name = entity.getName();
-        
+
+        double posX = entity.posX + offset.getX();
+        double posY = entity.posX + offset.getY();
+        double posZ = entity.posX + offset.getZ();
+
         value.put("name", name);
         value.put("range", rangeToEntity);
-        if (!offset) {
-            value.put("x", entity.posX);
-            value.put("y", entity.posY);
-            value.put("z", entity.posZ);
-            node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity, entity.posX, entity.posY, entity.posZ);
-        } else {
-            value.put("x", entity.posX - this.getPos().getX());
-            value.put("y", entity.posY - this.getPos().getY());
-            value.put("z", entity.posZ - this.getPos().getZ());
-            node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity, entity.posX - this.getPos().getX(), entity.posY - this.getPos().getY(), entity.posZ - this.getPos().getZ());
-        }
+        value.put("x", posX);
+        value.put("y", posY);
+        value.put("z", posZ);
+        node.sendToReachable("computer.signal", "entityDetect", name, rangeToEntity, posX, posY, posZ);
 
         return value;
     }
 
-    @SuppressWarnings({ "rawtypes" })
-    public Map<Integer, HashMap<String, Object>> scan(boolean players, boolean offset) {
-        Entity entity;
+    private Map<Integer, HashMap<String, Object>> scan(boolean players, BlockPos offset) {
         Map<Integer, HashMap<String, Object>> output = new HashMap<>();
         int index = 1;
-        List e = this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ()).grow(range));
-        if (!e.isEmpty()) {
-            for (int i = 0; i <= e.size() - 1; i++) {
-                entity = (Entity) e.get(i);
-                if (players && entity instanceof EntityPlayerMP) {
-                    output.put(index++, info(entity, offset));
-                    //worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
-                } else if (!players) {
-                    output.put(index++, info(entity, offset));
-                    //worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
-                }
+        for(Entity entity : getWorld().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(getPos(), getPos()).grow(range))){
+            if(players && entity instanceof EntityPlayer) {
+                output.put(index++, info(entity, offset));
+            } else if(!players && !(entity instanceof EntityPlayer)) {
+                output.put(index++, info(entity, offset));
             }
-        } else {
-            //worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 3, 3);
         }
         return output;
     }
 
-    @Callback
-    public Object[] getLoc(Context context, Arguments args) {
-        return new Object[] { this.getPos().getX(), this.getPos().getY(), this.getPos().getZ() };
-    }
-
     @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each player in range, optional set range.")
     public Object[] scanPlayers(Context context, Arguments args) {
-        range = args.optInteger(0, range);
-        offset = args.optBoolean(1, offset);
-        if (range > OpenSecurity.rfidRange) {
-            range = OpenSecurity.rfidRange;
-        }
-        range = range / 2;
-        if (node.changeBuffer(-5 * range) == 0) {
-        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.scanner1, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
-            return new Object[]{ scan(true, offset) };
-        } else {
+
+        range = Math.min(OpenSecurity.entityDetectorMaxRange, args.optInteger(0, range));
+
+        if(!consumeEnergy(range))
             return new Object[] { false, "Not enough power in OC Network." };
-        }
+
+        return new Object[]{ scan(true, getPos()) };
     }
 
     @Callback(doc = "function(optional:int:range):table; pushes a signal \"entityDetect\" for each entity in range (excluding players), optional set range.")
     public Object[] scanEntities(Context context, Arguments args) {
-        range = args.optInteger(0, range);
-        offset = args.optBoolean(1, offset);
-        if (range > OpenSecurity.rfidRange) {
-            range = OpenSecurity.rfidRange;
-        }
-        range = range / 2;
-        if (node.changeBuffer(-5 * range) == 0) {
-        	world.playSound(null, this.pos.getX() + 0.5F, this.pos.getY() + 0.5F, this.pos.getZ() + 0.5F, SoundHandler.scanner1, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
-            return new Object[]{ scan(false, offset) };
-        } else {
+
+        range = Math.min(OpenSecurity.entityDetectorMaxRange, args.optInteger(0, range));
+
+        if(!consumeEnergy(range))
             return new Object[] { false, "Not enough power in OC Network." };
-        }
+
+        return new Object[]{ scan(false, getPos()) };
+    }
+
+    private boolean consumeEnergy(int range){
+        return node.changeBuffer(-5 * range) == 0;
     }
 
 }

@@ -21,17 +21,20 @@ public class BlockKeypad extends BlockOSBase {
     }
 
     @Override
+    @Deprecated
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return side.getOpposite().getHorizontalIndex() != blockState.getBlock().getMetaFromState(blockState);
     }
 
     @Override
+    @Deprecated
     public boolean isBlockNormalCube(IBlockState blockState) {
         return true;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState blockState) {
         return true;
     }

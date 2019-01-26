@@ -5,8 +5,6 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Component;
-import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +15,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
@@ -28,7 +26,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class TileEntityCardWriter extends TileEntityOSBase implements ITickable {
-
     public static final int SIZE = 2;
     public boolean hasCards = false;
 
@@ -36,9 +33,10 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     private ItemStackHandler inventoryOutput;
 
     public TileEntityCardWriter() {
+        super("os_cardwriter");
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
         if (this.node() != null) {
-            initOCFilesystem();
+            initOCFilesystem("/lua/cardwriter/", "cardwriter");
         }
         inventoryInput = new ItemStackHandler(1);
         inventoryOutput = new ItemStackHandler(1) {
@@ -47,22 +45,6 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
                 return 1;
             }
         };
-    }
-
-    private String getComponentName() {
-        // TODO Auto-generated method stub
-        return "os_cardwriter";
-    }
-
-    private Object oc_fs;
-
-    protected ManagedEnvironment oc_fs(){
-        return (ManagedEnvironment) this.oc_fs;
-    }
-
-    private void initOCFilesystem() {
-        oc_fs = li.cil.oc.api.FileSystem.asManagedEnvironment(li.cil.oc.api.FileSystem.fromClass(OpenSecurity.class, OpenSecurity.MODID, "/lua/cardwriter/"), "cardwriter");
-        ((Component) oc_fs().node()).setVisibility(Visibility.Network);
     }
 
     @Override
@@ -80,29 +62,6 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
             oc_fs().node().remove();
         }
     }
-
-    @Override
-    public Node node() {
-        return node;
-    }
-
-    @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
-        if(node != null) {
-            node.remove();
-        }
-    }
-
-    @Override
-    public void invalidate() {
-        super.invalidate();
-        if(node != null) {
-            node.remove();
-        }
-    }
-
-
 
     @Override
     public void update() {
@@ -133,21 +92,22 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
             if (inventoryOutput.getStackInSlot(0).isEmpty()) { // The slot is empty lets
                 // make us a new EEPROM
                 System.out.println(inventoryInput.getStackInSlot(0).getItem().getUnlocalizedName());
-                if (inventoryInput.getStackInSlot(0).getUnlocalizedName().equals("item.oc.EEPROM")) {
+                if (inventoryInput.getStackInSlot(0).getItem().equals(li.cil.oc.api.Items.get("eeprom").item())) {
                     //CardWriterItemStacks[x] = eepromItem;
+                    boolean biggerEEPROM = Config.getConfig().getCategory("general").get("biggerEEPROM").getBoolean();
                     outStack = eepromItem;
                     NBTTagCompound oc_data = new NBTTagCompound();
                     NBTTagCompound our_data = new NBTTagCompound();
                     Integer biggerSizeCode = Settings.get().eepromSize()*2;
                     Integer biggerSizeData = Settings.get().eepromDataSize()*2;
-                    if(!OpenSecurity.cfg.biggerEEPROM && code.length > Settings.get().eepromSize()) {
+                    if(!biggerEEPROM && code.length > Settings.get().eepromSize()) {
                         code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
-                    } else if(OpenSecurity.cfg.biggerEEPROM && code.length > biggerSizeCode) {
+                    } else if(biggerEEPROM && code.length > biggerSizeCode) {
                         code = Arrays.copyOfRange(code, 0, biggerSizeCode);
                     }
-                    if(!OpenSecurity.cfg.biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
+                    if(!biggerEEPROM && title.length() > Settings.get().eepromDataSize()) {
                         title = title.substring(0, Settings.get().eepromDataSize());
-                    } else if(OpenSecurity.cfg.biggerEEPROM && title.length() > biggerSizeData) {
+                    } else if(biggerEEPROM && title.length() > biggerSizeData) {
                         title = title.substring(0, biggerSizeData);
                     }
                     our_data.setByteArray("oc:eeprom", code);
