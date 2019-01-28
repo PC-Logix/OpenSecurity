@@ -49,9 +49,9 @@ public class ModelEnergyTurret extends ModelBase {
 	    this.gunBarrell.addChild(this.gunEnd);
 	  }
 	  
-	  public void render(float k, boolean upright, float shaft, float barrel, float yaw, float pitch)
+	  public void render(float scale, boolean upright, float shaft, float barrel, float yaw, float pitch)
 	  {
-	    if(upright)
+	  	if(upright)
 	    {
 	      this.base.rotateAngleZ = 0;
 	    }
@@ -71,6 +71,6 @@ public class ModelEnergyTurret extends ModelBase {
 	    this.rotorShaft2.setRotationPoint(0.0F, dy2, 0.0F);
 	    this.gunBarrell.setRotationPoint(0.0F, 2.5F, 3.0F*barrel);
 	    this.gunEnd.setRotationPoint(0.0F, 0.0F, -10.0F*barrel);
-	    this.base.render(k);
+	    this.base.render(scale);
 	  }
 	}

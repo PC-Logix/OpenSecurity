@@ -151,7 +151,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void registerBlockItem(final Block block, int meta, final String blockName) {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(block.getRegistryName().toString()));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(block.getRegistryName().toString(), "inventory"));
         if(OpenSecurity.debug)
             OpenSecurity.logger.info("Registering Renderer for block '" + blockName + "'");
     }

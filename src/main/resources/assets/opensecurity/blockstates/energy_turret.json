@@ -6,13 +6,11 @@
 			"front": "opensecurity:blocks/machine_side",
 			"side": "opensecurity:blocks/machine_side"
 		},
-		"model": "minecraft:orientable"
+		"model": "opensecurity:energy_turret"
 	},
 	"variants": {
 		"normal": [{}],
-		"inventory": [{
-			"transform": "forge:default-block"
-		}],
+		"inventory": [{ "model": "opensecurity:energy_turret" }],
 		"facing": {
 			"north": {"model": "minecraft:orientable", "y": 180},
 			"south": {"model": "minecraft:orientable"},

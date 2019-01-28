@@ -1,5 +1,14 @@
 {
+    "defaults": {
+        "textures": {
+            "top": "opensecurity:blocks/door_controller",
+            "front": "opensecurity:blocks/door_controller",
+            "side": "opensecurity:blocks/door_controller"
+        },
+        "model": "opensecurity:door_controller"
+    },
     "variants": {
-        "normal": { "model": "opensecurity:door_controller" }
+        "normal": [{ "model": "opensecurity:door_controller" }],
+        "inventory": [{ "model": "opensecurity:door_controller" }]
     }
 }

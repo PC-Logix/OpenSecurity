@@ -1,6 +1,7 @@
 package pcl.opensecurity.client.renderer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -19,17 +20,21 @@ public class RenderEnergyTurret extends TileEntitySpecialRenderer<TileEntityEner
 
     @Override
     public void render(TileEntityEnergyTurret te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) x, (float) y, (float) z);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
         Minecraft.getMinecraft().renderEngine.bindTexture(this.textures);
-        GL11.glPushMatrix();
-        GL11.glDisable(GL11.GL_BLEND);
-        if (te != null)
+        GlStateManager.disableBlend();
+
+        if (te != null && te.getWorld() != null){
+            // render in world
             this.model.render(0.0625F, te.isUpright(), te.shaft, te.barrel, te.getRealYaw(), te.getRealPitch());
-        else
+        } else {
+            // probably render in some inventory
+            GlStateManager.translate(-0.1, 0.1, 0); // align to slot
             this.model.render(0.0625F, true, 1.0F, 1.0F, 0F, 0F);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glPopMatrix();
-        GL11.glPopMatrix();
+        }
+
+        GlStateManager.enableBlend();
+        GlStateManager.popMatrix();
     }
 }
