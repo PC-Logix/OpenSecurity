@@ -3,6 +3,7 @@ package pcl.opensecurity.common.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,9 +29,7 @@ import java.util.List;
 public class BlockEnergyTurret extends BlockOSBase {
     public static final int GUI_ID = 2;
     static final AxisAlignedBB bbBottom = new AxisAlignedBB(0, 0, 0, 1, 1d/16 * 6, 1);
-    static final AxisAlignedBB bbTop = new AxisAlignedBB(0, 1d/16 * 6, 0, 1, 1, 1);
-
-
+    
     public BlockEnergyTurret() {
         super(Reference.Names.BLOCK_ENERGY_TURRET, Material.IRON, 0.5f);
     }
@@ -41,19 +40,10 @@ public class BlockEnergyTurret extends BlockOSBase {
     }
 
     @Deprecated
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
         return bbBottom;
     }
-
-    @Override
-    @Deprecated
-    public void addCollisionBoxToList(@Nonnull IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, AxisAlignedBB entityBox,
-                                      @Nonnull List<AxisAlignedBB> collidingBoxes, Entity entity, boolean advanced) {
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, bbBottom);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, bbTop);
-    }
-
 
     @Override
     @SideOnly(Side.CLIENT)
