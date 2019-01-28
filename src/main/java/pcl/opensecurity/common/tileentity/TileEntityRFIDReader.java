@@ -13,11 +13,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
 import java.util.ArrayList;

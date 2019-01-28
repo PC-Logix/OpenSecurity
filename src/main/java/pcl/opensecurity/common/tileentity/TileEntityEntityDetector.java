@@ -8,12 +8,9 @@ import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.common.SoundHandler;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,17 +18,11 @@ import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.networking.*;
-import pcl.opensecurity.util.ServerResourcePackFactory;
 
-import java.io.File;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 // todo: merge camo code of NanoFog and DoorController (duplicated code)
 // todo: fix alarm
-// todo: update wiki
 
 @Mod.EventBusSubscriber
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber,

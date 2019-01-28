@@ -7,10 +7,8 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
 import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.items.ItemMagCard;
 
 import javax.annotation.Nonnull;

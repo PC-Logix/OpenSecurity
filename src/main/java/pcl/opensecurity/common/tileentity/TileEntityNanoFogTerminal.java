@@ -350,8 +350,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     void resetAllBlocks(){
-        HashSet<BlockPos> blocks = new HashSet<>();
-        blocks.addAll(getFogBlocks());
+        HashSet<BlockPos> blocks = new HashSet<>(getFogBlocks());
         for(BlockPos pos : blocks)
             removeBlock(pos);
     }

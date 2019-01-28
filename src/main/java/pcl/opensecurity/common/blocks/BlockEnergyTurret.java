@@ -3,8 +3,6 @@ package pcl.opensecurity.common.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -23,13 +21,10 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
 public class BlockEnergyTurret extends BlockOSBase {
     public static final int GUI_ID = 2;
     static final AxisAlignedBB bbBottom = new AxisAlignedBB(0, 0, 0, 1, 1d/16 * 6, 1);
-    
+
     public BlockEnergyTurret() {
         super(Reference.Names.BLOCK_ENERGY_TURRET, Material.IRON, 0.5f);
     }

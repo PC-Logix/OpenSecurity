@@ -6,9 +6,6 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.SoundCategory;
-import pcl.opensecurity.Config;
-import pcl.opensecurity.common.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
