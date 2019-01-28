@@ -1,8 +1,10 @@
 package pcl.opensecurity.client.renderer;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -146,11 +148,11 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 	@Override
 	public void render(TileEntityKeypad tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x, (float)y,(float)z);
-		GL11.glTranslatef(.5f,0,.5f);
-		GL11.glRotatef(tileEntity.getAngle(),0f,1f,0f);
-		GL11.glTranslatef(-.5f,0,-.5f);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x, y, z);
+		GlStateManager.translate(.5f, 0, .5f);
+		GlStateManager.rotate(tileEntity.getAngle(), 0f, 1f, 0f);
+		GlStateManager.translate(-.5f, 0, -.5f);
 
 		IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
 		EnumFacing facing = EnumFacing.getHorizontal(state.getBlock().getMetaFromState(state));
@@ -160,10 +162,10 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 		long time = tileEntity.getWorld().getTotalWorldTime();
 
 		this.bindTexture(new ResourceLocation("opensecurity", "textures/blocks/machine_side.png"));
-
+		GlStateManager.scale(1.001, 1.001, 1.001); //just a dirty fix to avoid tiny gaps between keypad and blocks next to it
 		drawKeypadBlock(tileEntity, time);
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public void drawKeypadBlock(TileEntityKeypad keylock, long time) {
@@ -171,7 +173,6 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 
 		vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL); //tessellator.startDrawingQuads();
-		//tessellator.setNormal(0f, 0f, -1f);
 		//inset face
 		vertexbuffer.pos(texPixel,    texPixel,    texPixel).tex(texPixel,    1f-texPixel).normal(0f, 0f, -1f).endVertex();
 		vertexbuffer.pos(texPixel,    1f-texPixel, texPixel).tex(texPixel,    texPixel   ).normal(0f, 0f, -1f).endVertex();
@@ -179,46 +180,42 @@ public class RenderKeypad  extends TileEntitySpecialRenderer<TileEntityKeypad> {
 		vertexbuffer.pos(1f-texPixel, texPixel,    texPixel).tex(1f-texPixel, 1f-texPixel).normal(0f, 0f, -1f).endVertex();
 
 		//bottom lip front
-		vertexbuffer.pos(0f,          0f,          0.001f).tex(0f,          0f         ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(texPixel,    texPixel,    0.001f).tex(texPixel,    texPixel   ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(1f-texPixel, texPixel,    0.001f).tex(1f-texPixel, texPixel   ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(1f,          0f,          0.001f).tex(1f,          0f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(0f,          0f,          0f).tex(0f,          0f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(texPixel,    texPixel,    0f).tex(texPixel,    texPixel   ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f-texPixel, texPixel,    0f).tex(1f-texPixel, texPixel   ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f,          0f,          0f).tex(1f,          0f         ).normal(0f,0f,-1f).endVertex();
 		//top lip front
-		vertexbuffer.pos(texPixel,    1f-texPixel, 0.001f).tex(texPixel,    1f-texPixel).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(0f,          1f,          0.001f).tex(0f,          1f         ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(1f,          1f,          0.001f).tex(1f,          1f         ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(1f-texPixel, 1f-texPixel, 0.001f).tex(1f-texPixel, 1f-texPixel).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(texPixel,    1f-texPixel, 0f).tex(texPixel,    1f-texPixel).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(0f,          1f,          0f).tex(0f,          1f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f,          1f,          0f).tex(1f,          1f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f-texPixel, 1f-texPixel, 0f).tex(1f-texPixel, 1f-texPixel).normal(0f,0f,-1f).endVertex();
 		//right lip front
-		vertexbuffer.pos(0f,          0f,          0.001f).tex(0f,          0f         ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(0f,          1f,          0.001f).tex(0f,          1f         ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(texPixel,    1f-texPixel, 0.001f).tex(texPixel,    1f-texPixel).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(texPixel,    texPixel,    0.001f).tex(texPixel,    texPixel   ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(0f,          0f,          0f).tex(0f,          0f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(0f,          1f,          0f).tex(0f,          1f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(texPixel,    1f-texPixel, 0f).tex(texPixel,    1f-texPixel).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(texPixel,    texPixel,    0f).tex(texPixel,    texPixel   ).normal(0f,0f,-1f).endVertex();
 		//left lip front
-		vertexbuffer.pos(1f-texPixel, texPixel,    0.001f).tex(1f-texPixel, texPixel   ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(1f-texPixel, 1f-texPixel, 0.001f).tex(1f-texPixel, 1f-texPixel).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(1f,          1f,          0.001f).tex(1f,          1f         ).normal(0f,0f,-1f).endVertex();
-		vertexbuffer.pos(1f,          0f,          0.001f).tex(1f,          0f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f-texPixel, texPixel,    0f).tex(1f-texPixel, texPixel   ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f-texPixel, 1f-texPixel, 0f).tex(1f-texPixel, 1f-texPixel).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f,          1f,          0f).tex(1f,          1f         ).normal(0f,0f,-1f).endVertex();
+		vertexbuffer.pos(1f,          0f,          0f).tex(1f,          0f         ).normal(0f,0f,-1f).endVertex();
 
 		//bottom lip inside
-		//tessellator.setNormal(0f,1f,0f);
 		vertexbuffer.pos(texPixel,    texPixel,    0f      ).tex(texPixel,    1f         ).normal(0f,1f,0f).endVertex();
 		vertexbuffer.pos(texPixel,    texPixel,    texPixel).tex(texPixel,    1f-texPixel).normal(0f,1f,0f).endVertex();
 		vertexbuffer.pos(1f-texPixel, texPixel,    texPixel).tex(1f-texPixel, 1f-texPixel).normal(0f,1f,0f).endVertex();
 		vertexbuffer.pos(1f-texPixel, texPixel,    0f      ).tex(1f-texPixel, 1f         ).normal(0f,1f,0f).endVertex();
 		//top lip inside
-		//tessellator.setNormal(0f,-1f,0f);
 		vertexbuffer.pos(texPixel,    1f-texPixel, texPixel).tex(texPixel,    texPixel).normal(0f,-1f,0f).endVertex();
 		vertexbuffer.pos(texPixel,    1f-texPixel, 0f      ).tex(texPixel,    0f      ).normal(0f,-1f,0f).endVertex();
 		vertexbuffer.pos(1f-texPixel, 1f-texPixel, 0f      ).tex(1f-texPixel, 0f      ).normal(0f,-1f,0f).endVertex();
 		vertexbuffer.pos(1f-texPixel, 1f-texPixel, texPixel).tex(1f-texPixel, texPixel).normal(0f,-1f,0f).endVertex();
 		//right lip inside
-		//tessellator.setNormal(1f,0f,0f);
 		vertexbuffer.pos(texPixel,    texPixel,    0f      ).tex(1f-texPixel, texPixel   ).normal(1f,0f,0f).endVertex();
 		vertexbuffer.pos(texPixel,    1f-texPixel, 0f      ).tex(1f-texPixel, 1f-texPixel).normal(1f,0f,0f).endVertex();
 		vertexbuffer.pos(texPixel,    1f-texPixel, texPixel).tex(1f,          1f-texPixel).normal(1f,0f,0f).endVertex();
 		vertexbuffer.pos(texPixel,    texPixel,    texPixel).tex(1f,          texPixel   ).normal(1f,0f,0f).endVertex();
 		//left lip inside
-		//tessellator.setNormal(-1f,0f,0f);
 		vertexbuffer.pos(1f-texPixel, texPixel,    texPixel).tex(1f,          texPixel   ).normal(-1f,0f,0f).endVertex();
 		vertexbuffer.pos(1f-texPixel, 1f-texPixel, texPixel).tex(1f,          1f-texPixel).normal(-1f,0f,0f).endVertex();
 		vertexbuffer.pos(1f-texPixel, 1f-texPixel, 0f      ).tex(1f-texPixel, 1f-texPixel).normal(-1f,0f,0f).endVertex();
