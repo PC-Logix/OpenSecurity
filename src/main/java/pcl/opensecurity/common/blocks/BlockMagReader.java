@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -14,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
@@ -27,7 +29,6 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class BlockMagReader extends Block implements ITileEntityProvider {
-
     public BlockMagReader() {
         super(Material.IRON);
         setUnlocalizedName(Reference.Names.BLOCK_MAG_READER);
@@ -47,6 +48,11 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(VARIANT, EnumType.byMetadata(meta));
+    }
+
+    @Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
+        return super.getPickBlock(getDefaultState(), target, world, pos, player);
     }
 
     @Override
@@ -91,8 +97,8 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
     }
 
     public enum EnumType implements IVariant {
-        ACTIVE(0, "active"),
-        IDLE(1, "idle"),
+        IDLE(0, "idle"),
+        ACTIVE(1, "active"),
         SUCCESS(2, "success"),
         ERROR(3, "error");
 
