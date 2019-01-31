@@ -1,7 +1,7 @@
 OpenSecurity
 ============
 
-Security addon for OpenComputers
+Security addon for OpenComputers, check the [Wiki](https://github.com/PC-Logix/OpenSecurity/wiki) for Informations about the Blocks/Items in this Mod
 
 [OpenSecurity on curseForge](https://minecraft.curseforge.com/projects/opensecurity)
 
