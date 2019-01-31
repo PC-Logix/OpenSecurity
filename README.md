@@ -8,8 +8,8 @@ Security addon for OpenComputers
 
 in order to build the mod the following libs have to be placed into "libs" directory
 
-a compatible AdvancedRocketry deobf build, which can be downloaded on [AdvancedRocketry on curseForge](https://minecraft.curseforge.com/projects/advanced-rocketry/files)
-a compatible GalactiCraftCore-Dev build, which can be downloaded on [micdoodle8.com](https://www.micdoodle8.com/mods/galacticraft/downloads/dev)
+* AdvancedRocketry deobf build, which can be downloaded on [AdvancedRocketry on curseForge](https://minecraft.curseforge.com/projects/advanced-rocketry/files)
+* GalactiCraftCore-Dev build, which can be downloaded on [micdoodle8.com](https://www.micdoodle8.com/mods/galacticraft/downloads/dev)
 
 
 ### Credits
