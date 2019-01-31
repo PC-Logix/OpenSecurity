@@ -4,15 +4,17 @@ OpenSecurity
 Security addon for OpenComputers
 
 
-### Build Instructions
+## Build Instructions
 
 in order to build the mod the following libs have to be placed into "libs" directory
 
 * AdvancedRocketry deobf build, which can be downloaded on [AdvancedRocketry on curseForge](https://minecraft.curseforge.com/projects/advanced-rocketry/files)
 * GalactiCraftCore-Dev build, which can be downloaded on [micdoodle8.com](https://www.micdoodle8.com/mods/galacticraft/downloads/dev)
 
+Before building run the gradle task `syncGitWiki` once to sync the Wiki to your project
 
-### Credits
+
+## Credits
 
 Flawedspirit for the Block Textures (Serisouly the old ones suuuuuucked.)
 
