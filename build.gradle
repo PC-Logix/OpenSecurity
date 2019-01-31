@@ -81,6 +81,8 @@ def openComputersVersion = "MC1.12.2-1.7.+"
 dependencies {
     deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"
     compile 'org.mindrot:jbcrypt:0.3m'
+
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 }
 
 def curseforge_key = 0

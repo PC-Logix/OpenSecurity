@@ -2,6 +2,7 @@ package pcl.opensecurity;
 
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -17,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
+import pcl.opensecurity.common.blocks.BlockNanoFog;
+import pcl.opensecurity.common.galacticraft.blocks.galacticraftIntegration;
 import pcl.opensecurity.networking.*;
 
 import java.util.HashSet;
@@ -48,17 +51,29 @@ public class OpenSecurity {
     public static boolean registerBlockBreakEvent = true;
     public static HashSet<String> alarmList = new HashSet<>();
 
+    public static boolean advancedRocketry = false, galacticraft = false;
+
     public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
     public static SimpleNetworkWrapper network;
 
-    private static ContentRegistry contentRegistry = new ContentRegistry();
+    public static ContentRegistry contentRegistry = new ContentRegistry();
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         long time = System.nanoTime();
+
+        advancedRocketry = Loader.isModLoaded("advancedrocketry");
+        galacticraft = Loader.isModLoaded("galacticraftcore");
+
+
+        if(galacticraft) {
+            galacticraftIntegration.preInit();
+        }
+
         ContentRegistry.preInit();
-    	MinecraftForge.EVENT_BUS.register(contentRegistry);
+
+        MinecraftForge.EVENT_BUS.register(contentRegistry);
         proxy.registerSounds();
         SoundHandler.registerSounds();
         network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
@@ -89,6 +104,11 @@ public class OpenSecurity {
         long time = System.nanoTime();
         proxy.init();
         ContentRegistry.init();
+
+        if(advancedRocketry) {
+            zmaster587.advancedRocketry.api.AdvancedRocketryAPI.atomsphereSealHandler.addSealableBlock(ContentRegistry.nanoFog);
+            OpenSecurity.logger.info("NanoFog with AdvancedRocketry support");
+        }
 
         if(OpenSecurity.debug)
             logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
