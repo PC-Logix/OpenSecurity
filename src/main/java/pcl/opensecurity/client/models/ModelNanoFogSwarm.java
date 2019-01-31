@@ -50,39 +50,6 @@ public abstract class ModelNanoFogSwarm extends ModelBase {
         scale/=2f;
 
         ModelCube.drawCube(-scale, -scale, -scale, scale, scale, scale);
-
-        /*
-        GlStateManager.glBegin(GL11.GL_QUADS);
-        GlStateManager.glVertex3f(scale,scale,-scale);   // Top Right Of The Quad (Top)
-        GlStateManager.glVertex3f(-scale,scale,-scale);  // Top Left Of The Quad (Top)
-        GlStateManager.glVertex3f(-scale,scale,scale);   // Bottom Left Of The Quad (Top)
-        GlStateManager.glVertex3f(scale,scale,scale);    // Bottom Right Of The Quad (Top)
-
-        GlStateManager.glVertex3f(scale,-scale,scale);   // Top Right Of The Quad (Bottom)
-        GlStateManager.glVertex3f(-scale,-scale,scale);  // Top Left Of The Quad (Bottom)
-        GlStateManager.glVertex3f(-scale,-scale,-scale); // Bottom Left Of The Quad (Bottom)
-        GlStateManager.glVertex3f(scale,-scale,-scale);  // Bottom Right Of The Quad (Bottom)
-
-        GlStateManager.glVertex3f(scale,scale,scale);    // Top Right Of The Quad (Front)
-        GlStateManager.glVertex3f(-scale,scale,scale);   // Top Left Of The Quad (Front)
-        GlStateManager.glVertex3f(-scale,-scale,scale);  // Bottom Left Of The Quad (Front)
-        GlStateManager.glVertex3f(scale,-scale,scale);   // Bottom Right Of The Quad (Front)
-
-        GlStateManager.glVertex3f(scale,-scale,-scale);  // Top Right Of The Quad (Back)
-        GlStateManager.glVertex3f(-scale,-scale,-scale); // Top Left Of The Quad (Back)
-        GlStateManager.glVertex3f(-scale,scale,-scale);  // Bottom Left Of The Quad (Back)
-        GlStateManager.glVertex3f(scale,scale,-scale);   // Bottom Right Of The Quad (Back)
-
-        GlStateManager.glVertex3f(-scale,scale,scale);   // Top Right Of The Quad (Left)
-        GlStateManager.glVertex3f(-scale,scale,-scale);  // Top Left Of The Quad (Left)
-        GlStateManager.glVertex3f(-scale,-scale,-scale); // Bottom Left Of The Quad (Left)
-        GlStateManager.glVertex3f(-scale,-scale,scale);  // Bottom Right Of The Quad (Left)
-
-        GlStateManager.glVertex3f(scale,scale,-scale);   // Top Right Of The Quad (Right)
-        GlStateManager.glVertex3f(scale,scale,scale);    // Top Left Of The Quad (Right)
-        GlStateManager.glVertex3f(scale,-scale,scale);   // Bottom Left Of The Quad (Right)
-        GlStateManager.glVertex3f(scale,-scale,-scale);   // Bottom Right Of The Quad (Right)
-        GlStateManager.glEnd();*/
     }
 
 }
