@@ -4,7 +4,7 @@ OpenSecurity
 Security addon for OpenComputers
 
 
-### Build Instructions:
+### Build Instructions
 
 in order to build the mod the following libs have to be placed into "libs" directory
 
