@@ -18,7 +18,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.protection.Protection;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
@@ -30,9 +29,10 @@ import static pcl.opensecurity.common.protection.Protection.UserAction.mine;
 
 @SuppressWarnings("deprecation")
 public class BlockSecureDoor extends BlockDoor {
+    public static final String NAME = "secure_door";
 
     public BlockSecureDoor() {
-        this(Reference.Names.BLOCK_SECURE_DOOR);
+        this(NAME);
     }
 
     BlockSecureDoor(String name) {

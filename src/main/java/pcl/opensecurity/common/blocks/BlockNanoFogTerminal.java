@@ -9,16 +9,16 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntityNanoFogTerminal;
 
 public class BlockNanoFogTerminal extends BlockOSBase {
+    public static final String NAME = "nanofog_terminal";
 
     public static final int GUI_ID = 3;
 
 
     public BlockNanoFogTerminal() {
-        super(Reference.Names.BLOCK_NANOFOG_TERMINAL, Material.IRON, 1f);
+        super(NAME, Material.IRON, 1f);
     }
 
     @Override

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MRM",
+    " N ",
+    "BC "
+  ],
+  "key": {
+    "M": {
+      "item": "#opencomputers_chip2"
+    },
+    "R": {
+      "item": "#opencomputers_memory1"
+    },
+    "N": {
+      "item": "#opencomputers_wlancard1"
+    },
+    "B": {
+      "item": "#opencomputers_cardbase"
+    },
+    "C": {
+      "item": "#opencomputers_controlunit"
+    }
+  },
+  "result": {
+    "item": "opensecurity:rfid_reader_card"
+  }
+}

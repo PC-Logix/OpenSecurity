@@ -6,12 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
-import pcl.opensecurity.common.Reference;
 
 public class ItemRFIDCard extends ItemCard {
+    public static final String NAME = "rfid_card";
 
     public ItemRFIDCard() {
-        super(Reference.Names.ITEM_RFID_CARD);
+        super(NAME);
     }
 
     @Override

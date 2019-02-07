@@ -7,13 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntitySecurityTerminal;
 
 public class BlockSecurityTerminal extends BlockOSBase {
+    public static final String NAME = "security_terminal";
 
     public BlockSecurityTerminal() {
-        super(Reference.Names.BLOCK_SECURITY_TERMINAL, Material.IRON, 1f);
+        super(NAME, Material.IRON, 1f);
     }
 
     /**

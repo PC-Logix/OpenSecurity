@@ -2,12 +2,12 @@ package pcl.opensecurity.common.blocks;
 
 import net.minecraft.item.Item;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.Reference;
 
 public class BlockSecurePrivateDoor extends BlockSecureDoor {
+    public static final String NAME = "private_secure_door";
 
     public BlockSecurePrivateDoor() {
-        super(Reference.Names.BLOCK_PRIVATE_SECURE_DOOR);
+        super(NAME);
     }
 
     @Override

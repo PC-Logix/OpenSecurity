@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "R R",
+    " B ",
+    "R R"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "B": {
+      "item": "#opencomputers_batteryupgrade1"
+    }
+  },
+  "result": {
+    "item": "opensecurity:energy_upgrade"
+  }
+}

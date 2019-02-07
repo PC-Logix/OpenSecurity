@@ -8,13 +8,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
 
 public class BlockBiometricReader extends BlockOSBase {
+	public static final String NAME = "biometric_reader";
 
 	public BlockBiometricReader() {
-		super(Reference.Names.BLOCK_BIOMETRIC_READER, Material.IRON, 0.5f);
+		super(NAME, Material.IRON, 0.5f);
 	}
 	
 	@Override

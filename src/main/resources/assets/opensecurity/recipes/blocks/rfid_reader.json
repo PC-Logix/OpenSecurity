@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R ",
+    "PFT",
+    " C "
+  ],
+  "key": {
+    "T": {
+      "item": "#opencomputers_chip2"
+    },
+    "C": {
+      "item": "#opencomputers_cable"
+    },
+    "P": {
+      "item": "#opencomputers_pcb"
+    },
+    "F": {
+      "item": "opensecurity:rfid_reader_card"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "opensecurity:rfid_reader"
+  }
+}

@@ -66,7 +66,6 @@ public class OpenSecurity {
         advancedRocketry = Loader.isModLoaded("advancedrocketry");
         galacticraft = Loader.isModLoaded("galacticraftcore");
 
-
         if(galacticraft) {
             galacticraftIntegration.preInit();
         }

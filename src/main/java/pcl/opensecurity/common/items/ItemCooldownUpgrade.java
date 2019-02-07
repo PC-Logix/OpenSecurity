@@ -1,10 +1,9 @@
 package pcl.opensecurity.common.items;
 
-import pcl.opensecurity.common.Reference;
-
 public class ItemCooldownUpgrade extends ItemOSBase {
+	public static final String NAME = "cooldown_upgrade";
 
 	public ItemCooldownUpgrade() {
-		super(Reference.Names.ITEM_COOLDOWN_UPGRADE);
+		super(NAME);
 	}
 }

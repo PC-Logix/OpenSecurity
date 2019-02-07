@@ -18,7 +18,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
 import pcl.opensecurity.util.IVariant;
@@ -28,10 +27,12 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class BlockMagReader extends Block implements ITileEntityProvider {
+    public static final String NAME = "mag_reader";
+
     public BlockMagReader() {
         super(Material.IRON);
-        setUnlocalizedName(Reference.Names.BLOCK_MAG_READER);
-        setRegistryName(OpenSecurity.MODID, Reference.Names.BLOCK_MAG_READER);
+        setUnlocalizedName(NAME);
+        setRegistryName(OpenSecurity.MODID, NAME);
         setHardness(0.5f);
         setCreativeTab(ContentRegistry.creativeTab);
     }

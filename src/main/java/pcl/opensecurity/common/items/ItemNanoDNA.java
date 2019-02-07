@@ -4,12 +4,12 @@ import net.minecraft.item.Item;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
 
-import static pcl.opensecurity.common.Reference.Names.ITEM_NANODNA;
-
 public class ItemNanoDNA extends Item {
+    public static final String NAME = "nanodna";
+
     public ItemNanoDNA() {
-        setUnlocalizedName(ITEM_NANODNA);
-        setRegistryName(OpenSecurity.MODID, ITEM_NANODNA);
+        setUnlocalizedName(NAME);
+        setRegistryName(OpenSecurity.MODID, NAME);
         setCreativeTab(ContentRegistry.creativeTab);
     }
 }

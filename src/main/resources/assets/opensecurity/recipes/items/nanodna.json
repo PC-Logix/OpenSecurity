@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CNC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "#opencomputers_chameliumblock"
+    },
+    "N": {
+      "item": "#opencomputers_nanomachines"
+    }
+  },
+  "result": {
+    "item": "opensecurity:nanodna"
+  }
+}

@@ -29,7 +29,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.nanofog.*;
 import pcl.opensecurity.common.tileentity.TileEntityNanoFog;
 import pcl.opensecurity.util.BlockUtils;
@@ -41,6 +40,7 @@ import java.util.Random;
 
 
 public class BlockNanoFog extends Block implements ITileEntityProvider {
+    public static final String NAME = "nanofog";
     public static final String CAMO = "camo";
     public static final CamoProperty CAMOID = new CamoProperty("camoid");
 
@@ -50,8 +50,8 @@ public class BlockNanoFog extends Block implements ITileEntityProvider {
     public BlockNanoFog(){
         super(Material.GLASS);
         setLightOpacity(255);
-        setRegistryName(Reference.Names.BLOCK_NANOFOG);
-        setUnlocalizedName(Reference.Names.BLOCK_NANOFOG);
+        setRegistryName(NAME);
+        setUnlocalizedName(NAME);
         setBlockUnbreakable();
         setResistance(31337.0F);
     }

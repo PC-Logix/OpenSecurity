@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TIT",
+    "INI",
+    "ICI"
+  ],
+  "key": {
+    "C": {
+      "item": "#opencomputers_chip1"
+    },
+    "T": {
+      "item": "#opencomputers_transistor"
+    },
+    "N": {
+      "item": "#opencomputers_numpad"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "opensecurity:keypad"
+  }
+}

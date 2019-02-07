@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "cIc",
+    "cTc",
+    "cCc"
+  ],
+  "key": {
+    "C": {
+      "item": "#opencomputers_chip2"
+    },
+    "T": {
+      "item": "#opencomputers_transistor"
+    },
+    "c": {
+      "item": "#opencomputers_capacitor"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "opensecurity:security_terminal"
+  }
+}

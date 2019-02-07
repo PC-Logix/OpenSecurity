@@ -26,7 +26,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.UnlistedPropertyCopiedBlock;
 import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
@@ -37,9 +36,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class BlockDoorController extends BlockOSBase {
+    public static final String NAME = "door_controller";
 
     public BlockDoorController() {
-        super(Reference.Names.BLOCK_DOOR_CONTROLLER, Material.IRON, 0.5f);
+        super(NAME, Material.IRON, 0.5f);
     }
 
     @Override

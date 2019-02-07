@@ -1,10 +1,9 @@
 package pcl.opensecurity.common.items;
 
-import pcl.opensecurity.common.Reference;
-
 public class ItemMagCard extends ItemCard {
+    public static final String NAME = "mag_card";
 
     public ItemMagCard() {
-        super(Reference.Names.ITEM_MAG_CARD);
+        super(NAME);
     }
 }

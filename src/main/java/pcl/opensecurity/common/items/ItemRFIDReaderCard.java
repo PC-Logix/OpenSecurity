@@ -1,9 +1,9 @@
 package pcl.opensecurity.common.items;
 
-import pcl.opensecurity.common.Reference;
-
 public class ItemRFIDReaderCard extends ItemOSBase {
+	public static final String NAME = "rfid_reader_card";
+
 	public ItemRFIDReaderCard() {
-		super(Reference.Names.ITEM_RFID_READER_CARD);
+		super(NAME);
 	}
 }

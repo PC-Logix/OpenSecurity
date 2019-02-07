@@ -11,13 +11,13 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 
 public class BlockKeypad extends BlockOSBase {
+    public static final String NAME = "keypad";
 
     public BlockKeypad() {
-        super(Reference.Names.BLOCK_KEYPAD, Material.IRON, 0.5f);
+        super(NAME, Material.IRON, 0.5f);
     }
 
     @Override

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P P",
+    " S ",
+    "P P"
+  ],
+  "key": {
+    "S": {
+      "item": "#opencomputers_transistor"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  },
+  "result": {
+    "item": "opensecurity:mag_card"
+  }
+}

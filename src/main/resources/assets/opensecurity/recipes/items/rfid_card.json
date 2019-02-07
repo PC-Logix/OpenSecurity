@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P P",
+    " S ",
+    "PTP"
+  ],
+  "key": {
+    "T": {
+      "item": "#opencomputers_chip1"
+    },
+    "S": {
+      "item": "#opencomputers_transistor"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  },
+  "result": {
+    "item": "opensecurity:rfid_card"
+  }
+}

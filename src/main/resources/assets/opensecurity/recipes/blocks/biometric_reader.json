@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIS",
+    "STS",
+    "SCS"
+  ],
+  "key": {
+    "C": {
+      "item": "#opencomputers_chip1"
+    },
+    "T": {
+      "item": "#opencomputers_transistor"
+    },
+    "S": {
+      "item": "minecraft:stone", "data": 0
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "opensecurity:biometric_reader"
+  }
+}

@@ -32,13 +32,14 @@ import pcl.opensecurity.client.renderer.*;
 import pcl.opensecurity.client.sounds.AlarmResource;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.Reference;
+import pcl.opensecurity.common.blocks.*;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
-import pcl.opensecurity.common.items.ItemCard;
+import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.nanofog.BakedModelLoader;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
+import pcl.opensecurity.common.tileentity.TileEntityRolldoor;
 import pcl.opensecurity.manual.ManualPathProvider;
 import pcl.opensecurity.util.FileUtils;
 
@@ -83,6 +84,8 @@ public class ClientProxy extends CommonProxy {
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
 
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRolldoor.class, new RenderRolldoor());
+
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
         TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper();
@@ -107,36 +110,35 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerModels() {
-        registerBlockItem(ContentRegistry.alarmBlock, 0, Reference.Names.BLOCK_ALARM);
-        registerBlockItem(ContentRegistry.doorController, 0, Reference.Names.BLOCK_DOOR_CONTROLLER);
-        registerBlockItem(ContentRegistry.securityTerminal, 0, Reference.Names.BLOCK_SECURITY_TERMINAL);
-        registerBlockItem(ContentRegistry.biometricReaderBlock, 0, Reference.Names.BLOCK_BIOMETRIC_READER);
-        registerBlockItem(ContentRegistry.dataBlock, 0, Reference.Names.BLOCK_DATA);
-        registerBlockItem(ContentRegistry.cardWriter, 0, Reference.Names.BLOCK_CARD_WRITER);
-        registerBlockItem(ContentRegistry.magReader, 0, Reference.Names.BLOCK_MAG_READER);
-        registerBlockItem(ContentRegistry.keypadBlock, 0, Reference.Names.BLOCK_KEYPAD);
-        registerBlockItem(ContentRegistry.entityDetector, 0, Reference.Names.BLOCK_ENTITY_DETECTOR);
-        registerBlockItem(ContentRegistry.energyTurret, 0, Reference.Names.BLOCK_ENERGY_TURRET);
-        registerBlockItem(ContentRegistry.rfidReader, 0, Reference.Names.BLOCK_RFID_READER);
-        registerBlockItem(ContentRegistry.nanoFogTerminal, 0, Reference.Names.BLOCK_NANOFOG_TERMINAL);
+        registerBlockItem(ContentRegistry.alarmBlock, 0, BlockAlarm.NAME);
+        registerBlockItem(ContentRegistry.doorController, 0, BlockDoorController.NAME);
+        registerBlockItem(ContentRegistry.securityTerminal, 0, BlockSecurityTerminal.NAME);
+        registerBlockItem(ContentRegistry.biometricReaderBlock, 0, BlockBiometricReader.NAME);
+        registerBlockItem(ContentRegistry.dataBlock, 0, BlockData.NAME);
+        registerBlockItem(ContentRegistry.cardWriter, 0, BlockCardWriter.NAME);
+        registerBlockItem(ContentRegistry.magReader, 0, BlockMagReader.NAME);
+        registerBlockItem(ContentRegistry.keypadBlock, 0, BlockKeypad.NAME);
+        registerBlockItem(ContentRegistry.entityDetector, 0, BlockEntityDetector.NAME);
+        registerBlockItem(ContentRegistry.energyTurret, 0, BlockEnergyTurret.NAME);
+        registerBlockItem(ContentRegistry.rfidReader, 0, BlockRFIDReader.NAME);
+        registerBlockItem(ContentRegistry.nanoFogTerminal, 0, BlockNanoFogTerminal.NAME);
+        registerBlockItem(ContentRegistry.rolldoor, 0, BlockRolldoor.NAME);
 
         // BlockNanoFog uses custom texture/model loader for shield blocks
         ContentRegistry.nanoFog.initModel();
-        registerBlockItem(ContentRegistry.nanoFog, 0, Reference.Names.BLOCK_NANOFOG);
+        registerBlockItem(ContentRegistry.nanoFog, 0, BlockNanoFog.NAME);
 
 
-
-
-        registerItem(ContentRegistry.secureDoorItem, Reference.Names.BLOCK_SECURE_DOOR);
-        registerItem(ContentRegistry.securePrivateDoorItem, Reference.Names.BLOCK_PRIVATE_SECURE_DOOR);
-        registerItem(ContentRegistry.itemRFIDCard, Reference.Names.ITEM_RFID_CARD);
-        registerItem(ContentRegistry.rfidReaderCardItem, Reference.Names.ITEM_RFID_READER_CARD);
-        registerItem(ContentRegistry.itemMagCard, Reference.Names.ITEM_MAG_CARD);
-        registerItem(ContentRegistry.damageUpgradeItem, Reference.Names.ITEM_DAMAGE_UPGRADE);
-        registerItem(ContentRegistry.movementUpgradeItem, Reference.Names.ITEM_MOVEMENT_UPGRADE);
-        registerItem(ContentRegistry.energyUpgradeItem, Reference.Names.ITEM_ENERGY_UPGRADE);
-        registerItem(ContentRegistry.cooldownUpgradeItem, Reference.Names.ITEM_COOLDOWN_UPGRADE);
-        registerItem(ContentRegistry.nanoDNAItem, Reference.Names.ITEM_NANODNA);
+        registerItem(ContentRegistry.secureDoorItem, BlockSecureDoor.NAME);
+        registerItem(ContentRegistry.securePrivateDoorItem, BlockSecurePrivateDoor.NAME);
+        registerItem(ContentRegistry.itemRFIDCard, ItemRFIDCard.NAME);
+        registerItem(ContentRegistry.rfidReaderCardItem, ItemRFIDReaderCard.NAME);
+        registerItem(ContentRegistry.itemMagCard, ItemMagCard.NAME);
+        registerItem(ContentRegistry.damageUpgradeItem, ItemDamageUpgrade.NAME);
+        registerItem(ContentRegistry.movementUpgradeItem, ItemMovementUpgrade.NAME);
+        registerItem(ContentRegistry.energyUpgradeItem, ItemEnergyUpgrade.NAME);
+        registerItem(ContentRegistry.cooldownUpgradeItem, ItemCooldownUpgrade.NAME);
+        registerItem(ContentRegistry.nanoDNAItem, ItemNanoDNA.NAME);
 
         StateMapperBase ignoreState = new StateMapperBase() {
             @Override

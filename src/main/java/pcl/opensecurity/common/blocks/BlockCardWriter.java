@@ -11,15 +11,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 
 public class BlockCardWriter extends BlockOSBase {
+    public static final String NAME = "card_writer";
 
     public static final int GUI_ID = 1;
 
     public BlockCardWriter() {
-        super(Reference.Names.BLOCK_CARD_WRITER, Material.IRON, 0.5f);
+        super(NAME, Material.IRON, 0.5f);
     }
 
     @Override

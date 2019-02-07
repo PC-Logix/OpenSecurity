@@ -1,0 +1,146 @@
+[
+  {
+    "name": "opencomputers_pcb",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 4
+    }
+  },
+  {
+    "name": "opencomputers_cardcontainer3",
+    "ingredient": {
+      "item": "opencomputers:upgrade", "data": 7
+    }
+  },
+  {
+    "name": "opencomputers_db1",
+    "ingredient": {
+      "item": "opencomputers:upgrade", "data": 12
+    }
+  },
+  {
+    "name": "opencomputers_db2",
+    "ingredient": {
+      "item": "opencomputers:upgrade", "data": 13
+    }
+  },
+  {
+    "name": "opencomputers_db3",
+    "ingredient": {
+      "item": "opencomputers:upgrade", "data": 14
+    }
+  },
+  {
+    "name": "opencomputers_componentbus1",
+    "ingredient": {
+      "item": "opencomputers:component", "data": 3
+    }
+  },
+  {
+    "name": "opencomputers_chip1",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 7
+    }
+  },
+  {
+    "name": "opencomputers_chip2",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 8
+    }
+  },
+  {
+    "name": "opencomputers_chip3",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 9
+    }
+  },
+  {
+    "name": "opencomputers_analyzer",
+    "ingredient": {
+      "item": "opencomputers:tool", "data": 0
+    }
+  },
+  {
+    "name": "opencomputers_texturepicker",
+    "ingredient": {
+      "item": "opencomputers:tool", "data": 3
+    }
+  },
+  {
+    "name": "opencomputers_memory1",
+    "ingredient": {
+      "item": "opencomputers:component", "data": 6
+    }
+  },
+  {
+    "name": "opencomputers_wlancard1",
+    "ingredient": {
+      "item": "opencomputers:upgrade", "data": 31
+    }
+  },
+  {
+    "name": "opencomputers_wlancard2",
+    "ingredient": {
+      "item": "opencomputers:card", "data": 7
+    }
+  },
+  {
+    "name": "opencomputers_controlunit",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 11
+    }
+  },
+  {
+    "name": "opencomputers_transistor",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 6
+    }
+  },
+  {
+    "name": "opencomputers_cardbase",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 5
+    }
+  },
+  {
+    "name": "opencomputers_numpad",
+    "ingredient": {
+      "item": "opencomputers:material", "data": 16
+    }
+  },
+  {
+    "name": "opencomputers_batteryupgrade1",
+    "ingredient": {
+      "item": "opencomputers:upgrade", "data": 1
+    }
+  },
+  {
+    "name": "opencomputers_capacitor",
+    "ingredient": {
+      "item": "opencomputers:capacitor", "data": 0
+    }
+  },
+  {
+    "name": "opencomputers_datacard1",
+    "ingredient": {
+      "item": "opencomputers:card", "data": 10
+    }
+  },
+  {
+    "name": "opencomputers_chameliumblock",
+    "ingredient": {
+      "item": "opencomputers:chameliumblock", "data": 0
+    }
+  },
+  {
+    "name": "opencomputers_nanomachines",
+    "ingredient": {
+      "item": "opencomputers:tool", "data": 5
+    }
+  },
+  {
+    "name": "opencomputers_cable",
+    "ingredient": {
+      "item": "opencomputers:cable", "data": 0
+    }
+  }
+]

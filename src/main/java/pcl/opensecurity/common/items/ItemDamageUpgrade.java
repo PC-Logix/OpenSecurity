@@ -8,12 +8,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pcl.opensecurity.common.Reference;
 
 public class ItemDamageUpgrade extends ItemOSBase {
+	public static final String NAME = "damage_upgrade";
 
 	public ItemDamageUpgrade() {
-		super(Reference.Names.ITEM_DAMAGE_UPGRADE);
+		super(NAME);
 	}
 	
 	public boolean hasOverlay(ItemStack stack) {

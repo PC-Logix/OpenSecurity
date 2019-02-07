@@ -18,15 +18,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.common.Reference;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 
 public class BlockEnergyTurret extends BlockOSBase {
+    public static final String NAME = "energy_turret";
     public static final int GUI_ID = 2;
     static final AxisAlignedBB bbBottom = new AxisAlignedBB(0, 0, 0, 1, 1d/16 * 6, 1);
 
     public BlockEnergyTurret() {
-        super(Reference.Names.BLOCK_ENERGY_TURRET, Material.IRON, 0.5f);
+        super(NAME, Material.IRON, 0.5f);
     }
 
     @Override
