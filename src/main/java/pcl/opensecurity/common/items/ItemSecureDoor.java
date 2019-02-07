@@ -51,7 +51,7 @@ public class ItemSecureDoor extends ItemDoor {
         if(result.equals(EnumActionResult.SUCCESS)){
             TileEntity teLower = worldIn.getTileEntity(pos.add(0, 1, 0));
             if(teLower instanceof TileEntitySecureDoor){
-                ((TileEntitySecureDoor) teLower).setOwner(player.getUniqueID().toString());
+                ((TileEntitySecureDoor) teLower).setOwner(player.getUniqueID());
             }
         }
 

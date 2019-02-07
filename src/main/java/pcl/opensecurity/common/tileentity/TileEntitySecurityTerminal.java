@@ -17,20 +17,21 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
+import pcl.opensecurity.util.IOwner;
 
 import java.util.*;
 
-public class TileEntitySecurityTerminal extends TileEntityOSBase implements IProtection {
-    public void setOwner(String UUID) {
-        this.ownerUUID = UUID;
+public class TileEntitySecurityTerminal extends TileEntityOSBase implements IProtection, IOwner {
+    public void setOwner(UUID uuid) {
+        this.ownerUUID = uuid;
         allowedUsers.add(this.ownerUUID);
     }
 
-    public String getOwner() {
+    public UUID getOwner() {
         return this.ownerUUID;
     }
-    private String ownerUUID = "";
-    private ArrayList<String> allowedUsers = new ArrayList<String>();
+    private UUID ownerUUID;
+    private ArrayList<UUID> allowedUsers = new ArrayList<>();
     private String password = "";
     public Block block;
     private Boolean enabled = false;
@@ -56,7 +57,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
 
     @Override
     public boolean isProtected(Entity entityIn, Protection.UserAction action){
-        if(!action.equals(Protection.UserAction.explode) && isUserAllowedToBypass(entityIn.getUniqueID().toString()))
+        if(!action.equals(Protection.UserAction.explode) && isUserAllowedToBypass(entityIn.getUniqueID()))
             return false;
 
         if(!usePower())
@@ -73,7 +74,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
         return new AxisAlignedBB(getPos().add(-rangeMod, -rangeMod, -rangeMod), getPos().add(rangeMod, rangeMod, rangeMod).add(1, 1, 1));
     }
 
-    public boolean isUserAllowedToBypass(String uuid) {
+    public boolean isUserAllowedToBypass(UUID uuid) {
         return uuid.equals(ownerUUID) || allowedUsers.contains(uuid);
     }
 
@@ -86,7 +87,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     public Object[] addUser(Context context, Arguments args) {
         if (args.checkString(0).equals(getPass())) {
             if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
-                allowedUsers.add(args.checkString(1));
+                allowedUsers.add(UUID.fromString(args.checkString(1)));
             } else {
                 GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
 
@@ -94,7 +95,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
                 {
                     return new Object[] { true, "Failed to get UUID from username" };
                 } else {
-                    allowedUsers.add(gameprofile.getId().toString());
+                    allowedUsers.add(gameprofile.getId());
                 }
             }
             return new Object[] { true, "User added" };
@@ -107,7 +108,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     public Object[] delUser(Context context, Arguments args) {
         if (args.checkString(0).equals(getPass())) {
             if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
-                allowedUsers.remove(args.checkString(1));
+                allowedUsers.remove(UUID.fromString(args.checkString(1)));
             } else {
                 GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
 
@@ -115,7 +116,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
                 {
                     return new Object[] { true, "Failed to get UUID from username" };
                 } else {
-                    allowedUsers.remove(gameprofile.getId().toString());
+                    allowedUsers.remove(gameprofile.getId());
                 }
             }
             return new Object[] { true, "User removed" };
@@ -201,8 +202,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     public Object[] getAllowedUsers(Context context, Arguments args) {
         if (args.optString(0, "").equals(getPass())) {
             HashMap<UUID, String> users = new HashMap<>();
-            for (String user : allowedUsers) {
-                UUID uuid = UUID.fromString(user);
+            for (UUID uuid : allowedUsers) {
                 GameProfile gameProfile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
                 if(gameProfile != null)
                     users.put(uuid, gameProfile.getName());
@@ -340,24 +340,37 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        this.ownerUUID = nbt.getString("owner");
+        if(nbt.hasUniqueId("owner"))
+            this.ownerUUID = nbt.getUniqueId("owner");
+        else if(nbt.hasKey("owner")) //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
+            this.ownerUUID = UUID.fromString(nbt.getString("owner"));
         this.password= nbt.getString("password");
         this.enabled=nbt.getBoolean("enabled");
         this.rangeMod=nbt.getInteger("rangeMod");
         this.enableParticles=nbt.getBoolean("particles");
-        this.allowedUsers=new ArrayList<String>(Arrays.asList(nbt.getString("allowedUsers").replaceAll(", $", "").split(", ")));
+
+        allowedUsers.clear();
+        for(int i=0; nbt.hasUniqueId("allowedUser"+i); i++)
+            allowedUsers.add(nbt.getUniqueId("allowedUser"+i));
+
+        if(nbt.hasKey("allowedUsers")) { //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
+            for(String user : Arrays.asList(nbt.getString("allowedUsers").replaceAll(", $", "").split(", ")))
+                this.allowedUsers.add(UUID.fromString(user));
+        }
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setString("owner", this.ownerUUID);
+        nbt.setUniqueId("owner", this.ownerUUID);
         nbt.setString("password", this.password);
         nbt.setBoolean("enabled", this.isEnabled());
         nbt.setInteger("rangeMod", this.rangeMod);
         nbt.setBoolean("particles", this.isParticleEnabled());
-        if (this.allowedUsers != null && this.allowedUsers.size() > 0)
-            nbt.setString("allowedUsers", String.join(", ", this.allowedUsers).replaceAll(", $", ""));
+
+        for(int i=0; i < this.allowedUsers.size(); i++)
+            nbt.setUniqueId("allowedUser"+i, this.allowedUsers.get(i));
+
         return nbt;
     }
 

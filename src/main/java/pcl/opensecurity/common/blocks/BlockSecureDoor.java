@@ -89,7 +89,7 @@ public class BlockSecureDoor extends BlockDoor {
 
             TileEntity te = world.getTileEntity(pos);
             if (te instanceof TileEntitySecureDoor) {
-                if (!((TileEntitySecureDoor) te).getOwner().equals(player.getUniqueID().toString()))
+                if (!((TileEntitySecureDoor) te).getOwner().equals(player.getUniqueID()))
                     return false;
             }
         }

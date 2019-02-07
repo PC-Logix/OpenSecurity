@@ -49,7 +49,7 @@ public class SecurityTerminalRender {
         GlStateManager.color(1, 1, 1);
 
         for (Map.Entry<BlockPos, TileEntitySecurityTerminal> pos : blocks.entrySet()) {
-            if (pos.getValue().isParticleEnabled() && pos.getValue().isEnabled() && (pos.getValue().getOwner().equals(player.getUniqueID().toString()) || pos.getValue().isUserAllowedToBypass(player.getUniqueID().toString())))
+            if (pos.getValue().isParticleEnabled() && pos.getValue().isEnabled() && (pos.getValue().getOwner().equals(player.getUniqueID()) || pos.getValue().isUserAllowedToBypass(player.getUniqueID())))
                 renderBoxOutline(pos.getKey(), pos.getValue());
         }
 

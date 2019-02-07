@@ -19,14 +19,22 @@ import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.component.DoorController;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
+import pcl.opensecurity.util.ICamo;
+import pcl.opensecurity.util.IOwner;
 
-public class TileEntityDoorController extends TileEntityOSBase implements IProtection {
+import java.util.UUID;
+
+public class TileEntityDoorController extends TileEntityOSBase implements IProtection, ICamo, IOwner {
 	private ItemStack[] DoorControllerCamo = new ItemStack[1];
-	private String ownerUUID = "";
+	private UUID ownerUUID;
+
+	public TileEntityDoorController(String name){
+		super(name);
+		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	}
 
 	public TileEntityDoorController(){
-		super("os_doorcontroller");
-		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+		this("os_doorcontroller");
 	}
 
 	public TileEntityDoorController(EnvironmentHost host){
@@ -47,7 +55,7 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 
 	@Override
 	public boolean isProtected(Entity entityIn, Protection.UserAction action){
-		if(!action.equals(Protection.UserAction.explode) && ownerUUID.length() > 0 && entityIn.getUniqueID().toString().equals(ownerUUID))
+		if(!action.equals(Protection.UserAction.explode) && ownerUUID != null && entityIn.getUniqueID().equals(ownerUUID))
 			return false;
 
 		if(entityIn != null && entityIn instanceof EntityPlayer)
@@ -91,18 +99,27 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 
 
 	// DoorControllerTile Methods
-	public void setOwner(String UUID) {
-		this.ownerUUID = UUID;
+	@Override //IOwner
+	public void setOwner(UUID uuid) {
+		this.ownerUUID = uuid;
 	}
 
-	public String getOwner() {
+	@Override //IOwner
+	public UUID getOwner() {
 		return this.ownerUUID;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		this.ownerUUID = nbt.getString("owner");
+
+
+		if(nbt.hasUniqueId("owner"))
+			this.ownerUUID = nbt.getUniqueId("owner");
+		else if(nbt.hasKey("owner")) //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
+			this.ownerUUID = UUID.fromString(nbt.getString("owner"));
+
+
 		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
 		this.DoorControllerCamo = new ItemStack[1];
 		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
@@ -118,7 +135,7 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		nbt.setString("owner", this.ownerUUID);
+		nbt.setUniqueId("owner", this.ownerUUID);
 		NBTTagList var2 = new NBTTagList();
 		for (int var3 = 0; var3 < this.DoorControllerCamo.length; ++var3) {
 			if (this.DoorControllerCamo[var3] != null) {
@@ -137,7 +154,7 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	}
 
 
-	@Deprecated
+	@Deprecated //ICamo
 	public IBlockState getBlockFromNBT() {
 		if (DoorControllerCamo[0] != null) {
 			return Block.getBlockFromItem(DoorControllerCamo[0].getItem()).getStateFromMeta(DoorControllerCamo[0].getMetadata());

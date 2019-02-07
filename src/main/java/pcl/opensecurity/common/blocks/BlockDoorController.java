@@ -29,6 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.UnlistedPropertyCopiedBlock;
 import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
+import pcl.opensecurity.util.ICamo;
+import pcl.opensecurity.util.IOwner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +41,10 @@ public class BlockDoorController extends BlockOSBase {
     public static final String NAME = "door_controller";
 
     public BlockDoorController() {
+        this(NAME);
+    }
+
+    public BlockDoorController(String name) {
         super(NAME, Material.IRON, 0.5f);
     }
 
@@ -52,8 +58,7 @@ public class BlockDoorController extends BlockOSBase {
      */
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntity te = worldIn.getTileEntity(pos);
-        ((TileEntityDoorController) te).setOwner(placer.getUniqueID().toString());
-        //((TileEntityDoorController) te).overrideTexture(ContentRegistry.doorController, new ItemStack(Item.getItemFromBlock(ContentRegistry.doorController)), ForgeDirection.getOrientation(1));
+        ((IOwner) te).setOwner(placer.getUniqueID());
     }
 
     @Override
@@ -79,13 +84,13 @@ public class BlockDoorController extends BlockOSBase {
 
             //If the user is not the owner, or the user is not in creative drop out.
             if (tileEntity.getOwner() != null) {
-                if (!tileEntity.getOwner().equals(player.getUniqueID().toString()) && !player.capabilities.isCreativeMode) {
-                    if (!tileEntity.getOwner().isEmpty()) {
+                if (!tileEntity.getOwner().equals(player.getUniqueID()) && !player.capabilities.isCreativeMode) {
+                    if (tileEntity.getOwner() != null) {
                         return true;
                     }
                 }
             }
-            if ((tileEntity.getOwner() != null && tileEntity.getOwner().equals(player.getUniqueID().toString())) || player.capabilities.isCreativeMode) {
+            if ((tileEntity.getOwner() != null && tileEntity.getOwner().equals(player.getUniqueID())) || player.capabilities.isCreativeMode) {
                 if (heldItem.getItem() instanceof ItemBlock) {
                     tileEntity.overrideTexture(heldItem);
                     world.scheduleUpdate(pos, this, 1);
@@ -187,7 +192,7 @@ public class BlockDoorController extends BlockOSBase {
     // 6) If no suitable adjacent blocks, return Block.air
     @Deprecated
     private IBlockState getCamoFromNBT(IBlockAccess world, BlockPos blockPos) {
-        TileEntityDoorController te = (TileEntityDoorController) world.getTileEntity(blockPos);
+        ICamo te = (ICamo) world.getTileEntity(blockPos);
         final IBlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
         TreeMap<EnumFacing, IBlockState> adjacentSolidBlocks = new TreeMap<EnumFacing, IBlockState>();
 

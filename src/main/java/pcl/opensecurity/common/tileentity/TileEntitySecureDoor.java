@@ -10,14 +10,17 @@ import net.minecraft.util.text.TextComponentString;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
+import pcl.opensecurity.util.IOwner;
+import pcl.opensecurity.util.IPasswordProtected;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import static net.minecraft.block.BlockDoor.HALF;
 
-public class TileEntitySecureDoor extends TileEntityOSBase implements IProtection {
-	private String ownerUUID = "";
+public class TileEntitySecureDoor extends TileEntityOSBase implements IProtection, IPasswordProtected, IOwner {
+	private UUID ownerUUID;
 	private String password = "";
 
 	public TileEntitySecureDoor() {
@@ -39,7 +42,7 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 
 	@Override
 	public boolean isProtected(Entity entityIn, Protection.UserAction action){
-		if(!action.equals(Protection.UserAction.explode) && entityIn.getUniqueID().toString().equals(ownerUUID))
+		if(!action.equals(Protection.UserAction.explode) && entityIn.getUniqueID().equals(ownerUUID))
 			return false;
 
 		if(entityIn != null && entityIn instanceof EntityPlayer)
@@ -64,9 +67,9 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 	}
 
 
-	public void setOwner(String UUID) {
+	public void setOwner(UUID uuid) {
 		for(TileEntitySecureDoor door : getDoorTiles())
-			door.ownerUUID = UUID;
+			door.ownerUUID = uuid;
 	}
 
 	public void setPassword(String pass) {
@@ -77,8 +80,12 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		
-		this.ownerUUID = tag.getString("owner");
+
+		if(tag.hasUniqueId("owner"))
+			this.ownerUUID = tag.getUniqueId("owner");
+		else if(tag.hasKey("owner")) //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
+			this.ownerUUID = UUID.fromString(tag.getString("owner"));
+
 		this.password = tag.getString("password");
 	}
 
@@ -86,12 +93,12 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		
-		tag.setString("owner", this.ownerUUID);
+		tag.setUniqueId("owner", this.ownerUUID);
 		tag.setString("password", this.password);
 		return tag;
 	}
 
-	public String getOwner() {
+	public UUID getOwner() {
 		return this.ownerUUID;
 	}
 
