@@ -1,4 +1,4 @@
-package pcl.opensecurity.common.nanofog;
+package pcl.opensecurity.common.camouflage;
 
 /* based on McJty's RFTools Shield */
 

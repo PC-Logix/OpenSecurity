@@ -22,7 +22,6 @@ public class BlockSecurityTerminal extends BlockOSBase {
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntity te = worldIn.getTileEntity(pos);
         ((TileEntitySecurityTerminal) te).setOwner(placer.getUniqueID());
-
     }
 
     @Override

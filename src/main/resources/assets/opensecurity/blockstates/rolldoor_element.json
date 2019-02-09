@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "top": "opensecurity:blocks/rolldoor",
+      "front": "opensecurity:blocks/rolldoor",
+      "side": "opensecurity:blocks/rolldoor"
+    },
+    "model": "minecraft:orientable"
+  },
+  "variants": {
+    "normal": [{ }],
+    "inventory": [{ }],
+    "facing": {
+      "north": {"model": "minecraft:orientable", "y": 180},
+      "south": {"model": "minecraft:orientable"},
+      "west": {"model": "minecraft:orientable", "y": 90},
+      "east": {"model": "minecraft:orientable", "y": 270}
+    }
+  }
+}

@@ -10,12 +10,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentString;
-import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.component.DoorController;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
@@ -25,8 +22,9 @@ import pcl.opensecurity.util.IOwner;
 import java.util.UUID;
 
 public class TileEntityDoorController extends TileEntityOSBase implements IProtection, ICamo, IOwner {
-	private ItemStack[] DoorControllerCamo = new ItemStack[1];
 	private UUID ownerUUID;
+
+	MimicBlock mimicBlock = new MimicBlock();
 
 	public TileEntityDoorController(String name){
 		super(name);
@@ -118,50 +116,39 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 			this.ownerUUID = nbt.getUniqueId("owner");
 		else if(nbt.hasKey("owner")) //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
 			this.ownerUUID = UUID.fromString(nbt.getString("owner"));
+		else
+			this.ownerUUID = null;
 
 
-		NBTTagList var2 = nbt.getTagList("Items", nbt.getId());
-		this.DoorControllerCamo = new ItemStack[1];
-		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
-			NBTTagCompound var4 = var2.getCompoundTagAt(var3);
-			byte var5 = var4.getByte("Slot");
-			if (var5 >= 0 && var5 < this.DoorControllerCamo.length) {
-				this.DoorControllerCamo[var5] = new ItemStack(var4);
-				this.overrideTexture(new ItemStack(var4));
-			}
-		}
+		mimicBlock.readFromNBT(nbt);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		nbt.setUniqueId("owner", this.ownerUUID);
-		NBTTagList var2 = new NBTTagList();
-		for (int var3 = 0; var3 < this.DoorControllerCamo.length; ++var3) {
-			if (this.DoorControllerCamo[var3] != null) {
-				NBTTagCompound var4 = new NBTTagCompound();
-				var4.setByte("Slot", (byte) var3);
-				this.DoorControllerCamo[var3].writeToNBT(var4);
-				var2.appendTag(var4);
-			}
-		}
-		nbt.setTag("Items", var2);
+		if(ownerUUID != null)
+			nbt.setUniqueId("owner", this.ownerUUID);
+
+		nbt = mimicBlock.writeToNBT(nbt);
+
 		return nbt;
 	}
 
-	public void overrideTexture(ItemStack equipped) {
-		DoorControllerCamo[0] = equipped;
+	public IBlockState getCamoBlock() {
+		return mimicBlock.get();
 	}
 
+	@Deprecated
+	public void setCamoBlock(Block block, int meta) {
+		mimicBlock.set(block, meta);
+		markDirtyClient();
+	}
 
-	@Deprecated //ICamo
-	public IBlockState getBlockFromNBT() {
-		if (DoorControllerCamo[0] != null) {
-			return Block.getBlockFromItem(DoorControllerCamo[0].getItem()).getStateFromMeta(DoorControllerCamo[0].getMetadata());
-		} else {
-			return ContentRegistry.doorController.getDefaultState();
+	public void markDirtyClient() {
+		markDirty();
+		if (getWorld() != null) {
+			IBlockState state = getWorld().getBlockState(getPos());
+			getWorld().notifyBlockUpdate(getPos(), state, state, 3);
 		}
 	}
-
-
 }

@@ -1,4 +1,4 @@
-package pcl.opensecurity.common.nanofog;
+package pcl.opensecurity.client.models;
 
 /* based on McJty's RFTools Shield */
 
@@ -15,10 +15,9 @@ import java.util.Collections;
 import java.util.function.Function;
 
 public class CamoModel implements IModel {
-
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-        return new NanoFogBakedModel(state, format, bakedTextureGetter);
+        return new CamouflageBakedModel(state, format, bakedTextureGetter);
     }
 
     @Override

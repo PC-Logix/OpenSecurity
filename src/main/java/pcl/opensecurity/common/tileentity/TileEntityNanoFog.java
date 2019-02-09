@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.nanofog.EntityFilter;
+import pcl.opensecurity.util.ICamo;
 import pcl.opensecurity.util.ItemUtils;
 
 import javax.annotation.Nonnull;
@@ -23,10 +24,8 @@ import javax.annotation.Nullable;
 import static pcl.opensecurity.common.ContentRegistry.nanoDNAItem;
 
 
-public class TileEntityNanoFog extends TileEntity {
-    private IBlockState mimic = null;
-    public int camoId = -1;
-    public int camoMeta = 0;
+public class TileEntityNanoFog extends TileEntity implements ICamo {
+    MimicBlock mimicBlock = new MimicBlock();
 
     public EntityFilter filterPass = new EntityFilter();
     public EntityFilter filterDamage = new EntityFilter();
@@ -86,16 +85,13 @@ public class TileEntityNanoFog extends TileEntity {
         }
     }
 
-    public IBlockState getMimicBlock() {
-        return mimic;
+    public IBlockState getCamoBlock() {
+        return mimicBlock.get();
     }
 
-
     @Deprecated
-    void setCamoBlock(Block block, int meta) {
-        this.camoId = Block.getIdFromBlock(block);
-        this.camoMeta = meta;
-        mimic = camoId != -1 ? Block.getBlockById(camoId).getStateFromMeta(meta) : null;
+    public void setCamoBlock(Block block, int meta) {
+        mimicBlock.set(block, meta);
         markDirtyClient();
     }
 
@@ -136,8 +132,9 @@ public class TileEntityNanoFog extends TileEntity {
     @Nonnull
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
-        tagCompound.setInteger("camoId", camoId);
-        tagCompound.setInteger("camoMeta", camoMeta);
+
+        tagCompound = mimicBlock.writeToNBT(tagCompound);
+
         tagCompound.setInteger("knockback", knockback);
         tagCompound.setInteger("damageI", damage);
 
@@ -160,9 +157,9 @@ public class TileEntityNanoFog extends TileEntity {
     @Deprecated
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
-        camoId = tagCompound.getInteger("camoId");
-        camoMeta = tagCompound.getInteger("camoMeta");
-        mimic = camoId != -1 ? Block.getBlockById(camoId).getStateFromMeta(camoMeta) : null;
+
+        mimicBlock.readFromNBT(tagCompound);
+
         isSolid = tagCompound.getBoolean("solid");
         isBuild = tagCompound.getBoolean("build");
         knockback = tagCompound.getInteger("knockback");

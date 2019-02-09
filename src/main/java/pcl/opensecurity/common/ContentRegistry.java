@@ -33,7 +33,6 @@ public class ContentRegistry {
     public static CreativeTabs creativeTab = getCreativeTab();
 
     public static Block alarmBlock = new BlockAlarm();
-    public static Block doorController = new BlockDoorController();
     public static Block securityTerminal = new BlockSecurityTerminal();
     public static Block biometricReaderBlock = new BlockBiometricReader();
     public static Block dataBlock = new BlockData();
@@ -47,7 +46,10 @@ public class ContentRegistry {
     public static Block privateSecureDoor = new BlockSecurePrivateDoor();
     public static Block nanoFogTerminal = new BlockNanoFogTerminal();
     public static Block rolldoor = new BlockRolldoor();
+    public static Block rolldoorElement = new BlockRolldoorElement();
 
+    public static BlockDoorController doorController = new BlockDoorController();
+    public static BlockRolldoorController rolldoorController = new BlockRolldoorController();
     public static BlockNanoFog nanoFog = new BlockNanoFog();
 
     public static Item doorControllerItem;
@@ -131,7 +133,9 @@ public class ContentRegistry {
                 privateSecureDoor,
                 nanoFogTerminal,
                 nanoFog,
-                rolldoor
+                rolldoor,
+                rolldoorController,
+                rolldoorElement
         );
 
         registerTileEntity(TileEntityAlarm.class, BlockAlarm.NAME);
@@ -149,6 +153,7 @@ public class ContentRegistry {
         registerTileEntity(TileEntityNanoFogTerminal.class, BlockNanoFogTerminal.NAME);
         registerTileEntity(TileEntityNanoFog.class, BlockNanoFog.NAME);
         registerTileEntity(TileEntityRolldoor.class, BlockRolldoor.NAME);
+        registerTileEntity(TileEntityRolldoorController.class, BlockRolldoorController.NAME);
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String key) {
@@ -178,7 +183,9 @@ public class ContentRegistry {
                 new ItemBlock(nanoFog).setRegistryName(nanoFog.getRegistryName()),
                 new ItemBlock(nanoFogTerminal).setRegistryName(nanoFogTerminal.getRegistryName()),
                 new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName()),
-                new ItemBlock(rolldoor).setRegistryName(rolldoor.getRegistryName())
+                new ItemBlock(rolldoor).setRegistryName(rolldoor.getRegistryName()),
+                new ItemBlock(rolldoorController).setRegistryName(rolldoorController.getRegistryName()),
+                new ItemBlock(rolldoorElement).setRegistryName(rolldoorElement.getRegistryName())
         );
 
         event.getRegistry().registerAll(

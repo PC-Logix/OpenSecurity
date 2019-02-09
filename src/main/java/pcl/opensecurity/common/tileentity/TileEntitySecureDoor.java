@@ -85,6 +85,8 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 			this.ownerUUID = tag.getUniqueId("owner");
 		else if(tag.hasKey("owner")) //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
 			this.ownerUUID = UUID.fromString(tag.getString("owner"));
+		else
+			this.ownerUUID = null;
 
 		this.password = tag.getString("password");
 	}
@@ -93,7 +95,9 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		
-		tag.setUniqueId("owner", this.ownerUUID);
+		if(ownerUUID != null)
+			tag.setUniqueId("owner", this.ownerUUID);
+
 		tag.setString("password", this.password);
 		return tag;
 	}

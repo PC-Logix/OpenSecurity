@@ -344,6 +344,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
             this.ownerUUID = nbt.getUniqueId("owner");
         else if(nbt.hasKey("owner")) //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
             this.ownerUUID = UUID.fromString(nbt.getString("owner"));
+        else
+            this.ownerUUID = null;
+
         this.password= nbt.getString("password");
         this.enabled=nbt.getBoolean("enabled");
         this.rangeMod=nbt.getInteger("rangeMod");
@@ -362,7 +365,10 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setUniqueId("owner", this.ownerUUID);
+
+        if(ownerUUID != null)
+            nbt.setUniqueId("owner", this.ownerUUID);
+
         nbt.setString("password", this.password);
         nbt.setBoolean("enabled", this.isEnabled());
         nbt.setInteger("rangeMod", this.rangeMod);

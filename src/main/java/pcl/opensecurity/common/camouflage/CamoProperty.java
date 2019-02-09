@@ -1,4 +1,4 @@
-package pcl.opensecurity.common.nanofog;
+package pcl.opensecurity.common.camouflage;
 
 import net.minecraftforge.common.property.IUnlistedProperty;
 

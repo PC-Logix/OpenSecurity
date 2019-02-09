@@ -2,11 +2,9 @@ package pcl.opensecurity.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.Item;
@@ -24,9 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.models.CamouflageBakedModel;
 import pcl.opensecurity.client.models.ModColourManager;
-import pcl.opensecurity.client.models.ModelBakeEventHandler;
 import pcl.opensecurity.client.models.ModelNanoFogSwarm;
 import pcl.opensecurity.client.renderer.*;
 import pcl.opensecurity.client.sounds.AlarmResource;
@@ -36,7 +32,6 @@ import pcl.opensecurity.common.blocks.*;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.*;
-import pcl.opensecurity.common.nanofog.BakedModelLoader;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoor;
@@ -56,15 +51,14 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void colorHandlerEventBlock(ColorHandlerEvent.Block event) {
         ContentRegistry.nanoFog.initColorHandler(event.getBlockColors());
+        ContentRegistry.doorController.initColorHandler(event.getBlockColors());
+        ContentRegistry.rolldoorController.initColorHandler(event.getBlockColors());
     }
 
     @Override
     public World getWorld(int dimId) {
         World world = Minecraft.getMinecraft().world;
-        if (world.provider.getDimension() == dimId) {
-            return world;
-        }
-        return null;
+        return world.provider.getDimension() == dimId ? world : null;
     }
 
     @Override
@@ -72,15 +66,12 @@ public class ClientProxy extends CommonProxy {
         super.preinit();
         Config.clientPreInit();
 
-
         ModelNanoFogSwarm.setupResolution(Config.getConfig().getCategory("client").get("nanoFogSwarmResolution").getInt());
 
-
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
 
+        ModelLoaderRegistry.registerLoader(new CamouflageBlockModelLoader());
 
-        ModelLoaderRegistry.registerLoader(new BakedModelLoader());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
 
@@ -111,7 +102,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerModels() {
         registerBlockItem(ContentRegistry.alarmBlock, 0, BlockAlarm.NAME);
-        registerBlockItem(ContentRegistry.doorController, 0, BlockDoorController.NAME);
         registerBlockItem(ContentRegistry.securityTerminal, 0, BlockSecurityTerminal.NAME);
         registerBlockItem(ContentRegistry.biometricReaderBlock, 0, BlockBiometricReader.NAME);
         registerBlockItem(ContentRegistry.dataBlock, 0, BlockData.NAME);
@@ -123,10 +113,12 @@ public class ClientProxy extends CommonProxy {
         registerBlockItem(ContentRegistry.rfidReader, 0, BlockRFIDReader.NAME);
         registerBlockItem(ContentRegistry.nanoFogTerminal, 0, BlockNanoFogTerminal.NAME);
         registerBlockItem(ContentRegistry.rolldoor, 0, BlockRolldoor.NAME);
+        registerBlockItem(ContentRegistry.rolldoorElement, 0, BlockRolldoorElement.NAME);
 
         // BlockNanoFog uses custom texture/model loader for shield blocks
-        ContentRegistry.nanoFog.initModel();
-        registerBlockItem(ContentRegistry.nanoFog, 0, BlockNanoFog.NAME);
+        CamouflageBlockModelLoader.registerBlock(ContentRegistry.nanoFog);
+        CamouflageBlockModelLoader.registerBlock(ContentRegistry.doorController);
+        CamouflageBlockModelLoader.registerBlock(ContentRegistry.rolldoorController);
 
 
         registerItem(ContentRegistry.secureDoorItem, BlockSecureDoor.NAME);
@@ -140,14 +132,6 @@ public class ClientProxy extends CommonProxy {
         registerItem(ContentRegistry.cooldownUpgradeItem, ItemCooldownUpgrade.NAME);
         registerItem(ContentRegistry.nanoDNAItem, ItemNanoDNA.NAME);
 
-        StateMapperBase ignoreState = new StateMapperBase() {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
-                return CamouflageBakedModel.variantTag;
-            }
-        };
-
-        ModelLoader.setCustomStateMapper(ContentRegistry.doorController, ignoreState);
         ModelLoader.setCustomStateMapper(ContentRegistry.secureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
         ModelLoader.setCustomStateMapper(ContentRegistry.privateSecureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
     }

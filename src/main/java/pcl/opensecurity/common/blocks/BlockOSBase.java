@@ -7,19 +7,19 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
 
 import java.util.Random;
 
-public class BlockOSBase extends Block implements ITileEntityProvider {
+/* implements facing blockstate */
+public abstract class BlockOSBase extends Block implements ITileEntityProvider {
     protected Random random;
+
+    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     protected BlockOSBase(String name, Material materialIn, float hardness) {
         super(materialIn);
@@ -30,20 +30,6 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
 
         random = new Random();
     }
-
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    @Deprecated
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
-    }
-
-    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     @Override
     @Deprecated
@@ -57,12 +43,6 @@ public class BlockOSBase extends Block implements ITileEntityProvider {
         EnumFacing facing = state.getValue(PROPERTYFACING);
         int facingbits = facing.getHorizontalIndex();
         return facingbits;
-    }
-
-    @Override
-    @Deprecated
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        return state;
     }
 
     @Override
