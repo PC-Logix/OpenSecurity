@@ -1,33 +1,36 @@
 package pcl.opensecurity.common.tileentity;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockOSBase;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
-import pcl.opensecurity.util.IOwner;
-import pcl.opensecurity.util.IPasswordProtected;
 import pcl.opensecurity.util.RolldoorHelper;
 
-import java.util.UUID;
+import javax.annotation.Nullable;
+
+import java.lang.ref.WeakReference;
 
 import static net.minecraft.block.Block.FULL_BLOCK_AABB;
+import static pcl.opensecurity.common.blocks.BlockRolldoorElement.PROPERTYOFFSET;
 
-public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPasswordProtected {
-    public final static int MAX_LENGTH = 16;
-
-    private UUID ownerUUID;
-    private String password = "";
+public class TileEntityRolldoor extends TileEntityOSBase {
+    public final static int MAX_LENGTH = 16; // limited to 16 because of metaindex limits in the block
 
     private int height = 0;
-    private double currentPosition = 0;
-    private double speed = 0;
 
     private AxisAlignedBB bb = FULL_BLOCK_AABB;
+
+    WeakReference<TileEntityRolldoorController> controller;
 
     BlockPos origin;
 
@@ -35,35 +38,18 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
         super("os_" + BlockRolldoor.NAME);
     }
 
-    @Override
-    public void update(){
-        super.update();
-
-        if(speed == 0)
-            return;
-    }
-
     public void remove(){
         removeElements();
         TileEntityRolldoorController controller = getController();
         if (controller != null)
-            controller.removeElement(getPos());
+            controller.initialize();
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt){
         super.readFromNBT(nbt);
 
-        if(nbt.hasUniqueId("owner"))
-            ownerUUID = nbt.getUniqueId("owner");
-        else
-            ownerUUID = null;
-
-        password = nbt.getString("password");
-
         height = nbt.getInteger("height");
-        speed = nbt.getDouble("speed");
-        currentPosition = nbt.getDouble("position");
 
         if(nbt.hasKey("origin"))
             origin = NBTUtil.getPosFromTag(nbt.getCompoundTag("origin"));
@@ -73,13 +59,7 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt){
-        if(ownerUUID != null)
-            nbt.setUniqueId("owner", this.ownerUUID);
-
-        nbt.setString("password", this.password);
         nbt.setInteger("height", this.height);
-        nbt.setDouble("speed", this.speed);
-        nbt.setDouble("position", this.currentPosition);
 
         if(origin() != null)
             nbt.setTag("origin", NBTUtil.createPosTag(origin()));
@@ -88,10 +68,19 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
     }
 
     public void initialize(){
-        TileEntityRolldoor te = RolldoorHelper.getAdjacentRolldoor(this);
-            if(te != null && te.origin() != null){
-            ((TileEntityRolldoorController) getWorld().getTileEntity(te.origin())).addElement(getPos());
+        // check if block got placed next to a controller
+        TileEntityRolldoorController controller = RolldoorHelper.getAdjacentController(getWorld(), getPos());
+
+        // try to find the controller of adjacent rolldoor block
+        if(controller == null){
+            TileEntityRolldoor te = RolldoorHelper.getAdjacentRolldoor(this);
+            if(te != null)
+                controller = te.getController();
         }
+
+        // update if a controller was found
+        if(controller != null)
+            controller.initialize();
 
         updateHeight();
     }
@@ -100,34 +89,14 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
         return BlockOSBase.getFacing(getWorld().getBlockState(getPos()));
     }
 
-    @Override
-    public void invalidate(){
-        super.invalidate();
-    }
-
-    public void open(){
-        speed = -0.1;
-    }
-
-    public void close(){
-        updateHeight();
-        speed = 0.1;
-    }
-
-    public void toggle(){
-        speed*=-1;
-    }
-
     public void updateHeight(){
         height = 0;
         BlockPos pos = getPos().down();
         while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && height < MAX_LENGTH) {
             if(getWorld().isAirBlock(pos)){
-                getWorld().setBlockState(pos, ContentRegistry.rolldoorElement.getDefaultState());
-                TileEntityRolldoorElement element = (TileEntityRolldoorElement) getWorld().getTileEntity(pos);
-                element.setFacing(getFacing());
-                element.setOrigin(getPos());
-                element.setPosition(height);
+                IBlockState state = ContentRegistry.rolldoorElement.getDefaultState();
+                state = state.withProperty(PROPERTYOFFSET, height);
+                getWorld().setBlockState(pos, state);
             }
             pos = pos.down();
             height++;
@@ -149,15 +118,19 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
             pos = pos.down();
             height++;
         }
-
     }
 
     @Override
     public AxisAlignedBB getRenderBoundingBox(){
+
+        /*
         if(origin() != null)
             return getController().getRenderBoundingBox();
         else
             return getElementsBoundingBox();
+        */
+
+        return super.getRenderBoundingBox();
     }
 
     public int height(){
@@ -165,25 +138,7 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
     }
 
     public AxisAlignedBB getElementsBoundingBox(){
-        return bb;
-    }
-
-    public void setOwner(UUID uuid){
-        ownerUUID = uuid;
-    }
-
-    public UUID getOwner(){
-        return ownerUUID;
-    }
-
-    public void setPassword(String pass){
-        password = pass;
-    }
-
-    public String getPass(){ return password; }
-
-    public boolean isOpen(){
-        return speed != 0 && currentPosition == height;
+        return bb.offset(getPos());
     }
 
     public void setOrigin(BlockPos pos){
@@ -191,15 +146,39 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
     }
 
     public TileEntityRolldoorController getController(){
-        if(origin() == null)
-            return null;
+        if(controller == null || controller.get() == null || controller.get().isInvalid()) {
+            if (origin() == null)
+                return null;
 
-        TileEntity tile = getWorld().getTileEntity(origin());
-        return tile instanceof TileEntityRolldoorController ?  (TileEntityRolldoorController) tile : null;
+            TileEntity tile = getWorld().getTileEntity(origin());
+            if(tile instanceof TileEntityRolldoorController)
+                controller = new WeakReference<>((TileEntityRolldoorController) tile);
+            else
+                return null;
+        }
+
+        return controller.get();
     }
 
     public BlockPos origin(){
         return origin;
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(super.getUpdateTag());
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+        readFromNBT(packet.getNbtCompound());
     }
 
 }

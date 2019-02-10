@@ -32,16 +32,20 @@ public class BlockRolldoorController extends BlockDoorController {
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         super.onBlockPlacedBy(world, pos, state, placer, stack);
 
-        TileEntityRolldoorController tile = getTileEntity(world, pos);
+        if(!world.isRemote) {
+            TileEntityRolldoorController tile = getTileEntity(world, pos);
 
-        if(tile != null)
-            tile.initialize();
+            if (tile != null)
+                tile.initialize();
+        }
     }
 
     public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-        TileEntityRolldoorController tile = getTileEntity(world, pos);
-        if(tile != null)
-            tile.remove();
+        if(!world.isRemote) {
+            TileEntityRolldoorController tile = getTileEntity(world, pos);
+            if (tile != null)
+                tile.remove();
+        }
 
         return super.removedByPlayer(state, world, pos, player, willHarvest);
     }

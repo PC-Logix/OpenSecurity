@@ -34,11 +34,7 @@ public class BlockRolldoor extends BlockOSBase {
 
     TileEntityRolldoorController getController(IBlockAccess world, BlockPos pos) {
         TileEntityRolldoor tile = getTileEntity(world, pos);
-        if(tile.origin() == null)
-            return null;
-
-        TileEntity tileController = world.getTileEntity(tile.origin());
-        return tileController instanceof TileEntityRolldoorController ? (TileEntityRolldoorController) tileController : null;
+        return tile != null ? tile.getController() : null;
     }
 
     @Override
@@ -50,16 +46,20 @@ public class BlockRolldoor extends BlockOSBase {
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         super.onBlockPlacedBy(world, pos, state, placer, stack);
 
-        TileEntityRolldoor tile = getTileEntity(world, pos);
+        if(!world.isRemote) {
+            TileEntityRolldoor tile = getTileEntity(world, pos);
 
-        if (tile != null)
-            tile.initialize();
+            if (tile != null)
+                tile.initialize();
+        }
     }
 
     public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-        TileEntityRolldoor tile = getTileEntity(world, pos);
-        if(tile != null)
-            tile.remove();
+        if(!world.isRemote) {
+            TileEntityRolldoor tile = getTileEntity(world, pos);
+            if(tile != null)
+                tile.remove();
+        }
 
         return super.removedByPlayer(state, world, pos, player, willHarvest);
     }

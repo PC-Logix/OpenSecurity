@@ -6,15 +6,21 @@ import li.cil.oc.api.machine.Context;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import pcl.opensecurity.common.component.RolldoorController;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import pcl.opensecurity.lib.easing.penner.Quad;
 import pcl.opensecurity.util.RolldoorHelper;
 import scala.actors.threadpool.Arrays;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -29,12 +35,24 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
 
     private long animationStart = 0;
     private double speed = 0;
+    private double moveSpeed = 0.5;
 
-    private HashSet<BlockPos> elements = new HashSet<>();
+    private HashSet<WeakReference<TileEntityRolldoor>> elements = new HashSet<>();
+    private HashSet<BlockPos> elementsPos = new HashSet<>();
 
     @Override
     public void update(){
         super.update();
+
+        if(elements.size() != elementsPos.size() && getWorld() != null){
+            elements.clear();
+            for(BlockPos pos : elementsPos){
+                TileEntity tile = getWorld().getTileEntity(pos);
+                if(tile instanceof TileEntityRolldoor)
+                    elements.add(new WeakReference<>((TileEntityRolldoor) tile));
+            }
+        }
+
         if(speed() != 0)
             getCurrentHeight();
     }
@@ -43,7 +61,7 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
     @Callback
     @Override
     public Object[] isOpen(Context context, Arguments args) {
-        return RolldoorController.isOpen(this);
+        return new Object[] { getCurrentHeight() == 0 };
     }
 
     @Callback
@@ -52,47 +70,52 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         if(speed != 0)
             setSpeed(speed * -1);
         else if(currentPosition == 0)
-            setSpeed(0.5);
+            setSpeed(moveSpeed);
         else
-            setSpeed(-0.5);
+            setSpeed(-moveSpeed);
 
-        return RolldoorController.toggle(this, args.optString(0, ""));
+        return new Object[]{ true };
     }
 
     @Callback
     @Override
     public Object[] open(Context context, Arguments args) {
-        setSpeed(-0.5);
-        return RolldoorController.setDoorStates(this, true, args.optString(0, ""));
+        setSpeed(-moveSpeed);
+        return new Object[]{ true };
     }
 
     @Callback
     @Override
     public Object[] close(Context context, Arguments args) {
-        setSpeed(0.5);
-        return RolldoorController.setDoorStates(this, false, args.optString(0, ""));
+        setSpeed(moveSpeed);
+        return new Object[]{ true };
     }
 
     @Callback
     @Override
     public Object[] removePassword(Context context, Arguments args) {
-        return RolldoorController.setDoorPasswords(this, args.checkString(0), "");
+        return new Object[] { false, "not supported yet"};
     }
 
     @Callback
     @Override
     public Object[] setPassword(Context context, Arguments args) {
-        return RolldoorController.setDoorPasswords(this, args.checkString(0), args.checkString(1));
+        return new Object[] { false, "not supported yet"};
+    }
+
+    @Callback
+    public Object[] setSpeed(Context context, Arguments args) {
+        moveSpeed = Math.max(0.1, Math.min(1, args.optDouble(0, moveSpeed))); // 0.1d - 1d
+        return new Object[] { moveSpeed };
     }
 
     @Callback
     public Object[] getHeight(Context context, Arguments args) {
         ArrayList<Integer> heights = new ArrayList<>();
 
-        for(BlockPos pos : elements){
-            TileEntity tile = getWorld().getTileEntity(pos);
-            if(tile instanceof TileEntityRolldoor)
-                heights.add(((TileEntityRolldoor) tile).height());
+        for(WeakReference<TileEntityRolldoor> ref : elements){
+            if(ref.get() != null && !ref.get().isInvalid())
+                heights.add(ref.get().height());
         }
 
         return new Object[]{ heights.toArray() };
@@ -101,14 +124,16 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
 
     public void initialize(){
         elements.clear();
+        elementsPos.clear();
 
-        for(BlockPos pos : RolldoorHelper.getDoors(this).keySet())
-            addElement(pos);
+        for(TileEntityRolldoor tile : RolldoorHelper.getDoors(this).values())
+            addElement(tile);
     }
 
     public void remove(){
-        for(BlockPos pos : new HashSet<BlockPos>(Arrays.asList(elements.toArray())))
-            removeElement(pos);
+        for(WeakReference<TileEntityRolldoor> ref : new HashSet<WeakReference<TileEntityRolldoor>>(Arrays.asList(elements.toArray())))
+            if(ref.get() != null && !ref.get().isInvalid())
+                removeElement(ref.get());
     }
 
     private TileEntityRolldoor getRolldoor(BlockPos pos){
@@ -116,22 +141,18 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         return tile instanceof TileEntityRolldoor ? (TileEntityRolldoor) tile : null;
     }
 
-    void addElement(BlockPos pos){
-        TileEntityRolldoor tile = getRolldoor(pos);
-
-        if(tile != null) {
-            tile.setOrigin(getPos());
-            facing = tile.getFacing();
+    private void addElement(TileEntityRolldoor rolldoor){
+        if(rolldoor != null && !rolldoor.isInvalid()) {
+            rolldoor.setOrigin(getPos());
+            facing = rolldoor.getFacing();
+            elements.add(new WeakReference<>(rolldoor));
+            elementsPos.add(rolldoor.getPos());
         }
-
-        elements.add(pos);
     }
 
-    void removeElement(BlockPos pos){
-        TileEntity tile = getWorld().getTileEntity(pos);
-
-        if(tile instanceof TileEntityRolldoor)
-            ((TileEntityRolldoor) tile).setOrigin(null);
+    private void removeElement(TileEntityRolldoor rolldoor){
+        if(rolldoor != null)
+            rolldoor.setOrigin(null);
 
         initialize();
     }
@@ -145,12 +166,11 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
     public AxisAlignedBB getRenderBoundingBox(){
         AxisAlignedBB bb = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
-        for(BlockPos pos : elements){
-            TileEntityRolldoor tile = (TileEntityRolldoor) getWorld().getTileEntity(pos);
-            if(tile != null)
-                bb.union(tile.getElementsBoundingBox());
+        for(WeakReference<TileEntityRolldoor> ref : elements){
+            if(ref.get() != null && !ref.get().isInvalid())
+                bb = bb.union(ref.get().getElementsBoundingBox());
         }
-        return bb.offset(getPos());
+        return bb;
     }
 
     public double getCurrentHeight(){
@@ -172,9 +192,9 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
             setSpeed(0);
         }
         else if(speed() > 0)
-            currentPosition = 0.02 + height * Math.abs(prog/duration);
+            currentPosition = 0.02 + height * Quad.easeInOut(prog, 0, 1, (float) duration);
         else if(speed() < 0)
-            currentPosition = 0.02 + height - height * Math.abs(prog/duration);
+            currentPosition = 0.02 + height - height * Quad.easeInOut(prog, 0, 1, (float) duration);
 
 
         return Math.abs(currentPosition);
@@ -182,10 +202,9 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
 
     private int getHeight(){
         int height = 0;
-        for(BlockPos pos : elements){
-            TileEntity tile = getWorld().getTileEntity(pos);
-            if(tile instanceof TileEntityRolldoor)
-                height = Math.max(((TileEntityRolldoor) tile).height(), height);
+        for(WeakReference<TileEntityRolldoor> ref : elements){
+            if(ref.get() != null && !ref.get().isInvalid())
+                height = Math.max(ref.get().height(), height);
         }
 
         return height;
@@ -215,28 +234,48 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
     public void readFromNBT(NBTTagCompound nbt){
         super.readFromNBT(nbt);
 
-        elements.clear();
+        elementsPos.clear();
         for(int i=0; nbt.hasKey("el"+i); i++)
-            elements.add(NBTUtil.getPosFromTag(nbt.getCompoundTag("el"+i)));
+            elementsPos.add(NBTUtil.getPosFromTag(nbt.getCompoundTag("el"+i)));
 
         facing = EnumFacing.values()[nbt.getInteger("facing")];
         speed = nbt.getDouble("speed");
+        moveSpeed = nbt.getDouble("moveSpeed");
         currentPosition = nbt.getDouble("position");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt){
         int i=0;
-        for(BlockPos pos : elements){
-            nbt.setTag("el"+i, NBTUtil.createPosTag(pos));
+        for(BlockPos pos : elementsPos){
+            nbt.setTag("el" + i, NBTUtil.createPosTag(pos));
             i++;
         }
 
         nbt.setInteger("facing", facing.ordinal());
         nbt.setDouble("speed", this.speed);
+        nbt.setDouble("moveSpeed", this.moveSpeed);
         nbt.setDouble("position", this.currentPosition);
 
         return super.writeToNBT(nbt);
+    }
+
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(super.getUpdateTag());
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+        readFromNBT(packet.getNbtCompound());
     }
 
 }

@@ -132,6 +132,8 @@ public class ClientProxy extends CommonProxy {
         registerItem(ContentRegistry.cooldownUpgradeItem, ItemCooldownUpgrade.NAME);
         registerItem(ContentRegistry.nanoDNAItem, ItemNanoDNA.NAME);
 
+
+        ModelLoader.setCustomStateMapper(ContentRegistry.rolldoorElement, new StateMap.Builder().ignore(BlockRolldoorElement.PROPERTYOFFSET).build());
         ModelLoader.setCustomStateMapper(ContentRegistry.secureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
         ModelLoader.setCustomStateMapper(ContentRegistry.privateSecureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
     }

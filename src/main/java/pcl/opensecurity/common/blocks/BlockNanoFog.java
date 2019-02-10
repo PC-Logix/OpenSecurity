@@ -35,6 +35,7 @@ public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider
         setLightOpacity(255);
         setBlockUnbreakable();
         setResistance(31337.0F);
+        setCreativeTab(null); //dont show in creative tab
     }
 
     @Deprecated

@@ -10,6 +10,7 @@ import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RolldoorHelper {
     public static HashMap<BlockPos, TileEntityRolldoor> getDoors(TileEntityRolldoorController controller) {
@@ -56,20 +57,41 @@ public class RolldoorHelper {
     public static ArrayList<EnumFacing> getAdjacentRolldoors(World world, BlockPos pos) {
         ArrayList<EnumFacing> doors = new ArrayList<>();
 
-        for (EnumFacing direction : EnumFacing.VALUES)
-            if (world.getTileEntity(pos.add(direction.getDirectionVec())) instanceof TileEntityRolldoor)
-                doors.add(direction);
+        for (Map.Entry<EnumFacing, TileEntity> entry : getAdjacentTileEntities(world, pos).entrySet())
+            if (entry.getValue() instanceof TileEntityRolldoor)
+                doors.add(entry.getKey());
 
         return doors;
     }
 
     public static TileEntityRolldoor getAdjacentRolldoor(TileEntity controller){
-        ArrayList<EnumFacing> faces = RolldoorHelper.getAdjacentRolldoors(controller.getWorld(), controller.getPos());
+        for (Map.Entry<EnumFacing, TileEntity> entry : getAdjacentTileEntities(controller.getWorld(), controller.getPos()).entrySet()){
+            if(entry.getValue() instanceof TileEntityRolldoor)
+                return (TileEntityRolldoor) entry.getValue();
+        }
 
-        if(faces.size() == 0) //no door adjacent to controller
-            return null;
+        return null;
+    }
 
-        return (TileEntityRolldoor) controller.getWorld().getTileEntity(controller.getPos().add(faces.get(0).getDirectionVec()));
+    public static HashMap<EnumFacing, TileEntity> getAdjacentTileEntities(World world, BlockPos pos) {
+        HashMap<EnumFacing, TileEntity> tiles = new HashMap<>();
+
+        for (EnumFacing direction : EnumFacing.VALUES) {
+            TileEntity tile = world.getTileEntity(pos.add(direction.getDirectionVec()));
+            if (tile != null)
+                tiles.put(direction, tile);
+        }
+
+        return tiles;
+    }
+
+    public static TileEntityRolldoorController getAdjacentController(World world, BlockPos pos){
+        for (Map.Entry<EnumFacing, TileEntity> entry : getAdjacentTileEntities(world, pos).entrySet()){
+            if(entry.getValue() instanceof TileEntityRolldoorController)
+                return (TileEntityRolldoorController) entry.getValue();
+        }
+
+        return null;
     }
 
 }

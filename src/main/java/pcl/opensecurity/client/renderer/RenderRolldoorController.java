@@ -19,7 +19,6 @@ public class RenderRolldoorController extends TileEntitySpecialRenderer<TileEnti
 
         ResourceLocation texture = new ResourceLocation(OpenSecurity.MODID, "textures/blocks/rolldoor.png");
 
-
         GlStateManager.enableTexture2D();
         GlStateManager.disableCull();
         GlStateManager.disableLighting();

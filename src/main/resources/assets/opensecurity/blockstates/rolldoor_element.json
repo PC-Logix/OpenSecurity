@@ -10,12 +10,6 @@
   },
   "variants": {
     "normal": [{ }],
-    "inventory": [{ }],
-    "facing": {
-      "north": {"model": "minecraft:orientable", "y": 180},
-      "south": {"model": "minecraft:orientable"},
-      "west": {"model": "minecraft:orientable", "y": 90},
-      "east": {"model": "minecraft:orientable", "y": 270}
-    }
+    "inventory": [{ }]
   }
 }
