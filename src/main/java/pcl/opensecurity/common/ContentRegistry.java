@@ -154,6 +154,7 @@ public class ContentRegistry {
         registerTileEntity(TileEntityNanoFog.class, BlockNanoFog.NAME);
         registerTileEntity(TileEntityRolldoor.class, BlockRolldoor.NAME);
         registerTileEntity(TileEntityRolldoorController.class, BlockRolldoorController.NAME);
+        registerTileEntity(TileEntityRolldoorElement.class, BlockRolldoorElement.NAME);
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String key) {

@@ -34,7 +34,7 @@ import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
-import pcl.opensecurity.common.tileentity.TileEntityRolldoor;
+import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 import pcl.opensecurity.manual.ManualPathProvider;
 import pcl.opensecurity.util.FileUtils;
 
@@ -75,7 +75,7 @@ public class ClientProxy extends CommonProxy {
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRolldoor.class, new RenderRolldoor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRolldoorController.class, new RenderRolldoorController());
 
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());

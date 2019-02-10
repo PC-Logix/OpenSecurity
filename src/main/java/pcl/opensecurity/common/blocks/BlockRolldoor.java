@@ -2,8 +2,8 @@ package pcl.opensecurity.common.blocks;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -11,12 +11,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoor;
-
-import javax.annotation.Nonnull;
-import java.util.List;
+import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 
 public class BlockRolldoor extends BlockOSBase {
     public final static String NAME = "rolldoor";
+    public final static AxisAlignedBB emptyBB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public BlockRolldoor() {
         super(NAME, Material.IRON, 0.5f);
@@ -24,25 +23,22 @@ public class BlockRolldoor extends BlockOSBase {
 
     @Override
     @Deprecated
-    public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB entityBoundingBox, @Nonnull List<AxisAlignedBB> stacks, Entity entity, boolean isActualState) {
-
-        TileEntityRolldoor rolldoor = getTileEntity(world, pos);
-
-        if(rolldoor != null)
-            addCollisionBoxToList(pos, entityBoundingBox, stacks, rolldoor.getBoundingBox());
-
-        addCollisionBoxToList(pos, entityBoundingBox, stacks, FULL_BLOCK_AABB);
-    }
-
-    @Override
-    @Deprecated
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
-        return FULL_BLOCK_AABB;
+        return emptyBB;
     }
 
-    TileEntityRolldoor getTileEntity(IBlockAccess world, BlockPos pos){
+    TileEntityRolldoor getTileEntity(IBlockAccess world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         return tile instanceof TileEntityRolldoor ? (TileEntityRolldoor) tile : null;
+    }
+
+    TileEntityRolldoorController getController(IBlockAccess world, BlockPos pos) {
+        TileEntityRolldoor tile = getTileEntity(world, pos);
+        if(tile.origin() == null)
+            return null;
+
+        TileEntity tileController = world.getTileEntity(tile.origin());
+        return tileController instanceof TileEntityRolldoorController ? (TileEntityRolldoorController) tileController : null;
     }
 
     @Override
@@ -56,8 +52,16 @@ public class BlockRolldoor extends BlockOSBase {
 
         TileEntityRolldoor tile = getTileEntity(world, pos);
 
-        if(tile != null)
+        if (tile != null)
             tile.initialize();
+    }
+
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        TileEntityRolldoor tile = getTileEntity(world, pos);
+        if(tile != null)
+            tile.remove();
+
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
 }

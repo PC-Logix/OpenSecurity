@@ -1,8 +1,13 @@
 package pcl.opensecurity.common.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.blocks.BlockOSBase;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
 import pcl.opensecurity.util.IOwner;
 import pcl.opensecurity.util.IPasswordProtected;
@@ -38,6 +43,13 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
             return;
     }
 
+    public void remove(){
+        removeElements();
+        TileEntityRolldoorController controller = getController();
+        if (controller != null)
+            controller.removeElement(getPos());
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound nbt){
         super.readFromNBT(nbt);
@@ -53,10 +65,10 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
         speed = nbt.getDouble("speed");
         currentPosition = nbt.getDouble("position");
 
-        if(nbt.hasKey("origin")){
-            NBTTagCompound controllerOrigin = nbt.getCompoundTag("origin");
-            origin = new BlockPos(controllerOrigin.getInteger("x"), controllerOrigin.getInteger("y"), controllerOrigin.getInteger("z"));
-        }
+        if(nbt.hasKey("origin"))
+            origin = NBTUtil.getPosFromTag(nbt.getCompoundTag("origin"));
+
+        updateBB();
     }
 
     @Override
@@ -69,14 +81,8 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
         nbt.setDouble("speed", this.speed);
         nbt.setDouble("position", this.currentPosition);
 
-        if(origin() != null) {
-            NBTTagCompound controllerOrigin = new NBTTagCompound();
-            controllerOrigin.setInteger("x", origin().getX());
-            controllerOrigin.setInteger("y", origin().getY());
-            controllerOrigin.setInteger("z", origin().getZ());
-            nbt.setTag("origin", controllerOrigin);
-        }
-
+        if(origin() != null)
+            nbt.setTag("origin", NBTUtil.createPosTag(origin()));
 
         return super.writeToNBT(nbt);
     }
@@ -90,13 +96,12 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
         updateHeight();
     }
 
+    public EnumFacing getFacing(){
+        return BlockOSBase.getFacing(getWorld().getBlockState(getPos()));
+    }
 
     @Override
     public void invalidate(){
-        if(origin() != null){
-            ((TileEntityRolldoorController) getWorld().getTileEntity(origin())).removeElement(getPos());
-        }
-
         super.invalidate();
     }
 
@@ -116,19 +121,50 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
     public void updateHeight(){
         height = 0;
         BlockPos pos = getPos().down();
-        while(getWorld().isAirBlock(pos) && height < MAX_LENGTH) {
+        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && height < MAX_LENGTH) {
+            if(getWorld().isAirBlock(pos)){
+                getWorld().setBlockState(pos, ContentRegistry.rolldoorElement.getDefaultState());
+                TileEntityRolldoorElement element = (TileEntityRolldoorElement) getWorld().getTileEntity(pos);
+                element.setFacing(getFacing());
+                element.setOrigin(getPos());
+                element.setPosition(height);
+            }
+            pos = pos.down();
+            height++;
+        }
+        updateBB();
+    }
+
+    public void updateBB(){
+        bb = FULL_BLOCK_AABB.expand(0, -height(), 0);
+    }
+
+    public void removeElements(){
+        height = 0;
+        BlockPos pos = getPos().down();
+        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && height < MAX_LENGTH) {
+            if(getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)){
+                getWorld().setBlockToAir(pos);
+            }
             pos = pos.down();
             height++;
         }
 
-        bb = FULL_BLOCK_AABB.expand(0, -height(), 0);
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox(){
+        if(origin() != null)
+            return getController().getRenderBoundingBox();
+        else
+            return getElementsBoundingBox();
     }
 
     public int height(){
         return height;
     }
 
-    public AxisAlignedBB getBoundingBox(){
+    public AxisAlignedBB getElementsBoundingBox(){
         return bb;
     }
 
@@ -155,7 +191,11 @@ public class TileEntityRolldoor extends TileEntityOSBase implements IOwner, IPas
     }
 
     public TileEntityRolldoorController getController(){
-        return origin != null ? (TileEntityRolldoorController) getWorld().getTileEntity(origin) : null;
+        if(origin() == null)
+            return null;
+
+        TileEntity tile = getWorld().getTileEntity(origin());
+        return tile instanceof TileEntityRolldoorController ?  (TileEntityRolldoorController) tile : null;
     }
 
     public BlockPos origin(){
