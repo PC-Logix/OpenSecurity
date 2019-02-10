@@ -200,7 +200,7 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         return Math.abs(currentPosition);
     }
 
-    private int getHeight(){
+    public int getHeight(){
         int height = 0;
         for(WeakReference<TileEntityRolldoor> ref : elements){
             if(ref.get() != null && !ref.get().isInvalid())

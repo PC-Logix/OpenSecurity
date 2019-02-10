@@ -21,8 +21,8 @@ public class ModelCubeTESR extends ModelCube {
     }
 
     protected void preRender(){
-        Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buffer = tess.getBuffer();
+        tess = Tessellator.getInstance();
+        buffer = tess.getBuffer();
         buffer.begin(GL11.GL_QUADS, vertexFormat);
     }
     
@@ -68,7 +68,7 @@ public class ModelCubeTESR extends ModelCube {
         tess.draw();
     }
 
-    private void drawCube(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
+    protected void drawCube(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
         drawTop(buffer, x1, y1, z1, x2, y2, z2);
         drawBottom(buffer, x1, y1, z1, x2, y2, z2);
         drawFront(buffer, x1, y1, z1, x2, y2, z2);
@@ -78,46 +78,45 @@ public class ModelCubeTESR extends ModelCube {
     }
 
     protected void drawTop(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
-        buffer.pos(x2, y2, z1); // Top Right Of The Quad (Top)
-        buffer.pos(x1, y2, z1); // Top Left Of The Quad (Top)
-        buffer.pos(x1, y2, z2); // Bottom Left Of The Quad (Top)
         buffer.pos(x2, y2, z2); // Bottom Right Of The Quad (Top)
+        buffer.pos(x1, y2, z2); // Bottom Left Of The Quad (Top)
+        buffer.pos(x1, y2, z1); // Top Left Of The Quad (Top)
+        buffer.pos(x2, y2, z1); // Top Right Of The Quad (Top)
     }
 
     protected void drawBottom(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
-        buffer.pos(x2, y1, z2); // Top Right Of The Quad (Bottom)
-        buffer.pos(x1, y1, z2); // Top Left Of The Quad (Bottom)
-        buffer.pos(x1, y1, z1); // Bottom Left Of The Quad (Bottom)
         buffer.pos(x2, y1, z1); // Bottom Right Of The Quad (Bottom)
+        buffer.pos(x1, y1, z1); // Bottom Left Of The Quad (Bottom)
+        buffer.pos(x1, y1, z2); // Top Left Of The Quad (Bottom)
+        buffer.pos(x2, y1, z2); // Top Right Of The Quad (Bottom)
     }
 
     protected void drawFront(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
-        buffer.pos(x2, y2, z2); // Top Right Of The Quad (Front)
-        buffer.pos(x1, y2, z2); // Top Left Of The Quad (Front)
-        buffer.pos(x1, y1, z2); // Bottom Left Of The Quad (Front)
         buffer.pos(x2, y1, z2); // Bottom Right Of The Quad (Front)
+        buffer.pos(x1, y1, z2); // Bottom Left Of The Quad (Front)
+        buffer.pos(x1, y2, z2); // Top Left Of The Quad (Front)
+        buffer.pos(x2, y2, z2); // Top Right Of The Quad (Front)
     }
 
     protected void drawBack(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
-        buffer.pos(x2, y1, z1); // Top Right Of The Quad (Back)
-        buffer.pos(x1, y1, z1); // Top Left Of The Quad (Back)
-        buffer.pos(x1, y2, z1); // Bottom Left Of The Quad (Back)
         buffer.pos(x2, y2, z1); // Bottom Right Of The Quad (Back)
+        buffer.pos(x1, y2, z1); // Bottom Left Of The Quad (Back)
+        buffer.pos(x1, y1, z1); // Top Left Of The Quad (Back)
+        buffer.pos(x2, y1, z1); // Top Right Of The Quad (Back)
     }
 
     protected void drawLeft(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
-        buffer.pos(x1, y2, z2); // Top Right Of The Quad (Left)
-        buffer.pos(x1, y2, z1); // Top Left Of The Quad (Left)
-        buffer.pos(x1, y1, z1); // Bottom Left Of The Quad (Left)
         buffer.pos(x1, y1, z2); // Bottom Right Of The Quad (Left)
+        buffer.pos(x1, y1, z1); // Bottom Left Of The Quad (Left)
+        buffer.pos(x1, y2, z1); // Top Left Of The Quad (Left)
+        buffer.pos(x1, y2, z2); // Top Right Of The Quad (Left)
     }
 
     protected void drawRight(BufferBuilder buffer, float x1, float y1, float z1, float x2, float y2, float z2){
-        buffer.pos(x2, y2, z1); // Top Right Of The Quad (Right)
-        buffer.pos(x2, y2, z2); // Top Left Of The Quad (Right)
-        buffer.pos(x2, y1, z2); // Bottom Left Of The Quad (Right)
         buffer.pos(x2, y1, z1); // Bottom Right Of The Quad (Right)
+        buffer.pos(x2, y1, z2); // Bottom Left Of The Quad (Right)
+        buffer.pos(x2, y2, z2); // Top Left Of The Quad (Right)
+        buffer.pos(x2, y2, z1); // Top Right Of The Quad (Right)
     }
-
 
 }
