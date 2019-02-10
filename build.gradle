@@ -78,15 +78,29 @@ repositories {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "modmaven.k-4u.nl"
+    }
 }
 
 def openComputersVersion = "MC1.12.2-1.7.+"
+def jei_version = "1.12.2:4.9.+"
 
 dependencies {
     deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"
     compile 'org.mindrot:jbcrypt:0.3m'
 	deobfCompile "advanced-rocketry:AdvancedRocketry-1.12.2-1.5.0:127:deobf"
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    deobfCompile "mezz.jei:jei_${jei_version}:api"
+    // at runtime, use the full JEI jar
+    runtime "mezz.jei:jei_${jei_version}"
 }
 
 def curseforge_key = 0
