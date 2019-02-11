@@ -29,6 +29,9 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         super("os_rolldoorcontroller");
     }
 
+    private AxisAlignedBB renderBoundingBox = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+    private AxisAlignedBB elementsRenderBoundingBox = renderBoundingBox;
+
     private EnumFacing facing = EnumFacing.NORTH;
 
     private double currentPosition = 0;
@@ -45,12 +48,15 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         super.update();
 
         if(elements.size() != elementsPos.size() && getWorld() != null){
-            elements.clear();
-            for(BlockPos pos : elementsPos){
+            ArrayList<BlockPos> addElements = new ArrayList<>(elementsPos);
+            resetRolldoorData();
+            for(BlockPos pos : addElements){
                 TileEntity tile = getWorld().getTileEntity(pos);
                 if(tile instanceof TileEntityRolldoor)
-                    elements.add(new WeakReference<>((TileEntityRolldoor) tile));
+                    addElement((TileEntityRolldoor) tile);
             }
+
+            markDirtyClient();
         }
 
         if(speed() != 0)
@@ -121,13 +127,38 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         return new Object[]{ heights.toArray() };
     }
 
+    private void resetRolldoorData(){
+        for(WeakReference<TileEntityRolldoor> tile : elements){
+            if(tile == null || tile.get() == null || tile.get().isInvalid())
+                continue;
 
-    public void initialize(){
+            tile.get().setOrigin(null);
+        }
+
         elements.clear();
         elementsPos.clear();
+        elementsRenderBoundingBox = new AxisAlignedBB(0, 0, 0, 0, 0, 0).offset(getPos());
+        renderBoundingBox = new AxisAlignedBB(0, 0, 0, 1, 1, 1).offset(getPos());
+    }
 
-        for(TileEntityRolldoor tile : RolldoorHelper.getDoors(this).values())
-            addElement(tile);
+    public void initialize(){
+        resetRolldoorData();
+
+        EnumFacing enumFacing = null;
+        int yLevel = -1;
+
+        for(TileEntityRolldoor tile : RolldoorHelper.getDoors(this).values()) {
+            if(enumFacing == null)
+                enumFacing = tile.getFacing();
+
+            if (yLevel == -1)
+                yLevel = tile.getPos().getY();
+
+            if(enumFacing.equals(tile.getFacing()) && tile.getPos().getY() == yLevel)
+                addElement(tile);
+        }
+
+        markDirtyClient();
     }
 
     public void remove(){
@@ -136,17 +167,19 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
                 removeElement(ref.get());
     }
 
-    private TileEntityRolldoor getRolldoor(BlockPos pos){
-        TileEntity tile = getWorld().getTileEntity(pos);
-        return tile instanceof TileEntityRolldoor ? (TileEntityRolldoor) tile : null;
-    }
-
     private void addElement(TileEntityRolldoor rolldoor){
         if(rolldoor != null && !rolldoor.isInvalid()) {
             rolldoor.setOrigin(getPos());
             facing = rolldoor.getFacing();
+            if(elements.size() == 0)
+                elementsRenderBoundingBox = rolldoor.getElementsBoundingBox();
+            else
+                elementsRenderBoundingBox = elementsRenderBoundingBox.union(rolldoor.getElementsBoundingBox());
+
             elements.add(new WeakReference<>(rolldoor));
             elementsPos.add(rolldoor.getPos());
+
+            renderBoundingBox = renderBoundingBox.union(elementsRenderBoundingBox);
         }
     }
 
@@ -163,14 +196,18 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
     }
 
     @Nonnull
+    @Override
     public AxisAlignedBB getRenderBoundingBox(){
-        AxisAlignedBB bb = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+        return renderBoundingBox;
+    }
 
-        for(WeakReference<TileEntityRolldoor> ref : elements){
-            if(ref.get() != null && !ref.get().isInvalid())
-                bb = bb.union(ref.get().getElementsBoundingBox());
-        }
-        return bb;
+    public AxisAlignedBB getElementsRenderBoundingBox(){
+        return elementsRenderBoundingBox.offset(-getPos().getX(), -getPos().getY(), -getPos().getZ());
+    }
+
+    private double getDuration(double newPosition){
+        double diff = getCurrentHeight() - newPosition;
+        return Math.abs(diff * speed()) * 1000;
     }
 
     public double getCurrentHeight(){
@@ -223,6 +260,7 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
     }
 
     public EnumFacing facing(){
+        // returns facing of the rolldoor, not of the controller
         return facing;
     }
 
@@ -256,7 +294,6 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         nbt.setDouble("speed", this.speed);
         nbt.setDouble("moveSpeed", this.moveSpeed);
         nbt.setDouble("position", this.currentPosition);
-
         return super.writeToNBT(nbt);
     }
 

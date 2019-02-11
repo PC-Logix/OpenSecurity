@@ -23,7 +23,8 @@ public class RolldoorHelper {
 
         doors.put(firstElement.getPos(), firstElement);
 
-        ArrayList<EnumFacing> faces = getAdjacentRolldoors(firstElement.getWorld(), firstElement.getPos());
+        ArrayList<EnumFacing> faces = new ArrayList<>();
+        faces.addAll(getAdjacentRolldoors(firstElement.getWorld(), firstElement.getPos()).keySet());
 
         if(faces.size() == 0) // no doors adjacent to the first rolldoor block
             return doors;
@@ -54,18 +55,18 @@ public class RolldoorHelper {
         return doors;
     }
 
-    public static ArrayList<EnumFacing> getAdjacentRolldoors(World world, BlockPos pos) {
-        ArrayList<EnumFacing> doors = new ArrayList<>();
+    public static HashMap<EnumFacing, TileEntityRolldoor> getAdjacentRolldoors(World world, BlockPos pos) {
+        HashMap<EnumFacing, TileEntityRolldoor> doors = new HashMap<>();
 
         for (Map.Entry<EnumFacing, TileEntity> entry : getAdjacentTileEntities(world, pos).entrySet())
             if (entry.getValue() instanceof TileEntityRolldoor)
-                doors.add(entry.getKey());
+                doors.put(entry.getKey(), (TileEntityRolldoor) entry.getValue());
 
         return doors;
     }
 
-    public static TileEntityRolldoor getAdjacentRolldoor(TileEntity controller){
-        for (Map.Entry<EnumFacing, TileEntity> entry : getAdjacentTileEntities(controller.getWorld(), controller.getPos()).entrySet()){
+    public static TileEntityRolldoor getAdjacentRolldoor(TileEntity tile){
+        for (Map.Entry<EnumFacing, TileEntity> entry : getAdjacentTileEntities(tile.getWorld(), tile.getPos()).entrySet()){
             if(entry.getValue() instanceof TileEntityRolldoor)
                 return (TileEntityRolldoor) entry.getValue();
         }

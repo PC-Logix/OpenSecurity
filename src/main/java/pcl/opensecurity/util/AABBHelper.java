@@ -1,5 +1,6 @@
 package pcl.opensecurity.util;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -23,6 +24,22 @@ public class AABBHelper {
             case 3: return new AxisAlignedBB(1d - bb.maxX, bb.minY, 1d - bb.maxZ, 1d - bb.minX, bb.maxY, 1d - bb.minZ); // (south)
             case 2: default: return bb; // (north)
         }
+    }
+
+    public static NBTTagCompound writeToNBT(AxisAlignedBB bb, NBTTagCompound nbt){
+        nbt.setDouble("x1", bb.minX);
+        nbt.setDouble("y1", bb.minY);
+        nbt.setDouble("z1", bb.minZ);
+        nbt.setDouble("x2", bb.maxX);
+        nbt.setDouble("y2", bb.maxY);
+        nbt.setDouble("z2", bb.maxZ);
+        return nbt;
+    }
+
+    public static AxisAlignedBB readFromNBT(NBTTagCompound nbt){
+        return new AxisAlignedBB(
+                nbt.getDouble("x1"), nbt.getDouble("y1"), nbt.getDouble("z1"),
+                nbt.getDouble("x2"), nbt.getDouble("y2"), nbt.getDouble("z2"));
     }
 
 }

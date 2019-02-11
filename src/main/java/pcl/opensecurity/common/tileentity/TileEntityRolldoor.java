@@ -40,9 +40,6 @@ public class TileEntityRolldoor extends TileEntityOSBase {
 
     public void remove(){
         removeElements();
-        TileEntityRolldoorController controller = getController();
-        if (controller != null)
-            controller.initialize();
     }
 
     @Override
@@ -73,9 +70,11 @@ public class TileEntityRolldoor extends TileEntityOSBase {
 
         // try to find the controller of adjacent rolldoor block
         if(controller == null){
-            TileEntityRolldoor te = RolldoorHelper.getAdjacentRolldoor(this);
-            if(te != null)
-                controller = te.getController();
+            for(TileEntityRolldoor tile : RolldoorHelper.getAdjacentRolldoors(getWorld(), getPos()).values()){
+                controller = tile.getController();
+                if(controller != null)
+                    break;
+            }
         }
 
         // update if a controller was found
@@ -122,14 +121,6 @@ public class TileEntityRolldoor extends TileEntityOSBase {
 
     @Override
     public AxisAlignedBB getRenderBoundingBox(){
-
-        /*
-        if(origin() != null)
-            return getController().getRenderBoundingBox();
-        else
-            return getElementsBoundingBox();
-        */
-
         return super.getRenderBoundingBox();
     }
 
@@ -146,10 +137,10 @@ public class TileEntityRolldoor extends TileEntityOSBase {
     }
 
     public TileEntityRolldoorController getController(){
-        if(controller == null || controller.get() == null || controller.get().isInvalid()) {
-            if (origin() == null)
-                return null;
+        if (origin() == null)
+            return null;
 
+        if(controller == null || controller.get() == null || controller.get().isInvalid()) {
             TileEntity tile = getWorld().getTileEntity(origin());
             if(tile instanceof TileEntityRolldoorController)
                 controller = new WeakReference<>((TileEntityRolldoorController) tile);

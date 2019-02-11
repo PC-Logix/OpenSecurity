@@ -23,23 +23,27 @@ public class TileEntityRolldoorElement extends TileEntity {
         getFacing(); //call this to update the local BB when necessary
 
         TileEntityRolldoor rolldoor = getRolldoor();
-        if(rolldoor != null) {
-            TileEntityRolldoorController controller = rolldoor.getController();
+        if(rolldoor == null)
+            return BlockRolldoor.emptyBB;
 
-            if (controller != null) {
-                double height = controller.getCurrentHeight() - getPosition();
+        TileEntityRolldoorController controller = rolldoor.getController();
+        if (controller == null)
+            return BlockRolldoor.emptyBB;
 
-                if (height < 0)
-                    return BlockRolldoor.emptyBB;
-                else if (height < 1)
-                    return bb.intersect(new AxisAlignedBB(0, 1f-height, 0, 1, 1, 1));
-            }
-        }
-        return bb;
+        /* ^^ no rolldoor or no controller => no bounding box */
+
+        double height = controller.getCurrentHeight() - getPosition();
+
+        if (height < 0)
+            return BlockRolldoor.emptyBB;
+        else if (height < 1)
+            return bb.intersect(new AxisAlignedBB(0, 1f-height, 0, 1, 1, 1));
+        else
+            return bb;
     }
 
     private TileEntityRolldoor getRolldoor(){
-        if(rolldoor == null || rolldoor.get().isInvalid()) {
+        if(rolldoor == null || rolldoor.get() == null || rolldoor.get().isInvalid()) {
             if (origin() == null)
                 return null;
 

@@ -32,11 +32,6 @@ public class BlockRolldoor extends BlockOSBase {
         return tile instanceof TileEntityRolldoor ? (TileEntityRolldoor) tile : null;
     }
 
-    TileEntityRolldoorController getController(IBlockAccess world, BlockPos pos) {
-        TileEntityRolldoor tile = getTileEntity(world, pos);
-        return tile != null ? tile.getController() : null;
-    }
-
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityRolldoor();
@@ -55,13 +50,21 @@ public class BlockRolldoor extends BlockOSBase {
     }
 
     public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        TileEntityRolldoorController controller = null;
         if(!world.isRemote) {
             TileEntityRolldoor tile = getTileEntity(world, pos);
-            if(tile != null)
+            if (tile != null) {
                 tile.remove();
+                controller = tile.getController();
+            }
         }
 
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
+        boolean wasRemoved = super.removedByPlayer(state, world, pos, player, willHarvest);
+
+        if(wasRemoved && controller != null)
+            controller.initialize();
+
+        return wasRemoved;
     }
 
 }

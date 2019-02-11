@@ -8,7 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 @SideOnly(Side.CLIENT)
 public class ModelCube {
-    Vector3f p1, p2;
+    Vector3f p1 = new Vector3f(0, 0, 0), p2 = new Vector3f(0, 0, 0);
     
     public ModelCube(float x1, float y1, float z1, float x2, float y2, float z2){
         setP1(x1, y1, z1);
