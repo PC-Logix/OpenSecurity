@@ -27,7 +27,7 @@ public class RenderRolldoorController extends TileEntitySpecialRenderer<TileEnti
         height = tileEntity.getCurrentHeight();
 
         //min height of 0.02 to avoid z-fighting
-        height = height >= 0.02 ? height : 0.02;
+        height = height >= 0.02 ? height : -0.02;
 
         model.setP1(-width, 0, 1f/16 * 6);
         model.setP2(width, (float) height, 1f - 1f/16 * 6);
