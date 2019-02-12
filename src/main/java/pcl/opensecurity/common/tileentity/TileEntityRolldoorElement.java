@@ -4,7 +4,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import pcl.opensecurity.common.blocks.BlockOSBase;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
 import pcl.opensecurity.common.blocks.BlockRolldoorElement;
 import pcl.opensecurity.util.AABBHelper;
@@ -69,8 +68,8 @@ public class TileEntityRolldoorElement extends TileEntity {
     }
 
     public EnumFacing getFacing(){
-        if(facing == null) {
-            facing = BlockOSBase.getFacing(getWorld().getBlockState(origin()));
+        if(facing == null && origin() != null && getWorld() != null) {
+            facing = BlockRolldoor.getFacing(getWorld().getBlockState(origin()));
             bb = AABBHelper.rotateHorizontal(bbDefault, facing);
         }
         return facing;

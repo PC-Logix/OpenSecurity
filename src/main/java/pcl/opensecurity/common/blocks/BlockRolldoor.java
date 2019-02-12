@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,15 +11,18 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoor;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 
-public class BlockRolldoor extends BlockOSBase {
+public class BlockRolldoor extends BlockCamouflage implements ITileEntityProvider {
     public final static String NAME = "rolldoor";
     public final static AxisAlignedBB emptyBB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
     public BlockRolldoor() {
-        super(NAME, Material.IRON, 0.5f);
+        super(Material.IRON, NAME);
+        setHardness(0.5f);
+        setCreativeTab(ContentRegistry.creativeTab);
     }
 
     @Override
@@ -44,8 +48,9 @@ public class BlockRolldoor extends BlockOSBase {
         if(!world.isRemote) {
             TileEntityRolldoor tile = getTileEntity(world, pos);
 
-            if (tile != null)
+            if (tile != null) {
                 tile.initialize();
+            }
         }
     }
 
@@ -66,5 +71,9 @@ public class BlockRolldoor extends BlockOSBase {
 
         return wasRemoved;
     }
+
+
+
+
 
 }

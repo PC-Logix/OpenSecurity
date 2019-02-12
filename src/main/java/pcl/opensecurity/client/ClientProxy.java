@@ -38,6 +38,7 @@ import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 import pcl.opensecurity.manual.ManualPathProvider;
 import pcl.opensecurity.util.FileUtils;
 
+import javax.annotation.Nullable;
 import java.io.File;
 
 @SideOnly(Side.CLIENT)
@@ -53,6 +54,7 @@ public class ClientProxy extends CommonProxy {
         ContentRegistry.nanoFog.initColorHandler(event.getBlockColors());
         ContentRegistry.doorController.initColorHandler(event.getBlockColors());
         ContentRegistry.rolldoorController.initColorHandler(event.getBlockColors());
+        ContentRegistry.rolldoor.initColorHandler(event.getBlockColors());
     }
 
     @Override
@@ -112,12 +114,12 @@ public class ClientProxy extends CommonProxy {
         registerBlockItem(ContentRegistry.energyTurret, 0, BlockEnergyTurret.NAME);
         registerBlockItem(ContentRegistry.rfidReader, 0, BlockRFIDReader.NAME);
         registerBlockItem(ContentRegistry.nanoFogTerminal, 0, BlockNanoFogTerminal.NAME);
-        registerBlockItem(ContentRegistry.rolldoor, 0, BlockRolldoor.NAME);
         registerBlockItem(ContentRegistry.rolldoorElement, 0, BlockRolldoorElement.NAME);
 
         // BlockNanoFog uses custom texture/model loader for shield blocks
         CamouflageBlockModelLoader.registerBlock(ContentRegistry.nanoFog);
         CamouflageBlockModelLoader.registerBlock(ContentRegistry.doorController);
+        CamouflageBlockModelLoader.registerBlock(ContentRegistry.rolldoor);
         CamouflageBlockModelLoader.registerBlock(ContentRegistry.rolldoorController);
 
 
@@ -187,5 +189,4 @@ public class ClientProxy extends CommonProxy {
             return tintIndex == 0 ? 0xFFFFFF : card.getColor(stack);
         }
     }
-
 }

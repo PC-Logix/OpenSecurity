@@ -45,9 +45,9 @@ public class ContentRegistry {
     public static Block secureDoor = new BlockSecureDoor();
     public static Block privateSecureDoor = new BlockSecurePrivateDoor();
     public static Block nanoFogTerminal = new BlockNanoFogTerminal();
-    public static Block rolldoor = new BlockRolldoor();
     public static Block rolldoorElement = new BlockRolldoorElement();
 
+    public static BlockRolldoor rolldoor = new BlockRolldoor();
     public static BlockDoorController doorController = new BlockDoorController();
     public static BlockRolldoorController rolldoorController = new BlockRolldoorController();
     public static BlockNanoFog nanoFog = new BlockNanoFog();

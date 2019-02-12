@@ -1,23 +1,14 @@
 package pcl.opensecurity.common.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockGlass;
-import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
 import pcl.opensecurity.util.IOwner;
 
@@ -41,41 +32,6 @@ public class BlockDoorController extends BlockCamouflage implements ITileEntityP
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
         TileEntity te = worldIn.getTileEntity(pos);
         ((IOwner) te).setOwner(placer.getUniqueID());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        ItemStack heldItem = player.getHeldItemMainhand();
-        if (heldItem.isEmpty())
-            return true;
-
-        Block block = Block.getBlockFromItem(heldItem.getItem());
-        int meta = heldItem.getMetadata();
-
-        if (block.isFullCube(block.getDefaultState()) || block instanceof BlockGlass || block instanceof BlockStainedGlass) {
-            TileEntityDoorController tileEntity = (TileEntityDoorController) world.getTileEntity(pos);
-            if (tileEntity == null || player.isSneaking() || heldItem.getItem() instanceof ItemDoor || heldItem.getItem() instanceof ItemSecureDoor) {
-                return false;
-            }
-
-            //If the user is not the owner, or the user is not in creative drop out.
-            if (tileEntity.getOwner() != null) {
-                if (!tileEntity.getOwner().equals(player.getUniqueID()) && !player.capabilities.isCreativeMode) {
-                    if (tileEntity.getOwner() != null) {
-                        return true;
-                    }
-                }
-            }
-            if ((tileEntity.getOwner() != null && tileEntity.getOwner().equals(player.getUniqueID())) || player.capabilities.isCreativeMode) {
-                if (heldItem.getItem() instanceof ItemBlock) {
-                    tileEntity.setCamoBlock(block, meta);
-                    return true;
-
-                }
-            }
-        }
-        return false;
     }
 
     @Override

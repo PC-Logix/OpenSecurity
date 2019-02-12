@@ -9,10 +9,12 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -22,6 +24,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.camouflage.CamoBlockId;
 import pcl.opensecurity.common.camouflage.CamoProperty;
 import pcl.opensecurity.util.ICamo;
@@ -29,13 +32,15 @@ import pcl.opensecurity.util.ICamo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static pcl.opensecurity.common.blocks.BlockOSBase.PROPERTYFACING;
+
 public class BlockCamouflage extends Block {
     public static final String CAMO = "camo";
     public static final CamoProperty CAMOID = new CamoProperty("camoid");
 
     public BlockCamouflage(Material materialIn, String name){
         super(materialIn);
-        setRegistryName(name);
+        setRegistryName(OpenSecurity.MODID, name);
         setUnlocalizedName(name);
     }
 
@@ -44,10 +49,21 @@ public class BlockCamouflage extends Block {
         return te instanceof ICamo ? (ICamo) te : null;
     }
 
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-        ICamo te = getTE(worldIn, pos);
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if(player.isSneaking())
+            return false;
+
+        ItemStack heldItem = player.getHeldItemMainhand();
+
+        ICamo tileEntity = getTE(world, pos);
+
+        if(tileEntity.setCamoBlock(player, heldItem))
+            return true;
+
+        return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     }
+
 
     @SideOnly(Side.CLIENT)
     public void initModel(ModelResourceLocation model) {
@@ -91,7 +107,7 @@ public class BlockCamouflage extends Block {
     @Override
     @Nonnull
     protected BlockStateContainer createBlockState() {
-        return new ExtendedBlockState(this, new IProperty[] { }, new IUnlistedProperty[] { CAMOID });
+        return new ExtendedBlockState(this, new IProperty[] { PROPERTYFACING }, new IUnlistedProperty[] { CAMOID });
     }
 
     @Override
@@ -117,6 +133,31 @@ public class BlockCamouflage extends Block {
         }
 
         return true;
+    }
+
+    /* facing property */
+    @Override
+    @Deprecated
+    public IBlockState getStateFromMeta(int meta) {
+        EnumFacing facing = EnumFacing.getHorizontal(meta);
+        return getDefaultState().withProperty(PROPERTYFACING, facing);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        int facingbits = getFacing(state).getHorizontalIndex();
+        return facingbits;
+    }
+
+    @Override
+    @Deprecated
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+        EnumFacing enumfacing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
+        return getDefaultState().withProperty(PROPERTYFACING, enumfacing);
+    }
+
+    public static EnumFacing getFacing(IBlockState state){
+        return state.getValue(PROPERTYFACING);
     }
 
 

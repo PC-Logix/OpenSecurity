@@ -6,8 +6,6 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.Visibility;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,27 +14,21 @@ import net.minecraft.util.text.TextComponentString;
 import pcl.opensecurity.common.component.DoorController;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
-import pcl.opensecurity.util.ICamo;
 import pcl.opensecurity.util.IOwner;
 
 import java.util.UUID;
 
-public class TileEntityDoorController extends TileEntityOSBase implements IProtection, ICamo, IOwner {
+public class TileEntityDoorController extends TileEntityOSCamoBase implements IOwner, IProtection {
+	final static String NAME = "os_doorcontroller";
 	private UUID ownerUUID;
 
-	MimicBlock mimicBlock = new MimicBlock();
-
-	public TileEntityDoorController(String name){
-		super(name);
+	public TileEntityDoorController(){
+		super(NAME);
 		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
 	}
 
-	public TileEntityDoorController(){
-		this("os_doorcontroller");
-	}
-
 	public TileEntityDoorController(EnvironmentHost host){
-		super("os_doorcontroller", host);
+		super(NAME, host);
 	}
 
 	@Override
@@ -94,8 +86,6 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 		return DoorController.setDoorPasswords(getWorld(), getPos(), args.checkString(0), args.checkString(1));
 	}
 
-
-
 	// DoorControllerTile Methods
 	@Override //IOwner
 	public void setOwner(UUID uuid) {
@@ -111,16 +101,12 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 
-
 		if(nbt.hasUniqueId("owner"))
 			this.ownerUUID = nbt.getUniqueId("owner");
 		else if(nbt.hasKey("owner")) //keep this for compat with old nbt tags in world (after first worldsave they are "fixed"
 			this.ownerUUID = UUID.fromString(nbt.getString("owner"));
 		else
 			this.ownerUUID = null;
-
-
-		mimicBlock.readFromNBT(nbt);
 	}
 
 	@Override
@@ -129,26 +115,12 @@ public class TileEntityDoorController extends TileEntityOSBase implements IProte
 		if(ownerUUID != null)
 			nbt.setUniqueId("owner", this.ownerUUID);
 
-		nbt = mimicBlock.writeToNBT(nbt);
-
 		return nbt;
 	}
 
-	public IBlockState getCamoBlock() {
-		return mimicBlock.get();
+	@Override
+	public boolean playerCanChangeCamo(EntityPlayer player){
+		return player.isCreative() || getOwner() == null || getOwner().equals(player.getUniqueID());
 	}
 
-	@Deprecated
-	public void setCamoBlock(Block block, int meta) {
-		mimicBlock.set(block, meta);
-		markDirtyClient();
-	}
-
-	public void markDirtyClient() {
-		markDirty();
-		if (getWorld() != null) {
-			IBlockState state = getWorld().getBlockState(getPos());
-			getWorld().notifyBlockUpdate(getPos(), state, state, 3);
-		}
-	}
 }

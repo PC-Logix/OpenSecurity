@@ -6,6 +6,7 @@ package pcl.opensecurity.common.tileentity;
  */
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -85,14 +86,21 @@ public class TileEntityNanoFog extends TileEntity implements ICamo {
         }
     }
 
+    @Override
     public IBlockState getCamoBlock() {
         return mimicBlock.get();
     }
 
     @Deprecated
+    @Override
     public void setCamoBlock(Block block, int meta) {
         mimicBlock.set(block, meta);
         markDirtyClient();
+    }
+
+    @Override
+    public boolean playerCanChangeCamo(EntityPlayer player){
+        return false;
     }
 
     public void notifyBuild(){
@@ -133,7 +141,7 @@ public class TileEntityNanoFog extends TileEntity implements ICamo {
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
 
-        tagCompound = mimicBlock.writeToNBT(tagCompound);
+        tagCompound.setTag("camo", mimicBlock.writeToNBT(new NBTTagCompound()));
 
         tagCompound.setInteger("knockback", knockback);
         tagCompound.setInteger("damageI", damage);
@@ -158,7 +166,8 @@ public class TileEntityNanoFog extends TileEntity implements ICamo {
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
 
-        mimicBlock.readFromNBT(tagCompound);
+        if(tagCompound.hasKey("camo"))
+            mimicBlock.readFromNBT(tagCompound.getCompoundTag("camo"));
 
         isSolid = tagCompound.getBoolean("solid");
         isBuild = tagCompound.getBoolean("build");

@@ -8,6 +8,9 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.models.ModelCubeTexturedTESR;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 
+import java.awt.*;
+
+//todo: figure out lightlevel at the rolldoor location instead of using lightvalue of the controller position
 public class RenderRolldoorController extends TileEntitySpecialRenderer<TileEntityRolldoorController> {
     static ResourceLocation texture = new ResourceLocation(OpenSecurity.MODID, "textures/blocks/rolldoor.png");
     double height;
@@ -25,22 +28,26 @@ public class RenderRolldoorController extends TileEntitySpecialRenderer<TileEnti
         model.setP1(-width, 0, 1f/16 * 6);
         model.setP2(width, (float) height, 1f - 1f/16 * 6);
 
+        Color color = new Color(tileEntity.getColor());
+
+        GlStateManager.disableLighting();
+        GlStateManager.pushMatrix();
+
         GlStateManager.enableTexture2D();
         bindTexture(texture);
 
-        GlStateManager.disableLighting();
-        GlStateManager.color(1f, 1f, 1f, 1f);
-        GlStateManager.pushMatrix();
+        GlStateManager.color(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1f);
+
         GlStateManager.translate(renderPosition.x + x, y, renderPosition.z + z);
 
-
-        switch(tileEntity.facing()) {
+        switch(tileEntity.rolldoorFacing()) {
             case EAST:
             case WEST:
                 GlStateManager.rotate(90, 0, 1, 0);
         }
 
         GlStateManager.translate(0, 0, -0.5);
+
         GlStateManager.scale(1, -1, 1);
 
         model.drawCube();

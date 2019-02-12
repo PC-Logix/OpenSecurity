@@ -12,10 +12,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.ContentRegistry;
-import pcl.opensecurity.common.blocks.BlockOSBase;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
+import pcl.opensecurity.util.AABBHelper;
+import pcl.opensecurity.util.ICamo;
 import pcl.opensecurity.util.RolldoorHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
@@ -23,16 +25,15 @@ import java.lang.ref.WeakReference;
 import static net.minecraft.block.Block.FULL_BLOCK_AABB;
 import static pcl.opensecurity.common.blocks.BlockRolldoorElement.PROPERTYOFFSET;
 
-public class TileEntityRolldoor extends TileEntityOSBase {
+public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
     public final static int MAX_LENGTH = 16; // limited to 16 because of metaindex limits in the block
 
     private int height = 0;
 
     private AxisAlignedBB bb = FULL_BLOCK_AABB;
 
-    WeakReference<TileEntityRolldoorController> controller;
-
-    BlockPos origin;
+    private WeakReference<TileEntityRolldoorController> controller;
+    private BlockPos origin;
 
     public TileEntityRolldoor() {
         super("os_" + BlockRolldoor.NAME);
@@ -58,8 +59,8 @@ public class TileEntityRolldoor extends TileEntityOSBase {
     public NBTTagCompound writeToNBT(NBTTagCompound nbt){
         nbt.setInteger("height", this.height);
 
-        if(origin() != null)
-            nbt.setTag("origin", NBTUtil.createPosTag(origin()));
+        if(origin != null)
+            nbt.setTag("origin", NBTUtil.createPosTag(origin));
 
         return super.writeToNBT(nbt);
     }
@@ -85,10 +86,10 @@ public class TileEntityRolldoor extends TileEntityOSBase {
     }
 
     public EnumFacing getFacing(){
-        return BlockOSBase.getFacing(getWorld().getBlockState(getPos()));
+        return BlockRolldoor.getFacing(getWorld().getBlockState(getPos()));
     }
 
-    public void updateHeight(){
+    private void updateHeight(){
         height = 0;
         BlockPos pos = getPos().down();
         while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && height < MAX_LENGTH) {
@@ -101,25 +102,28 @@ public class TileEntityRolldoor extends TileEntityOSBase {
             height++;
         }
         updateBB();
+        markDirtyClient();
     }
 
-    public void updateBB(){
+    private void updateBB(){
         bb = FULL_BLOCK_AABB.expand(0, -height(), 0);
     }
 
-    public void removeElements(){
+    private void removeElements(){
         height = 0;
+        int element = 0;
         BlockPos pos = getPos().down();
-        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && height < MAX_LENGTH) {
+        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && element < MAX_LENGTH) {
             if(getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)){
                 getWorld().setBlockToAir(pos);
             }
             pos = pos.down();
-            height++;
+            element++;
         }
     }
 
     @Override
+    @Nonnull
     public AxisAlignedBB getRenderBoundingBox(){
         return super.getRenderBoundingBox();
     }
@@ -137,11 +141,11 @@ public class TileEntityRolldoor extends TileEntityOSBase {
     }
 
     public TileEntityRolldoorController getController(){
-        if (origin() == null)
+        if (origin == null)
             return null;
 
         if(controller == null || controller.get() == null || controller.get().isInvalid()) {
-            TileEntity tile = getWorld().getTileEntity(origin());
+            TileEntity tile = getWorld().getTileEntity(origin);
             if(tile instanceof TileEntityRolldoorController)
                 controller = new WeakReference<>((TileEntityRolldoorController) tile);
             else
@@ -149,10 +153,6 @@ public class TileEntityRolldoor extends TileEntityOSBase {
         }
 
         return controller.get();
-    }
-
-    public BlockPos origin(){
-        return origin;
     }
 
     @Override

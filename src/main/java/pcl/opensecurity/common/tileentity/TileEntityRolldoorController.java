@@ -1,8 +1,11 @@
 package pcl.opensecurity.common.tileentity;
 
+import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.EnvironmentHost;
+import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -15,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.lib.easing.penner.Quad;
+import pcl.opensecurity.util.ColoredTile;
 import pcl.opensecurity.util.RolldoorHelper;
 import scala.actors.threadpool.Arrays;
 
@@ -24,21 +28,32 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TileEntityRolldoorController extends TileEntityDoorController {
+public class TileEntityRolldoorController extends TileEntityOSCamoBase implements ColoredTile {
+    private static final double MAX_MOVE_SPEED = 3;
+    private static final double MIN_MOVE_SPEED = 0.1;
+
+    final static String NAME = "os_rolldoorcontroller";
+
+    private int color = 0;
+
     public TileEntityRolldoorController(){
-        super("os_rolldoorcontroller");
+        super(NAME);
+        node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
     }
+
+    public TileEntityRolldoorController(EnvironmentHost host){
+        super(NAME, host);
+    }
+
 
     private AxisAlignedBB renderBoundingBox = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
     private AxisAlignedBB elementsRenderBoundingBox = renderBoundingBox;
 
     private EnumFacing facing = EnumFacing.NORTH;
 
-    private double currentPosition = 0;
-
-    private long animationStart = 0;
-    private double speed = 0;
-    private double moveSpeed = 0.5;
+    private double currentPosition = 0.02;
+    private double targetPosition = -1;
+    private double moveSpeed = 1;
 
     private HashSet<WeakReference<TileEntityRolldoor>> elements = new HashSet<>();
     private HashSet<BlockPos> elementsPos = new HashSet<>();
@@ -59,59 +74,63 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
             markDirtyClient();
         }
 
-        if(speed() != 0)
+        if(isMoving())
             getCurrentHeight();
     }
 
     // OC Callbacks
     @Callback
-    @Override
     public Object[] isOpen(Context context, Arguments args) {
-        return new Object[] { getCurrentHeight() == 0 };
+        return new Object[] { isOpen() };
     }
 
     @Callback
-    @Override
+    public Object[] isMoving(Context context, Arguments args) {
+        return new Object[] { isMoving() };
+    }
+
+    @Callback
+    public Object[] getPosition(Context context, Arguments args){
+        double position = getCurrentHeight();
+        position = position <= 0.02 ? 0 : position;
+        return new Object[]{ position };
+    }
+
+    @Callback
+    public Object[] setPosition(Context context, Arguments args){
+        setTargetPosition(Math.max(0.02, Math.min(getHeight(), args.checkDouble(0))));
+        return new Object[]{ targetPosition <= 0.02 ? 0 : targetPosition };
+    }
+
+    @Callback
     public Object[] toggle(Context context, Arguments args) {
-        if(speed != 0)
-            setSpeed(speed * -1);
-        else if(currentPosition == 0)
-            setSpeed(moveSpeed);
-        else
-            setSpeed(-moveSpeed);
-
-        return new Object[]{ true };
+        if(isMoving()){
+            return new Object[]{ false, "rolldoor is moving" };
+        }
+        else if(isOpen()) {
+            setTargetPosition(getHeight());
+            return new Object[]{ true, "closing door" };
+        } else {
+            setTargetPosition(0.02);
+            return new Object[]{ true, "opening door" };
+        }
     }
 
     @Callback
-    @Override
     public Object[] open(Context context, Arguments args) {
-        setSpeed(-moveSpeed);
+        setTargetPosition(0.02);
         return new Object[]{ true };
     }
 
     @Callback
-    @Override
     public Object[] close(Context context, Arguments args) {
-        setSpeed(moveSpeed);
+        setTargetPosition(getHeight());
         return new Object[]{ true };
-    }
-
-    @Callback
-    @Override
-    public Object[] removePassword(Context context, Arguments args) {
-        return new Object[] { false, "not supported yet"};
-    }
-
-    @Callback
-    @Override
-    public Object[] setPassword(Context context, Arguments args) {
-        return new Object[] { false, "not supported yet"};
     }
 
     @Callback
     public Object[] setSpeed(Context context, Arguments args) {
-        moveSpeed = Math.max(0.1, Math.min(1, args.optDouble(0, moveSpeed))); // 0.1d - 1d
+        moveSpeed = Math.max(MIN_MOVE_SPEED, Math.min(MAX_MOVE_SPEED, args.optDouble(0, moveSpeed))); // 0.1d - 1d
         return new Object[] { moveSpeed };
     }
 
@@ -190,11 +209,6 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         initialize();
     }
 
-    private void setSpeed(double speedIn){
-        speed = speedIn;
-        markDirtyClient();
-    }
-
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox(){
@@ -205,39 +219,66 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         return elementsRenderBoundingBox.offset(-getPos().getX(), -getPos().getY(), -getPos().getZ());
     }
 
-    private double getDuration(double newPosition){
-        double diff = getCurrentHeight() - newPosition;
-        return Math.abs(diff * speed()) * 1000;
+    private long animationStart = 0;
+    private long animationEnd = 0;
+    private long animationDuration = 0;
+    private double animationDistance = 0;
+    private double animationStartPosition = 0;
+    private double animationTargetPosition = -1;
+
+    private void startAnimationTo(double newPosition){
+        newPosition = Math.max(0, Math.min(newPosition, getHeight()));
+        animationDistance = newPosition - currentPosition;
+        animationStartPosition = currentPosition;
+        animationTargetPosition = targetPosition;
+        animationDuration = Math.round(Math.abs(animationDistance / moveSpeed) * 1000);
+
+        animationStart = System.currentTimeMillis();
+        animationEnd = animationStart + animationDuration;
+    }
+
+    private void endAnimation(){
+        currentPosition = targetPosition;
+
+        animationStart = animationEnd = animationDuration = 0;
+        animationStartPosition = animationDistance = 0;
+        targetPosition = -1;
     }
 
     public double getCurrentHeight(){
-        if(animationStart == 0) {
-            if(speed() != 0)
-                animationStart = System.currentTimeMillis();
-            else
-                return currentPosition;
+        if(!isMoving())
+            return currentPosition;
+
+        if(animationEnd == 0 || animationTargetPosition != targetPosition) {
+            startAnimationTo(targetPosition);
         }
 
-        double height = getHeight();
+        long elapsed = System.currentTimeMillis() - animationStart;
 
-        long prog = System.currentTimeMillis() - animationStart;
-
-        double duration = Math.abs(height * speed()) * 1000;
-
-        if(prog >= duration) {
-            animationStart = 0;
-            setSpeed(0);
+        if(elapsed >= animationDuration) {
+            endAnimation();
+            return currentPosition;
         }
-        else if(speed() > 0)
-            currentPosition = 0.02 + height * Quad.easeInOut(prog, 0, 1, (float) duration);
-        else if(speed() < 0)
-            currentPosition = 0.02 + height - height * Quad.easeInOut(prog, 0, 1, (float) duration);
 
+        currentPosition = animationStartPosition + animationDistance * Math.abs(Quad.easeInOut(elapsed, 0, 1, animationDuration));
 
-        return Math.abs(currentPosition);
+        return currentPosition;
     }
 
-    public int getHeight(){
+    private void setTargetPosition(double targetPosition) {
+        this.targetPosition = targetPosition;
+        markDirtyClient();
+    }
+
+    private boolean isOpen(){
+        return getCurrentHeight() <= 0.02;
+    }
+
+    private boolean isMoving(){
+        return targetPosition != -1;
+    }
+
+    private int getHeight(){
         int height = 0;
         for(WeakReference<TileEntityRolldoor> ref : elements){
             if(ref.get() != null && !ref.get().isInvalid())
@@ -259,13 +300,8 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         return elements.size();
     }
 
-    public EnumFacing facing(){
-        // returns facing of the rolldoor, not of the controller
-        return facing;
-    }
-
-    private double speed(){
-        return speed;
+    public EnumFacing rolldoorFacing(){
+        return facing; // facing of the rolldoor, not of the controller tile
     }
 
     @Override
@@ -276,10 +312,11 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
         for(int i=0; nbt.hasKey("el"+i); i++)
             elementsPos.add(NBTUtil.getPosFromTag(nbt.getCompoundTag("el"+i)));
 
-        facing = EnumFacing.values()[nbt.getInteger("facing")];
-        speed = nbt.getDouble("speed");
+        facing = EnumFacing.values()[nbt.getInteger("rolldoorFacing")];
+        color = nbt.getInteger("color");
         moveSpeed = nbt.getDouble("moveSpeed");
         currentPosition = nbt.getDouble("position");
+        targetPosition = nbt.getDouble("targetPos");
     }
 
     @Override
@@ -290,13 +327,31 @@ public class TileEntityRolldoorController extends TileEntityDoorController {
             i++;
         }
 
-        nbt.setInteger("facing", facing.ordinal());
-        nbt.setDouble("speed", this.speed);
+        nbt.setInteger("color", color);
+        nbt.setInteger("rolldoorFacing", facing.ordinal());
         nbt.setDouble("moveSpeed", this.moveSpeed);
         nbt.setDouble("position", this.currentPosition);
+        nbt.setDouble("targetPos", this.targetPosition);
         return super.writeToNBT(nbt);
     }
 
+    @Override
+    public int getColor(){
+        return color;
+    }
+
+    @Override
+    public void setColor(int color){
+        if(this.color != color) {
+            this.color = color;
+            onColorChanged();
+        }
+    }
+
+    @Override
+    public void onColorChanged(){
+        markDirtyClient();
+    }
 
     @Override
     public NBTTagCompound getUpdateTag() {
