@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IMI",
+    "TCT"
+  ],
+  "key": {
+    "M": {
+      "item": "#opencomputers_chip1"
+    },
+    "T": {
+      "item": "#opencomputers_transistor"
+    },
+    "C": {
+      "item": "#opencomputers_cable"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "opensecurity:rolldoor"
+  }
+}

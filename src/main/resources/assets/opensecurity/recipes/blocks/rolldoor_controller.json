@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TQT",
+    "QCQ",
+    "SBS"
+  ],
+  "key": {
+    "T": {
+      "item": "#opencomputers_chip2"
+    },
+    "S": {
+      "item": "#opencomputers_transistor"
+    },
+    "B": {
+      "item": "#opencomputers_cable"
+    },
+    "C": {
+      "item": "#opencomputers_controlunit"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "result": {
+    "item": "opensecurity:rolldoor_controller"
+  }
+}

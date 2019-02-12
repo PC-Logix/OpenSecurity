@@ -3,7 +3,7 @@
   "defaults": {
     "textures": {
       "top": "opensecurity:blocks/machine_side",
-      "front": "opensecurity:blocks/machine_side",
+      "front": "opensecurity:blocks/rolldoor_controller",
       "side": "opensecurity:blocks/machine_side"
     },
     "model": "minecraft:orientable"
