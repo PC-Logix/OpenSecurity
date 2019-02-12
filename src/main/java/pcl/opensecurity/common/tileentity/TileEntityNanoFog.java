@@ -9,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -150,9 +151,7 @@ public class TileEntityNanoFog extends TileEntity implements ICamo {
         tagCompound.setTag("pass", filterPass.writeToNBT(new NBTTagCompound()));
 
         if(terminal != null) {
-            tagCompound.setInteger("termX", terminal.getX());
-            tagCompound.setInteger("termY", terminal.getY());
-            tagCompound.setInteger("termZ", terminal.getZ());
+            tagCompound.setTag("terminal", NBTUtil.createPosTag(terminal));
         }
 
         tagCompound.setBoolean("solid", isSolid);
@@ -168,6 +167,8 @@ public class TileEntityNanoFog extends TileEntity implements ICamo {
 
         if(tagCompound.hasKey("camo"))
             mimicBlock.readFromNBT(tagCompound.getCompoundTag("camo"));
+        else // compat, can be removed after some time has passed... :>
+            mimicBlock.readFromNBT(tagCompound);
 
         isSolid = tagCompound.getBoolean("solid");
         isBuild = tagCompound.getBoolean("build");
@@ -176,7 +177,12 @@ public class TileEntityNanoFog extends TileEntity implements ICamo {
         filterDamage.readFromNBT(tagCompound.getCompoundTag("damage"));
         filterPass.readFromNBT(tagCompound.getCompoundTag("pass"));
 
-        terminal = new BlockPos(tagCompound.getInteger("termX"), tagCompound.getInteger("termY"), tagCompound.getInteger("termZ"));
+
+        if(tagCompound.hasKey("terminal"))
+            terminal = NBTUtil.getPosFromTag(tagCompound.getCompoundTag("terminal"));
+        //keep for compat to old versions
+        if(tagCompound.hasKey("termX"))
+            terminal = new BlockPos(tagCompound.getInteger("termX"), tagCompound.getInteger("termY"), tagCompound.getInteger("termZ"));
 
         if (getWorld() != null && getWorld().isRemote) {
             // For some reason this is needed to force rendering on the client when apply is pressed.

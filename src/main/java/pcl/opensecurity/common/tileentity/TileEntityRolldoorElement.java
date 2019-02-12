@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.tileentity;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -10,31 +11,34 @@ import pcl.opensecurity.util.AABBHelper;
 
 import java.lang.ref.WeakReference;
 
+import static pcl.opensecurity.common.blocks.BlockOSBase.PROPERTYFACING;
+import static pcl.opensecurity.common.blocks.BlockRolldoorElement.PROPERTYOFFSET;
+
 public class TileEntityRolldoorElement extends TileEntity {
     private static final AxisAlignedBB bbDefault = new AxisAlignedBB(0, 0, 1f/16 * 6, 1, 1, 1f - 1f/16 * 6);
     private AxisAlignedBB bb = bbDefault;
     private EnumFacing facing;
-    private int position = 0;
+    private int position = -1;
 
-    WeakReference<TileEntityRolldoor> rolldoor;
+    private WeakReference<TileEntityRolldoor> rolldoor;
 
     public AxisAlignedBB getBoundingBox(){
         getFacing(); //call this to update the local BB when necessary
 
         TileEntityRolldoor rolldoor = getRolldoor();
         if(rolldoor == null)
-            return BlockRolldoor.emptyBB;
+            return BlockRolldoorElement.emptyBB;
 
         TileEntityRolldoorController controller = rolldoor.getController();
         if (controller == null)
-            return BlockRolldoor.emptyBB;
+            return BlockRolldoorElement.emptyBB;
 
         /* ^^ no rolldoor or no controller => no bounding box */
 
         double height = controller.getCurrentHeight() - getPosition();
 
         if (height < 0)
-            return BlockRolldoor.emptyBB;
+            return BlockRolldoorElement.emptyBB;
         else if (height < 1)
             return bb.intersect(new AxisAlignedBB(0, 1f-height, 0, 1, 1, 1));
         else
@@ -43,9 +47,6 @@ public class TileEntityRolldoorElement extends TileEntity {
 
     private TileEntityRolldoor getRolldoor(){
         if(rolldoor == null || rolldoor.get() == null || rolldoor.get().isInvalid()) {
-            if (origin() == null)
-                return null;
-
             TileEntity tile = getWorld().getTileEntity(origin());
             if(tile instanceof TileEntityRolldoor)
                 rolldoor = new WeakReference<>((TileEntityRolldoor) tile);
@@ -56,21 +57,28 @@ public class TileEntityRolldoorElement extends TileEntity {
         return rolldoor.get();
     }
 
-    public BlockPos origin(){
+    private BlockPos origin(){
         return getPos().add(0, getPosition() + 1, 0);
     }
 
-    public int getPosition(){
-        if(position == 0){
-            position = BlockRolldoorElement.getOffset(getWorld().getBlockState(getPos()));
+    private int getPosition(){
+        if(position == -1){
+            IBlockState state = getWorld().getBlockState(getPos());
+            if(state.getProperties().containsKey(PROPERTYOFFSET))
+                position = BlockRolldoorElement.getOffset(state);
         }
         return position;
     }
 
     public EnumFacing getFacing(){
-        if(facing == null && origin() != null && getWorld() != null) {
-            facing = BlockRolldoor.getFacing(getWorld().getBlockState(origin()));
-            bb = AABBHelper.rotateHorizontal(bbDefault, facing);
+        if(facing == null) {
+            IBlockState state = getWorld().getBlockState(origin());
+            if(state.getProperties().containsKey(PROPERTYFACING)) {
+                facing = BlockRolldoor.getFacing(state);
+                bb = AABBHelper.rotateHorizontal(bbDefault, facing);
+            }
+            else
+                return EnumFacing.UP;
         }
         return facing;
     }

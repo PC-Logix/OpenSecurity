@@ -13,11 +13,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
-import pcl.opensecurity.util.AABBHelper;
 import pcl.opensecurity.util.ICamo;
 import pcl.opensecurity.util.RolldoorHelper;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
@@ -120,12 +118,6 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
             pos = pos.down();
             element++;
         }
-    }
-
-    @Override
-    @Nonnull
-    public AxisAlignedBB getRenderBoundingBox(){
-        return super.getRenderBoundingBox();
     }
 
     public int height(){

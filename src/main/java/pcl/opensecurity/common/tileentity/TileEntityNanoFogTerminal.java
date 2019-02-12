@@ -17,6 +17,7 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -514,6 +515,11 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
         inventory.deserializeNBT(data.getCompoundTag("invIn"));
 
         fogBlocks.clear();
+        for(int shieldBlock=0; data.hasKey("sB"+shieldBlock); shieldBlock++){
+            fogBlocks.add(NBTUtil.getPosFromTag(data.getCompoundTag("sB"+shieldBlock)));
+        }
+
+        //compat
         for(int shieldBlock=0; data.hasKey("sBX"+shieldBlock); shieldBlock++){
             fogBlocks.add(new BlockPos(
                     data.getInteger("sBX"+shieldBlock),
@@ -530,10 +536,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
 
         int shieldBlock = 0;
         for(BlockPos pos : fogBlocks){
-            data.setInteger("sBX"+shieldBlock, pos.getX());
-            data.setInteger("sBY"+shieldBlock, pos.getY());
-            data.setInteger("sBZ"+shieldBlock, pos.getZ());
-
+            data.setTag("sB"+shieldBlock, NBTUtil.createPosTag(pos));
             shieldBlock++;
         }
 

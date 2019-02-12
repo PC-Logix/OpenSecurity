@@ -51,31 +51,42 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
 
     private EnumFacing facing = EnumFacing.NORTH;
 
-    private double currentPosition = 0.02;
+    private double currentPosition = 0;
     private double targetPosition = -1;
     private double moveSpeed = 1;
 
     private HashSet<WeakReference<TileEntityRolldoor>> elements = new HashSet<>();
     private HashSet<BlockPos> elementsPos = new HashSet<>();
 
+    private boolean needsListUpdate = false;
+
+
     @Override
     public void update(){
         super.update();
 
-        if(elements.size() != elementsPos.size() && getWorld() != null){
-            ArrayList<BlockPos> addElements = new ArrayList<>(elementsPos);
-            resetRolldoorData();
-            for(BlockPos pos : addElements){
-                TileEntity tile = getWorld().getTileEntity(pos);
-                if(tile instanceof TileEntityRolldoor)
-                    addElement((TileEntityRolldoor) tile);
-            }
+        if(needsListUpdate)
+            updateElementList();
 
-            markDirtyClient();
+        getCurrentHeight();
+    }
+
+    private void updateElementList(){
+        if(getWorld() == null)
+            return;
+
+        ArrayList<BlockPos> addElements = new ArrayList<>(elementsPos);
+
+        resetRolldoorData();
+
+        for(BlockPos pos : addElements){
+            TileEntity tile = getWorld().getTileEntity(pos);
+            if(tile instanceof TileEntityRolldoor)
+                addElement((TileEntityRolldoor) tile);
         }
 
-        if(isMoving())
-            getCurrentHeight();
+        needsListUpdate = false;
+        markDirtyClient();
     }
 
     // OC Callbacks
@@ -91,15 +102,14 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
 
     @Callback
     public Object[] getPosition(Context context, Arguments args){
-        double position = getCurrentHeight();
-        position = position <= 0.02 ? 0 : position;
-        return new Object[]{ position };
+        return new Object[]{ getCurrentHeight() };
     }
 
     @Callback
     public Object[] setPosition(Context context, Arguments args){
-        setTargetPosition(Math.max(0.02, Math.min(getHeight(), args.checkDouble(0))));
-        return new Object[]{ targetPosition <= 0.02 ? 0 : targetPosition };
+        double newPos = args.optDouble(0, currentPosition);
+        setTargetPosition(Math.max(0, Math.min(getHeight(), newPos)));
+        return new Object[]{ targetPosition };
     }
 
     @Callback
@@ -111,14 +121,14 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
             setTargetPosition(getHeight());
             return new Object[]{ true, "closing door" };
         } else {
-            setTargetPosition(0.02);
+            setTargetPosition(0);
             return new Object[]{ true, "opening door" };
         }
     }
 
     @Callback
     public Object[] open(Context context, Arguments args) {
-        setTargetPosition(0.02);
+        setTargetPosition(0);
         return new Object[]{ true };
     }
 
@@ -271,7 +281,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
     }
 
     private boolean isOpen(){
-        return getCurrentHeight() <= 0.02;
+        return getCurrentHeight() <= 0;
     }
 
     private boolean isMoving(){
@@ -317,6 +327,8 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         moveSpeed = nbt.getDouble("moveSpeed");
         currentPosition = nbt.getDouble("position");
         targetPosition = nbt.getDouble("targetPos");
+
+        needsListUpdate = true;
     }
 
     @Override

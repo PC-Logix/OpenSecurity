@@ -47,6 +47,7 @@ public class BlockRolldoorController extends BlockCamouflage implements ITileEnt
         }
     }
 
+    @Override
     public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
         if(!world.isRemote) {
             TileEntityRolldoorController tile = getTileEntity(world, pos);
