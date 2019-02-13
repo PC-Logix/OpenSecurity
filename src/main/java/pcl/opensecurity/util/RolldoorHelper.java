@@ -23,13 +23,7 @@ public class RolldoorHelper {
 
         doors.put(firstElement.getPos(), firstElement);
 
-        ArrayList<EnumFacing> faces = new ArrayList<>();
-        faces.addAll(getAdjacentRolldoors(firstElement.getWorld(), firstElement.getPos()).keySet());
-
-        if(faces.size() == 0) // no doors adjacent to the first rolldoor block
-            return doors;
-
-        Vec3i searchVector = faces.get(0).getDirectionVec(); // do further searchs only on the same axis
+        Vec3i searchVector = firstElement.getFacing().rotateY().getDirectionVec(); // do further searchs only on the same axis
 
         BlockPos searchPos = firstElement.getPos();
         for(int i=0; doors.size() < TileEntityRolldoor.MAX_LENGTH; i++){

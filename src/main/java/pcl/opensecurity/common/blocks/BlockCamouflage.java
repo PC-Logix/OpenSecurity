@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -57,6 +58,20 @@ public class BlockCamouflage extends Block {
         ItemStack heldItem = player.getHeldItemMainhand();
 
         ICamo tileEntity = getTE(world, pos);
+
+        IBlockState currentCamoBlock = tileEntity.getCamoBlock();
+
+        // return when no camo is set and we use the same block on itself (to allow placing of them next to each other)
+        if(currentCamoBlock.equals(Blocks.AIR.getDefaultState()))
+            if(state.getBlock().equals(Block.getBlockFromItem(heldItem.getItem())))
+                return false;
+
+        // return false if camo is already set to the held block
+        if(currentCamoBlock.getBlock().equals(Block.getBlockFromItem(heldItem.getItem())))
+            if(currentCamoBlock.getBlock().getMetaFromState(currentCamoBlock) == heldItem.getMetadata())
+                return false;
+
+
 
         if(tileEntity.setCamoBlock(player, heldItem))
             return true;

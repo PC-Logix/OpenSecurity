@@ -3,6 +3,7 @@ package pcl.opensecurity.client.renderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.client.models.ModelCubeTexturedTESR;
@@ -18,7 +19,11 @@ public class RenderRolldoorController extends TileEntitySpecialRenderer<TileEnti
 
     @Override
     public void render(TileEntityRolldoorController tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha){
-        Vec3d renderPosition = tileEntity.getElementsRenderBoundingBox().getCenter();
+        AxisAlignedBB renderBB = tileEntity.getElementsRenderBoundingBox();
+
+        Vec3d renderPosition = renderBB.getCenter();
+              renderPosition = new Vec3d(renderPosition.x, renderBB.maxY, renderPosition.z);
+
         float width = tileEntity.getWidth()/2f;
 
         if(width == 0)
@@ -42,7 +47,7 @@ public class RenderRolldoorController extends TileEntitySpecialRenderer<TileEnti
 
         GlStateManager.color(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 1f);
 
-        GlStateManager.translate(renderPosition.x + x, y, renderPosition.z + z);
+        GlStateManager.translate(renderPosition.x + x, renderPosition.y + y, renderPosition.z + z);
 
         switch(tileEntity.rolldoorFacing()) {
             case EAST:

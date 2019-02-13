@@ -140,7 +140,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
 
     @Callback
     public Object[] setSpeed(Context context, Arguments args) {
-        moveSpeed = Math.max(MIN_MOVE_SPEED, Math.min(MAX_MOVE_SPEED, args.optDouble(0, moveSpeed))); // 0.1d - 1d
+        moveSpeed = Math.max(MIN_MOVE_SPEED, Math.min(MAX_MOVE_SPEED, args.optDouble(0, moveSpeed)));
         return new Object[] { moveSpeed };
     }
 
@@ -226,7 +226,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
     }
 
     public AxisAlignedBB getElementsRenderBoundingBox(){
-        return elementsRenderBoundingBox.offset(-getPos().getX(), -getPos().getY(), -getPos().getZ());
+        return elementsRenderBoundingBox.offset(-getPos().getX(), -getPos().getY() - 1, -getPos().getZ());
     }
 
     private long animationStart = 0;

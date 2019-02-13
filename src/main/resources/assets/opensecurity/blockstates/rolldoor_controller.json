@@ -4,7 +4,8 @@
     "textures": {
       "top": "opensecurity:blocks/machine_side",
       "front": "opensecurity:blocks/rolldoor_controller",
-      "side": "opensecurity:blocks/machine_side"
+      "side": "opensecurity:blocks/rolldoor_controller",
+      "bottom": "opensecurity:blocks/machine_side"
     },
     "model": "minecraft:orientable"
   },
