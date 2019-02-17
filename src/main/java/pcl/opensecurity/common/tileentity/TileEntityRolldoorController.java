@@ -20,7 +20,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.lib.easing.penner.Quad;
 import pcl.opensecurity.util.ColoredTile;
 import pcl.opensecurity.util.RolldoorHelper;
-import scala.actors.threadpool.Arrays;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -191,7 +190,10 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
     }
 
     public void remove(){
-        for(WeakReference<TileEntityRolldoor> ref : new HashSet<WeakReference<TileEntityRolldoor>>(Arrays.asList(elements.toArray())))
+        HashSet<WeakReference<TileEntityRolldoor>> elementsList = new HashSet<>();
+        elementsList.addAll(this.elements);
+
+        for(WeakReference<TileEntityRolldoor> ref : elementsList)
             if(ref.get() != null && !ref.get().isInvalid())
                 removeElement(ref.get());
     }
