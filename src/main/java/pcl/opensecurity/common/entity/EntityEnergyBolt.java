@@ -35,7 +35,7 @@ public class EntityEnergyBolt extends EntityThrowable {
 		passableMaterials.add(Material.LAVA);
 
 		//todo: allow breaking of harder materials with upgrades installed?!
-		breakAbleMaterials.add(Material.GRASS);
+		breakAbleMaterials.add(Material.PLANTS);
 		breakAbleMaterials.add(Material.LEAVES);
 		breakAbleMaterials.add(Material.VINE);
 		breakAbleMaterials.add(Material.WEB);
