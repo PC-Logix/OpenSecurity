@@ -8,8 +8,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -86,27 +85,38 @@ public class BlockEnergyTurret extends Block implements ITileEntityProvider {
         if (world.isRemote) {
             return true;
         }
-        TileEntity te = world.getTileEntity(pos);
-        if (!(te instanceof TileEntityEnergyTurret)) {
+        TileEntityEnergyTurret energyTurret = getTileEntity(world, pos);
+        if(energyTurret == null)
             return false;
-        }
+
         player.openGui(OpenSecurity.instance, GUI_ID, world, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
-    /**
-     * Called serverside after this block is replaced with another in Chunk, but before the Tile Entity is updated
-     */
+    private TileEntityEnergyTurret getTileEntity(World world, BlockPos pos){
+        TileEntity tile = world.getTileEntity(pos);
+        return tile instanceof TileEntityEnergyTurret ? (TileEntityEnergyTurret) tile : null;
+    }
+
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        TileEntityEnergyTurret energyTurret = getTileEntity(world, pos);
 
-        if (tileentity instanceof IInventory) {
-            InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) tileentity);
-            worldIn.updateComparatorOutputLevel(pos, this);
-        }
+        if (energyTurret != null)
+            energyTurret.remove();
 
-        super.breakBlock(worldIn, pos, state);
+        world.updateComparatorOutputLevel(pos, this);
+
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack){
+        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+
+        TileEntityEnergyTurret energyTurret = getTileEntity(worldIn, pos);
+        if(energyTurret != null)
+            energyTurret.setOwner(placer.getUniqueID());
     }
 
     public static EnumFacing getMount(IBlockState state){

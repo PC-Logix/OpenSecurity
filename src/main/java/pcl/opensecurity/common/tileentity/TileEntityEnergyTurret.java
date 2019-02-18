@@ -13,12 +13,17 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
+import pcl.opensecurity.common.interfaces.IOwner;
 import pcl.opensecurity.common.tileentity.logic.EnergyTurret;
+import pcl.opensecurity.util.ItemUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
-public class TileEntityEnergyTurret extends TileEntityOSSound implements EnergyTurret.EnergyTurretHost {
+public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner, EnergyTurret.EnergyTurretHost {
+
+	private UUID owner;
 
 	private EnergyTurret energyTurret = new EnergyTurret(this);
 
@@ -166,15 +171,40 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements EnergyT
 		return super.getCapability(capability, facing);
 	}
 
+	public void remove(){
+		if(getWorld().isRemote)
+			return;
+
+		// drop upgrades
+		for(int slot=0; slot < energyTurret.getInventory().getSlots(); slot++)
+			ItemUtils.dropItem(energyTurret.getInventory().getStackInSlot(slot), getWorld(), getPos(), false, 10);
+	}
+
+	/* IOwner */
+	@Override
+	public void setOwner(UUID newOwner){
+		owner = newOwner;
+	}
+
+	@Override
+	public UUID getOwner(){
+		return owner;
+	}
+
 	/* NBT */
 
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		energyTurret.readFromNBT(tag.getCompoundTag("energyTurret"));
+		if(tag.hasUniqueId("owner"))
+			owner = tag.getUniqueId("owner");
 	}
 
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		tag.setTag("energyTurret", energyTurret.writeToNBT(new NBTTagCompound()));
+		if(owner != null)
+			tag.setUniqueId("owner", owner);
+
 		return super.writeToNBT(tag);
 	}
 

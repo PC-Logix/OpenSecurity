@@ -1,19 +1,30 @@
 package pcl.opensecurity.common.entity;
 
+import com.mojang.authlib.GameProfile;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Enchantments;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
+import java.util.*;
 
 public class EntityEnergyBolt extends EntityThrowable {
 	public static final String NAME = "energybolt";
@@ -26,6 +37,8 @@ public class EntityEnergyBolt extends EntityThrowable {
 	private static HashSet<Material> breakAbleMaterials = new HashSet<>();
 
 	private static final DataParameter<Boolean> NOTICEMESENPAI = EntityDataManager.<Boolean>createKey(EntityEnergyBolt.class, DataSerializers.BOOLEAN);
+
+	private FakePlayer fakePlayer;
 
 	static {
 		passableMaterials.add(Material.AIR);
@@ -46,6 +59,9 @@ public class EntityEnergyBolt extends EntityThrowable {
 		setSize(0.5F, 0.5F);
 		setNoGravity(true);
 		setEntityInvulnerable(true);
+
+		if(!world.isRemote)
+			fakePlayer = new FakePlayer(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(world.provider.getDimension()), new GameProfile(UUID.randomUUID(), NAME));
 	}
 
 	public void setHeading(float yaw, float pitch) {
@@ -77,8 +93,9 @@ public class EntityEnergyBolt extends EntityThrowable {
 		return false;
 	}
 
-	private boolean canPassBlock(IBlockState blockState){
-		return passableMaterials.contains(blockState.getMaterial()) || blockState.getBlock() instanceof BlockEnergyTurret;
+	private boolean canPassBlock(World world, BlockPos pos){
+		IBlockState state = world.getBlockState(pos);
+		return passableMaterials.contains(state.getMaterial()) || state.getBlock() instanceof BlockEnergyTurret;
 	}
 
 	public void onUpdate() {
@@ -86,6 +103,40 @@ public class EntityEnergyBolt extends EntityThrowable {
 
 		if (0 >= --this.life)
 			setDead();
+	}
+
+	boolean breakBlock(World world, BlockPos pos){
+		IBlockState state = world.getBlockState(pos);
+
+		if(world.isRemote)
+			return false;
+
+		if(!breakAbleMaterials.contains(state.getMaterial()))
+			return false;
+
+		Block block = state.getBlock();
+		if (block.removedByPlayer(state, world, pos, fakePlayer, true)) {
+			TileEntity tile = world.getTileEntity(pos);
+			block.onBlockDestroyedByPlayer(world, pos, state);
+			block.harvestBlock(world, fakePlayer, pos, state, tile, getDiamondHoe());
+		}
+
+		return true;
+	}
+
+	ItemStack setToolDefaultEnchants(ItemStack stack){
+		HashMap<Enchantment, Integer> enchantments = new HashMap<>();
+		enchantments.put(Enchantments.FORTUNE, 1);
+		EnchantmentHelper.setEnchantments(enchantments, stack);
+		return stack;
+	}
+
+	ItemStack getDiamondHoe(){
+		return setToolDefaultEnchants(new ItemStack(Items.DIAMOND_HOE));
+	}
+
+	ItemStack getDiamondPick(){
+		return setToolDefaultEnchants(new ItemStack(Items.DIAMOND_PICKAXE));
 	}
 
 	@Override
@@ -96,15 +147,11 @@ public class EntityEnergyBolt extends EntityThrowable {
 				setDead();
 				break;
 			case BLOCK:
-				IBlockState state = getEntityWorld().getBlockState(result.getBlockPos());
-				if(breakAbleMaterials.contains(state.getMaterial())) {
-					//todo: put block drops to world?!
-					getEntityWorld().setBlockToAir(result.getBlockPos());
+				if(breakBlock(getEntityWorld(), result.getBlockPos()))
 					setDead();
-				}
-				else if(!canPassBlock(state)) {
+				if(!canPassBlock(getEntityWorld(), result.getBlockPos()))
 					setDead();
-				}
+				break;
 		}
 	}
 
