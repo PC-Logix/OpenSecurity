@@ -41,7 +41,7 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements EnergyT
 
 	@Override
 	public boolean consumeEnergy(double amount){
-		return node != null && node.tryChangeBuffer(-amount);
+		return getWorld().isRemote || (node != null && node.tryChangeBuffer(-amount));
 	}
 
 	public EnergyTurret getEnergyTurret() {
@@ -135,13 +135,13 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements EnergyT
 
 	@Callback
 	public Object[] powerOn(Context context, Arguments args) {
-		energyTurret.doPowerOn();
+		energyTurret.setPowered(true);
 		return new Object[] { true };
 	}
 
 	@Callback
 	public Object[] powerOff(Context context, Arguments args) {
-		energyTurret.doPowerOff();
+		energyTurret.setPowered(false);
 		return new Object[] { true };
 	}
 

@@ -11,6 +11,8 @@ import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 
+import javax.annotation.Nonnull;
+
 public class EnergyTurret {
     private static final float maxShaftLengthForOneBlock = 0.5f;
 
@@ -34,10 +36,7 @@ public class EnergyTurret {
 
     private EnergyTurretHost tile;
 
-    public EnergyTurret(EnergyTurretHost energyTurretHost){
-        if(energyTurretHost == null)
-            return;
-
+    public EnergyTurret(@Nonnull EnergyTurretHost energyTurretHost){
         tile = energyTurretHost;
 
         inventory = new ItemStackHandler(8) {
@@ -60,27 +59,29 @@ public class EnergyTurret {
         BlockPos getPos();
     }
 
-
+    /* should be called when the host tileentity gets loaded */
     public void onLoad(){
         stats().loadFromInventory(inventory);
         mountedDirection = BlockEnergyTurret.getMount(getWorld().getBlockState(getPos()));
     }
 
+    private boolean isShaftLengthValid(){
+        float maxShaft = getMaxAvailableShaftLength(shaft);
+
+        if (setShaft > maxShaft)
+            setShaft(maxShaft);
+
+        if (getShaftLength() > maxShaft)
+            return false;
+
+        return true;
+    }
+
     public void update(){
-        boolean shaftLengthValid = true;
         boolean moveSound = false;
 
-        float maxShaft = getMaxAvailableShaftLength(shaft);
-        if (shaft > maxShaft){
-            shaftLengthValid = false;
-
-            if (setShaft > maxShaft)
-                setShaft(maxShaft);
-        }
-
-        if (power && !getWorld().isRemote && !tile.consumeEnergy(10)) {
-            doPowerOff();
-        }
+        if (isPowered() && !tile.consumeEnergy(10))
+            setPowered(false);
 
         tickCool-= energyTurretStats.getCooldown();
 
@@ -89,23 +90,33 @@ public class EnergyTurret {
 
         float movePerTick = energyTurretStats.getMoveSpeed();
 
-        if (power || !shaftLengthValid) {
-            if(Float.isNaN(shaft) || Float.isInfinite(shaft)) shaft = 0;
+        if (isPowered() || !isShaftLengthValid()) {
             float ds = setShaft - shaft;
             ms = Math.min(0.05F, Math.abs(ds));
             shaft += ms * Math.signum(ds);
+
+            if(Float.isNaN(shaft) || Float.isInfinite(shaft)) shaft = 0;
+
             if(ms>0F) moveSound = true;
         }
-        if (power) {
-            if(Float.isNaN(yaw) || Float.isInfinite(yaw)) yaw = 0;
+
+        if(isPowered()) {
+
+            if(Float.isNaN(setpointYaw) || Float.isInfinite(setpointYaw)) setpointYaw = yaw;
 
             float dy = (setpointYaw - yaw)%360;
             if(dy>180) dy = dy - 360;
             else if(dy<-180) dy = 360 + dy;
+
             my = Math.min(movePerTick, Math.abs(dy));
+
             yaw += my * Math.signum(dy);
+
+            while(yaw<0F) yaw+=360F;
             yaw = yaw%360;
-            if(yaw<0F) yaw+=360F;
+
+            if(Float.isNaN(yaw) || Float.isInfinite(yaw)) yaw = 0;
+
             if(my>0F) moveSound = true;
         } else {
             tmpSetPitch = -90F;
@@ -120,7 +131,9 @@ public class EnergyTurret {
             tmpSetPitch = Math.max(tmpSetPitch, (float)(-Math.atan(shaft)*360/Math.PI));
         }
 
-        if(Float.isNaN(pitch) || Float.isInfinite(pitch)) pitch = 0;
+        if(Float.isNaN(tmpSetPitch) || Float.isInfinite(tmpSetPitch))
+            tmpSetPitch = pitch;
+
         float dp = tmpSetPitch - pitch;
         mp = Math.min(movePerTick, Math.abs(dp));
         if(power && mp>0F) moveSound = true;
@@ -128,8 +141,11 @@ public class EnergyTurret {
         pitch += mp * Math.signum(dp);
         pitch = Math.min(90, Math.max(-90, pitch));
 
-        if (power) {
-            if (armed) {
+        if(Float.isNaN(pitch) || Float.isInfinite(pitch))
+            pitch = 0;
+
+        if(isPowered()) {
+            if(isArmed()) {
                 if(barrel<1F) {
                     barrel=Math.min(1F, barrel+0.1F);
                     moveSound = true;
@@ -143,7 +159,11 @@ public class EnergyTurret {
             }
         }
 
-        if (moveSound) {
+        updateSoundTick(moveSound);
+    }
+
+    private void updateSoundTick(boolean shouldPlay){
+        if(shouldPlay) {
             if(soundTicks == 0) {
                 getWorld().playSound(null, getPos(), SoundHandler.turretMove, SoundCategory.BLOCKS, 15.5F, 1.0F);
             }
@@ -177,33 +197,20 @@ public class EnergyTurret {
     }
 
 
-    private float getMaxAvailableShaftLength(float newExt)
-    {
-        if (newExt<0F) {
-            newExt = 0F;
-        }
-        if (newExt>2F) {
-            newExt = 2F;
-        }
-        int otherY = getPos().getY()+(isUpright()?1:-1);
-        if(newExt>maxShaftLengthForOneBlock && (otherY<0 || otherY>255 /*|| world.isAirBlock(getPos().getX(), otherY, getPos().getZ())*/))
-        {
-            return maxShaftLengthForOneBlock;
-        }
-        return newExt;
+    private boolean canExtendShaft(){
+        BlockPos otherBlock = getPos().add(0, isUpright()?1:-1, 0);
+        return otherBlock.getY() < 0 || otherBlock.getY() > 255 || getWorld().isAirBlock(otherBlock);
     }
 
-    public float setShaft(float newlen)
-    {
-        if (newlen<0F) {
-            newlen = 0F;
-        }
-        float most = getMaxAvailableShaftLength(newlen);
-        if (newlen>most) {
-            newlen = most;
-        }
-        if(setShaft != newlen)
-        {
+    private float getMaxAvailableShaftLength(float newExt) {
+        newExt = Math.max(0, Math.min(newExt, 2));
+        return newExt <= maxShaftLengthForOneBlock /* && canExtendShaft() */ ? newExt : maxShaftLengthForOneBlock;
+    }
+
+    public float setShaft(float newlen) {
+        newlen = Math.max(0, Math.min(newlen, getMaxAvailableShaftLength(newlen)));
+
+        if(setShaft != newlen){
             setShaft = newlen;
             tile.markDirtyClient();
         }
@@ -223,14 +230,13 @@ public class EnergyTurret {
         while(newYaw < 0)
             newYaw += 360;
 
-        this.setpointYaw = newYaw % 360;
-
-        this.setpointPitch = Math.min(90, Math.max(-90, newPitch));
+        this.setpointYaw = Math.max(0, Math.min(newYaw % 360, 360));
+        this.setpointPitch = Math.max(-90, Math.min(newPitch, 90));
 
         tile.markDirtyClient();
     }
 
-    public boolean isArmed(){
+    private boolean isArmed(){
         return armed;
     }
 
@@ -242,29 +248,19 @@ public class EnergyTurret {
         tile.markDirtyClient();
     }
 
-
-    public void doPowerOn() {
-        if(power)
+    public void setPowered(boolean powered) {
+        if(power == powered)
             return;
 
-        power = true;
+        power = powered;
+
+        if(!powered){
+            setShaft(shaft);
+            setYawPitch(0, 0);
+        }
+
         tile.markDirtyClient();
     }
-
-    public void doPowerOff() {
-        if(!power)
-            return;
-
-        power = false;
-
-        setShaft(shaft);
-        setYawPitch(0, 0);
-    }
-
-
-
-
-
 
     public ItemStackHandler getInventory(){
         return inventory;
@@ -287,11 +283,8 @@ public class EnergyTurret {
     }
 
     public Object[] isOnTarget(){
-        double dPitch = Math.abs(pitch-setpointPitch);
-        double dYaw = Math.abs(yaw-setpointYaw);
-        double delta = dPitch + dYaw;
-        boolean onPoint = delta < 0.5F;
-        return new Object[] { onPoint, delta };
+        double delta = Math.abs(pitch-setpointPitch) + Math.abs(yaw-setpointYaw);
+        return new Object[] { delta < 0.5F, delta };
     }
 
     public Object[] fire(){
