@@ -1,4 +1,4 @@
-package pcl.opensecurity.util;
+package pcl.opensecurity.common.tileentity.logic;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -8,7 +8,6 @@ import net.minecraft.world.World;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoor;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

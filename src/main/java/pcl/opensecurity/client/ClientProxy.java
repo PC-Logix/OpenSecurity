@@ -38,7 +38,6 @@ import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 import pcl.opensecurity.manual.ManualPathProvider;
 import pcl.opensecurity.util.FileUtils;
 
-import javax.annotation.Nullable;
 import java.io.File;
 
 @SideOnly(Side.CLIENT)

@@ -4,7 +4,7 @@ import li.cil.oc.api.network.EnvironmentHost;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import pcl.opensecurity.util.ICamo;
+import pcl.opensecurity.common.interfaces.ICamo;
 
 public class TileEntityOSCamoBase extends TileEntityOSBase implements ICamo {
     MimicBlock mimicBlock = new MimicBlock();

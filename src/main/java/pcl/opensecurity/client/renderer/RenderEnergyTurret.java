@@ -14,7 +14,7 @@ public class RenderEnergyTurret extends TileEntitySpecialRenderer<TileEntityEner
     public RenderEnergyTurret() {
         super();
         this.model = new ModelEnergyTurret();
-        this.textures = new ResourceLocation("opensecurity:turret.png");
+        this.textures = new ResourceLocation("opensecurity:textures/model/turret.png");
     }
 
     @Override
@@ -26,14 +26,15 @@ public class RenderEnergyTurret extends TileEntitySpecialRenderer<TileEntityEner
 
         if (te != null && te.getWorld() != null){
             // render in world
-            this.model.render(0.0625F, te.isUpright(), te.shaft, te.barrel, te.getRealYaw(), te.getRealPitch());
+            this.model.render(0.0625F, te.getEnergyTurret());
         } else {
             // probably render in some inventory
             GlStateManager.translate(-0.1, 0.1, 0); // align to slot
-            this.model.render(0.0625F, true, 1.0F, 1.0F, 0F, 0F);
+            this.model.render(0.0625F, null);
         }
 
         GlStateManager.enableBlend();
         GlStateManager.popMatrix();
     }
+
 }

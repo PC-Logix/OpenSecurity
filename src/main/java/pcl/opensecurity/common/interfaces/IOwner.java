@@ -1,4 +1,4 @@
-package pcl.opensecurity.util;
+package pcl.opensecurity.common.interfaces;
 
 import java.util.UUID;
 

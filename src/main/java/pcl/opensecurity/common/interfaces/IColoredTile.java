@@ -1,11 +1,11 @@
-package pcl.opensecurity.util;
+package pcl.opensecurity.common.interfaces;
 
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 
 import java.awt.*;
 
-public interface ColoredTile {
+public interface IColoredTile {
     int getColor();
     void setColor(int color);
     void onColorChanged();

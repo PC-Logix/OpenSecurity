@@ -11,10 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentString;
-import pcl.opensecurity.common.component.DoorController;
+import pcl.opensecurity.common.tileentity.logic.DoorController;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
-import pcl.opensecurity.util.IOwner;
+import pcl.opensecurity.common.interfaces.IOwner;
 
 import java.util.UUID;
 

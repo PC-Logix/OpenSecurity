@@ -11,11 +11,9 @@
 	"variants": {
 		"normal": [{}],
 		"inventory": [{ "model": "opensecurity:energy_turret" }],
-		"facing": {
-			"north": {"model": "minecraft:orientable", "y": 180},
-			"south": {"model": "minecraft:orientable"},
-			"west": {"model": "minecraft:orientable", "y": 90},
-			"east": {"model": "minecraft:orientable", "y": 270}
+		"pitch": {
+			"up": {"model": "minecraft:orientable", "x": 180},
+			"down": {"model": "minecraft:orientable"}
 		}
 	}
 }

@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
-import pcl.opensecurity.common.galacticraft.blocks.galacticraftIntegration;
+import pcl.opensecurity.common.integration.galacticraft.blocks.galacticraftIntegration;
 import pcl.opensecurity.networking.*;
 
 import java.util.HashSet;

@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.nanofog.EntityFilter;
-import pcl.opensecurity.util.ICamo;
+import pcl.opensecurity.common.interfaces.ICamo;
 import pcl.opensecurity.util.ItemUtils;
 
 import javax.annotation.Nonnull;

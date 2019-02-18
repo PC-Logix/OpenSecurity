@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
-import pcl.opensecurity.util.IOwner;
+import pcl.opensecurity.common.interfaces.IOwner;
 
 public class BlockDoorController extends BlockCamouflage implements ITileEntityProvider  {
     public static final String NAME = "door_controller";

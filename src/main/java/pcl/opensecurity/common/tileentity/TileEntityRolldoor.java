@@ -13,8 +13,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
-import pcl.opensecurity.util.ICamo;
-import pcl.opensecurity.util.RolldoorHelper;
+import pcl.opensecurity.common.interfaces.ICamo;
+import pcl.opensecurity.common.tileentity.logic.RolldoorHelper;
 
 import javax.annotation.Nullable;
 

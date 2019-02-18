@@ -1,4 +1,4 @@
-package pcl.opensecurity.common.galacticraft.blocks;
+package pcl.opensecurity.common.integration.galacticraft.blocks;
 
 import micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock;
 import net.minecraft.util.EnumFacing;

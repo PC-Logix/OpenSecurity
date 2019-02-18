@@ -17,7 +17,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
-import pcl.opensecurity.util.IOwner;
+import pcl.opensecurity.common.interfaces.IOwner;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package pcl.opensecurity.util;
+package pcl.opensecurity.common.interfaces;
 
 public interface IPasswordProtected {
     void setPassword(String pass);

@@ -45,6 +45,7 @@ gui.string.energyturret.energymod=-Energy
 death.attack.NanoFog=%1$s got deserialized by NanoFog
 
 entity.nanofogswarm.name=NanoFog Swarm
+entity.energybolt.name=Energy Bolt
 
 
 gui.config.title=OpenSecurity Configuration

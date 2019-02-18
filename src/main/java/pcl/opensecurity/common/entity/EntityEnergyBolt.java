@@ -1,34 +1,45 @@
 package pcl.opensecurity.common.entity;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 
-import java.util.List;
+import javax.annotation.Nonnull;
+import java.util.HashSet;
 
 public class EntityEnergyBolt extends EntityThrowable {
-	public static final String NAME = "energyBolt";
+	public static final String NAME = "energybolt";
 
-	private int life = 600;
-	private float yaw = 0.0F;
-	private float pitch = 0.0F;
+	private int life = 20 * 5;
 	private float damage = 0.0F;
-	private static DamageSource energy = new DamageSource("boltComputer");
-	static { energy.setProjectile(); }
+	private static DamageSource energy = new DamageSource(NAME).setProjectile();
+
+	private static HashSet<Material> passableMaterials = new HashSet<>();
+	private static HashSet<Material> breakAbleMaterials = new HashSet<>();
 
 	private static final DataParameter<Boolean> NOTICEMESENPAI = EntityDataManager.<Boolean>createKey(EntityEnergyBolt.class, DataSerializers.BOOLEAN);
+
+	static {
+		passableMaterials.add(Material.AIR);
+		passableMaterials.add(Material.GLASS);
+		passableMaterials.add(Material.FIRE);
+		passableMaterials.add(Material.WATER);
+		passableMaterials.add(Material.LAVA);
+
+		//todo: allow breaking of harder materials with upgrades installed?!
+		breakAbleMaterials.add(Material.GRASS);
+		breakAbleMaterials.add(Material.LEAVES);
+		breakAbleMaterials.add(Material.VINE);
+		breakAbleMaterials.add(Material.WEB);
+	}
 
 	public EntityEnergyBolt(World world) {
 		super(world);
@@ -38,9 +49,7 @@ public class EntityEnergyBolt extends EntityThrowable {
 	}
 
 	public void setHeading(float yaw, float pitch) {
-		this.motionX = Math.sin(yaw) * Math.cos(pitch);
-		this.motionY = Math.sin(pitch);
-		this.motionZ = Math.cos(yaw) * Math.cos(pitch);
+		setVelocity(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch));
 	}
 
 	public void setDamage(float damageIn) {
@@ -53,72 +62,50 @@ public class EntityEnergyBolt extends EntityThrowable {
 
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tag) {
-		this.yaw = tag.getFloat("yaw");
-		this.pitch = tag.getFloat("pitch");
+		super.readEntityFromNBT(tag);
 		this.damage = tag.getFloat("damage");
 	}
+
 	@Override
 	public void writeEntityToNBT(NBTTagCompound tag) {
-		tag.setFloat("yaw", this.yaw);
-		tag.setFloat("pitch", this.pitch);
+		super.writeEntityToNBT(tag);
 		tag.setFloat("damage", this.damage);
 	}
+
 	@Override
 	protected boolean canTriggerWalking() {
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
-	public float getShadowSize() {
-		return 0.0F;
+	private boolean canPassBlock(IBlockState blockState){
+		return passableMaterials.contains(blockState.getMaterial()) || blockState.getBlock() instanceof BlockEnergyTurret;
 	}
 
 	public void onUpdate() {
 		super.onUpdate();
-		if (0 >= --this.life) {
+
+		if (0 >= --this.life)
 			setDead();
-		}
-
-		if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
-			float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-			this.rotationYaw = (float)(MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
-			this.rotationPitch = (float)(MathHelper.atan2(this.motionY, (double)f) * (180D / Math.PI));
-			this.prevRotationYaw = this.rotationYaw;
-			this.prevRotationPitch = this.rotationPitch;
-		}
-		BlockPos blockPos = new BlockPos((int)Math.floor(this.posX), (int)Math.floor(this.posY), (int)Math.floor(this.posZ));
-		if ((!this.world.isAirBlock(blockPos)) &&
-				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.GLASS)) &&
-				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.GLASS_PANE)) &&
-				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.STAINED_GLASS)) &&
-				!(this.world.getBlockState(blockPos).getBlock().equals(Blocks.STAINED_GLASS_PANE)) &&
-				(!(this.world.getBlockState(blockPos).getBlock() instanceof BlockEnergyTurret))) {
-			this.isDead = true;
-			}
-		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(this.motionX, this.motionY, this.motionZ).expand(1.0D,1.0D,1.0D));
-		if (!list.isEmpty()) {
-			list.get(0).attackEntityFrom(energy, this.damage);
-			this.isDead = true;
-		}
-		this.posX += this.motionX;
-		this.posY += this.motionY;
-		this.posZ += this.motionZ;
-
-		setPosition(this.posX, this.posY, this.posZ);
-		doBlockCollisions();
-	}
-
-	public float getYaw() {
-		return this.yaw;
-	}
-
-	public float getPitch() {
-		return this.pitch;
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		// TODO Auto-generated method stub
+	protected void onImpact(@Nonnull RayTraceResult result) {
+		switch(result.typeOfHit){
+			case ENTITY:
+				result.entityHit.attackEntityFrom(energy, this.damage);
+				setDead();
+				break;
+			case BLOCK:
+				IBlockState state = getEntityWorld().getBlockState(result.getBlockPos());
+				if(breakAbleMaterials.contains(state.getMaterial())) {
+					//todo: put block drops to world?!
+					getEntityWorld().setBlockToAir(result.getBlockPos());
+					setDead();
+				}
+				else if(!canPassBlock(state)) {
+					setDead();
+				}
+		}
 	}
 
 	@Override

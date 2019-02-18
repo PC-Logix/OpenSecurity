@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.camouflage.CamoBlockId;
 import pcl.opensecurity.common.camouflage.CamoProperty;
-import pcl.opensecurity.util.ICamo;
+import pcl.opensecurity.common.interfaces.ICamo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

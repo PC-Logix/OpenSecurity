@@ -10,8 +10,8 @@ import net.minecraft.util.text.TextComponentString;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
-import pcl.opensecurity.util.IOwner;
-import pcl.opensecurity.util.IPasswordProtected;
+import pcl.opensecurity.common.interfaces.IOwner;
+import pcl.opensecurity.common.interfaces.IPasswordProtected;
 
 import java.util.ArrayList;
 import java.util.UUID;

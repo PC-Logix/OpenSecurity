@@ -20,7 +20,7 @@ import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
-import pcl.opensecurity.util.IVariant;
+import pcl.opensecurity.common.interfaces.IVariant;
 
 import java.util.Comparator;
 import java.util.Random;

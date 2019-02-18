@@ -31,7 +31,7 @@ public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider
     static final AxisAlignedBB boundingBox = new AxisAlignedBB(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
 
     public BlockNanoFog(){
-        super(Material.GLASS, NAME);
+        super(Material.IRON, NAME);
         setLightOpacity(255);
         setBlockUnbreakable();
         setResistance(31337.0F);

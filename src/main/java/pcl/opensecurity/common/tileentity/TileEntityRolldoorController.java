@@ -18,8 +18,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.lib.easing.penner.Quad;
-import pcl.opensecurity.util.ColoredTile;
-import pcl.opensecurity.util.RolldoorHelper;
+import pcl.opensecurity.common.interfaces.IColoredTile;
+import pcl.opensecurity.common.tileentity.logic.RolldoorHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +27,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TileEntityRolldoorController extends TileEntityOSCamoBase implements ColoredTile {
+public class TileEntityRolldoorController extends TileEntityOSCamoBase implements IColoredTile {
     private static final double MAX_MOVE_SPEED = 3;
     private static final double MIN_MOVE_SPEED = 0.1;
 
