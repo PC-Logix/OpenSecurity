@@ -17,6 +17,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pcl.opensecurity.common.interfaces.IPasswordProtected;
 import pcl.opensecurity.lib.easing.penner.Quad;
 import pcl.opensecurity.common.interfaces.IColoredTile;
 import pcl.opensecurity.common.tileentity.logic.RolldoorHelper;
@@ -27,11 +28,13 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TileEntityRolldoorController extends TileEntityOSCamoBase implements IColoredTile {
+public class TileEntityRolldoorController extends TileEntityOSCamoBase implements IPasswordProtected, IColoredTile {
     private static final double MAX_MOVE_SPEED = 3;
     private static final double MIN_MOVE_SPEED = 0.1;
 
     final static String NAME = "os_rolldoorcontroller";
+
+    private String password = "";
 
     private int color = 0;
 
@@ -107,12 +110,18 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
     @Callback
     public Object[] setPosition(Context context, Arguments args){
         double newPos = args.optDouble(0, currentPosition);
+        if(!getPass().equals(args.optString(1, "")))
+            return new Object[]{ false, "invalid password" };
+
         setTargetPosition(Math.max(0, Math.min(getHeight(), newPos)));
         return new Object[]{ targetPosition };
     }
 
     @Callback
     public Object[] toggle(Context context, Arguments args) {
+        if(!getPass().equals(args.optString(0, "")))
+            return new Object[]{ false, "invalid password" };
+
         if(isMoving()){
             return new Object[]{ false, "rolldoor is moving" };
         }
@@ -127,18 +136,27 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
 
     @Callback
     public Object[] open(Context context, Arguments args) {
+        if(!getPass().equals(args.optString(0, "")))
+            return new Object[]{ false, "invalid password" };
+
         setTargetPosition(0);
         return new Object[]{ true };
     }
 
     @Callback
     public Object[] close(Context context, Arguments args) {
+        if(!getPass().equals(args.optString(0, "")))
+            return new Object[]{ false, "invalid password" };
+
         setTargetPosition(getHeight());
         return new Object[]{ true };
     }
 
     @Callback
     public Object[] setSpeed(Context context, Arguments args) {
+        if(!getPass().equals(args.optString(1, "")))
+            return new Object[]{ false, "invalid password" };
+
         moveSpeed = Math.max(MIN_MOVE_SPEED, Math.min(MAX_MOVE_SPEED, args.optDouble(0, moveSpeed)));
         return new Object[] { moveSpeed };
     }
@@ -153,6 +171,16 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         }
 
         return new Object[]{ heights.toArray() };
+    }
+
+    @Callback
+    public Object[] setPassword(Context context, Arguments args){
+        if(!getPass().equals(args.optString(1, "")))
+            return new Object[]{ false, "old password doesnt match" };
+
+        setPassword(args.checkString(0));
+
+        return new Object[]{ true };
     }
 
     private void resetRolldoorData(){
@@ -199,19 +227,23 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
     }
 
     private void addElement(TileEntityRolldoor rolldoor){
-        if(rolldoor != null && !rolldoor.isInvalid()) {
-            rolldoor.setOrigin(getPos());
-            facing = rolldoor.getFacing();
-            if(elements.size() == 0)
-                elementsRenderBoundingBox = rolldoor.getElementsBoundingBox();
-            else
-                elementsRenderBoundingBox = elementsRenderBoundingBox.union(rolldoor.getElementsBoundingBox());
+        if(rolldoor == null || rolldoor.isInvalid())
+            return;
 
-            elements.add(new WeakReference<>(rolldoor));
-            elementsPos.add(rolldoor.getPos());
+        if(rolldoor.getController() != null && !this.equals(rolldoor.getController()))
+            return; //rolldoor is already assigned to a controller
 
-            renderBoundingBox = renderBoundingBox.union(elementsRenderBoundingBox);
-        }
+        rolldoor.setOrigin(getPos());
+        facing = rolldoor.getFacing();
+        if(elements.size() == 0)
+            elementsRenderBoundingBox = rolldoor.getElementsBoundingBox();
+        else
+            elementsRenderBoundingBox = elementsRenderBoundingBox.union(rolldoor.getElementsBoundingBox());
+
+        elements.add(new WeakReference<>(rolldoor));
+        elementsPos.add(rolldoor.getPos());
+
+        renderBoundingBox = renderBoundingBox.union(elementsRenderBoundingBox);
     }
 
     private void removeElement(TileEntityRolldoor rolldoor){
@@ -329,7 +361,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         moveSpeed = nbt.getDouble("moveSpeed");
         currentPosition = nbt.getDouble("position");
         targetPosition = nbt.getDouble("targetPos");
-
+        password = nbt.getString("password");
         needsListUpdate = true;
     }
 
@@ -346,7 +378,18 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         nbt.setDouble("moveSpeed", this.moveSpeed);
         nbt.setDouble("position", this.currentPosition);
         nbt.setDouble("targetPos", this.targetPosition);
+        nbt.setString("password", password);
         return super.writeToNBT(nbt);
+    }
+
+    @Override
+    public String getPass(){
+        return password;
+    }
+
+    @Override
+    public void setPassword(String newPassword){
+        password = newPassword;
     }
 
     @Override

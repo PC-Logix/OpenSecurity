@@ -139,10 +139,18 @@ public class EntityEnergyBolt extends EntityThrowable {
 		return setToolDefaultEnchants(new ItemStack(Items.DIAMOND_PICKAXE));
 	}
 
+	ItemStack getDiamondSword(){
+		return setToolDefaultEnchants(new ItemStack(Items.DIAMOND_SWORD));
+	}
+
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult result) {
 		switch(result.typeOfHit){
 			case ENTITY:
+				//todo: attack as fake player?!
+				//if(result.entityHit instanceof EntityLivingBase)
+				//	getDiamondSword().hitEntity((EntityLivingBase) result.entityHit, fakePlayer);
+				// else
 				result.entityHit.attackEntityFrom(energy, this.damage);
 				setDead();
 				break;
