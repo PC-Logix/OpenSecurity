@@ -88,7 +88,7 @@ public class EnergyTurret {
         float tmpSetPitch=setpointPitch;
         float ms=0F, my=0F, mp=0F;
 
-        float movePerTick = energyTurretStats.getMoveSpeed();
+        float movePerTick = 4 + energyTurretStats.getMoveSpeed();
 
         if (isPowered() || !isShaftLengthValid()) {
             float ds = setShaft - shaft;
