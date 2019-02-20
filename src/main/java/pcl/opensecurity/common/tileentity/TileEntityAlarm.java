@@ -33,9 +33,9 @@ public class TileEntityAlarm extends TileEntityOSSound implements ISoundTile {
 		if(args.count() == 0)
 			return new Object[] { false, "missing arguments" };
 
-		setVolume(Math.min(args.checkInteger(0) + 0.5F, volumeMax));
+		setVolume(Math.max(0, Math.min(args.checkInteger(0) + 0.5F, volumeMax)));
 
-		return new Object[] { true, getVolume() };
+		return new Object[] { true, getVolume() - 0.5f };
 	}
 
 	@Callback(doc = "function(soundName:string):string; Sets the alarm sound", direct = true)
@@ -89,7 +89,7 @@ public class TileEntityAlarm extends TileEntityOSSound implements ISoundTile {
 		//if (!sound.equals("klaxon1") && !sound.equals("klaxon2"))
 		//	return new Object[] { false, "sound file doesnt exist" };
 
-		float range = (float) Math.min(args.optDouble(4, getVolume()-0.5F) + 0.5F, volumeMax);
+		float range = (float) Math.max(0, Math.min(args.optDouble(4, getVolume()-0.5F) + 0.5F, volumeMax));
 
 		getWorld().playSound(null, alarmPosition, new SoundEvent(new ResourceLocation(sound)), SoundCategory.BLOCKS, range, 1.0F);
 

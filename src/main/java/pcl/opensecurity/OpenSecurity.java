@@ -19,6 +19,7 @@ import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.integration.galacticraft.blocks.galacticraftIntegration;
+import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 import pcl.opensecurity.networking.*;
 
 import java.util.HashSet;
@@ -81,6 +82,8 @@ public class OpenSecurity {
         rfidRange = Config.getConfig().getCategory("general").get("rfidMaxRange").getInt();
         entityDetectorMaxRange = Config.getConfig().getCategory("general").get("entityDetectorMaxRange").getInt();
         debug = Config.getConfig().getCategory("general").get("enableDebugMessages").getBoolean();
+        TileEntityAlarm.volumeMax = Config.getConfig().getCategory("general").get("alarmMaxRange").getInt();
+
 
         proxy.preinit();
 

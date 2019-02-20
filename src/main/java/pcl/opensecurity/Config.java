@@ -88,6 +88,15 @@ public class Config extends PermissionAPI {
 		if(isClient)
 			entityDetectorMaxRange.setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class);
 
+		Property alarmMaxRange = config.get("general", "alarmMaxRange", 15);
+		alarmMaxRange.setMinValue(1);
+		alarmMaxRange.setMaxValue(96);
+		alarmMaxRange.setLanguageKey("gui.config.general.alarmMaxRange");
+		alarmMaxRange.setComment("The maximum range of the Alarm in blocks");
+		alarmMaxRange.setRequiresMcRestart(true);
+		if(isClient)
+			alarmMaxRange.setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class);
+
 		Property instantNanoFog = config.get("general", "instantNanoFog", false);
 		instantNanoFog.setLanguageKey("gui.config.general.instantNanoFog");
 		instantNanoFog.setComment("if enabled NanoFog blocks will spawn instant and no swarm will be spawned to assemble them");
