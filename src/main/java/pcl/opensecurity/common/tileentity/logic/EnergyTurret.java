@@ -62,7 +62,6 @@ public class EnergyTurret {
     /* should be called when the host tileentity gets loaded */
     public void onLoad(){
         stats().loadFromInventory(inventory);
-        mountedDirection = BlockEnergyTurret.getMount(getWorld().getBlockState(getPos()));
     }
 
     private boolean isShaftLengthValid(){
@@ -181,7 +180,10 @@ public class EnergyTurret {
     }
 
     public boolean isUpright(){
-        return mountedDirection.equals(EnumFacing.DOWN);
+        if(mountedDirection == null && getWorld() != null)
+            mountedDirection = BlockEnergyTurret.getMount(getWorld().getBlockState(getPos()));
+
+        return EnumFacing.DOWN.equals(mountedDirection);
     }
 
     public float getRealYaw() {
