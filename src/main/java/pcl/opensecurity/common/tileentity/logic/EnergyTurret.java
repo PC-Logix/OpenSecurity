@@ -10,6 +10,7 @@ import pcl.opensecurity.Config;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
+import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 
 import javax.annotation.Nonnull;
 
@@ -34,9 +35,9 @@ public class EnergyTurret {
 
     private EnergyTurretStats energyTurretStats = new EnergyTurretStats();
 
-    private EnergyTurretHost tile;
+    private TileEntityEnergyTurret tile;
 
-    public EnergyTurret(@Nonnull EnergyTurretHost energyTurretHost){
+    public EnergyTurret(@Nonnull TileEntityEnergyTurret energyTurretHost){
         tile = energyTurretHost;
 
         inventory = new ItemStackHandler(8) {
@@ -50,13 +51,6 @@ public class EnergyTurret {
                 stats().loadFromInventory(inventory);
             }
         };
-    }
-
-    public interface EnergyTurretHost{
-        boolean consumeEnergy(double amount);
-        void markDirtyClient();
-        World getWorld();
-        BlockPos getPos();
     }
 
     /* should be called when the host tileentity gets loaded */

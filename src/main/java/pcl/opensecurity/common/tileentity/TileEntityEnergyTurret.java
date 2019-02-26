@@ -9,6 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner, EnergyTurret.EnergyTurretHost {
+public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner {
 
 	private UUID owner;
 
@@ -44,7 +46,6 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner,
 		energyTurret.update();
 	}
 
-	@Override
 	public boolean consumeEnergy(double amount){
 		return getWorld().isRemote || (node != null && node.tryChangeBuffer(-amount));
 	}
