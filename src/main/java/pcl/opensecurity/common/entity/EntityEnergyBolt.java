@@ -59,12 +59,13 @@ public class EntityEnergyBolt extends EntityThrowable {
 		setSize(0.5F, 0.5F);
 		setNoGravity(true);
 		setEntityInvulnerable(true);
-		
+
 		if(!world.isRemote)
 			fakePlayer = new FakePlayer(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(world.provider.getDimension()), new GameProfile(UUID.randomUUID(), NAME));
 	}
 
 	public void setHeading(float yaw, float pitch) {
+		// dont use setVelocity() because its client side only and wouldnt work on dedicated servers
 		this.motionX = Math.sin(yaw) * Math.cos(pitch);
 		this.motionY = Math.sin(pitch);
 		this.motionZ = Math.cos(yaw) * Math.cos(pitch);
