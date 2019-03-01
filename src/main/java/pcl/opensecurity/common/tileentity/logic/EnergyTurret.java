@@ -31,7 +31,7 @@ public class EnergyTurret {
     private boolean power = false;
     private boolean armed = false;
 
-    private EnumFacing mountedDirection = EnumFacing.DOWN;
+    private EnumFacing mountedDirection;
 
     private EnergyTurretStats energyTurretStats = new EnergyTurretStats();
 
