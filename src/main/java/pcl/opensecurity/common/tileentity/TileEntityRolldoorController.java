@@ -162,6 +162,18 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
     }
 
     @Callback
+    public Object[] calibrate(Context context, Arguments args) {
+        if(!getPass().equals(args.optString(1, "")))
+            return new Object[]{ false, "invalid password" };
+
+        for(WeakReference<TileEntityRolldoor> ref : elements)
+            if(ref.get() != null && !ref.get().isInvalid())
+                ref.get().updateHeight();
+
+        return new Object[] { getHeight() };
+    }
+
+    @Callback
     public Object[] getHeight(Context context, Arguments args) {
         ArrayList<Integer> heights = new ArrayList<>();
 
