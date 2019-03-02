@@ -33,8 +33,6 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
     private WeakReference<TileEntityRolldoorController> controller;
     private BlockPos origin;
 
-    private long lastHeightCheck = 0;
-
     public TileEntityRolldoor() {
         super("os_" + BlockRolldoor.NAME);
     }
@@ -90,7 +88,6 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
     }
 
     public void updateHeight(){
-        lastHeightCheck = System.currentTimeMillis();
         height = 0;
         BlockPos pos = getPos().down();
         while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && height < MAX_LENGTH) {
@@ -124,9 +121,6 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
     }
 
     public int height(){
-        if(System.currentTimeMillis() - lastHeightCheck > 5000) //update height if the last check was >5sec ago
-            updateHeight();
-
         return height;
     }
 
