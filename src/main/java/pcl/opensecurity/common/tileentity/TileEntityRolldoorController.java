@@ -92,22 +92,22 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
     }
 
     // OC Callbacks
-    @Callback
+    @Callback(doc = "function():boolean; returns true if the door is opened", direct=false)
     public Object[] isOpen(Context context, Arguments args) {
         return new Object[] { isOpen() };
     }
 
-    @Callback
+    @Callback(doc = "function():boolean; returns true if the door is moving", direct=true)
     public Object[] isMoving(Context context, Arguments args) {
         return new Object[] { isMoving() };
     }
 
-    @Callback
+    @Callback(doc = "function():double; returns current position", direct=false)
     public Object[] getPosition(Context context, Arguments args){
         return new Object[]{ getCurrentHeight() };
     }
 
-    @Callback
+    @Callback(doc = "function(Double:position):double; sets a new position the rolldoor should move to", direct=false)
     public Object[] setPosition(Context context, Arguments args){
         double newPos = args.optDouble(0, currentPosition);
         if(!getPass().equals(args.optString(1, "")))
@@ -117,7 +117,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         return new Object[]{ targetPosition };
     }
 
-    @Callback
+    @Callback(doc = "function():double; toggles the rolldoor between open/close", direct=false)
     public Object[] toggle(Context context, Arguments args) {
         if(!getPass().equals(args.optString(0, "")))
             return new Object[]{ false, "invalid password" };
@@ -134,7 +134,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         }
     }
 
-    @Callback
+    @Callback(doc = "function():double; opens the rolldoor", direct=false)
     public Object[] open(Context context, Arguments args) {
         if(!getPass().equals(args.optString(0, "")))
             return new Object[]{ false, "invalid password" };
@@ -143,7 +143,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         return new Object[]{ true };
     }
 
-    @Callback
+    @Callback(doc = "function():double; closes the rolldoor", direct=false)
     public Object[] close(Context context, Arguments args) {
         if(!getPass().equals(args.optString(0, "")))
             return new Object[]{ false, "invalid password" };
@@ -152,7 +152,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         return new Object[]{ true };
     }
 
-    @Callback
+    @Callback(doc = "function(Double:speed):double; sets the speed of the rolldoor, returns new speed", direct=true)
     public Object[] setSpeed(Context context, Arguments args) {
         if(!getPass().equals(args.optString(1, "")))
             return new Object[]{ false, "invalid password" };
@@ -161,9 +161,9 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         return new Object[] { moveSpeed };
     }
 
-    @Callback
+    @Callback(doc = "function(String:password):integer; checks for space below the rolldoor, returns new height")
     public Object[] calibrate(Context context, Arguments args) {
-        if(!getPass().equals(args.optString(1, "")))
+        if(!getPass().equals(args.optString(0, "")))
             return new Object[]{ false, "invalid password" };
 
         for(WeakReference<TileEntityRolldoor> ref : elements)
@@ -173,7 +173,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         return new Object[] { getHeight() };
     }
 
-    @Callback
+    @Callback(doc = "function():integer; returns height of the rolldoor", direct=true)
     public Object[] getHeight(Context context, Arguments args) {
         ArrayList<Integer> heights = new ArrayList<>();
 
@@ -185,7 +185,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         return new Object[]{ heights.toArray() };
     }
 
-    @Callback
+    @Callback(doc = "function():boolean; sets a password for controlling the door", direct=false)
     public Object[] setPassword(Context context, Arguments args){
         if(!getPass().equals(args.optString(1, "")))
             return new Object[]{ false, "old password doesnt match" };
