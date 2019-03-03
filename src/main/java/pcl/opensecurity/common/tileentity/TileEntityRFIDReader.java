@@ -12,9 +12,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
 import java.util.ArrayList;
@@ -56,33 +56,14 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 		return value;
 	}
 
-	static class RFIDTag{
-		public boolean locked;
-		public String localUUID;
-		public String dataTag;
-		public boolean isValid = false;
-
-		public RFIDTag(NBTTagCompound nbt){
-			if(nbt == null || !nbt.hasKey("data"))
-				return;
-
-			localUUID = OpenSecurity.ignoreUUIDs ? "-1" : nbt.getString("uuid");
-
-			dataTag = nbt.getString("data");
-			locked = nbt.getBoolean("locked");
-
-			isValid = true;
-		}
-	}
-
 	static class RFIDCard{
-		RFIDTag tag;
+		ItemCard.CardTag tag;
 
 		public RFIDCard(ItemStack st){
 			if (!(st.getItem() instanceof ItemRFIDCard))
 				return;
 
-			tag = new RFIDTag(st.getTagCompound());
+			tag = new ItemCard.CardTag(st);
 		}
 	}
 
@@ -117,7 +98,7 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 						output.put(index++, info(entity, card.tag.dataTag, card.tag.localUUID, card.tag.locked));
 			}
 
-			RFIDTag entityTag = new RFIDTag(entity.getEntityData().getCompoundTag("rfidData"));
+			ItemCard.CardTag entityTag = new ItemCard.CardTag(entity.getEntityData().getCompoundTag("rfidData"));
 			if(entityTag.isValid)
 				output.put(index++, info(entity, entityTag.dataTag, entityTag.localUUID, entityTag.locked));
 

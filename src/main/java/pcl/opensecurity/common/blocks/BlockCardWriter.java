@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,7 @@ import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
 
 public class BlockCardWriter extends BlockOSBase {
     public static final String NAME = "card_writer";
+    public static Block DEFAULTITEM;
 
     public static final int GUI_ID = 1;
 

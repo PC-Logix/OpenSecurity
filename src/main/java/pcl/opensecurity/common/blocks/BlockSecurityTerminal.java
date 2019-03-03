@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,6 +12,7 @@ import pcl.opensecurity.common.tileentity.TileEntitySecurityTerminal;
 
 public class BlockSecurityTerminal extends BlockOSBase {
     public static final String NAME = "security_terminal";
+    public static Block DEFAULTITEM;
 
     public BlockSecurityTerminal() {
         super(NAME, Material.IRON, 1f);

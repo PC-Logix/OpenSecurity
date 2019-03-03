@@ -24,6 +24,7 @@ import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 
 public class BlockEnergyTurret extends Block implements ITileEntityProvider {
     public static final String NAME = "energy_turret";
+    public static Block DEFAULTITEM;
     public static final int GUI_ID = 2;
     static final AxisAlignedBB bbBottom = new AxisAlignedBB(0, 0, 0, 1, 1d/16 * 6, 1);
 

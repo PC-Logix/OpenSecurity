@@ -5,14 +5,14 @@ import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.prefab.DriverItem;
 import net.minecraft.item.ItemStack;
-import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.items.ItemRFIDReaderCard;
 import pcl.opensecurity.common.tileentity.TileEntityRFIDReader;
 
 public class RFIDReaderCardDriver extends DriverItem {
 	public static RFIDReaderCardDriver driver = new RFIDReaderCardDriver();
 
 	public RFIDReaderCardDriver() {
-		super(new ItemStack(ContentRegistry.rfidReaderCardItem));
+		super(ItemRFIDReaderCard.DEFAULTSTACK);
 	}
 
 	@Override

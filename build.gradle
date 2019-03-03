@@ -51,7 +51,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.4.2718"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -92,15 +92,31 @@ repositories {
 
 def openComputersVersion = "MC1.12.2-1.7.+"
 def jei_version = "1.12.2:4.9.+"
+def ae2Version = "rv6-stable-1"
+def projredVersion="1.12.2-4.9.0.86"
+def MCMPVersion = "2.5.3"
 
 dependencies {
     deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"
     compile 'org.mindrot:jbcrypt:0.3m'
-	deobfCompile "advanced-rocketry:AdvancedRocketry-1.12.2-1.5.0:127:deobf"
+    deobfCompile "advanced-rocketry:AdvancedRocketry-1.12.2-1.5.0:127:deobf"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     deobfCompile "mezz.jei:jei_${jei_version}:api"
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${jei_version}"
+    // runtime "libVulpes:libVulpes-1.12.2-0.4.0:51:deobf"
+
+    // all those just for the case block =>
+    provided ("appeng:appliedenergistics2:${ae2Version}:api") {
+        transitive = false
+    }
+
+    provided ("mrtjp:ProjectRed:${projredVersion}:Base") {
+        exclude module: "NotEnoughItems"
+        exclude module: "CodeChickenLib"
+        exclude module: "jei_1.12"
+        exclude module: "ForgeMultipart"
+    }
 }
 
 def curseforge_key = 0

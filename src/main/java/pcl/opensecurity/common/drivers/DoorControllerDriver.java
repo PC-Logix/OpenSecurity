@@ -9,9 +9,9 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.common.Tier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockDoorController;
 import pcl.opensecurity.common.tileentity.TileEntityDoorController;
 
@@ -20,7 +20,7 @@ public class DoorControllerDriver extends BlockDoorController implements DriverI
 
     @Override
     public boolean worksWith(ItemStack stack) {
-        return stack.getItem().equals(ContentRegistry.doorControllerItem);
+        return stack.getItem().equals(Item.getItemFromBlock(BlockDoorController.DEFAULTITEM));
     }
 
     @Override

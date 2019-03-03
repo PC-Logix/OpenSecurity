@@ -1,10 +1,11 @@
 package pcl.opensecurity.common.blocks;
 
 import net.minecraft.item.Item;
-import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.items.ItemSecurePrivateDoor;
 
 public class BlockSecurePrivateDoor extends BlockSecureDoor {
     public static final String NAME = "private_secure_door";
+    public static BlockSecurePrivateDoor DEFAULTITEM;
 
     public BlockSecurePrivateDoor() {
         super(NAME);
@@ -12,6 +13,6 @@ public class BlockSecurePrivateDoor extends BlockSecureDoor {
 
     @Override
     protected Item getItem() {
-        return ContentRegistry.securePrivateDoorItem;
+        return ItemSecurePrivateDoor.DEFAULTSTACK.getItem();
     }
 }

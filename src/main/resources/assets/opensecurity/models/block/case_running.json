@@ -1,0 +1,8 @@
+{
+  "parent": "opensecurity:block/case",
+  "textures": {
+    "east": "opensecurity:blocks/case_side_running",
+    "west": "opensecurity:blocks/case_side_running",
+    "south": "opensecurity:blocks/case_back_running"
+  }
+}

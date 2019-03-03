@@ -1,11 +1,13 @@
 package pcl.opensecurity.common.items;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
 
 public class ItemNanoDNA extends Item {
     public static final String NAME = "nanodna";
+    public static ItemStack DEFAULTSTACK;
 
     public ItemNanoDNA() {
         setUnlocalizedName(NAME);

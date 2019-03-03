@@ -9,6 +9,7 @@ import net.minecraft.util.EnumHand;
 
 public class ItemRFIDCard extends ItemCard {
     public static final String NAME = "rfid_card";
+    public static ItemStack DEFAULTSTACK;
 
     public ItemRFIDCard() {
         super(NAME);

@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 
 public class ItemEnergyUpgrade extends ItemOSBase {
 	public static final String NAME = "energy_upgrade";
+	public static ItemStack DEFAULTSTACK;
 	
 	public ItemEnergyUpgrade() {
 		super(NAME);

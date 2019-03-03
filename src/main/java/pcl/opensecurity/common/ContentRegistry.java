@@ -22,63 +22,82 @@ import pcl.opensecurity.common.blocks.*;
 import pcl.opensecurity.common.drivers.*;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
+import pcl.opensecurity.common.integration.galacticraft.blocks.galacticraftIntegration;
 import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.*;
 
+import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 @Mod.EventBusSubscriber
 public class ContentRegistry {
-    public static CreativeTabs creativeTab = getCreativeTab();
+    public static CreativeTabs creativeTab = new CreativeTabs("tabOpenSecurity") {
+        public @Nonnull ItemStack getTabIconItem() {
+            return new ItemStack(Item.getItemFromBlock(BlockData.DEFAULTITEM));
+        }
 
-    public static Block alarmBlock = new BlockAlarm();
-    public static Block securityTerminal = new BlockSecurityTerminal();
-    public static Block biometricReaderBlock = new BlockBiometricReader();
-    public static Block dataBlock = new BlockData();
-    public static Block cardWriter = new BlockCardWriter();
-    public static Block magReader = new BlockMagReader();
-    public static Block keypadBlock = new BlockKeypad();
-    public static Block entityDetector = new BlockEntityDetector();
-    public static Block energyTurret = new BlockEnergyTurret();
-    public static Block rfidReader = new BlockRFIDReader();
-    public static Block secureDoor = new BlockSecureDoor();
-    public static Block privateSecureDoor = new BlockSecurePrivateDoor();
-    public static Block nanoFogTerminal = new BlockNanoFogTerminal();
-    public static Block rolldoorElement = new BlockRolldoorElement();
+        public @Nonnull String getTranslatedTabLabel() {
+            return new TextComponentTranslation("itemGroup.OpenSecurity.tabOpenSecurity").getUnformattedText();
+        }
+    };
 
-    public static BlockRolldoor rolldoor = new BlockRolldoor();
-    public static BlockDoorController doorController = new BlockDoorController();
-    public static BlockRolldoorController rolldoorController = new BlockRolldoorController();
-    public static BlockNanoFog nanoFog = new BlockNanoFog();
+    // holds a list of normal mod blocks
+    public static final HashSet<Block> modBlocks = new HashSet<>();
 
-    public static Item doorControllerItem;
-    public static Item entityDetectorItem;
-    public static Item rfidReaderItem;
-    public static Item alarmItem;
+    // holds a list of mod blocks that should register as blocks that can be camouflaged
+    public static final HashSet<Block> modCamoBlocks = new HashSet<>();
 
+    // holds a list of mod blocks that have a specific custom Item like the doors
+    public static final HashMap<Block, ItemStack> modBlocksWithItem = new HashMap<>();
 
-    // TODO: block and item names normalization
-    public static ItemRFIDCard itemRFIDCard = new ItemRFIDCard();
-    public static ItemMagCard itemMagCard = new ItemMagCard();
+    // holds a list of normal mod items
+    public static final HashSet<ItemStack> modItems = new HashSet<>();
 
-    public static Item secureDoorItem = new ItemSecureDoor();
-    public static Item securePrivateDoorItem = new ItemSecurePrivateDoor();
-    public static Item rfidReaderCardItem = new ItemRFIDReaderCard();
-    public static Item damageUpgradeItem = new ItemDamageUpgrade();
-    public static Item cooldownUpgradeItem = new ItemCooldownUpgrade();
-    public static Item energyUpgradeItem = new ItemEnergyUpgrade();
-    public static Item movementUpgradeItem = new ItemMovementUpgrade();
+    static {
+        modBlocks.add(BlockAlarm.DEFAULTITEM = new BlockAlarm());
+        modBlocks.add(BlockSecurityTerminal.DEFAULTITEM = new BlockSecurityTerminal());
+        modBlocks.add(BlockBiometricReader.DEFAULTITEM = new BlockBiometricReader());
+        modBlocks.add(BlockData.DEFAULTITEM = new BlockData());
+        modBlocks.add(BlockCardWriter.DEFAULTITEM = new BlockCardWriter());
+        modBlocks.add(BlockMagReader.DEFAULTITEM = new BlockMagReader());
+        modBlocks.add(BlockKeypad.DEFAULTITEM = new BlockKeypad());
+        modBlocks.add(BlockEntityDetector.DEFAULTITEM = new BlockEntityDetector());
+        modBlocks.add(BlockEnergyTurret.DEFAULTITEM = new BlockEnergyTurret());
+        modBlocks.add(BlockRFIDReader.DEFAULTITEM = new BlockRFIDReader());
+        modBlocks.add(BlockNanoFogTerminal.DEFAULTITEM = new BlockNanoFogTerminal());
+        modBlocks.add(BlockRolldoorElement.DEFAULTITEM = new BlockRolldoorElement());
 
-    public static Item nanoDNAItem = new ItemNanoDNA();
+        //modBlocks.add(BlockCase.DEFAULTITEM_TIER1 = new BlockCase("case1", Tier.One()));
+        //modBlocks.add(BlockCase.DEFAULTITEM_TIER2 = new BlockCase("case2", Tier.Two()));
+        //modBlocks.add(BlockCase.DEFAULTITEM_TIER3 = new BlockCase("case3", Tier.Three()));
 
-    public ContentRegistry() {
+        modBlocksWithItem.put(BlockSecureDoor.DEFAULTITEM = new BlockSecureDoor(), ItemSecureDoor.DEFAULTSTACK = new ItemStack(new ItemSecureDoor()));
+        modBlocksWithItem.put(BlockSecurePrivateDoor.DEFAULTITEM = new BlockSecurePrivateDoor(), ItemSecurePrivateDoor.DEFAULTSTACK = new ItemStack(new ItemSecurePrivateDoor()));
+
+        modCamoBlocks.add(BlockRolldoor.DEFAULTITEM = new BlockRolldoor());
+        modCamoBlocks.add(BlockDoorController.DEFAULTITEM = new BlockDoorController());
+        modCamoBlocks.add(BlockRolldoorController.DEFAULTITEM = new BlockRolldoorController());
+        modCamoBlocks.add(BlockNanoFog.DEFAULTITEM = new BlockNanoFog());
+
+        modItems.add(ItemRFIDCard.DEFAULTSTACK = new ItemStack(new ItemRFIDCard()));
+        modItems.add(ItemMagCard.DEFAULTSTACK = new ItemStack(new ItemMagCard()));
+        modItems.add(ItemRFIDReaderCard.DEFAULTSTACK = new ItemStack(new ItemRFIDReaderCard()));
+        modItems.add(ItemDamageUpgrade.DEFAULTSTACK = new ItemStack(new ItemDamageUpgrade()));
+        modItems.add(ItemCooldownUpgrade.DEFAULTSTACK = new ItemStack(new ItemCooldownUpgrade()));
+        modItems.add(ItemEnergyUpgrade.DEFAULTSTACK = new ItemStack(new ItemEnergyUpgrade()));
+        modItems.add(ItemMovementUpgrade.DEFAULTSTACK = new ItemStack(new ItemMovementUpgrade()));
+        modItems.add(ItemNanoDNA.DEFAULTSTACK = new ItemStack(new ItemNanoDNA()));
     }
 
-    public static final Set<Block> blocks = new HashSet<>();
 
     // Called on mod preInit()
     public static void preInit() {
+        if(OpenSecurity.galacticraft) {
+            galacticraftIntegration.preInit();
+        }
+
         registerEvents();
     }
 
@@ -116,27 +135,15 @@ public class ContentRegistry {
     }
 
     @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(
-                alarmBlock,
-                doorController,
-                securityTerminal,
-                biometricReaderBlock,
-                dataBlock,
-                cardWriter,
-                magReader,
-                keypadBlock,
-                entityDetector,
-                energyTurret,
-                rfidReader,
-                secureDoor,
-                privateSecureDoor,
-                nanoFogTerminal,
-                nanoFog,
-                rolldoor,
-                rolldoorController,
-                rolldoorElement
-        );
+    public static void addBlocks(RegistryEvent.Register<Block> event) {
+        for(Block block : modBlocks)
+            event.getRegistry().register(block);
+
+        for(Block block : modBlocksWithItem.keySet())
+            event.getRegistry().register(block);
+
+        for(Block block : modCamoBlocks)
+            event.getRegistry().register(block);
 
         registerTileEntity(TileEntityAlarm.class, BlockAlarm.NAME);
         registerTileEntity(TileEntityDoorController.class, BlockDoorController.NAME);
@@ -164,55 +171,18 @@ public class ContentRegistry {
 
     @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        alarmItem = new ItemBlock(alarmBlock).setRegistryName(alarmBlock.getRegistryName());
-        doorControllerItem = new ItemBlock(doorController).setRegistryName(doorController.getRegistryName());
-        entityDetectorItem = new ItemBlock(entityDetector).setRegistryName(entityDetector.getRegistryName());
-        rfidReaderItem = new ItemBlock(rfidReader).setRegistryName(rfidReader.getRegistryName());
+    public static void addItems(RegistryEvent.Register<Item> event) {
 
-        event.getRegistry().registerAll(
-                doorControllerItem,
-                entityDetectorItem,
-                rfidReaderItem,
-                alarmItem,
-                new ItemBlock(biometricReaderBlock).setRegistryName(biometricReaderBlock.getRegistryName()),
-                new ItemBlock(cardWriter).setRegistryName(cardWriter.getRegistryName()),
-                new ItemBlock(dataBlock).setRegistryName(dataBlock.getRegistryName()),
-                new ItemBlock(energyTurret).setRegistryName(energyTurret.getRegistryName()),
-                new ItemBlock(keypadBlock).setRegistryName(keypadBlock.getRegistryName()),
-                new ItemBlock(magReader).setRegistryName(magReader.getRegistryName()),
-                new ItemBlock(nanoFog).setRegistryName(nanoFog.getRegistryName()),
-                new ItemBlock(nanoFogTerminal).setRegistryName(nanoFogTerminal.getRegistryName()),
-                new ItemBlock(securityTerminal).setRegistryName(securityTerminal.getRegistryName()),
-                new ItemBlock(rolldoor).setRegistryName(rolldoor.getRegistryName()),
-                new ItemBlock(rolldoorController).setRegistryName(rolldoorController.getRegistryName()),
-                new ItemBlock(rolldoorElement).setRegistryName(rolldoorElement.getRegistryName())
-        );
+        for(Block block : modBlocks)
+            event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
 
-        event.getRegistry().registerAll(
-                secureDoorItem,
-                securePrivateDoorItem,
-                itemRFIDCard,
-                itemMagCard,
-                rfidReaderCardItem,
-                damageUpgradeItem,
-                cooldownUpgradeItem,
-                energyUpgradeItem,
-                movementUpgradeItem,
-                nanoDNAItem
-        );
-    }
+        for(Map.Entry<Block, ItemStack> entry : modBlocksWithItem.entrySet())
+            event.getRegistry().register(entry.getValue().getItem());
 
+        for(Block block : modCamoBlocks)
+            event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
 
-    private static CreativeTabs getCreativeTab() {
-        return new CreativeTabs("tabOpenSecurity") {
-            public ItemStack getTabIconItem() {
-                return new ItemStack(Item.getItemFromBlock(dataBlock));
-            }
-
-            public String getTranslatedTabLabel() {
-                return new TextComponentTranslation("itemGroup.OpenSecurity.tabOpenSecurity").getUnformattedText();
-            }
-        };
+        for(ItemStack itemStack : modItems)
+            event.getRegistry().register(itemStack.getItem());
     }
 }

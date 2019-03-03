@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 
 public class ItemDamageUpgrade extends ItemOSBase {
 	public static final String NAME = "damage_upgrade";
+	public static ItemStack DEFAULTSTACK;
 
 	public ItemDamageUpgrade() {
 		super(NAME);

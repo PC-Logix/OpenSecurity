@@ -8,6 +8,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -16,11 +17,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import pcl.opensecurity.Config;
-import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
 
 import javax.annotation.Nonnull;
+import java.awt.*;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.UUID;
@@ -35,7 +37,7 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     public TileEntityCardWriter() {
         super("os_cardwriter");
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
-        if (this.node() != null) {
+        if (node() != null) {
             initOCFilesystem("/lua/cardwriter/", "cardwriter");
         }
         inventoryInput = new ItemStackHandler(1);
@@ -49,7 +51,7 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
 
     @Override
     public void onConnect(final Node node) {
-        if(node == node()) {
+        if(node.equals(node())) {
             node.connect(oc_fs().node());
         }
     }
@@ -58,7 +60,7 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     public void onDisconnect(final Node node) {
         if (node.host() instanceof Context) {
             node.disconnect(oc_fs().node());
-        } else if (node == this.node) {
+        } else if (node.equals(node())) {
             oc_fs().node().remove();
         }
     }
@@ -84,7 +86,7 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     public Object[] flash(Context context, Arguments args) {
         byte[] code = args.checkString(0).getBytes(Charset.forName("UTF-8"));
         String title = args.checkString(1);
-        Boolean locked = args.checkBoolean(2);
+        boolean locked = args.checkBoolean(2);
         ItemStack eepromItem = li.cil.oc.api.Items.get("eeprom").createItemStack(1);
         ItemStack outStack;
         if (!inventoryInput.getStackInSlot(0).isEmpty()) {
@@ -98,8 +100,8 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
                     outStack = eepromItem;
                     NBTTagCompound oc_data = new NBTTagCompound();
                     NBTTagCompound our_data = new NBTTagCompound();
-                    Integer biggerSizeCode = Settings.get().eepromSize()*2;
-                    Integer biggerSizeData = Settings.get().eepromDataSize()*2;
+                    int biggerSizeCode = Settings.get().eepromSize()*2;
+                    int biggerSizeData = Settings.get().eepromDataSize()*2;
                     if(!biggerEEPROM && code.length > Settings.get().eepromSize()) {
                         code = Arrays.copyOfRange(code, 0, Settings.get().eepromSize());
                     } else if(biggerEEPROM && code.length > biggerSizeCode) {
@@ -130,108 +132,57 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     @Callback(doc = "function(string: data, string: displayName, boolean: locked, int: color):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data, the 3rd argument will set the color of the card, use OC's color api.", direct = true)
     public Object[] write(Context context, Arguments args) {
         String data = args.checkString(0);
-        String title = args.optString(1, "");
-        Boolean locked = args.optBoolean(2, false);
-        int colorIn = args.optInteger(3, 0);
-        int color = Integer.parseInt("FFFFFF", 16);
 
-        if (colorIn >= 0 && colorIn <= 15) {
-            switch(colorIn) {
-                case 0: color = Integer.parseInt("FFFFFF", 16); break;
-                case 1: color = Integer.parseInt("FFA500", 16); break;
-                case 2: color = Integer.parseInt("FF00FF", 16); break;
-                case 3: color = Integer.parseInt("ADD8E6", 16); break;
-                case 4: color = Integer.parseInt("FFFF00", 16); break;
-                case 5: color = Integer.parseInt("00FF00", 16); break;
-                case 6: color = Integer.parseInt("FFC0CB", 16); break;
-                case 7: color = Integer.parseInt("808080", 16); break;
-                case 8: color = Integer.parseInt("C0C0C0", 16); break;
-                case 9: color = Integer.parseInt("00FFFF", 16); break;
-                case 10: color = Integer.parseInt("800080", 16); break;
-                case 11: color = Integer.parseInt("0000FF", 16); break;
-                case 12: color = Integer.parseInt("A52A2A", 16); break;
-                case 13: color = Integer.parseInt("008000", 16); break;
-                case 14: color = Integer.parseInt("FF0000", 16); break;
-                case 15: color = Integer.parseInt("000000", 16); break;
-                default: color = Integer.parseInt("FFFFFF", 16); break;
-            }
-        }
-        ItemStack outStack;
-        if (node.changeBuffer(-5) == 0) {
-            if (data != null) {
-                if (!inventoryInput.getStackInSlot(0).isEmpty()) {
-                    // checking for a empty one
-                    if (inventoryOutput.getStackInSlot(0).isEmpty()) { // The slot is empty lets
-                        // make us a RFID
-                        if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
-                            outStack = new ItemStack(ContentRegistry.itemRFIDCard);
-                            if (data.length() > 64) {
-                                data = data.substring(0, 64);
-                            }
-                        } else if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemMagCard) {
-                            outStack = new ItemStack(ContentRegistry.itemMagCard);
-                            if (data.length() > 128) {
-                                data = data.substring(0, 128);
-                            }
-                        } else
-                             return new Object[] { false, "Wrong item in input slot" };
-
-                        outStack.setTagCompound(new NBTTagCompound());
-                        outStack.getTagCompound().setString("data", data);
-                        if (!title.isEmpty()) {
-                            outStack.setStackDisplayName(title);
-                        }
-                        //System.out.println(CardWriterItemStacks[x].stackTagCompound.getString("uuid"));
-                        if (outStack.getTagCompound().getString("uuid").isEmpty()) {
-                            outStack.getTagCompound().setString("uuid", UUID.randomUUID().toString());
-                        }
-
-                        if (locked) {
-                            outStack.getTagCompound().setBoolean("locked", locked);
-                        }
-
-                        //outStack.getTagCompound().setInteger("color", color);
-                        NBTTagCompound nbttagcompound = outStack.getTagCompound();
-
-                        if (nbttagcompound == null)
-                        {
-                            nbttagcompound = new NBTTagCompound();
-                            outStack.setTagCompound(nbttagcompound);
-                        }
-
-                        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-
-                        if (!nbttagcompound.hasKey("display", 10))
-                        {
-                            nbttagcompound.setTag("display", nbttagcompound1);
-                        }
-
-                        nbttagcompound1.setInteger("color", color);
-
-                        inventoryInput.getStackInSlot(0).setCount(inventoryInput.getStackInSlot(0).getCount() - 1);
-                        inventoryOutput.setStackInSlot(0, outStack);
-
-                        return new Object[] { true,  outStack.getTagCompound().getString("uuid")};
-                    }
-                    return new Object[] { false, "No Empty Slots" };
-                }
-                return new Object[] { false, "No card in slot" };
-            }
+        if (data == null)
             return new Object[] { false, "Data is Null" };
-        } else {
-            return new Object[] { false, "Not enough power in OC Network." };
-        }
-    }
 
-    // This item handler will hold our nine inventory slots
-    private ItemStackHandler itemStackHandler = new ItemStackHandler(SIZE) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            // We need to tell the tile entity that something has changed so
-            // that the chest contents is persisted
-            TileEntityCardWriter.this.markDirty();
+        if (node.changeBuffer(-5) != 0)
+            return new Object[] { false, "Not enough power in OC Network." };
+
+        if (inventoryInput.getStackInSlot(0).isEmpty())
+            return new Object[] { false, "No card in slot" };
+
+        if (!inventoryOutput.getStackInSlot(0).isEmpty())
+            return new Object[] { false, "No Empty Slots" };
+
+        String title = args.optString(1, "");
+        boolean locked = args.optBoolean(2, false);
+        int colorIndex = Math.max(0, Math.min(args.optInteger(3, 0), 15));
+
+        float dyeColor[] = EnumDyeColor.byMetadata(colorIndex).getColorComponentValues();
+        int color = new Color(dyeColor[0], dyeColor[1], dyeColor[2]).getRGB();
+
+        ItemStack outStack;
+
+        if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
+            outStack = new ItemStack(ItemRFIDCard.DEFAULTSTACK.getItem());
+            if (data.length() > 64) {
+                data = data.substring(0, 64);
+            }
+        } else if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemMagCard) {
+            outStack = new ItemStack(ItemMagCard.DEFAULTSTACK.getItem());
+            if (data.length() > 128) {
+                data = data.substring(0, 128);
+            }
+        } else
+            return new Object[] { false, "Wrong item in input slot" };
+
+        ItemCard.CardTag cardTag = new ItemCard.CardTag(inventoryInput.getStackInSlot(0));
+        cardTag.color = color;
+        cardTag.dataTag = data;
+        cardTag.locked = locked;
+
+        outStack.setTagCompound(cardTag.writeToNBT(new NBTTagCompound()));
+
+        if (!title.isEmpty()) {
+            outStack.setStackDisplayName(title);
         }
-    };
+
+        inventoryInput.getStackInSlot(0).setCount(inventoryInput.getStackInSlot(0).getCount() - 1);
+        inventoryOutput.setStackInSlot(0, outStack);
+
+        return new Object[] { true,  outStack.getTagCompound().getString("uuid")};
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound data) {
@@ -255,16 +206,16 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-        return (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.UP) ||  super.hasCapability(capability, facing);
+        return capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) || super.hasCapability(capability, facing);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (facing == EnumFacing.DOWN)
+        if (capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
+            if(facing.equals(EnumFacing.DOWN))
                 return (T) inventoryOutput;
-            else if (facing != EnumFacing.UP)
+            else
                 return (T) inventoryInput;
         }
 

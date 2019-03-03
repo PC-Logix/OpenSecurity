@@ -16,14 +16,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pcl.opensecurity.common.items.ItemNanoDNA;
 import pcl.opensecurity.common.nanofog.EntityFilter;
 import pcl.opensecurity.common.interfaces.ICamo;
 import pcl.opensecurity.util.ItemUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static pcl.opensecurity.common.ContentRegistry.nanoDNAItem;
 
 
 public class TileEntityNanoFog extends TileEntity implements ICamo {
@@ -129,10 +128,10 @@ public class TileEntityNanoFog extends TileEntity implements ICamo {
         TileEntityNanoFogTerminal te = getTerminal();
 
         if(te != null && te.consumeBuildEnergy())
-            return new ItemStack(nanoDNAItem, 1);
+            return new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1);
         else {
             // drop at block location if energy isnt sufficient for fog to come back to terminal
-            ItemUtils.dropItem(new ItemStack(nanoDNAItem, 1), getWorld(), getPos(), false, 10);
+            ItemUtils.dropItem(new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1), getWorld(), getPos(), false, 10);
             return ItemStack.EMPTY;
         }
     }

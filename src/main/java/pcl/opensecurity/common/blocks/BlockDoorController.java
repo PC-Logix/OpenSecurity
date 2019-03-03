@@ -14,6 +14,7 @@ import pcl.opensecurity.common.interfaces.IOwner;
 
 public class BlockDoorController extends BlockCamouflage implements ITileEntityProvider  {
     public static final String NAME = "door_controller";
+    public static BlockDoorController DEFAULTITEM;
 
     public BlockDoorController() {
         this(NAME);

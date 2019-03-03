@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import pcl.opensecurity.common.CommonProxy;
 import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
-import pcl.opensecurity.common.integration.galacticraft.blocks.galacticraftIntegration;
+import pcl.opensecurity.common.blocks.BlockNanoFog;
 import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 import pcl.opensecurity.networking.*;
 
@@ -65,10 +65,6 @@ public class OpenSecurity {
         advancedRocketry = Loader.isModLoaded("advancedrocketry");
         galacticraft = Loader.isModLoaded("galacticraftcore");
 
-        if(galacticraft) {
-            galacticraftIntegration.preInit();
-        }
-
         ContentRegistry.preInit();
 
         MinecraftForge.EVENT_BUS.register(contentRegistry);
@@ -106,7 +102,7 @@ public class OpenSecurity {
         ContentRegistry.init();
 
         if(advancedRocketry) {
-            zmaster587.advancedRocketry.api.AdvancedRocketryAPI.atomsphereSealHandler.addSealableBlock(ContentRegistry.nanoFog);
+            zmaster587.advancedRocketry.api.AdvancedRocketryAPI.atomsphereSealHandler.addSealableBlock(BlockNanoFog.DEFAULTITEM);
             OpenSecurity.logger.info("NanoFog with AdvancedRocketry support");
         }
 

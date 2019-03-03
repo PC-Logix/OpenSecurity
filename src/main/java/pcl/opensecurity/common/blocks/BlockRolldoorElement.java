@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -27,6 +28,7 @@ import javax.annotation.Nullable;
 
 public class BlockRolldoorElement extends BlockOSBase {
     public static final String NAME = "rolldoor_element";
+    public static Block DEFAULTITEM;
     public static final AxisAlignedBB emptyBB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
     public static final PropertyInteger PROPERTYOFFSET = PropertyInteger.create("offset", 0, 15);
 

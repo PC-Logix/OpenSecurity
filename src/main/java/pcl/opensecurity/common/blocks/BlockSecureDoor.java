@@ -11,13 +11,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.protection.Protection;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
@@ -30,6 +30,7 @@ import static pcl.opensecurity.common.protection.Protection.UserAction.mine;
 @SuppressWarnings("deprecation")
 public class BlockSecureDoor extends BlockDoor {
     public static final String NAME = "secure_door";
+    public static BlockSecureDoor DEFAULTITEM;
 
     public BlockSecureDoor() {
         this(NAME);
@@ -37,7 +38,7 @@ public class BlockSecureDoor extends BlockDoor {
 
     BlockSecureDoor(String name) {
         super(Material.IRON);
-        setRegistryName(new ResourceLocation(OpenSecurity.MODID, name));
+        setRegistryName(OpenSecurity.MODID, name);
         setUnlocalizedName(name);
         setCreativeTab(ContentRegistry.creativeTab);
     }
@@ -55,7 +56,7 @@ public class BlockSecureDoor extends BlockDoor {
     }
 
     protected Item getItem() {
-        return ContentRegistry.secureDoorItem;
+        return ItemSecureDoor.DEFAULTSTACK.getItem();
     }
 
     @Nonnull

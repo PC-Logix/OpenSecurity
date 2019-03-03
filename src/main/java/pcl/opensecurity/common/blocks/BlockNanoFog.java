@@ -26,6 +26,7 @@ import java.util.Random;
 
 public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider {
     public static final String NAME = "nanofog";
+    public static BlockNanoFog DEFAULTITEM;
 
     // shrinked cubic bounding box so that entities can collide
     static final AxisAlignedBB boundingBox = new AxisAlignedBB(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);

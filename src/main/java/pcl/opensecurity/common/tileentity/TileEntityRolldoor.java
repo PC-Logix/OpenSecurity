@@ -11,8 +11,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
+import pcl.opensecurity.common.blocks.BlockRolldoorElement;
 import pcl.opensecurity.common.interfaces.ICamo;
 import pcl.opensecurity.common.tileentity.logic.RolldoorHelper;
 
@@ -90,9 +90,9 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
     public void updateHeight(){
         height = 0;
         BlockPos pos = getPos().down();
-        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && height < MAX_LENGTH) {
+        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(BlockRolldoorElement.DEFAULTITEM)) && height < MAX_LENGTH) {
             if(getWorld().isAirBlock(pos)){
-                IBlockState state = ContentRegistry.rolldoorElement.getDefaultState();
+                IBlockState state = BlockRolldoorElement.DEFAULTITEM.getDefaultState();
                 state = state.withProperty(PROPERTYOFFSET, height);
                 getWorld().setBlockState(pos, state);
             }
@@ -111,8 +111,8 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
         height = 0;
         int element = 0;
         BlockPos pos = getPos().down();
-        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)) && element < MAX_LENGTH) {
-            if(getWorld().getBlockState(pos).getBlock().equals(ContentRegistry.rolldoorElement)){
+        while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(BlockRolldoorElement.DEFAULTITEM)) && element < MAX_LENGTH) {
+            if(getWorld().getBlockState(pos).getBlock().equals(BlockRolldoorElement.DEFAULTITEM)){
                 getWorld().setBlockToAir(pos);
             }
             pos = pos.down();

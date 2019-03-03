@@ -11,23 +11,21 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.blocks.BlockSecureDoor;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 import javax.annotation.Nonnull;
 
 public class ItemSecureDoor extends ItemDoor {
+    public static ItemStack DEFAULTSTACK;
 
-    private Block block;
-
-    public ItemSecureDoor() {
-        this(ContentRegistry.secureDoor);
+    public ItemSecureDoor(){
+        this(BlockSecureDoor.DEFAULTITEM);
     }
 
     @SuppressWarnings("ConstantConditions")
     ItemSecureDoor(Block block) {
         super(block);
-        this.block = block;
-
         setRegistryName(block.getRegistryName());
         setCreativeTab(ContentRegistry.creativeTab);
     }
@@ -35,7 +33,7 @@ public class ItemSecureDoor extends ItemDoor {
     @Nonnull
     @Override
     public String getUnlocalizedName() {
-        return block.getUnlocalizedName();
+        return BlockSecureDoor.DEFAULTITEM.getUnlocalizedName();
     }
 
     @Nonnull

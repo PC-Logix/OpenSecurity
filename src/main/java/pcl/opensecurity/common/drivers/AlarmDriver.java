@@ -8,9 +8,9 @@ import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.EnvironmentHost;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.common.Tier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.blocks.BlockAlarm;
 import pcl.opensecurity.common.tileentity.TileEntityAlarm;
 
@@ -19,7 +19,7 @@ public class AlarmDriver extends BlockAlarm implements DriverItem, EnvironmentPr
 
     @Override
     public boolean worksWith(ItemStack stack) {
-        return stack.getItem().equals(ContentRegistry.alarmItem);
+        return stack.getItem().equals(Item.getItemFromBlock(BlockAlarm.DEFAULTITEM));
     }
 
     @Override

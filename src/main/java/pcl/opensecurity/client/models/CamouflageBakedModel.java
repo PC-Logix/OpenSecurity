@@ -101,6 +101,7 @@ public class CamouflageBakedModel implements IBakedModel {
     }
 
     @Override
+    @Deprecated
     public ItemCameraTransforms getItemCameraTransforms() {
         return ItemCameraTransforms.DEFAULT;
     }

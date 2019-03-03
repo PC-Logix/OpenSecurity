@@ -3,12 +3,11 @@ package pcl.opensecurity.common.inventory.slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import pcl.opensecurity.common.items.ItemNanoDNA;
 import pcl.opensecurity.common.tileentity.TileEntityNanoFogTerminal;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-
-import static pcl.opensecurity.common.ContentRegistry.nanoDNAItem;
 
 public class NanoFogTerminalSlot extends BaseSlot<TileEntityNanoFogTerminal> {
 
@@ -17,8 +16,7 @@ public class NanoFogTerminalSlot extends BaseSlot<TileEntityNanoFogTerminal> {
     public NanoFogTerminalSlot(TileEntityNanoFogTerminal tileEntity, IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(tileEntity, itemHandler, index, xPosition, yPosition);
 
-
-        validItems.add(nanoDNAItem);
+        validItems.add(ItemNanoDNA.DEFAULTSTACK.getItem());
     }
 
     @Override

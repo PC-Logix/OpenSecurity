@@ -29,6 +29,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import pcl.opensecurity.Config;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
+import pcl.opensecurity.common.items.ItemNanoDNA;
 import pcl.opensecurity.util.BlockUtils;
 import pcl.opensecurity.util.ClassHelper;
 import pcl.opensecurity.util.ItemUtils;
@@ -38,9 +39,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
-
-import static pcl.opensecurity.common.ContentRegistry.nanoDNAItem;
-import static pcl.opensecurity.common.ContentRegistry.nanoFog;
 
 public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITickable {
     public static final int terminalRange = 32, FogBlockLimit = 256;
@@ -367,7 +365,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     private boolean consumeMaterial(){
         ItemStack stack = inventory.getStackInSlot(0);
 
-        if(stack.getItem().equals(nanoDNAItem) && stack.getCount() > 0){
+        if(ItemStack.areItemsEqual(stack, ItemNanoDNA.DEFAULTSTACK) && stack.getCount() > 0){
             stack.shrink(1);
             inventory.setStackInSlot(0, stack);
 
@@ -390,7 +388,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     private String setShieldBlock(BlockPos pos, String material, int metadata){
-        placeBlock(pos, new ItemStack(nanoFog, 1));
+        placeBlock(pos, new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1));
         updateEnergyBufferSize();
         TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
         if(te == null)

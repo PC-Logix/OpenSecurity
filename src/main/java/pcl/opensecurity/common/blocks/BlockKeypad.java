@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,7 @@ import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 
 public class BlockKeypad extends BlockOSBase {
     public static final String NAME = "keypad";
+    public static Block DEFAULTITEM;
 
     public BlockKeypad() {
         super(NAME, Material.IRON, 0.5f);

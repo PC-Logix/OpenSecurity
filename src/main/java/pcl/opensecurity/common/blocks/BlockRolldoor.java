@@ -16,6 +16,7 @@ import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
 
 public class BlockRolldoor extends BlockCamouflage implements ITileEntityProvider {
     public final static String NAME = "rolldoor";
+    public static BlockRolldoor DEFAULTITEM;
 
     public BlockRolldoor() {
         super(Material.IRON, NAME);

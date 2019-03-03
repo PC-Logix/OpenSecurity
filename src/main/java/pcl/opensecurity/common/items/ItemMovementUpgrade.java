@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 
 public class ItemMovementUpgrade extends ItemOSBase {
 	public static final String NAME = "movement_upgrade";
+	public static ItemStack DEFAULTSTACK;
 
 	public ItemMovementUpgrade() {
 		super(NAME);

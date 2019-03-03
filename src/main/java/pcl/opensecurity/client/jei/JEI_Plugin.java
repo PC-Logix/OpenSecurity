@@ -1,6 +1,5 @@
 package pcl.opensecurity.client.jei;
 
-
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -8,8 +7,9 @@ import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import net.minecraft.item.ItemStack;
-import pcl.opensecurity.common.ContentRegistry;
+import net.minecraft.item.Item;
+import pcl.opensecurity.common.blocks.BlockNanoFog;
+import pcl.opensecurity.common.blocks.BlockRolldoorElement;
 
 @mezz.jei.api.JEIPlugin
 public class JEI_Plugin implements IModPlugin {
@@ -49,8 +49,8 @@ public class JEI_Plugin implements IModPlugin {
     @Override
     public void register(IModRegistry registry) {
         IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
-        blacklist.addIngredientToBlacklist(new ItemStack(ContentRegistry.nanoFog));
-        blacklist.addIngredientToBlacklist(new ItemStack(ContentRegistry.rolldoorElement));
+        blacklist.addIngredientToBlacklist(Item.getItemFromBlock(BlockNanoFog.DEFAULTITEM));
+        blacklist.addIngredientToBlacklist(Item.getItemFromBlock(BlockRolldoorElement.DEFAULTITEM));
     }
 
     /**

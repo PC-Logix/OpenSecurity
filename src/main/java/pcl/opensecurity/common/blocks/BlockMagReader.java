@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 
 public class BlockMagReader extends Block implements ITileEntityProvider {
     public static final String NAME = "mag_reader";
+    public static Block DEFAULTITEM;
 
     public BlockMagReader() {
         super(Material.IRON);
@@ -80,7 +81,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
             TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
             if (!world.isRemote && equipped instanceof ItemMagCard) {
                 world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
-                if (tile.doRead(heldItem, player, side.getIndex())) {
+                if (tile.doRead(heldItem, player, side)) {
                     world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
                 } else {
                     world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));

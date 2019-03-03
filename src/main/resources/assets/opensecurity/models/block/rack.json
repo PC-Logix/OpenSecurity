@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "bottom": "opensecurity:blocks/case_top",
+    "top": "opensecurity:blocks/case_top",
+    "side": "opensecurity:blocks/rack_side",
+    "front": "opensecurity:blocks/rack_front"
+  }
+}

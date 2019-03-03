@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
-import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.blocks.BlockEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 
 public class EnergyTurretRenderHelper extends TileEntityItemStackRenderer {
@@ -14,7 +14,7 @@ public class EnergyTurretRenderHelper extends TileEntityItemStackRenderer {
     public void renderByItem(ItemStack itemStack) {
         Block block = Block.getBlockFromItem(itemStack.getItem());
 
-        if (block == ContentRegistry.energyTurret) {
+        if (block.equals(BlockEnergyTurret.DEFAULTITEM)) {
             TileEntityRendererDispatcher.instance.render(this.turrettRender, 0.0D, 0.0D, 0.0D, 0.0F);
         }else {
             super.renderByItem(itemStack);

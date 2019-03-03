@@ -1,5 +1,6 @@
 package pcl.opensecurity.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +13,7 @@ import pcl.opensecurity.common.tileentity.TileEntityBiometricReader;
 
 public class BlockBiometricReader extends BlockOSBase {
 	public static final String NAME = "biometric_reader";
+	public static Block DEFAULTITEM;
 
 	public BlockBiometricReader() {
 		super(NAME, Material.IRON, 0.5f);

@@ -22,7 +22,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.models.ModColourManager;
 import pcl.opensecurity.client.models.ModelNanoFogSwarm;
 import pcl.opensecurity.client.renderer.*;
 import pcl.opensecurity.client.sounds.AlarmResource;
@@ -50,10 +49,10 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void colorHandlerEventBlock(ColorHandlerEvent.Block event) {
-        ContentRegistry.nanoFog.initColorHandler(event.getBlockColors());
-        ContentRegistry.doorController.initColorHandler(event.getBlockColors());
-        ContentRegistry.rolldoorController.initColorHandler(event.getBlockColors());
-        ContentRegistry.rolldoor.initColorHandler(event.getBlockColors());
+        BlockNanoFog.DEFAULTITEM.initColorHandler(event.getBlockColors());
+        BlockDoorController.DEFAULTITEM.initColorHandler(event.getBlockColors());
+        BlockRolldoorController.DEFAULTITEM.initColorHandler(event.getBlockColors());
+        BlockRolldoor.DEFAULTITEM.initColorHandler(event.getBlockColors());
     }
 
     @Override
@@ -73,11 +72,9 @@ public class ClientProxy extends CommonProxy {
 
         ModelLoaderRegistry.registerLoader(new CamouflageBlockModelLoader());
 
-
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeypad.class, new RenderKeypad());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRolldoorController.class, new RenderRolldoorController());
-
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
         TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper();
@@ -94,61 +91,29 @@ public class ClientProxy extends CommonProxy {
     public void init() {
         super.init();
         Minecraft mc = Minecraft.getMinecraft();
-        mc.getItemColors().registerItemColorHandler(new CardColorHandler(ContentRegistry.itemRFIDCard), ContentRegistry.itemRFIDCard);
-        mc.getItemColors().registerItemColorHandler(new CardColorHandler(ContentRegistry.itemMagCard), ContentRegistry.itemMagCard);
-        ModColourManager.registerColourHandlers();
+        mc.getItemColors().registerItemColorHandler(new CardColorHandler(), ItemRFIDCard.DEFAULTSTACK.getItem());
+        mc.getItemColors().registerItemColorHandler(new CardColorHandler(), ItemMagCard.DEFAULTSTACK.getItem());
         ManualPathProvider.initialize();
     }
 
     @Override
     public void registerModels() {
-        registerBlockItem(ContentRegistry.alarmBlock, 0, BlockAlarm.NAME);
-        registerBlockItem(ContentRegistry.securityTerminal, 0, BlockSecurityTerminal.NAME);
-        registerBlockItem(ContentRegistry.biometricReaderBlock, 0, BlockBiometricReader.NAME);
-        registerBlockItem(ContentRegistry.dataBlock, 0, BlockData.NAME);
-        registerBlockItem(ContentRegistry.cardWriter, 0, BlockCardWriter.NAME);
-        registerBlockItem(ContentRegistry.magReader, 0, BlockMagReader.NAME);
-        registerBlockItem(ContentRegistry.keypadBlock, 0, BlockKeypad.NAME);
-        registerBlockItem(ContentRegistry.entityDetector, 0, BlockEntityDetector.NAME);
-        registerBlockItem(ContentRegistry.energyTurret, 0, BlockEnergyTurret.NAME);
-        registerBlockItem(ContentRegistry.rfidReader, 0, BlockRFIDReader.NAME);
-        registerBlockItem(ContentRegistry.nanoFogTerminal, 0, BlockNanoFogTerminal.NAME);
-        registerBlockItem(ContentRegistry.rolldoorElement, 0, BlockRolldoorElement.NAME);
+        for(Block block : ContentRegistry.modBlocks)
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName().toString(), "inventory"));
 
         // BlockNanoFog uses custom texture/model loader for shield blocks
-        CamouflageBlockModelLoader.registerBlock(ContentRegistry.nanoFog);
-        CamouflageBlockModelLoader.registerBlock(ContentRegistry.doorController);
-        CamouflageBlockModelLoader.registerBlock(ContentRegistry.rolldoor);
-        CamouflageBlockModelLoader.registerBlock(ContentRegistry.rolldoorController);
+        for(Block block : ContentRegistry.modCamoBlocks)
+            CamouflageBlockModelLoader.registerBlock((BlockCamouflage) block);
 
+        for(ItemStack itemStack : ContentRegistry.modBlocksWithItem.values())
+            ModelLoader.setCustomModelResourceLocation(itemStack.getItem(), 0, new ModelResourceLocation(itemStack.getItem().getRegistryName().toString()));
 
-        registerItem(ContentRegistry.secureDoorItem, BlockSecureDoor.NAME);
-        registerItem(ContentRegistry.securePrivateDoorItem, BlockSecurePrivateDoor.NAME);
-        registerItem(ContentRegistry.itemRFIDCard, ItemRFIDCard.NAME);
-        registerItem(ContentRegistry.rfidReaderCardItem, ItemRFIDReaderCard.NAME);
-        registerItem(ContentRegistry.itemMagCard, ItemMagCard.NAME);
-        registerItem(ContentRegistry.damageUpgradeItem, ItemDamageUpgrade.NAME);
-        registerItem(ContentRegistry.movementUpgradeItem, ItemMovementUpgrade.NAME);
-        registerItem(ContentRegistry.energyUpgradeItem, ItemEnergyUpgrade.NAME);
-        registerItem(ContentRegistry.cooldownUpgradeItem, ItemCooldownUpgrade.NAME);
-        registerItem(ContentRegistry.nanoDNAItem, ItemNanoDNA.NAME);
+        for(ItemStack itemStack : ContentRegistry.modItems)
+            ModelLoader.setCustomModelResourceLocation(itemStack.getItem(), 0, new ModelResourceLocation(itemStack.getItem().getRegistryName().toString()));
 
-
-        ModelLoader.setCustomStateMapper(ContentRegistry.rolldoorElement, new StateMap.Builder().ignore(BlockRolldoorElement.PROPERTYOFFSET).build());
-        ModelLoader.setCustomStateMapper(ContentRegistry.secureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
-        ModelLoader.setCustomStateMapper(ContentRegistry.privateSecureDoor, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
-    }
-
-    private void registerBlockItem(final Block block, int meta, final String blockName) {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(block.getRegistryName().toString(), "inventory"));
-        if(OpenSecurity.debug)
-            OpenSecurity.logger.info("Registering Renderer for block '" + blockName + "'");
-    }
-
-    private void registerItem(final Item item, final String itemName) {
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(OpenSecurity.MODID + ":" + itemName));
-        if(OpenSecurity.debug)
-            OpenSecurity.logger.info("Registering Renderer for Item '" + itemName + "'");
+        ModelLoader.setCustomStateMapper(BlockRolldoorElement.DEFAULTITEM, new StateMap.Builder().ignore(BlockRolldoorElement.PROPERTYOFFSET).build());
+        ModelLoader.setCustomStateMapper(BlockSecureDoor.DEFAULTITEM, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
+        ModelLoader.setCustomStateMapper(BlockSecurePrivateDoor.DEFAULTITEM, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
     }
 
     private void listFilesForPath(final File path) {
@@ -176,16 +141,12 @@ public class ClientProxy extends CommonProxy {
     }
 
     private static class CardColorHandler implements IItemColor {
-        private final ItemCard card;
-
-        private CardColorHandler(ItemCard card) {
-            this.card = card;
-        }
+        private CardColorHandler() {}
 
         @Override
         public int colorMultiplier(ItemStack stack, int tintIndex) {
             // TODO Auto-generated method stub
-            return tintIndex == 0 ? 0xFFFFFF : card.getColor(stack);
+            return tintIndex == 0 ? 0xFFFFFF : new ItemCard.CardTag(stack.getTagCompound()).color;
         }
     }
 }
