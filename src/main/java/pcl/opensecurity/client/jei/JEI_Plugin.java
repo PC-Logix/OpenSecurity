@@ -8,6 +8,7 @@ import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import pcl.opensecurity.common.blocks.BlockNanoFog;
 import pcl.opensecurity.common.blocks.BlockRolldoorElement;
 
@@ -49,8 +50,8 @@ public class JEI_Plugin implements IModPlugin {
     @Override
     public void register(IModRegistry registry) {
         IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
-        blacklist.addIngredientToBlacklist(Item.getItemFromBlock(BlockNanoFog.DEFAULTITEM));
-        blacklist.addIngredientToBlacklist(Item.getItemFromBlock(BlockRolldoorElement.DEFAULTITEM));
+        blacklist.addIngredientToBlacklist(new ItemStack(Item.getItemFromBlock(BlockNanoFog.DEFAULTITEM)));
+        blacklist.addIngredientToBlacklist(new ItemStack(Item.getItemFromBlock(BlockRolldoorElement.DEFAULTITEM)));
     }
 
     /**
