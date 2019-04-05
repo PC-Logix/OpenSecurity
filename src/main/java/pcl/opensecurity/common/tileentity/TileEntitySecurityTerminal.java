@@ -75,7 +75,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     }
 
     public boolean isUserAllowedToBypass(UUID uuid) {
-        return uuid.equals(ownerUUID) || allowedUsers.contains(uuid);
+        return allowedUsers.contains(uuid);
     }
 
     @Callback(doc = "function():boolean; Returns the status of the block", direct = true)
