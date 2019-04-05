@@ -102,7 +102,8 @@ public class ContentRegistry {
     }
 
     private static void registerEvents() {
-        MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
+        if(OpenSecurity.registerBlockBreakEvent)
+            MinecraftForge.EVENT_BUS.register(new OSBreakEvent());
 
         if(OpenSecurity.debug)
             OpenSecurity.logger.info("Registered Events");

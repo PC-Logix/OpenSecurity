@@ -43,7 +43,7 @@ public class OpenSecurity {
 
     public static final String ASSETSPATH = "mods/OpenSecurity/assets/opensecurity";
 
-    public static boolean debug = false;
+    public static boolean debug = true;
     public static int rfidRange;
     public static int entityDetectorMaxRange;
     public static boolean ignoreUUIDs = false;
@@ -65,21 +65,22 @@ public class OpenSecurity {
         advancedRocketry = Loader.isModLoaded("advancedrocketry");
         galacticraft = Loader.isModLoaded("galacticraftcore");
 
-        ContentRegistry.preInit();
-
-        MinecraftForge.EVENT_BUS.register(contentRegistry);
-        proxy.registerSounds();
-        SoundHandler.registerSounds();
-        network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
-
         Config.preInit();
 
         registerBlockBreakEvent = Config.getConfig().getCategory("general").get("registerBlockBreak").getBoolean();
         rfidRange = Config.getConfig().getCategory("general").get("rfidMaxRange").getInt();
         entityDetectorMaxRange = Config.getConfig().getCategory("general").get("entityDetectorMaxRange").getInt();
         debug = Config.getConfig().getCategory("general").get("enableDebugMessages").getBoolean();
-        TileEntityAlarm.volumeMax = Config.getConfig().getCategory("general").get("alarmMaxRange").getInt();
 
+        ContentRegistry.preInit();
+
+        MinecraftForge.EVENT_BUS.register(contentRegistry);
+
+        proxy.registerSounds();
+        SoundHandler.registerSounds();
+        network = NetworkRegistry.INSTANCE.newSimpleChannel("OpenSecurity");
+
+        TileEntityAlarm.volumeMax = Config.getConfig().getCategory("general").get("alarmMaxRange").getInt();
 
         proxy.preinit();
 

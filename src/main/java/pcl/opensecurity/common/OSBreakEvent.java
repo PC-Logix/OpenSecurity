@@ -21,11 +21,8 @@ public class OSBreakEvent {
 			OpenSecurity.logger.info("Registering BreakEvent");
 	}
 
-	@SubscribeEvent(priority=EventPriority.NORMAL)
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void onBlockBreak(BreakEvent event) {
-		if(!OpenSecurity.registerBlockBreakEvent)
-	    	return;
-
 		if(event.getPlayer().isCreative())
 			return;
 
@@ -33,11 +30,8 @@ public class OSBreakEvent {
 			event.setCanceled(true);
 	}
 
-	@SubscribeEvent(priority=EventPriority.NORMAL)
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void onDetonate(ExplosionEvent.Detonate event) {
-		if(!OpenSecurity.registerBlockBreakEvent)
-			return;
-
 		ArrayList<BlockPos> removeBlocks = new ArrayList<>();
 
 		for(BlockPos blockPos : event.getAffectedBlocks())
