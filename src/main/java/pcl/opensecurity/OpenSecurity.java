@@ -43,7 +43,7 @@ public class OpenSecurity {
 
     public static final String ASSETSPATH = "mods/OpenSecurity/assets/opensecurity";
 
-    public static boolean debug = true;
+    public static boolean debug = false;
     public static int rfidRange;
     public static int entityDetectorMaxRange;
     public static boolean ignoreUUIDs = false;
