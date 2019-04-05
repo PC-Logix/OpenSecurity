@@ -12,9 +12,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
-import pcl.opensecurity.client.sounds.ISoundTile;
 
-public class TileEntityAlarm extends TileEntityOSSound implements ISoundTile {
+public class TileEntityAlarm extends TileEntityOSSound {
 	public static float volumeMax = 15; //range in BLOCKS!!!111
 
 	public TileEntityAlarm() {

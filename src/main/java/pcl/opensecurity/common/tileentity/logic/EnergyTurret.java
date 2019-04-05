@@ -27,7 +27,6 @@ public class EnergyTurret {
     private float setShaft = 1.0F;
     private float barrel = 1.0F;
     private int tickCool = 0;
-    private int soundTicks = 0;
     private boolean power = false;
     private boolean armed = false;
 
@@ -90,7 +89,7 @@ public class EnergyTurret {
 
             if(Float.isNaN(shaft) || Float.isInfinite(shaft)) shaft = 0;
 
-            if(ms>0F) moveSound = true;
+            if(ms > 0F) moveSound = true;
         }
 
         if(isPowered()) {
@@ -110,7 +109,7 @@ public class EnergyTurret {
 
             if(Float.isNaN(yaw) || Float.isInfinite(yaw)) yaw = 0;
 
-            if(my>0F) moveSound = true;
+            if(my > 0F) moveSound = true;
         } else {
             tmpSetPitch = -90F;
             movePerTick = 6;
@@ -129,7 +128,7 @@ public class EnergyTurret {
 
         float dp = tmpSetPitch - pitch;
         mp = Math.min(movePerTick, Math.abs(dp));
-        if(power && mp>0F) moveSound = true;
+        if(power && mp > 0F) moveSound = true;
 
         pitch += mp * Math.signum(dp);
         pitch = Math.min(90, Math.max(-90, pitch));
@@ -139,34 +138,20 @@ public class EnergyTurret {
 
         if(isPowered()) {
             if(isArmed()) {
-                if(barrel<1F) {
+                if(barrel < 1F) {
                     barrel=Math.min(1F, barrel+0.1F);
                     moveSound = true;
                 }
             }
             else {
-                if (barrel>0F) {
+                if (barrel > 0F) {
                     barrel=Math.max(0F, barrel-0.1F);
                     moveSound = true;
                 }
             }
         }
 
-        updateSoundTick(moveSound);
-    }
-
-    private void updateSoundTick(boolean shouldPlay){
-        if(shouldPlay) {
-            if(soundTicks == 0) {
-                getWorld().playSound(null, getPos(), SoundHandler.turretMove, SoundCategory.BLOCKS, 15.5F, 1.0F);
-            }
-            soundTicks++;
-            if (soundTicks > 5) {
-                soundTicks = 0;
-            }
-        } else {
-            soundTicks = 0;
-        }
+        tile.setShouldPlay(moveSound);
     }
 
     private EnergyTurretStats stats(){
@@ -305,11 +290,11 @@ public class EnergyTurret {
         bolt.setDamage(energyTurretStats.getDamage());
         bolt.setPositionAndUpdate(getPos().getX() + 0.5F, getPos().getY() + dY, getPos().getZ() + 0.5F);
 
-        getWorld().playSound(null, getPos().add(0.5, 0.5, 0.5), SoundHandler.turretFire, SoundCategory.BLOCKS, 15.5F, 1.0F);
-
         tile.markDirtyClient();
 
+        getWorld().playSound(null, getPos(), SoundHandler.turretFire, SoundCategory.BLOCKS, 15.5F, 1.0F);
         getWorld().spawnEntity(bolt);
+
         return new Object[] { true };
     }
 

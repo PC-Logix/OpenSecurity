@@ -18,14 +18,13 @@ public class TileEntityOSSound extends TileEntityOSBase {
     private float volume = 1.0F;
     private String soundName = "";
 
-    public TileEntityOSSound(String name){
+    TileEntityOSSound(String name){
         super(name);
     }
 
-    public TileEntityOSSound(String name, EnvironmentHost host){
+    TileEntityOSSound(String name, EnvironmentHost host){
         super(name, host);
     }
-
 
     @Override
     public void invalidate(){
@@ -59,9 +58,9 @@ public class TileEntityOSSound extends TileEntityOSBase {
     }
 
     @SideOnly(Side.CLIENT)
-    public void playSoundNow() {
+    void playSoundNow() {
         if(sound == null) {
-            sound = new MachineSound(soundRes, getPos(), getVolume(), getPitch(), shouldRepeat());
+            sound = new MachineSound(getSoundRes(), getPos(), getVolume(), getPitch(), shouldRepeat());
             FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
         }
     }
@@ -70,9 +69,9 @@ public class TileEntityOSSound extends TileEntityOSBase {
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
         isUpgrade = tag.getBoolean("isUpgrade");
-        shouldPlay = tag.getBoolean("shouldPlay");
         setSound(tag.getString("soundName"));
         setVolume(tag.getFloat("volume"));
+        setShouldPlay(tag.getBoolean("shouldPlay"));
     }
 
     @Override
@@ -80,18 +79,17 @@ public class TileEntityOSSound extends TileEntityOSBase {
         super.writeToNBT(tag);
         tag.setBoolean("isUpgrade", isUpgrade);
         tag.setBoolean("shouldPlay", getShouldPlay());
-        tag.setString("soundName", soundName);
-        tag.setFloat("volume", volume);
+        tag.setString("soundName", getSoundName());
+        tag.setFloat("volume", getVolume());
         return tag;
     }
 
-    public ResourceLocation setSound(String sound) {
+    void setSound(String sound) {
         soundName = sound;
-        soundRes = new ResourceLocation(OpenSecurity.MODID + ":" + sound);
-        return getSoundRes();
+        soundRes = new ResourceLocation(OpenSecurity.MODID, sound);
     }
 
-    public String getSoundName() {
+    String getSoundName() {
         return soundName;
     }
 
@@ -99,38 +97,40 @@ public class TileEntityOSSound extends TileEntityOSBase {
         return soundRes;
     }
 
-    public boolean getShouldPlay() {
+    private boolean getShouldPlay() {
         return shouldPlay;
     }
 
     public void setShouldPlay(boolean b) {
+        if(shouldPlay == b)
+            return;
+
         shouldPlay = b;
-        if(!isUpgrade) {
+        if(!isUpgrade && !getWorld().isRemote) {
             getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
             getUpdateTag();
             markDirty();
         }
     }
 
-    public boolean hasSound() {
+    private boolean hasSound() {
         return getSoundName().length() > 0;
     }
 
-    public float getPitch() {
+    private float getPitch() {
         return 1.0f;
     }
 
-    public boolean shouldRepeat() {
+    private boolean shouldRepeat() {
         return getShouldPlay();
     }
 
-    public void setVolume(float vol){
+    void setVolume(float vol){
         volume = vol;
     }
 
-    public float getVolume() {
+    float getVolume() {
         return volume;
     }
-
 
 }

@@ -64,6 +64,7 @@ public class EntityEnergyBolt extends EntityThrowable {
 			fakePlayer = new FakePlayer(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(world.provider.getDimension()), new GameProfile(UUID.randomUUID(), NAME));
 	}
 
+
 	public void setHeading(float yaw, float pitch) {
 		// dont use setVelocity() because its client side only and wouldnt work on dedicated servers
 		this.motionX = Math.sin(yaw) * Math.cos(pitch);

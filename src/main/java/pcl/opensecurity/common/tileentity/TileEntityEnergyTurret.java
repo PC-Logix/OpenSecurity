@@ -40,8 +40,8 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner 
 
 	@Override
 	public void update() {
-		super.update();
 		energyTurret.update();
+		super.update();
 	}
 
 	public boolean consumeEnergy(double amount){
@@ -94,8 +94,6 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner 
 		if (!energyTurret.isPowered())
 			return new Object[] { false, "powered off" };
 
-		setShouldPlay(true);
-
 		energyTurret.setYawPitch((float)args.checkDouble(0), (float)args.checkDouble(1));
 		return new Object[] { true };
 	}
@@ -105,7 +103,6 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner 
 		if(!energyTurret.isPowered())
 			return new Object[] { false, "powered off" };
 
-		setShouldPlay(true);
 		float yaw = (float)args.checkDouble(0) + energyTurret.yaw();
 		float pitch = (float)args.checkDouble(1) + energyTurret.pitch();
 
@@ -117,8 +114,6 @@ public class TileEntityEnergyTurret extends TileEntityOSSound implements IOwner 
 	public Object[] moveToRadians(Context context, Arguments args) {
 		if(!energyTurret.isPowered())
 			return new Object[] { false, "powered off" };
-
-		setShouldPlay(true);
 
 		double rad = args.checkDouble(0);
 		double deg = rad*180/Math.PI;
