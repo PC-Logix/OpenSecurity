@@ -7,7 +7,7 @@ import pcl.opensecurity.common.blocks.BlockNanoFog;
 public class galacticraftIntegration {
     public static void preInit(){
         OpenSecurity.logger.info("NanoFog with Galacticraft support");
-        ContentRegistry.modBlocks.remove(BlockNanoFog.DEFAULTITEM);
-        ContentRegistry.modBlocks.add(BlockNanoFog.DEFAULTITEM = new BlockNanoFogGC());
+        ContentRegistry.modCamoBlocks.remove(BlockNanoFog.DEFAULTITEM);
+        ContentRegistry.modCamoBlocks.add(BlockNanoFog.DEFAULTITEM = new BlockNanoFogGC());
     }
 }
