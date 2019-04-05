@@ -57,6 +57,9 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
 
     @Override
     public boolean isProtected(Entity entityIn, Protection.UserAction action){
+        if(!enabled)
+            return false;
+
         if(!action.equals(Protection.UserAction.explode) && isUserAllowedToBypass(entityIn.getUniqueID()))
             return false;
 
