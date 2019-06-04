@@ -27,7 +27,7 @@ parse code here
 ```
 
 **Minecraft:**
- - Mod Version (e.g. ocdevices-snapshot_20190228)
+ - Mod Version (e.g. OpenSecurity-MC1.12.2-1.0-23)
  - Minecraft Version (e.g. Minecraft 1.12)
  - Forge Version (e.g. Forge 14.23.5.2779)
 
