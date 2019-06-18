@@ -163,3 +163,4 @@ task syncGitWiki(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
     forceFetch = true
 }
 
+build.dependsOn(syncGitWiki)
