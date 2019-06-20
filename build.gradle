@@ -95,9 +95,13 @@ def jei_version = "1.12.2:4.9.+"
 def ae2Version = "rv6-stable-1"
 def projredVersion="1.12.2-4.9.0.86"
 def MCMPVersion = "2.5.3"
+def rtfmVersion = "MC1.12-1.0.1.4"
 
 dependencies {
     deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"
+
+    compileOnly "li.cil.manual:RTFM:${rtfmVersion}"
+    
     compile 'org.mindrot:jbcrypt:0.3m'
     deobfCompile "advanced-rocketry:AdvancedRocketry-1.12.2-1.5.0:127:deobf"
     compile fileTree(include: ['*.jar'], dir: 'libs')

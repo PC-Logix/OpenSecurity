@@ -1,30 +1,19 @@
 package pcl.opensecurity.manual;
 
-import li.cil.oc.api.Manual;
-import li.cil.oc.api.manual.PathProvider;
-import li.cil.oc.api.prefab.TextureTabIconRenderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pcl.opensecurity.OpenSecurity;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Vexatos, ben-mkiv
  */
-public class ManualPathProvider implements PathProvider {
-
-    public static void initialize() {
-        Manual.addProvider(new ManualPathProvider());
-        Manual.addProvider(new ManualContentProvider());
-        Manual.addTab(new TextureTabIconRenderer(new ResourceLocation(OpenSecurity.MODID, "textures/blocks/security_terminal.png")),
-                "OpenSecurity", "_Sidebar");
-    }
-
-    @Override
+public abstract class ManualPathProvider {
+    @Nullable
     public String pathFor(ItemStack stack) {
         if(stack == null) return null;
 
@@ -40,7 +29,7 @@ public class ManualPathProvider implements PathProvider {
         return null;
     }
 
-    @Override
+    @Nullable
     public String pathFor(World world, BlockPos pos) {
         if(world == null) return null;
 

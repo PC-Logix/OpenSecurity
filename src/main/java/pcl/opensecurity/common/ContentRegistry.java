@@ -25,6 +25,7 @@ import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.integration.galacticraft.blocks.galacticraftIntegration;
 import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.*;
+import pcl.opensecurity.manual.Manual;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import java.util.Map;
 public class ContentRegistry {
     public static CreativeTabs creativeTab = new CreativeTabs("tabOpenSecurity") {
         public @Nonnull ItemStack getTabIconItem() {
-            return new ItemStack(Item.getItemFromBlock(BlockData.DEFAULTITEM));
+            return new ItemStack(Item.getItemFromBlock(BlockSecurityTerminal.DEFAULTITEM));
         }
 
         public @Nonnull String getTranslatedTabLabel() {
@@ -97,6 +98,9 @@ public class ContentRegistry {
         if(OpenSecurity.galacticraft) {
             galacticraftIntegration.preInit();
         }
+
+        for(Item manualItem : Manual.items)
+            modItems.add(new ItemStack(manualItem));
 
         registerEvents();
     }

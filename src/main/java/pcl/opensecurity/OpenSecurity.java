@@ -20,6 +20,7 @@ import pcl.opensecurity.common.ContentRegistry;
 import pcl.opensecurity.common.SoundHandler;
 import pcl.opensecurity.common.blocks.BlockNanoFog;
 import pcl.opensecurity.common.tileentity.TileEntityAlarm;
+import pcl.opensecurity.manual.Manual;
 import pcl.opensecurity.networking.*;
 
 import java.util.HashSet;
@@ -28,7 +29,7 @@ import java.util.HashSet;
 
 @Mod.EventBusSubscriber
 @Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber,
-        dependencies = "required-after:opencomputers", updateJSON = "http://modupdates.pc-logix.com/opensecurity",
+        dependencies = "required-after:opencomputers;after:rtfm", updateJSON = "http://modupdates.pc-logix.com/opensecurity",
         guiFactory = OpenSecurity.GUIFACTORY)
 public class OpenSecurity {
     public static final String MODID = "opensecurity";
@@ -66,6 +67,8 @@ public class OpenSecurity {
         galacticraft = Loader.isModLoaded("galacticraftcore");
 
         Config.preInit();
+
+        Manual.preInit();
 
         registerBlockBreakEvent = Config.getConfig().getCategory("general").get("registerBlockBreak").getBoolean();
         rfidRange = Config.getConfig().getCategory("general").get("rfidMaxRange").getInt();

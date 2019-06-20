@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BR ",
+    "   ",
+    "   "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "R": {
+      "item": "opensecurity:rfid_card"
+    }
+  },
+  "result": {
+    "item": "opensecurity:manual"
+  }
+}

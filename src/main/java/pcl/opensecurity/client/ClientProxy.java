@@ -34,7 +34,6 @@ import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
 import pcl.opensecurity.common.tileentity.TileEntityKeypad;
 import pcl.opensecurity.common.tileentity.TileEntityRolldoorController;
-import pcl.opensecurity.manual.ManualPathProvider;
 import pcl.opensecurity.util.FileUtils;
 
 import java.io.File;
@@ -93,7 +92,6 @@ public class ClientProxy extends CommonProxy {
         Minecraft mc = Minecraft.getMinecraft();
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(), ItemRFIDCard.DEFAULTSTACK.getItem());
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(), ItemMagCard.DEFAULTSTACK.getItem());
-        ManualPathProvider.initialize();
     }
 
     @Override
