@@ -159,6 +159,9 @@ processResources
     }
 }
 
+task flushWiki(type: Delete) {
+    delete "src/main/resources/assets/opensecurity/doc"
+}
 
 task syncGitWiki(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
     dir = file("src/main/resources/assets/opensecurity/doc")
@@ -167,4 +170,5 @@ task syncGitWiki(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
     forceFetch = true
 }
 
+syncGitWiki.dependsOn(flushWiki)
 build.dependsOn(syncGitWiki)
