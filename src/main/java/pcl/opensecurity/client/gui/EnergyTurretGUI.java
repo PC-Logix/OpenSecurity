@@ -25,6 +25,14 @@ public class EnergyTurretGUI  extends GuiContainer {
 		this.xSize = 175;
 		this.ySize = 195;
 	}
+
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks){
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
+	}
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		// the parameters for drawString are: string, x, y, color

@@ -22,6 +22,12 @@ public class NanoFogTerminalGUI extends GuiContainer {
         ySize = HEIGHT;
     }
 
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks){
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
+
     void drawCenteredString(String string, int y, int color){
         FontRenderer fr = mc.fontRenderer;
         fr.drawString(string, getXSize()/2 - fr.getStringWidth(string)/2, y, color);
