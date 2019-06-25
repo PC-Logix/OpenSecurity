@@ -15,8 +15,6 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 
-version = "1.0"
-
 def getGitRef() {
   try {
     def stdout = new ByteArrayOutputStream()
@@ -31,19 +29,11 @@ def getGitRef() {
 }
 
 if (System.getenv("PROMOTED_NUMBER") != null)
-    ext.buildNumber = "${System.getenv("PROMOTED_NUMBER")}"
+    buildNumber = "${System.getenv("PROMOTED_NUMBER")}"
 else if (System.getenv("BUILD_NUMBER") != null)
-    ext.buildNumber = "${System.getenv("BUILD_NUMBER")}"
+    buildNumber = "${System.getenv("BUILD_NUMBER")}"
 else
-    ext.buildNumber = "+" + getGitRef()
-
-//if (System.getenv().BUILD_NUMBER != null)
-//	ext.buildNumber = System.getenv().BUILD_NUMBER?.toInteger()
-//else
-//	ext.buildNumber = 0
-
-group= "pcl.opensecurity" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "OpenSecurity-MC1.12.2"
+    buildNumber = "+" + getGitRef()
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
@@ -51,24 +41,14 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2768"
+    version = "${minecraftVersion}-${forge_version}"
     runDir = "run"
-    
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20180701"
+    mappings = mcp_mappings
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     replace "@VERSION@", project.version
-	replace "@BUILD@", project.ext.buildNumber
+	replace "@BUILD@", project.buildNumber
 }
-jar.classifier = "${ext.buildNumber}"
-jar.manifest = manifest { attributes(
-	"FMLCorePlugin": "pcl.opensecurity.util.SoundUnpack",
-	"FMLCorePluginContainsFMLMod": "icanhazfmlmodpweeze"
-) }
+
 repositories {
     maven {
         name = "OpenComputers"
@@ -90,20 +70,13 @@ repositories {
     }
 }
 
-def openComputersVersion = "MC1.12.2-1.7.+"
-def jei_version = "1.12.2:4.9.+"
-def ae2Version = "rv6-stable-1"
-def projredVersion="1.12.2-4.9.0.86"
-def MCMPVersion = "2.5.3"
-def rtfmVersion = "MC1.12-1.0.1.4"
-
 dependencies {
     deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"
 
     compileOnly "li.cil.manual:RTFM:${rtfmVersion}"
     
     compile 'org.mindrot:jbcrypt:0.3m'
-    deobfCompile "advanced-rocketry:AdvancedRocketry-1.12.2-1.5.0:127:deobf"
+    deobfCompile "advanced-rocketry:AdvancedRocketry-${advancedRocketryVersion}:deobf"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     deobfCompile "mezz.jei:jei_${jei_version}:api"
     // at runtime, use the full JEI jar
@@ -123,19 +96,17 @@ dependencies {
     }
 }
 
-def curseforge_key = 0
-def curse_changlog = "default"
 if (project.hasProperty('curseforge_key')) {
 	curseforge_key = project.curseforge_key
-	curse_changlog = project.promochangelog
+	curse_changelog = project.curse_changelog
 }
 
 curseforge {
 	apiKey = curseforge_key
 	project {
-		id = "231687"
-		releaseType = "release"
-		changelog = curse_changlog
+		id = curse_projectId
+		releaseType = curse_releaseType
+		changelog = curse_changelog
 	}
 }
 
@@ -150,13 +121,22 @@ processResources
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'version':project.version + "-" + project.ext.buildNumber, 'mcversion':project.minecraft.version
+        expand 'version':project.version + "-" + project.buildNumber, 'mcversion':project.minecraft.version
     }
         
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+jar {
+    classifier = buildNumber
+
+    manifest { attributes(
+            "FMLCorePlugin": "pcl.opensecurity.util.SoundUnpack",
+            "FMLCorePluginContainsFMLMod": "icanhazfmlmodpweeze"
+    ) }
 }
 
 task flushWiki(type: Delete) {
