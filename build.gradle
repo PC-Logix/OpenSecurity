@@ -40,6 +40,11 @@ compileJava {
     sourceCompatibility = targetCompatibility = "1.8"
 }
 
+
+version = modVersion
+group = modGroup
+archivesBaseName = modBaseName
+
 minecraft {
     version = "${minecraftVersion}-${forge_version}"
     runDir = "run"
