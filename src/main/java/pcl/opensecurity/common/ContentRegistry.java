@@ -70,10 +70,6 @@ public class ContentRegistry {
         modBlocks.add(BlockNanoFogTerminal.DEFAULTITEM = new BlockNanoFogTerminal());
         modBlocks.add(BlockRolldoorElement.DEFAULTITEM = new BlockRolldoorElement());
 
-        //modBlocks.add(BlockCase.DEFAULTITEM_TIER1 = new BlockCase("case1", Tier.One()));
-        //modBlocks.add(BlockCase.DEFAULTITEM_TIER2 = new BlockCase("case2", Tier.Two()));
-        //modBlocks.add(BlockCase.DEFAULTITEM_TIER3 = new BlockCase("case3", Tier.Three()));
-
         modBlocksWithItem.put(BlockSecureDoor.DEFAULTITEM = new BlockSecureDoor(), ItemSecureDoor.DEFAULTSTACK = new ItemStack(new ItemSecureDoor()));
         modBlocksWithItem.put(BlockSecurePrivateDoor.DEFAULTITEM = new BlockSecurePrivateDoor(), ItemSecurePrivateDoor.DEFAULTSTACK = new ItemStack(new ItemSecurePrivateDoor()));
 
