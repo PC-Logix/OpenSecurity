@@ -103,7 +103,7 @@ dependencies {
 
 if (project.hasProperty('curseforge_key')) {
 	curseforge_key = project.curseforge_key
-	curse_changelog = project.curse_changelog
+	curse_changelog = project.promochangelog
 }
 
 curseforge {
