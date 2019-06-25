@@ -1,4 +1,10 @@
 {
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "rtfm"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "BR ",
