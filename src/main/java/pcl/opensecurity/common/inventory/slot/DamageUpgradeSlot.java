@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import pcl.opensecurity.common.items.ItemDamageUpgrade;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
-import scala.actors.threadpool.Arrays;
+import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -23,6 +23,6 @@ public class DamageUpgradeSlot extends BaseSlot<TileEntityEnergyTurret> implemen
 
     @Override
     public List<String> getTooltip(){
-        return new ArrayList<>(Arrays.asList(new String[]{"Accepted Items:", "Damage Upgrade"}));
+        return new ArrayList<>(Arrays.asList("Accepted Items:", "Damage Upgrade"));
     }
 }

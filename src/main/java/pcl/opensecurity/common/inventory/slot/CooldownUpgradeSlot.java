@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import pcl.opensecurity.common.items.ItemCooldownUpgrade;
 import pcl.opensecurity.common.tileentity.TileEntityEnergyTurret;
-import scala.actors.threadpool.Arrays;
+import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -23,6 +23,6 @@ public class CooldownUpgradeSlot extends BaseSlot<TileEntityEnergyTurret> implem
 
     @Override
     public List<String> getTooltip(){
-        return new ArrayList<>(Arrays.asList(new String[]{"Accepted Items:", "Cooldown Upgrade"}));
+        return new ArrayList<>(Arrays.asList("Accepted Items:", "Cooldown Upgrade"));
     }
 }

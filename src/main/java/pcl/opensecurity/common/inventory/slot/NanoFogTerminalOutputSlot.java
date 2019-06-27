@@ -2,7 +2,7 @@ package pcl.opensecurity.common.inventory.slot;
 
 import net.minecraftforge.items.IItemHandler;
 import pcl.opensecurity.common.tileentity.TileEntityNanoFogTerminal;
-import scala.actors.threadpool.Arrays;
+import java.util.Arrays;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class NanoFogTerminalOutputSlot extends NanoFogTerminalSlot {
 
     @Override
     public List<String> getTooltip(){
-        return new ArrayList<>(Arrays.asList(new String[]{"ejects:", "NanoDNA"}));
+        return new ArrayList<>(Arrays.asList("ejects:", "NanoDNA"));
     }
 
 }

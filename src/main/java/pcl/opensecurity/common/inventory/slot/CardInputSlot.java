@@ -4,10 +4,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.tileentity.TileEntityCardWriter;
-import scala.actors.threadpool.Arrays;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CardInputSlot extends BaseSlot<TileEntityCardWriter> implements ISlotTooltip {
@@ -23,6 +23,6 @@ public class CardInputSlot extends BaseSlot<TileEntityCardWriter> implements ISl
 
     @Override
     public List<String> getTooltip(){
-        return new ArrayList<>(Arrays.asList(new String[]{"Accepted Items:", "EEPROM", "Magnetic Card", "RFID Card"}));
+        return new ArrayList<>(Arrays.asList("Accepted Items:", "EEPROM", "Magnetic Card", "RFID Card"));
     }
 }
