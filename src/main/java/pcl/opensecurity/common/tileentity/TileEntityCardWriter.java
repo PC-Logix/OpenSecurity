@@ -206,13 +206,13 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-        return capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) || super.hasCapability(capability, facing);
+        return (facing != null && capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) || super.hasCapability(capability, facing);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-        if (capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
+        if (facing != null && capability.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
             if(facing.equals(EnumFacing.DOWN))
                 return (T) inventoryOutput;
             else
