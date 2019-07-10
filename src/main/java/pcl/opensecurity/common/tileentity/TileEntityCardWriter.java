@@ -168,6 +168,10 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
             return new Object[] { false, "Wrong item in input slot" };
 
         ItemCard.CardTag cardTag = new ItemCard.CardTag(inventoryInput.getStackInSlot(0));
+
+        if(cardTag.locked)
+            return new Object[] { false, "card is locked" };
+
         cardTag.color = color;
         cardTag.dataTag = data;
         cardTag.locked = locked;
