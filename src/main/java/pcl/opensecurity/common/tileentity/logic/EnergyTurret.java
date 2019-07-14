@@ -288,7 +288,7 @@ public class EnergyTurret {
         float dY = 0.5F + (isUpright() ? 1F : -1F) * (0.125F + shaft*0.375F);
         bolt.setHeading(a, p);
         bolt.setDamage(energyTurretStats.getDamage());
-        bolt.setPositionAndUpdate(getPos().getX() + 0.5F, getPos().getY() + dY, getPos().getZ() + 0.5F);
+        bolt.setPosition(getPos().getX() + 0.5F, getPos().getY() + dY, getPos().getZ() + 0.5F);
 
         tile.markDirtyClient();
 

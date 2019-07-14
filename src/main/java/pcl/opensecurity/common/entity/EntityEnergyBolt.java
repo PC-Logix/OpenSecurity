@@ -102,11 +102,13 @@ public class EntityEnergyBolt extends EntityThrowable {
 		return passableMaterials.contains(state.getMaterial()) || state.getBlock() instanceof BlockEnergyTurret;
 	}
 
-	public void onUpdate() {
-		super.onUpdate();
+	@Override
+	public void onEntityUpdate() {
+		super.onEntityUpdate();
 
-		if (0 >= --this.life)
+		if (0 >= --this.life) {
 			setDead();
+		}
 	}
 
 	boolean breakBlock(World world, BlockPos pos){
@@ -149,6 +151,9 @@ public class EntityEnergyBolt extends EntityThrowable {
 
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult result) {
+		if(getEntityWorld().isRemote)
+			return;
+
 		switch(result.typeOfHit){
 			case ENTITY:
 				//todo: attack as fake player?!

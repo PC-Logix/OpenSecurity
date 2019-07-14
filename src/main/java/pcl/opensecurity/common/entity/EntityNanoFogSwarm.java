@@ -233,14 +233,19 @@ public class EntityNanoFogSwarm extends Entity {
     }
 
     @Override
+    public void onEntityUpdate(){
+        super.onEntityUpdate();
+
+        checkEntityAge();
+    }
+
+    @Override
     public void onUpdate(){
         super.onUpdate();
 
         if(!canWork()){
             return;
         }
-
-        checkEntityAge();
 
         if(isReturnTask())
             updateReturning();
