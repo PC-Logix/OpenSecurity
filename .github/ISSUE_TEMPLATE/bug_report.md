@@ -10,6 +10,9 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+**In which environment did the Bug appear?**
+Singleplayer, LAN Game, Forge server, SpongeForge server, ...
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
