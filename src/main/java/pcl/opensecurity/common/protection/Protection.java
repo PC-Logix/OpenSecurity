@@ -232,5 +232,9 @@ public class Protection extends WorldSavedData {
     }
 
 
+    public HashMap<ChunkPos, ArrayList<ProtectionAreaChunk>> getAllAreas(){
+        return chunkAreas;
+    }
+
 }
 
