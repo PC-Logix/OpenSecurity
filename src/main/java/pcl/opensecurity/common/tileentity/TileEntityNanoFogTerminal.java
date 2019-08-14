@@ -22,12 +22,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import pcl.opensecurity.Config;
+import pcl.opensecurity.common.blocks.BlockRolldoorElement;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.ItemNanoDNA;
 import pcl.opensecurity.util.BlockUtils;
@@ -39,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
+
+import static pcl.opensecurity.common.blocks.BlockRolldoorElement.PROPERTYOFFSET;
 
 public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITickable {
     public static final int terminalRange = 32, FogBlockLimit = 256;
@@ -502,8 +506,14 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
         return te instanceof TileEntityNanoFog ? "nanoFog" : te.getClass().toString();
     }
 
-    public void placeBlock(BlockPos pos, ItemStack consumedStack){
-        getWorld().setBlockState(pos, BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null), 3);
+    public void placeBlock(final BlockPos pos, final ItemStack consumedStack){
+        ((WorldServer) world).addScheduledTask(new Runnable(){
+            @Override
+            public void run()  {
+                getWorld().setBlockState(pos, BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null), 3);
+            }
+        });
+
         fogBlocks.add(pos);
     }
 

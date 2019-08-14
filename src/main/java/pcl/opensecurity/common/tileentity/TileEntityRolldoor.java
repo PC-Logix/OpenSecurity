@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.common.blocks.BlockRolldoor;
@@ -88,17 +89,26 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
     }
 
     public void updateHeight(){
+        int oldHeight = height;
         height = 0;
         BlockPos pos = getPos().down();
         while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(BlockRolldoorElement.DEFAULTITEM)) && height < MAX_LENGTH) {
-            if(getWorld().isAirBlock(pos)){
-                IBlockState state = BlockRolldoorElement.DEFAULTITEM.getDefaultState();
-                state = state.withProperty(PROPERTYOFFSET, height);
-                getWorld().setBlockState(pos, state);
-            }
             pos = pos.down();
             height++;
         }
+
+        if(oldHeight == height) // dont schedule block update if the height didnt change
+            return;
+
+        ((WorldServer) world).addScheduledTask( new Runnable(){
+            @Override
+            public void run()  {
+                IBlockState state = BlockRolldoorElement.DEFAULTITEM.getDefaultState();
+                state = state.withProperty(PROPERTYOFFSET, height());
+                getWorld().setBlockState(getPos(), state);
+            }
+        });
+
         updateBB();
         markDirtyClient();
     }
