@@ -5,7 +5,8 @@
       "top": "opensecurity:blocks/machine_side",
       "front": "opensecurity:blocks/rolldoor_controller",
       "side": "opensecurity:blocks/rolldoor_controller",
-      "bottom": "opensecurity:blocks/machine_side"
+      "bottom": "opensecurity:blocks/machine_side",
+      "particle": "opensecurity:blocks/machine_side"
     },
     "model": "minecraft:orientable"
   },

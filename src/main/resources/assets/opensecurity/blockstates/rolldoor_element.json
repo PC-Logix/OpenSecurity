@@ -4,7 +4,8 @@
     "textures": {
       "top": "opensecurity:blocks/rolldoor",
       "front": "opensecurity:blocks/rolldoor",
-      "side": "opensecurity:blocks/rolldoor"
+      "side": "opensecurity:blocks/rolldoor",
+      "particle": "opensecurity:blocks/machine_side"
     },
     "model": "minecraft:orientable"
   },
