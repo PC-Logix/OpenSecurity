@@ -344,14 +344,6 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
         return height;
     }
 
-    public void markDirtyClient() {
-        markDirty();
-        if (getWorld() != null) {
-            IBlockState state = getWorld().getBlockState(getPos());
-            getWorld().notifyBlockUpdate(getPos(), state, state, 3);
-        }
-    }
-
     public int getWidth(){
         return elements.size();
     }

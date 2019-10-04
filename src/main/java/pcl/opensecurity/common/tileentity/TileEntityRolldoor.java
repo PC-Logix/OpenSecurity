@@ -25,7 +25,7 @@ import static net.minecraft.block.Block.FULL_BLOCK_AABB;
 import static pcl.opensecurity.common.blocks.BlockRolldoorElement.PROPERTYOFFSET;
 
 public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
-    public final static int MAX_LENGTH = 16; // limited to 16 because of metaindex limits in the block
+    public final static int MAX_LENGTH = 15; // limited to 15 because of metaindex limits in the block
 
     private int height = 0;
 
@@ -93,6 +93,7 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
         height = 0;
         BlockPos pos = getPos().down();
         while((getWorld().isAirBlock(pos) || getWorld().getBlockState(pos).getBlock().equals(BlockRolldoorElement.DEFAULTITEM)) && height < MAX_LENGTH) {
+            updateBlockState(pos);
             pos = pos.down();
             height++;
         }
@@ -100,17 +101,14 @@ public class TileEntityRolldoor extends TileEntityOSCamoBase implements ICamo {
         if(oldHeight == height) // dont schedule block update if the height didnt change
             return;
 
-        ((WorldServer) world).addScheduledTask( new Runnable(){
-            @Override
-            public void run()  {
-                IBlockState state = BlockRolldoorElement.DEFAULTITEM.getDefaultState();
-                state = state.withProperty(PROPERTYOFFSET, height());
-                getWorld().setBlockState(getPos(), state);
-            }
-        });
-
         updateBB();
         markDirtyClient();
+    }
+
+    private void updateBlockState(BlockPos position){
+        IBlockState state = BlockRolldoorElement.DEFAULTITEM.getDefaultState();
+        state = state.withProperty(PROPERTYOFFSET, height());
+        getWorld().setBlockState(position, state);
     }
 
     private void updateBB(){

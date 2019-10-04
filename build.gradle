@@ -155,5 +155,17 @@ task syncGitWiki(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
     forceFetch = true
 }
 
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    from sourceSets.main.allJava
+    classifier = 'dev'
+}
+
+artifacts {
+    archives devJar
+}
+
+
+
 syncGitWiki.dependsOn(flushWiki)
 build.dependsOn(syncGitWiki)
