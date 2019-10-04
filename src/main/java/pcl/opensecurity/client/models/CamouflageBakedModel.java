@@ -36,7 +36,7 @@ public class CamouflageBakedModel implements IBakedModel {
     public CamouflageBakedModel(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {}
 
     @SideOnly(Side.CLIENT)
-    private static void initTextures() {
+    public static void initTextures() {
         if(particleTexture == null)
             particleTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(OpenSecurity.MODID + ":blocks/nanofog");
     }

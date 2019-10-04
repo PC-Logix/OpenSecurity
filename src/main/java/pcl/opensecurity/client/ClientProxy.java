@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.client.models.CamouflageBakedModel;
 import pcl.opensecurity.client.models.ModelNanoFogSwarm;
 import pcl.opensecurity.client.renderer.*;
 import pcl.opensecurity.client.sounds.AlarmResource;
@@ -92,6 +93,8 @@ public class ClientProxy extends CommonProxy {
         Minecraft mc = Minecraft.getMinecraft();
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(), ItemRFIDCard.DEFAULTSTACK.getItem());
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(), ItemMagCard.DEFAULTSTACK.getItem());
+
+        CamouflageBakedModel.initTextures();
     }
 
     @Override
