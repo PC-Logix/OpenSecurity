@@ -95,9 +95,9 @@ public class Protection extends WorldSavedData {
     public static void removeArea(World world, BlockPos controller){
         for(ArrayList<ProtectionAreaChunk> areas : get(world).chunkAreas.values())
             for(ProtectionAreaChunk area : areas)
-                if(area.getControllerPosition().equals(controller)){
+                if(area.getControllerPosition().equals(controller)) {
                     areas.remove(area);
-                    return;
+                    break;
                 }
 
 
