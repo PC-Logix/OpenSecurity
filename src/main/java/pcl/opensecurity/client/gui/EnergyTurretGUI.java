@@ -25,16 +25,16 @@ public class EnergyTurretGUI  extends ContainerGUI {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		// the parameters for drawString are: string, x, y, color
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret").getUnformattedComponentText(), 55, 4, 4210752);
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.damagemod").getUnformattedComponentText(), 27, 18, 4210752);
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.damagemod").getUnformattedComponentText(), 27, 36, 4210752);
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.movementmod").getUnformattedComponentText(), 27, 54, 4210752);
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.movementmod").getUnformattedComponentText(), 27, 72, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret").getUnformattedComponentText(), 55, 4, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.damagemod").getUnformattedComponentText(), 27, 18, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.damagemod").getUnformattedComponentText(), 27, 36, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.movementmod").getUnformattedComponentText(), 27, 54, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.movementmod").getUnformattedComponentText(), 27, 72, 4210752);
 		
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.cooldownmod").getUnformattedComponentText(), 96, 18, 4210752);
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.cooldownmod").getUnformattedComponentText(), 96, 36, 4210752);
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.energymod").getUnformattedComponentText(), 96, 54, 4210752);
-		mc.fontRenderer.drawString(new TextComponentTranslation("gui.string.energyturret.energymod").getUnformattedComponentText(), 96, 72, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.cooldownmod").getUnformattedComponentText(), 96, 18, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.cooldownmod").getUnformattedComponentText(), 96, 36, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.energymod").getUnformattedComponentText(), 96, 54, 4210752);
+		mc.fontRenderer.drawString(new TextComponentTranslation("opensecurity.gui.string.energyturret.energymod").getUnformattedComponentText(), 96, 72, 4210752);
 	}
 
 	@Override

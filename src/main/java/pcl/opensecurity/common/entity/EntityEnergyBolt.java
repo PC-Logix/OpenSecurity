@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 public class EntityEnergyBolt extends EntityThrowable {
-	public static final String NAME = "energybolt";
+	public static final String NAME = "opensecurity.energybolt";
 
 	private int life = 20 * 5;
 	private float damage = 0.0F;

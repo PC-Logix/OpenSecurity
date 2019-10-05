@@ -23,7 +23,7 @@ public abstract class BlockOSBase extends Block implements ITileEntityProvider {
 
     protected BlockOSBase(String name, Material materialIn, float hardness) {
         super(materialIn);
-        setUnlocalizedName(name);
+        setUnlocalizedName("opensecurity." + name);
         setRegistryName(OpenSecurity.MODID, name);
         setHardness(hardness);
         setCreativeTab(ContentRegistry.creativeTab);

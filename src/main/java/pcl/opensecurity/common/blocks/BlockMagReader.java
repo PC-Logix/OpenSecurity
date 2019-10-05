@@ -32,7 +32,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
     public BlockMagReader() {
         super(Material.IRON);
-        setUnlocalizedName(NAME);
+        setUnlocalizedName("opensecurity." + NAME);
         setRegistryName(OpenSecurity.MODID, NAME);
         setHardness(0.5f);
         setCreativeTab(ContentRegistry.creativeTab);

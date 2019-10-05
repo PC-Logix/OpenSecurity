@@ -42,7 +42,7 @@ public class BlockCamouflage extends Block {
     public BlockCamouflage(Material materialIn, String name){
         super(materialIn);
         setRegistryName(OpenSecurity.MODID, name);
-        setUnlocalizedName(name);
+        setUnlocalizedName("opensecurity." + name);
     }
 
     public static ICamo getTE(IBlockAccess world, BlockPos pos){

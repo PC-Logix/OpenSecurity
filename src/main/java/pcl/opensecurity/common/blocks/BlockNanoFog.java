@@ -135,7 +135,7 @@ public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider
 
         if(te.getDamage() > 0 && te.filterDamage.contains(entity.getClass(), entity.getName())) {
             if(te.getTerminal().consumeDamageEnergy(te.getDamage()))
-                entity.attackEntityFrom(new DamageSource("NanoFog"), te.getDamage());
+                entity.attackEntityFrom(new DamageSource("opensecurity.nanofog"), te.getDamage());
         }
 
         if(te.getKnockback() > 0 && !canEntityPass(world, pos, entity)) {

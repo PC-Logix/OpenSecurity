@@ -18,8 +18,8 @@ public class CardWriterGUI extends ContainerGUI {
 
     @Override
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
-        drawCenteredString(new TextComponentTranslation("gui.string.cardslot").getUnformattedText(), 20, 4210752);
-        drawCenteredString(new TextComponentTranslation("gui.string.cardwriter").getUnformattedText(), 5, 4210752);
+        drawCenteredString(new TextComponentTranslation("opensecurity.gui.string.cardslot").getUnformattedText(), 20, 4210752);
+        drawCenteredString(new TextComponentTranslation("opensecurity.gui.string.cardwriter").getUnformattedText(), 5, 4210752);
 	}
 
     @Override

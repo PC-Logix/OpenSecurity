@@ -28,7 +28,7 @@ import static pcl.opensecurity.client.models.ModelNanoFogSwarm.drawCube;
 import static pcl.opensecurity.client.models.ModelNanoFogSwarm.resolution;
 
 public class EntityNanoFogSwarm extends Entity {
-    public static final String NAME = "nanofogswarm";
+    public static final String NAME = "opensecurity.nanofogswarm";
 
     private Vec3d target = new Vec3d(0, 0, 0);
 

@@ -7,7 +7,7 @@ import pcl.opensecurity.common.ContentRegistry;
 public abstract class ItemOSBase extends Item {
 
     ItemOSBase(String name) {
-        setUnlocalizedName(name);
+        setUnlocalizedName("opensecurity." + name);
         setRegistryName(OpenSecurity.MODID, name);
         setCreativeTab(ContentRegistry.creativeTab);
     }

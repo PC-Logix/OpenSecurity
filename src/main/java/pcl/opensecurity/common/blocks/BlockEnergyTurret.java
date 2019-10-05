@@ -32,7 +32,7 @@ public class BlockEnergyTurret extends Block implements ITileEntityProvider {
 
     public BlockEnergyTurret() {
         super(Material.IRON);
-        setUnlocalizedName(NAME);
+        setUnlocalizedName("opensecurity." + NAME);
         setRegistryName(OpenSecurity.MODID, NAME);
         setHardness(0.5f);
         setCreativeTab(ContentRegistry.creativeTab);

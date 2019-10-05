@@ -39,7 +39,7 @@ public class BlockSecureDoor extends BlockDoor {
     BlockSecureDoor(String name) {
         super(Material.IRON);
         setRegistryName(OpenSecurity.MODID, name);
-        setUnlocalizedName(name);
+        setUnlocalizedName("opensecurity." + name);
         setCreativeTab(ContentRegistry.creativeTab);
     }
 
