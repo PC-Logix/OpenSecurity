@@ -45,6 +45,7 @@ public class TileEntityEntityDetector extends TileEntityOSBase {
 
         value.put("name", name);
         value.put("range", rangeToEntity);
+        value.put("height", entity.height);
         value.put("x", entityLocalPosition.getX());
         value.put("y", entityLocalPosition.getY());
         value.put("z", entityLocalPosition.getZ());
