@@ -77,7 +77,6 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRolldoorController.class, new RenderRolldoorController());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyTurret.class, new RenderEnergyTurret());
-        TileEntityItemStackRenderer.instance = new EnergyTurretRenderHelper(TileEntityItemStackRenderer.instance);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBolt.class, RenderEntityEnergyBolt::new);
 
@@ -95,6 +94,8 @@ public class ClientProxy extends CommonProxy {
         mc.getItemColors().registerItemColorHandler(new CardColorHandler(), ItemMagCard.DEFAULTSTACK.getItem());
 
         CamouflageBakedModel.initTextures();
+
+        Item.getItemFromBlock(BlockEnergyTurret.DEFAULTITEM).setTileEntityItemStackRenderer(new EnergyTurretRenderHelper());
     }
 
     @Override
