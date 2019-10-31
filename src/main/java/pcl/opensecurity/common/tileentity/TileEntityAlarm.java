@@ -100,7 +100,4 @@ public class TileEntityAlarm extends TileEntityOSSound {
 		return new Object[] { true };
 	}
 
-	@Override
-	public boolean canUpdate(){ return true; }
-
 }
