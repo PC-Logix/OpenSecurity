@@ -76,12 +76,11 @@ public class TileEntityOSSound extends TileEntityOSBase {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
         tag.setBoolean("isUpgrade", isUpgrade);
         tag.setBoolean("shouldPlay", getShouldPlay());
         tag.setString("soundName", getSoundName());
         tag.setFloat("volume", getVolume());
-        return tag;
+        return super.writeToNBT(tag);
     }
 
     void setSound(String sound) {
@@ -106,7 +105,7 @@ public class TileEntityOSSound extends TileEntityOSBase {
             return;
 
         shouldPlay = b;
-        if(!isUpgrade && !getWorld().isRemote) {
+        if(!isUpgrade && getWorld() != null && !getWorld().isRemote) {
             getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
             getUpdateTag();
             markDirty();
