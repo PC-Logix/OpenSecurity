@@ -79,19 +79,18 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 			nbt = super.writeToNBT(nbt);
 
 		if (node() != null && node().host() == this) {
-			final NBTTagCompound nodeNbt = new NBTTagCompound();
+			NBTTagCompound nodeNbt = new NBTTagCompound();
 			node().save(nodeNbt);
 			nbt.setTag("oc:node", nodeNbt);
 		}
 		if (oc_fs() != null && oc_fs().node() != null) {
-			final NBTTagCompound fsNbt = new NBTTagCompound();
+			NBTTagCompound fsNbt = new NBTTagCompound();
 			oc_fs().node().save(fsNbt);
 			nbt.setTag("oc:fs", fsNbt);
 		}
 
 		return nbt;
 	}
-
 
 	@Callback
 	public Object[] greet(Context context, Arguments args) {
@@ -173,7 +172,7 @@ public class TileEntityOSBase extends TileEntity implements ITickable, ManagedEn
 	@Override
 	public void save(NBTTagCompound nbt) {
 		this.setupNode();
-		nbt = writeToNBT(nbt);
+		writeToNBT(nbt);
 	}
 
 	@Override
