@@ -33,6 +33,7 @@ parse code here
  - Mod Version (e.g. OpenSecurity-MC1.12.2-1.0-23)
  - Minecraft Version (e.g. Minecraft 1.12)
  - Forge Version (e.g. Forge 14.23.5.2779)
+[ ] Optifine installed (if the issue is render related and you use Shaders add informations about what Shader you are using)
 
 **Additional context**
 Add any other context about the problem here.
