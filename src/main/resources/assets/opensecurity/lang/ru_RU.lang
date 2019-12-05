@@ -1,0 +1,67 @@
+//Blocks
+tile.opensecurity.alarm.name=Сигнализация
+tile.opensecurity.rfid_reader.name=RFID считыватель
+tile.opensecurity.card_writer.name=Блок записи карт
+tile.opensecurity.mag_reader.name=Считыватель магнитных карт
+tile.opensecurity.entity_detector.name=Детектор сущностей
+tile.opensecurity.door_controller.name=Контроллер дверей
+tile.opensecurity.data_block.name=Блок данных
+tile.opensecurity.switchablehub.name=Переключаемый концентратор
+tile.opensecurity.displaypanel.name=Панель отображения
+tile.opensecurity.kvm.name=KVM-переключатель
+tile.opensecurity.energy_turret.name=Энергетическая турель
+tile.opensecurity.keypad.name=Мини клавиатура
+tile.opensecurity.nanofog_terminal.name=Терминал Нано тумана
+tile.opensecurity.nanofog.name=Нано туман
+tile.opensecurity.biometric_reader.name=Биометрический считыватель
+tile.opensecurity.secure_door.name=Дверь безопасности
+tile.opensecurity.private_secure_door.name=Личная дверь безопасности
+tile.opensecurity.rolldoor.name=Подъемная дверь
+tile.opensecurity.rolldoor_controller.name=Контроллер подъемной двери
+tile.opensecurity.rolldoor_element.name=Элемент подъемной двери
+tile.opensecurity.security_terminal.name=Терминал безопасности
+//items
+item.opensecurity.manual.name=Руководство OpenSecurity
+item.opensecurity.rfid_card.name=RFID карта
+item.opensecurity.mag_card.name=Карта с магнитной полосой
+item.opensecurity.rfid_reader_card.name=Карта RFID считыватель
+item.opensecurity.secure_network_card.name=Карта сетевой безопасности
+item.opensecurity.damage_upgrade.name=Улучшение урона
+item.opensecurity.movement_upgrade.name=Улучшение скорости
+item.opensecurity.energy_upgrade.name=Улучшение энергии
+item.opensecurity.cooldown_upgrade.name=Улучшение перезарядки
+item.opensecurity.nanodna.name=Нано ДНК
+item.opensecurity.doorcontroller_upgrade.name=Улучшение контроллера дверей
+
+itemGroup.OpenSecurity.tabOpenSecurity=OpenSecurity
+//guis
+opensecurity.gui.string.cardwriter=Блок записи карт
+opensecurity.gui.string.cardslot=Слот для карты
+opensecurity.gui.string.energyturret=Энергетическая турель
+opensecurity.gui.string.energyturret.damagemod=+Урон
+opensecurity.gui.string.energyturret.movementmod=+Движение
+opensecurity.gui.string.energyturret.cooldownmod=-Перезарядка
+opensecurity.gui.string.energyturret.energymod=-Энергия
+
+death.attack.opensecurity.nanofog=%1$s получил десериализацию от Нано тумана
+death.attack.opensecurity.nanofog=%1$s получил просветление энергетическим зарядом
+
+entity.opensecurity.nanofogswarm.name=Рой Нано тумана
+entity.opensecurity.energybolt.name=Энергетический заряд
+
+
+opensecurity.gui.config.title=Конфигурация OpenSecurity
+opensecurity.gui.config.general=Общие
+opensecurity.gui.config.client=Клиент
+
+opensecurity.gui.config.general.enableplaySoundAt=разрешить тревогу где угодно
+opensecurity.gui.config.general.ignoreUUIDs=скрыть uuid компонентов
+opensecurity.gui.config.general.registerBlockBreak=регистрировать разбитие блока
+opensecurity.gui.config.general.turretReverseRotation=инверсия поворота турели
+opensecurity.gui.config.general.biggerEEPROM=увеличить вместимость eeprom
+opensecurity.gui.config.general.rfidMaxRange=диапазон RFID
+opensecurity.gui.config.general.instantNanoFog=мгновенный Нано туман
+opensecurity.gui.config.general.entityDetectorMaxRange=диапазон детектора сущностей
+opensecurity.gui.config.general.enableScannerSounds=разрешить звуки сканера
+
+opensecurity.gui.config.client.nanoFogSwarmResolution=Качество роя Нано тумана
