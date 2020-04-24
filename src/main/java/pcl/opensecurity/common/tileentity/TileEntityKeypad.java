@@ -118,7 +118,7 @@ public class TileEntityKeypad extends TileEntityOSBase {
 		return new Object[]{ true };
 	}
 
-	@Callback(doc = "function(Double):boolean; returns the volume of the keypad beep sound")
+	@Callback(doc = "function():Double; returns the volume of the keypad beep sound")
 	public Object[] getVolume(Context context, Arguments args) {
 		return new Object[]{ (double) keypadVolume };
 	}
