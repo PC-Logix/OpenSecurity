@@ -23,6 +23,9 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	final static int MAX_DISPLAY_LENGTH = 8;
 
 	private boolean shouldBeep = true;
+
+	private float keypadVolume = 1.0f;
+
 	public String data;
 	public String eventName = "keypad";
 	public String[] buttonLabels = new String[] {"1", "2", "3",
@@ -69,6 +72,10 @@ public class TileEntityKeypad extends TileEntityOSBase {
 		} else {
 			shouldBeep = true;
 		}
+
+		if(nbt.hasKey("volume"))
+			keypadVolume = nbt.getFloat("volume");
+
 		for(int i=0;i<12;++i)
 			buttonLabels[i] = trimString(nbt.getString("btn:"+i), MAX_LABEL_LENGTH);
 		byte[] colors = nbt.getByteArray("btn:colors");
@@ -89,6 +96,7 @@ public class TileEntityKeypad extends TileEntityOSBase {
 		nbt.setString("fbText",displayText);
 		nbt.setInteger("fbColor",displayColor);
 		nbt.setBoolean("shouldBeep", shouldBeep);
+		nbt.setFloat("volume", keypadVolume);
 		return nbt;
 	}
 
@@ -102,6 +110,17 @@ public class TileEntityKeypad extends TileEntityOSBase {
 	public Object[] setShouldBeep(Context context, Arguments args) {
 		shouldBeep = args.checkBoolean(0);
 		return new Object[]{ true };
+	}
+
+	@Callback(doc = "function(Double):boolean; Sets the volume of the keypad beep sound")
+	public Object[] setVolume(Context context, Arguments args) {
+		keypadVolume = (float) args.checkDouble(0);
+		return new Object[]{ true };
+	}
+
+	@Callback(doc = "function(Double):boolean; returns the volume of the keypad beep sound")
+	public Object[] getVolume(Context context, Arguments args) {
+		return new Object[]{ (double) keypadVolume };
 	}
 
 	@Callback(doc = "function(String:text[, color:number]):boolean; Sets the display string (0-8 chars), color (0-7) - 1 bit per channel")
@@ -193,7 +212,7 @@ public class TileEntityKeypad extends TileEntityOSBase {
 
 	public void pressedButton(EntityPlayer player, int buttonIndex) {
 		if (shouldBeep)
-            world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5f, pos.getZ() + 0.5F, SoundHandler.keypad_press, SoundCategory.BLOCKS, 15 / 15 + 0.5F, 1.0F);
+            world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5f, pos.getZ() + 0.5F, SoundHandler.keypad_press, SoundCategory.BLOCKS, keypadVolume * 1.5F, 1.0F);
 		if (!world.isRemote) {
 			PacketKeypadButton packet = new PacketKeypadButton((short) 1, world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), buttonIndex);
 			EntityPlayerMP p=(EntityPlayerMP)player;			
