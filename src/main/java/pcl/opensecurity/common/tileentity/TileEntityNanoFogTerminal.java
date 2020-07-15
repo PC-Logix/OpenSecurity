@@ -29,7 +29,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import pcl.opensecurity.Config;
-import pcl.opensecurity.common.blocks.BlockRolldoorElement;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.ItemNanoDNA;
 import pcl.opensecurity.util.BlockUtils;
@@ -41,8 +40,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
-
-import static pcl.opensecurity.common.blocks.BlockRolldoorElement.PROPERTYOFFSET;
 
 public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITickable {
     public static final int terminalRange = 32, FogBlockLimit = 256;
@@ -67,7 +64,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     public void validate(){
         super.validate();
 
-        if(!world.isRemote)
+        if(!world.isRemote && fakePlayer == null)
             fakePlayer = new FakePlayer(DimensionManager.getWorld(getWorld().provider.getDimension()), new GameProfile(UUID.randomUUID(), getComponentName()));
     }
 
@@ -117,7 +114,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x, int y, int z, string material [, int metaindex]):boolean; set a block", direct = false)
-    public Object[] set(Context context, Arguments args) {
+    public synchronized Object[] set(Context context, Arguments args) {
         if(args.count() < 4)
             return new Object[]{ "not enough arguments" };
 
@@ -134,7 +131,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x1, int y1, int z1, int x2, int y2, int z2, string material [, int metaindex]):boolean; set a block", direct = false)
-    public Object[] setArea(Context context, Arguments args) {
+    public synchronized Object[] setArea(Context context, Arguments args) {
         if(args.count() < 7)
             return new Object[]{ "not enough arguments" };
 
@@ -158,7 +155,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x1, int y1, int z1, int x2, int y2, int z2, string material [, int metaindex]):boolean; set a block", direct = false)
-    public Object[] resetArea(Context context, Arguments args) {
+    public synchronized Object[] resetArea(Context context, Arguments args) {
         if (args.count() < 7)
             return new Object[]{"not enough arguments"};
 
@@ -177,7 +174,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
         return new Object[]{ list.toArray() };
     }
 
-    private Object[] setBlock(BlockPos worldPosition, String material, int metadata){
+    private synchronized Object[] setBlock(BlockPos worldPosition, String material, int metadata){
         switch(getBlock(worldPosition)){
             case "air":
                 if(getPos().getDistance(pos.getX(), pos.getY(), pos.getZ()) > terminalRange)
@@ -193,7 +190,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x, int y, int z):boolean; set a fog block to solid", direct = true)
-    public Object[] setSolid(Context context, Arguments args) {
+    public synchronized Object[] setSolid(Context context, Arguments args) {
         TileEntityNanoFog fog = getFog(getPos(args));
         if(fog == null)
             return new Object[]{ false };
@@ -203,7 +200,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x, int y, int z):boolean; set a fog block to shield", direct = true)
-    public Object[] setShield(Context context, Arguments args) {
+    public synchronized Object[] setShield(Context context, Arguments args) {
         TileEntityNanoFog fog = getFog(getPos(args));
         if(fog == null)
             return new Object[]{ false };
@@ -213,7 +210,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x, int y, int z, int power):boolean; set knockback power [0, 1, 2]", direct = true)
-    public Object[] setKnockback(Context context, Arguments args) {
+    public synchronized Object[] setKnockback(Context context, Arguments args) {
         TileEntityNanoFog fog = getFog(getPos(args));
         if(fog == null)
             return new Object[]{ false };
@@ -230,7 +227,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x, int y, int z, int power):boolean; set damage power [0 - 5]", direct = true)
-    public Object[] setDamage(Context context, Arguments args) {
+    public synchronized Object[] setDamage(Context context, Arguments args) {
         TileEntityNanoFog fog = getFog(getPos(args));
         if(fog == null)
             return new Object[]{ false };
@@ -256,7 +253,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x, int y, int z, string type/class, boolean passEntity, [boolean damageEntity (false) , string name (\"\")]):boolean; sets fog filter", direct = true)
-    public Object[] setFilter(Context context, Arguments args) {
+    public synchronized Object[] setFilter(Context context, Arguments args) {
         TileEntityNanoFog fog = getFog(getPos(args));
         if(fog == null)
             return new Object[]{ false };
@@ -333,7 +330,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function(int x, int y, int z):boolean; disassemble fog block", direct = false)
-    public Object[] reset(Context context, Arguments args) {
+    public synchronized Object[] reset(Context context, Arguments args) {
         if(args.count() < 3)
             return new Object[]{ false, "not enough arguments" };
 
@@ -347,7 +344,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     @Callback(doc = "function():boolean; disassembles all fog blocks", direct = false)
-    public Object[] resetAll(Context context, Arguments args) {
+    public synchronized Object[] resetAll(Context context, Arguments args) {
         resetAllBlocks();
         return new Object[]{ getFogBlocks().size() == 0 };
     }
@@ -392,31 +389,26 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     private String setShieldBlock(BlockPos pos, String material, int metadata){
-        ((WorldServer) world).addScheduledTask(new Runnable(){
-            @Override
-            public void run()  {
-                placeBlock(pos, new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1));
+        placeBlock(pos, new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1));
 
-                updateEnergyBufferSize();
-                TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
-                if(te == null)
-                    return; // getBlock(pos);
+        updateEnergyBufferSize();
+        TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
+        if(te == null)
+            return getBlock(pos);
 
-                if(Config.getConfig().getCategory("general").get("instantNanoFog").getBoolean()){
-                    te.isBuild = true;
-                } else {
-                    EntityNanoFogSwarm entity = new EntityNanoFogSwarm(world);
-                    entity.setTravelToFogBlock(getPos(), pos);
-                    getWorld().spawnEntity(entity);
-                }
+        if(Config.getConfig().getCategory("general").get("instantNanoFog").getBoolean()){
+            te.isBuild = true;
+        } else {
+            EntityNanoFogSwarm entity = new EntityNanoFogSwarm(world);
+            entity.setTravelToFogBlock(getPos(), pos);
+            getWorld().spawnEntity(entity);
+        }
 
-                te.setTerminalLocation(getPos());
-                markDirty();
-                updateShieldBlock(pos, material, metadata);
-            }
-        });
+        te.setTerminalLocation(getPos());
+        markDirty();
+        updateShieldBlock(pos, material, metadata);
 
-        return "may be true, but im not sure about that...";
+        return getBlock(pos);
     }
 
     @Deprecated
@@ -514,9 +506,14 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
         return te instanceof TileEntityNanoFog ? "nanoFog" : te.getClass().toString();
     }
 
-    public void placeBlock(final BlockPos pos, final ItemStack consumedStack){
-        getWorld().setBlockState(pos, BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null), 3);
-        fogBlocks.add(pos);
+    public boolean placeBlock(final BlockPos pos, final ItemStack consumedStack){
+        IBlockState state = BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null);
+        if(getWorld().setBlockState(pos, state, 3)) {
+            fogBlocks.add(pos);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
