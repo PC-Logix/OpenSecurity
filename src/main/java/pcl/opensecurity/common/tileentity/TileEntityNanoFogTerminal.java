@@ -392,23 +392,31 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     private String setShieldBlock(BlockPos pos, String material, int metadata){
-        placeBlock(pos, new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1));
-        updateEnergyBufferSize();
-        TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
-        if(te == null)
-            return getBlock(pos);
+        ((WorldServer) world).addScheduledTask(new Runnable(){
+            @Override
+            public void run()  {
+                placeBlock(pos, new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1));
 
-        if(Config.getConfig().getCategory("general").get("instantNanoFog").getBoolean()){
-            te.isBuild = true;
-        } else {
-            EntityNanoFogSwarm entity = new EntityNanoFogSwarm(world);
-            entity.setTravelToFogBlock(getPos(), pos);
-            getWorld().spawnEntity(entity);
-        }
+                updateEnergyBufferSize();
+                TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
+                if(te == null)
+                    return getBlock(pos);
 
-        te.setTerminalLocation(getPos());
-        markDirty();
-        return updateShieldBlock(pos, material, metadata);
+                if(Config.getConfig().getCategory("general").get("instantNanoFog").getBoolean()){
+                    te.isBuild = true;
+                } else {
+                    EntityNanoFogSwarm entity = new EntityNanoFogSwarm(world);
+                    entity.setTravelToFogBlock(getPos(), pos);
+                    getWorld().spawnEntity(entity);
+                }
+
+                te.setTerminalLocation(getPos());
+                markDirty();
+                updateShieldBlock(pos, material, metadata);
+            }
+        });
+
+        return "may be true, but im not sure about that...";
     }
 
     @Deprecated
@@ -507,13 +515,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     public void placeBlock(final BlockPos pos, final ItemStack consumedStack){
-        ((WorldServer) world).addScheduledTask(new Runnable(){
-            @Override
-            public void run()  {
-                getWorld().setBlockState(pos, BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null), 3);
-            }
-        });
-
+        getWorld().setBlockState(pos, BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null), 3);
         fogBlocks.add(pos);
     }
 
