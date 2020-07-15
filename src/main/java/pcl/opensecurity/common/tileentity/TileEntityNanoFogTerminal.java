@@ -400,7 +400,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
                 updateEnergyBufferSize();
                 TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
                 if(te == null)
-                    return getBlock(pos);
+                    return; // getBlock(pos);
 
                 if(Config.getConfig().getCategory("general").get("instantNanoFog").getBoolean()){
                     te.isBuild = true;
