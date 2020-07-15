@@ -1,7 +1,7 @@
 OpenSecurity
 ============
 [![Wiki](http://img.shields.io/badge/wiki--blue.svg)](https://github.com/PC-Logix/OpenSecurity/wiki)
-[![Discord](http://img.shields.io/discord/125649403162656768.svg?label=discord&style=popout)](https://discord.gg/dJq9EnP)
+[![Discord](http://img.shields.io/discord/125649403162656768.svg?label=discord&style=popout)](https://discord.gg/bYqKv7h)
 [![curseForge Project](http://cf.way2muchnoise.eu/versions/opensecurity_latest.svg)](https://minecraft.curseforge.com/projects/opensecurity)
 [![Download](http://cf.way2muchnoise.eu/full_231687_downloads.svg)](https://minecraft.curseforge.com/projects/opensecurity/files)
 
