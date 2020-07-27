@@ -509,7 +509,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
 
     public boolean placeBlock(final BlockPos pos, final ItemStack consumedStack){
         IBlockState state = BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null);
-        if(getWorld().setBlockState(pos, state, 3)) {
+        if(getWorld().getBlockState(pos).equals(state) || getWorld().setBlockState(pos, state, 3)) {
             fogBlocks.add(pos);
             return true;
         }
