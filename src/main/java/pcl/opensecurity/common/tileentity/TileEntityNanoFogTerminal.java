@@ -29,6 +29,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import pcl.opensecurity.Config;
+import pcl.opensecurity.common.blocks.BlockNanoFog;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
 import pcl.opensecurity.common.items.ItemNanoDNA;
 import pcl.opensecurity.util.BlockUtils;
@@ -389,7 +390,7 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     private String setShieldBlock(BlockPos pos, String material, int metadata){
-        placeBlock(pos, new ItemStack(ItemNanoDNA.DEFAULTSTACK.getItem(), 1));
+        placeBlock(pos, new ItemStack(BlockNanoFog.DEFAULTITEM, 1));
 
         updateEnergyBufferSize();
         TileEntityNanoFog te = (TileEntityNanoFog) getWorld().getTileEntity(pos);
