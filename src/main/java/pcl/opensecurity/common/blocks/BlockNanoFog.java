@@ -16,6 +16,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import pcl.opensecurity.common.tileentity.TileEntityNanoFog;
 import pcl.opensecurity.util.BlockUtils;
 
@@ -23,7 +24,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-
+@Optional.Interface(iface="micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock",modid="galacticraft")
 public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider {
     public static final String NAME = "nanofog";
     public static BlockNanoFog DEFAULTITEM;
@@ -146,4 +147,9 @@ public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider
         }
     }
 
+    /* galacticraft integration */
+    @Optional.Method(modid = "galacticraft")
+    public boolean isSealed(World var1, BlockPos var2, EnumFacing var3){
+        return true;
+    }
 }

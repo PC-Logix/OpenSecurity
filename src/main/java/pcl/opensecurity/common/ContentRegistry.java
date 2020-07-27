@@ -22,7 +22,6 @@ import pcl.opensecurity.common.blocks.*;
 import pcl.opensecurity.common.drivers.*;
 import pcl.opensecurity.common.entity.EntityEnergyBolt;
 import pcl.opensecurity.common.entity.EntityNanoFogSwarm;
-import pcl.opensecurity.common.integration.galacticraft.blocks.galacticraftIntegration;
 import pcl.opensecurity.common.items.*;
 import pcl.opensecurity.common.tileentity.*;
 import pcl.opensecurity.manual.Manual;
@@ -91,10 +90,6 @@ public class ContentRegistry {
 
     // Called on mod preInit()
     public static void preInit() {
-        if(OpenSecurity.galacticraft) {
-            galacticraftIntegration.preInit();
-        }
-
         for(Item manualItem : Manual.items)
             modItems.add(new ItemStack(manualItem));
 
