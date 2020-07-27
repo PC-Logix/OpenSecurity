@@ -28,8 +28,13 @@ import java.util.HashSet;
 // todo: fix alarm as upgrade
 
 @Mod.EventBusSubscriber
-@Mod(modid = OpenSecurity.MODID, name = "OpenSecurity", version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber,
-        dependencies = "required-after:opencomputers;after:rtfm", updateJSON = "http://modupdates.pc-logix.com/opensecurity",
+@Mod(
+        modid = OpenSecurity.MODID, name = "OpenSecurity",
+        version = BuildInfo.versionNumber + "-" + BuildInfo.buildNumber,
+        dependencies = "required-after:opencomputers;" +
+                "after:rtfm;" +
+                "after:galacticraftcore",
+        updateJSON = "http://modupdates.pc-logix.com/opensecurity",
         guiFactory = OpenSecurity.GUIFACTORY)
 public class OpenSecurity {
     public static final String MODID = "opensecurity";
@@ -51,7 +56,7 @@ public class OpenSecurity {
     public static boolean registerBlockBreakEvent = true;
     public static HashSet<String> alarmList = new HashSet<>();
 
-    public static boolean advancedRocketry = false, galacticraft = false;
+    public static boolean advancedRocketry = false;
 
     public static final Logger logger = LogManager.getFormatterLogger(MODID);
 
@@ -64,7 +69,6 @@ public class OpenSecurity {
         long time = System.nanoTime();
 
         advancedRocketry = Loader.isModLoaded("advancedrocketry");
-        galacticraft = Loader.isModLoaded("galacticraftcore");
 
         Config.preInit();
 

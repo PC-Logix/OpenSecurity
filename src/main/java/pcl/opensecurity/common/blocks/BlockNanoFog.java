@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-@Optional.Interface(iface="micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock",modid="galacticraft")
+@Optional.Interface(iface="micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock", modid="galacticraftcore")
 public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider {
     public static final String NAME = "nanofog";
     public static BlockNanoFog DEFAULTITEM;
@@ -148,7 +148,7 @@ public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider
     }
 
     /* galacticraft integration */
-    @Optional.Method(modid = "galacticraft")
+    @Optional.Method(modid = "galacticraftcore")
     public boolean isSealed(World var1, BlockPos var2, EnumFacing var3){
         return true;
     }
