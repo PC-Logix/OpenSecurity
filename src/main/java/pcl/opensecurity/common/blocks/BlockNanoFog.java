@@ -2,6 +2,7 @@ package pcl.opensecurity.common.blocks;
 
 /* based on McJty's RFTools Shield */
 
+import micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
@@ -24,8 +25,10 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-@Optional.Interface(iface="micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock", modid="galacticraftcore")
-public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider {
+@Optional.InterfaceList({
+    @Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock", modid = "galacticraftcore")
+})
+public class BlockNanoFog extends BlockCamouflage implements ITileEntityProvider, IPartialSealableBlock {
     public static final String NAME = "nanofog";
     public static BlockNanoFog DEFAULTITEM;
 
