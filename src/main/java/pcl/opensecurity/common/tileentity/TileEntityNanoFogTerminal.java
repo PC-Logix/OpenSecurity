@@ -61,14 +61,6 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
         node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(512).create();
     }
 
-    @Override
-    public void validate(){
-        super.validate();
-
-        if(!world.isRemote && fakePlayer == null)
-            fakePlayer = new FakePlayer(DimensionManager.getWorld(getWorld().provider.getDimension()), new GameProfile(UUID.randomUUID(), getComponentName()));
-    }
-
     public void removed(){
         // unset all fog blocks
         resetAllBlocks();
@@ -508,6 +500,12 @@ public class TileEntityNanoFogTerminal extends TileEntityOSBase implements ITick
     }
 
     public boolean placeBlock(final BlockPos pos, final ItemStack consumedStack){
+        if(getWorld().isRemote)
+            return false;
+
+        if(fakePlayer == null)
+            fakePlayer = new FakePlayer(DimensionManager.getWorld(getWorld().provider.getDimension()), new GameProfile(UUID.randomUUID(), getComponentName()));
+
         IBlockState state = BlockUtils.placeStackAt(fakePlayer, consumedStack, getWorld(), pos, null);
         if(getWorld().getBlockState(pos).equals(state) || getWorld().setBlockState(pos, state, 3)) {
             fogBlocks.add(pos);
