@@ -111,7 +111,7 @@ curseforge {
 	project {
 		id = curse_projectId
 		releaseType = curse_releaseType
-		changelog = curse_changelog
+		changelog = file('changelog.txt')
 	}
 }
 
