@@ -26,4 +26,3 @@ gamax92 for the Mag and RFID Card textures, and helping me deal with stupid code
 Kodos for the Mods Name and some Textures (DataBlock side, Sine panel front)
 
 AterIgnis For improvements to the Energy Turret and the Keypad
-
