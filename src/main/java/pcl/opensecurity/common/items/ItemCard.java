@@ -25,7 +25,7 @@ public abstract class ItemCard extends ItemOSBase {
 
 	public static class CardTag{
 		public boolean locked = false;
-		public String localUUID = UUID.randomUUID().toString();
+		public String localUUID = OpenSecurity.ignoreUUIDs ? "-1" : UUID.randomUUID().toString();
 		public String dataTag = "";
 		public int color = 0xFFFFFF;
 
@@ -64,6 +64,7 @@ public abstract class ItemCard extends ItemOSBase {
 
 		public NBTTagCompound writeToNBT(NBTTagCompound nbt){
 			nbt.setString("data", dataTag);
+
 			nbt.setString("uuid", localUUID);
 			nbt.setBoolean("locked", locked);
 

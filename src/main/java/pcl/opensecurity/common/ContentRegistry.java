@@ -66,6 +66,7 @@ public class ContentRegistry {
         modBlocks.add(BlockEntityDetector.DEFAULTITEM = new BlockEntityDetector());
         modBlocks.add(BlockEnergyTurret.DEFAULTITEM = new BlockEnergyTurret());
         modBlocks.add(BlockRFIDReader.DEFAULTITEM = new BlockRFIDReader());
+        modBlocks.add(BlockSHFRFIDReader.DEFAULTITEM = new BlockSHFRFIDReader());
         modBlocks.add(BlockNanoFogTerminal.DEFAULTITEM = new BlockNanoFogTerminal());
         modBlocks.add(BlockRolldoorElement.DEFAULTITEM = new BlockRolldoorElement());
 
@@ -77,6 +78,7 @@ public class ContentRegistry {
         modCamoBlocks.add(BlockRolldoorController.DEFAULTITEM = new BlockRolldoorController());
         modCamoBlocks.add(BlockNanoFog.DEFAULTITEM = new BlockNanoFog());
 
+        modItems.add(ItemSHFRFIDCard.DEFAULTSTACK = new ItemStack(new ItemSHFRFIDCard()));
         modItems.add(ItemRFIDCard.DEFAULTSTACK = new ItemStack(new ItemRFIDCard()));
         modItems.add(ItemMagCard.DEFAULTSTACK = new ItemStack(new ItemMagCard()));
         modItems.add(ItemRFIDReaderCard.DEFAULTSTACK = new ItemStack(new ItemRFIDReaderCard()));
@@ -152,6 +154,7 @@ public class ContentRegistry {
         registerTileEntity(TileEntityEntityDetector.class, BlockEntityDetector.NAME);
         registerTileEntity(TileEntityEnergyTurret.class, BlockEnergyTurret.NAME);
         registerTileEntity(TileEntityRFIDReader.class, BlockRFIDReader.NAME);
+        registerTileEntity(TileEntitySHFRFIDReader.class, BlockSHFRFIDReader.NAME);
         registerTileEntity(TileEntitySecureDoor.class, BlockSecureDoor.NAME);
         registerTileEntity(TileEntityNanoFogTerminal.class, BlockNanoFogTerminal.NAME);
         registerTileEntity(TileEntityNanoFog.class, BlockNanoFog.NAME);
