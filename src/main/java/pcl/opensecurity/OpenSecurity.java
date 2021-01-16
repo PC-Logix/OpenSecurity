@@ -78,7 +78,7 @@ public class OpenSecurity {
         rfidRange = Config.getConfig().getCategory("general").get("rfidMaxRange").getInt();
         entityDetectorMaxRange = Config.getConfig().getCategory("general").get("entityDetectorMaxRange").getInt();
         debug = Config.getConfig().getCategory("general").get("enableDebugMessages").getBoolean();
-        ignoreUUIDs = Config.getConfig().getCategory("general").get("ignoreUUIDs").getBoolean();
+
         ContentRegistry.preInit();
 
         MinecraftForge.EVENT_BUS.register(contentRegistry);

@@ -20,12 +20,12 @@ import pcl.opensecurity.Config;
 import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemRFIDCard;
-import pcl.opensecurity.common.items.ItemSHFRFIDCard;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class TileEntityCardWriter extends TileEntityOSBase implements ITickable {
     public static final int SIZE = 2;
@@ -154,16 +154,8 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
 
         ItemStack outStack;
 
-        ItemCard.CardTag cardTag = new ItemCard.CardTag(inventoryInput.getStackInSlot(0));
-
         if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
             outStack = new ItemStack(ItemRFIDCard.DEFAULTSTACK.getItem());
-            if (data.length() > 64) {
-                data = data.substring(0, 64);
-            }
-        } else if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemSHFRFIDCard) {
-            outStack = new ItemStack(ItemSHFRFIDCard.DEFAULTSTACK.getItem());
-            cardTag.localUUID = "0";
             if (data.length() > 64) {
                 data = data.substring(0, 64);
             }
@@ -175,6 +167,7 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
         } else
             return new Object[] { false, "Wrong item in input slot" };
 
+        ItemCard.CardTag cardTag = new ItemCard.CardTag(inventoryInput.getStackInSlot(0));
 
         if(cardTag.locked)
             return new Object[] { false, "card is locked" };
