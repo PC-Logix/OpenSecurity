@@ -51,6 +51,7 @@ public class ClientProxy extends CommonProxy {
     public void colorHandlerEventBlock(ColorHandlerEvent.Block event) {
         BlockNanoFog.DEFAULTITEM.initColorHandler(event.getBlockColors());
         BlockDoorController.DEFAULTITEM.initColorHandler(event.getBlockColors());
+        BlockMagReaderCamo.DEFAULTITEM.initColorHandler(event.getBlockColors());
         BlockRolldoorController.DEFAULTITEM.initColorHandler(event.getBlockColors());
         BlockRolldoor.DEFAULTITEM.initColorHandler(event.getBlockColors());
     }

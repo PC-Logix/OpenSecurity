@@ -3,6 +3,7 @@ tile.opensecurity.alarm.name=Сигнализация
 tile.opensecurity.rfid_reader.name=RFID считыватель
 tile.opensecurity.card_writer.name=Блок записи карт
 tile.opensecurity.mag_reader.name=Считыватель магнитных карт
+tile.opensecurity.mag_reader_camo.name=Камуфляж Считыватель магнитных карт
 tile.opensecurity.entity_detector.name=Детектор сущностей
 tile.opensecurity.door_controller.name=Контроллер дверей
 tile.opensecurity.data_block.name=Блок данных

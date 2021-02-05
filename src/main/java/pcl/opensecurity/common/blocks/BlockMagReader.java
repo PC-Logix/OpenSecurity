@@ -7,6 +7,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,9 +16,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.interfaces.IOwner;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
 import pcl.opensecurity.common.interfaces.IVariant;
@@ -36,6 +39,15 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
         setRegistryName(OpenSecurity.MODID, NAME);
         setHardness(0.5f);
         setCreativeTab(ContentRegistry.creativeTab);
+    }
+
+    /**
+     * Called by ItemBlocks after a block is set in the world, to allow post-place logic
+     */
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+        TileEntity te = worldIn.getTileEntity(pos);
+        ((IOwner) te).setOwner(placer.getUniqueID());
     }
 
     public static final IProperty<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
@@ -73,12 +85,13 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        //player.sendMessage(new TextComponentString("meta " + getMetaFromState(state)));
         world.scheduleBlockUpdate(pos, this, 20, 1);
         ItemStack heldItem = player.getHeldItemMainhand();
         if (!heldItem.isEmpty()) {
+            System.out.println(heldItem.getItem().getRegistryName().toString());
             Item equipped = heldItem.getItem();
             TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
+
             if (!world.isRemote && equipped instanceof ItemMagCard) {
                 world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
                 if (tile.doRead(heldItem, player, side)) {

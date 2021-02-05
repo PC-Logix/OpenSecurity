@@ -3,6 +3,7 @@ tile.opensecurity.alarm.name=Alarm
 tile.opensecurity.rfid_reader.name=RFID Reader
 tile.opensecurity.card_writer.name=Card Writer
 tile.opensecurity.mag_reader.name=Magnetic Card Reader
+tile.opensecurity.mag_reader_camo.name=Camo Magnetic Card Reader
 tile.opensecurity.entity_detector.name=Entity Detector
 tile.opensecurity.door_controller.name=Door Controller
 tile.opensecurity.data_block.name=Data Block

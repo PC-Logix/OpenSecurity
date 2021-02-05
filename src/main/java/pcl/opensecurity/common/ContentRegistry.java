@@ -69,11 +69,13 @@ public class ContentRegistry {
         modBlocks.add(BlockNanoFogTerminal.DEFAULTITEM = new BlockNanoFogTerminal());
         modBlocks.add(BlockRolldoorElement.DEFAULTITEM = new BlockRolldoorElement());
 
+
         modBlocksWithItem.put(BlockSecureDoor.DEFAULTITEM = new BlockSecureDoor(), ItemSecureDoor.DEFAULTSTACK = new ItemStack(new ItemSecureDoor()));
         modBlocksWithItem.put(BlockSecurePrivateDoor.DEFAULTITEM = new BlockSecurePrivateDoor(), ItemSecurePrivateDoor.DEFAULTSTACK = new ItemStack(new ItemSecurePrivateDoor()));
 
         modCamoBlocks.add(BlockRolldoor.DEFAULTITEM = new BlockRolldoor());
         modCamoBlocks.add(BlockDoorController.DEFAULTITEM = new BlockDoorController());
+        modCamoBlocks.add(BlockMagReaderCamo.DEFAULTITEM = new BlockMagReaderCamo());
         modCamoBlocks.add(BlockRolldoorController.DEFAULTITEM = new BlockRolldoorController());
         modCamoBlocks.add(BlockNanoFog.DEFAULTITEM = new BlockNanoFog());
 
