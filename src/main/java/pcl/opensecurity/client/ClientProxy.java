@@ -117,6 +117,7 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomStateMapper(BlockRolldoorElement.DEFAULTITEM, new StateMap.Builder().ignore(BlockRolldoorElement.PROPERTYOFFSET).build());
         ModelLoader.setCustomStateMapper(BlockSecureDoor.DEFAULTITEM, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
         ModelLoader.setCustomStateMapper(BlockSecurePrivateDoor.DEFAULTITEM, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
+        ModelLoader.setCustomStateMapper(BlockSecureMagDoor.DEFAULTITEM, new StateMap.Builder().ignore(BlockDoor.POWERED).build());
     }
 
     private void listFilesForPath(final File path) {

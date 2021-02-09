@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "TOT",
+    "TGT",
     "ODO",
     "SOS"
   ],
@@ -15,11 +15,14 @@
     "D": {
       "item": "minecraft:iron_door"
     },
+    "G": {
+      "item": "minecraft:glass"
+    },
     "O": {
       "item": "minecraft:obsidian"
     }
   },
   "result": {
-    "item": "opensecurity:private_secure_door"
+    "item": "opensecurity:secure_door"
   }
 }

@@ -17,6 +17,7 @@ tile.opensecurity.nanofog.name=NanoFog
 tile.opensecurity.biometric_reader.name=Biometric Reader
 tile.opensecurity.secure_door.name=Security Door
 tile.opensecurity.private_secure_door.name=Private Security Door
+tile.opensecurity.mag_secure_door.name=MagReader Security Door
 tile.opensecurity.rolldoor.name=Rolldoor
 tile.opensecurity.rolldoor_controller.name=Rolldoor Controller
 tile.opensecurity.rolldoor_element.name=Rolldoor Element

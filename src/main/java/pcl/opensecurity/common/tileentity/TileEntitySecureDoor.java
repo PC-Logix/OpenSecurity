@@ -1,18 +1,30 @@
 package pcl.opensecurity.common.tileentity;
 
+import li.cil.oc.api.Network;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.ComponentConnector;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentString;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.common.items.ItemCard;
 import pcl.opensecurity.common.protection.IProtection;
 import pcl.opensecurity.common.protection.Protection;
 import pcl.opensecurity.common.interfaces.IOwner;
 import pcl.opensecurity.common.interfaces.IPasswordProtected;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -22,10 +34,16 @@ import static net.minecraft.block.BlockDoor.HALF;
 public class TileEntitySecureDoor extends TileEntityOSBase implements IProtection, IPasswordProtected, IOwner {
 	private UUID ownerUUID;
 	private String password = "";
+	private String eventName = "magData";
+	private Boolean hasMagReader = false;
 
 	public TileEntitySecureDoor() {
-		super("os_securedoor");
-		//node = Network.newNode(this, Visibility.Network).create();
+		super("os_magreader");
+		if (hasMagReader) {
+			node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+		} else {
+			node = Network.newNode(this, Visibility.None).withComponent(getComponentName()).withConnector(32).create();
+		}
 	}
 
 	@Override
@@ -66,6 +84,26 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 		return doorTEs;
 	}
 
+	public boolean doRead(@Nonnull ItemStack itemStack, EntityPlayer em, EnumFacing side) {
+		if (!hasMagReader)
+			return false;
+
+		ItemCard.CardTag cardTag = new ItemCard.CardTag(itemStack);
+
+		if (node.changeBuffer(-5) != 0 || !cardTag.isValid)
+			return false;
+
+		String user = Config.getConfig().getCategory("general").get("ignoreUUIDs").getBoolean() ? "player" : em.getDisplayNameString();
+		node.sendToReachable("computer.signal", eventName, user, cardTag.dataTag, cardTag.localUUID, cardTag.locked, side.getIndex());
+		return true;
+	}
+
+	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a card is swipped", direct = true)
+	public Object[] setEventName(Context context, Arguments args) {
+		eventName = args.checkString(0);
+		return new Object[]{ true };
+	}
+
 
 	public void setOwner(UUID uuid) {
 		for(TileEntitySecureDoor door : getDoorTiles())
@@ -89,6 +127,8 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 			this.ownerUUID = null;
 
 		this.password = tag.getString("password");
+		if(tag.hasKey("hasMag"))
+			this.hasMagReader = tag.getBoolean("hasMag");
 	}
 
 	@Override
@@ -99,6 +139,7 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 			tag.setUniqueId("owner", this.ownerUUID);
 
 		tag.setString("password", this.password);
+		tag.setBoolean("hasMag", this.hasMagReader);
 		return tag;
 	}
 
@@ -110,4 +151,9 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 		return this.password;
 	}
 
+	public void enableMagReader() {
+		System.out.println("Setting magreader true");
+		hasMagReader = true;
+		node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	}
 }

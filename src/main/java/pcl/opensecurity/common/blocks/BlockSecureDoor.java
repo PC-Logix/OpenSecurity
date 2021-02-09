@@ -11,14 +11,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 import pcl.opensecurity.common.ContentRegistry;
+import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.items.ItemSecureDoor;
 import pcl.opensecurity.common.protection.Protection;
+import pcl.opensecurity.common.tileentity.TileEntityMagReader;
 import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 import javax.annotation.Nonnull;
@@ -74,6 +77,7 @@ public class BlockSecureDoor extends BlockDoor {
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
+        //return state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER ? false : true;
     }
 
     @Nullable
@@ -106,6 +110,23 @@ public class BlockSecureDoor extends BlockDoor {
         }
     }
 
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+        world.scheduleBlockUpdate(pos, this, 20, 1);
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if (!heldItem.isEmpty()) {
+            System.out.println(heldItem.getItem().getRegistryName().toString());
+            Item equipped = heldItem.getItem();
+            TileEntitySecureDoor tile = (TileEntitySecureDoor) world.getTileEntity(pos);
+            if (!world.isRemote && equipped instanceof ItemMagCard) {
+                tile.doRead(heldItem, player, side);
+            }
+            return true;
+        }
+        return false;
+    }
 
     //vanilla method without redstone...
     @Override

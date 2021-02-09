@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "opensecurity:mag_reader"
+    },
+    {
+      "item": "opensecurity:private_secure_door"
+    }
+  ],
+  "result": {
+    "item": "opensecurity:mag_secure_door"
+  }
+}

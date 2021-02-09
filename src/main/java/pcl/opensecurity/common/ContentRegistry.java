@@ -72,6 +72,7 @@ public class ContentRegistry {
 
         modBlocksWithItem.put(BlockSecureDoor.DEFAULTITEM = new BlockSecureDoor(), ItemSecureDoor.DEFAULTSTACK = new ItemStack(new ItemSecureDoor()));
         modBlocksWithItem.put(BlockSecurePrivateDoor.DEFAULTITEM = new BlockSecurePrivateDoor(), ItemSecurePrivateDoor.DEFAULTSTACK = new ItemStack(new ItemSecurePrivateDoor()));
+        modBlocksWithItem.put(BlockSecureMagDoor.DEFAULTITEM = new BlockSecureMagDoor(), ItemSecureMagDoor.DEFAULTSTACK = new ItemStack(new ItemSecureMagDoor()));
 
         modCamoBlocks.add(BlockRolldoor.DEFAULTITEM = new BlockRolldoor());
         modCamoBlocks.add(BlockDoorController.DEFAULTITEM = new BlockDoorController());
