@@ -9,10 +9,8 @@
 		"model": "minecraft:orientable"
 	},
 	"variants": {
-		"normal": [{}],
-		"inventory": [{
-			"transform": "forge:default-block"
-		}],
+		"normal": [{ }],
+		"inventory": [{ }],
 		"facing": {
 			"north": {"model": "minecraft:orientable", "y": 180},
 			"south": {"model": "minecraft:orientable"},

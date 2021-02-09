@@ -66,7 +66,8 @@ public class BlockMagReaderCamo extends BlockCamouflage implements ITileEntityPr
 
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
-        return super.getPickBlock(getDefaultState(), target, world, pos, player);
+        //return super.getPickBlock(getDefaultState(), target, world, pos, player);
+        return new ItemStack(Item.getItemFromBlock(this), 1, 0);
     }
 
     @Override
