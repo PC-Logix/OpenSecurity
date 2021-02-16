@@ -73,6 +73,8 @@ repositories {
         name = "ModMaven"
         url = "modmaven.k-4u.nl"
     }
+
+    maven { url "https://maven.tehnut.info" }
 }
 
 dependencies {
@@ -87,6 +89,8 @@ dependencies {
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${jei_version}"
     // runtime "libVulpes:libVulpes-1.12.2-0.4.0:51:deobf"
+
+    deobfCompile ("mcp.mobius.waila:Hwyla:1.8.26-B41_1.12.2:api")
 
     // all those just for the case block =>
     provided ("appeng:appliedenergistics2:${ae2Version}:api") {

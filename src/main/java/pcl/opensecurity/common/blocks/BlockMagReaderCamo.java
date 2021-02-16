@@ -21,6 +21,7 @@ import pcl.opensecurity.common.interfaces.ICamo;
 import pcl.opensecurity.common.interfaces.IOwner;
 import pcl.opensecurity.common.items.ItemMagCard;
 import pcl.opensecurity.common.tileentity.TileEntityMagReader;
+import pcl.opensecurity.common.tileentity.TileEntitySecureDoor;
 
 public class BlockMagReaderCamo extends BlockCamouflage implements ITileEntityProvider {
     public static final String NAME = "mag_reader_camo";
@@ -65,7 +66,7 @@ public class BlockMagReaderCamo extends BlockCamouflage implements ITileEntityPr
     }
 
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         //return super.getPickBlock(getDefaultState(), target, world, pos, player);
         return new ItemStack(Item.getItemFromBlock(this), 1, 0);
     }
@@ -83,24 +84,26 @@ public class BlockMagReaderCamo extends BlockCamouflage implements ITileEntityPr
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 
-            world.scheduleBlockUpdate(pos, this, 20, 1);
-            ItemStack heldItem = player.getHeldItemMainhand();
-            if (!heldItem.isEmpty()) {
-                Item equipped = heldItem.getItem();
-                TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
-                if (!world.isRemote) {
-                    if (equipped instanceof ItemMagCard) {
-                        //world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
-                        if (tile.doRead(heldItem, player, side)) {
-                            //world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
-                        } else {
-                            //world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
-                        }
-                    }
-                }
-                super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
-                return true;
+        world.scheduleBlockUpdate(pos, this, 20, 1);
+        ItemStack heldItem;
+
+        if (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ItemMagCard) {
+            heldItem = player.getHeldItemMainhand();
+        } else if (!player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof ItemMagCard) {
+            heldItem = player.getHeldItemOffhand();
+        } else {
+            return false;
+        }
+
+        if (!heldItem.isEmpty()) {
+            //System.out.println(heldItem.getItem().getRegistryName().toString());
+            Item equipped = heldItem.getItem();
+            TileEntitySecureDoor tile = (TileEntitySecureDoor) world.getTileEntity(pos);
+            if (!world.isRemote && equipped instanceof ItemMagCard) {
+                tile.doRead(heldItem, player, side);
             }
+            return true;
+        }
         return false;
     }
 

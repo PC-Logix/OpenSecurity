@@ -86,7 +86,16 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         world.scheduleBlockUpdate(pos, this, 20, 1);
-        ItemStack heldItem = player.getHeldItemMainhand();
+        ItemStack heldItem;
+
+        if (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ItemMagCard) {
+            heldItem = player.getHeldItemMainhand();
+        } else if (!player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof ItemMagCard) {
+            heldItem = player.getHeldItemOffhand();
+        } else {
+            return false;
+        }
+
         if (!heldItem.isEmpty()) {
             System.out.println(heldItem.getItem().getRegistryName().toString());
             Item equipped = heldItem.getItem();
