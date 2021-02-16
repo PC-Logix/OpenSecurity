@@ -113,20 +113,16 @@ public class BlockSecureDoor extends BlockDoor {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-       System.out.println("This blockpos " + pos.getY() + " is " + state.getBlock().getRegistryName());
+        super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
         BlockPos blockpos = pos.down();
 
         IBlockState iblockstate = world.getBlockState(blockpos);
         if (state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER) {
 
             BlockSecureDoor bottomDoor = (BlockSecureDoor) iblockstate.getBlock();
-            System.out.println("Trying to get bottom door " + blockpos.getY() + " is " + iblockstate.getBlock().getRegistryName() + " " + state.getValue(HALF));
             bottomDoor.onBlockActivated(world, blockpos, iblockstate, player, hand, side, hitX, hitY, hitZ);
 
         } else {
-            //super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
-
-            System.out.println("called from bottom door " + pos.getY() + " is " + iblockstate.getBlock().getRegistryName() + " " + state.getValue(HALF));
             world.scheduleBlockUpdate(pos, this, 20, 1);
             ItemStack heldItem;
 
