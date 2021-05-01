@@ -56,14 +56,14 @@ opensecurity.gui.config.title=开放式安全配置
 opensecurity.gui.config.general=一般
 opensecurity.gui.config.client=客户端
 
-opensecurity.gui.config.general.enableplaySoundAt=allow alarm anywhere
-opensecurity.gui.config.general.ignoreUUIDs=hide uuids for components
+opensecurity.gui.config.general.enableplaySoundAt=允许警报到任何地方
+opensecurity.gui.config.general.ignoreUUIDs=隐藏组件UUID
 opensecurity.gui.config.general.registerBlockBreak=check blockbreaks
-opensecurity.gui.config.general.turretReverseRotation=turret rotation inversed
-opensecurity.gui.config.general.biggerEEPROM=increase eeprom size
+opensecurity.gui.config.general.turretReverseRotation=炮塔旋转反转
+opensecurity.gui.config.general.biggerEEPROM=更大的EEPROM
 opensecurity.gui.config.general.rfidMaxRange=RFID range
 opensecurity.gui.config.general.instantNanoFog=instant NanoFog
-opensecurity.gui.config.general.entityDetectorMaxRange=Entity Detector range
-opensecurity.gui.config.general.enableScannerSounds=enable scanner sounds
+opensecurity.gui.config.general.entityDetectorMaxRange=实体探测距离
+opensecurity.gui.config.general.enableScannerSounds=启用 scanner 声音
 
 opensecurity.gui.config.client.nanoFogSwarmResolution=NanoFog Swarm Resolution
