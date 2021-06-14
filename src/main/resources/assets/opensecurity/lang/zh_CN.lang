@@ -36,7 +36,7 @@ item.opensecurity.nanodna.name=NanoDNA
 item.opensecurity.doorcontroller_upgrade.name=门控制器升级
 
 itemGroup.OpenSecurity.tabOpenSecurity=开放式安全
-//guis
+//用户界面
 opensecurity.gui.string.cardwriter=写卡器
 opensecurity.gui.string.cardslot=卡槽
 opensecurity.gui.string.energyturret=充能炮塔
@@ -44,14 +44,14 @@ opensecurity.gui.string.energyturret.damagemod=增加伤害
 opensecurity.gui.string.energyturret.movementmod=增加移动速度
 opensecurity.gui.string.energyturret.cooldownmod=减少冷却
 opensecurity.gui.string.energyturret.energymod=减少能量
-
+//死亡信息
 death.attack.opensecurity.nanofog=%1$s got deserialized by NanoFog
 death.attack.opensecurity.nanofog=%1$s got enlightened by an energy bolt
-
+//实体
 entity.opensecurity.nanofogswarm.name=NanoFog Swarm
 entity.opensecurity.energybolt.name=Energy Bolt
 
-
+//配置
 opensecurity.gui.config.title=开放式安全配置
 opensecurity.gui.config.general=一般
 opensecurity.gui.config.client=客户端
