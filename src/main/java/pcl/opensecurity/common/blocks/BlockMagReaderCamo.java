@@ -83,7 +83,8 @@ public class BlockMagReaderCamo extends BlockCamouflage implements ITileEntityPr
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        super.onBlockActivated(World,BlockPos,IBlockState,EntityPlayer,EnumHand,EnumFacing,float,float,float);
+
+        super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ)
         world.scheduleBlockUpdate(pos, this, 20, 1);
         ItemStack heldItem;
 
