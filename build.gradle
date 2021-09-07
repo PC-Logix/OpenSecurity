@@ -92,11 +92,6 @@ dependencies {
 
     deobfCompile ("mcp.mobius.waila:Hwyla:1.8.26-B41_1.12.2:api")
 
-    // all those just for the case block =>
-    provided ("appeng:appliedenergistics2:${ae2Version}:api") {
-        transitive = false
-    }
-
     provided ("mrtjp:ProjectRed:${projredVersion}:Base") {
         exclude module: "NotEnoughItems"
         exclude module: "CodeChickenLib"
