@@ -99,7 +99,7 @@ public class BlockMagReaderCamo extends BlockCamouflage implements ITileEntityPr
         if (!heldItem.isEmpty()) {
             //System.out.println(heldItem.getItem().getRegistryName().toString());
             Item equipped = heldItem.getItem();
-            TileEntitySecureDoor tile = (TileEntitySecureDoor) world.getTileEntity(pos);
+            TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
             if (!world.isRemote && equipped instanceof ItemMagCard) {
                 tile.doRead(heldItem, player, side);
                 return true;
