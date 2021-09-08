@@ -21,9 +21,9 @@ public class BlockBiometricReader extends BlockOSBase {
 	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		TileEntityBiometricReader tile = (TileEntityBiometricReader) worldIn.getTileEntity(pos);
 		if (facing.getOpposite().getHorizontalIndex() == state.getBlock().getMetaFromState(state) && hand.equals(EnumHand.OFF_HAND)) {
 			if(!worldIn.isRemote){
+				TileEntityBiometricReader tile = (TileEntityBiometricReader) worldIn.getTileEntity(pos);
 				tile.doRead(playerIn, facing);
 			}
 			return true;
