@@ -95,7 +95,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
         } else {
             return false;
         }
-V
+
         if (!heldItem.isEmpty()) {
             System.out.println(heldItem.getItem().getRegistryName().toString());
             Item equipped = heldItem.getItem();
@@ -110,7 +110,7 @@ V
                         world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
                     }
                 } else {
-                    tile.doRead(heldItem, player, side)
+                    tile.doRead(heldItem, player, side);
                 }
             }
             return true;
