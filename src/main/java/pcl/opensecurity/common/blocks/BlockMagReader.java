@@ -95,18 +95,22 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
         } else {
             return false;
         }
-
+V
         if (!heldItem.isEmpty()) {
             System.out.println(heldItem.getItem().getRegistryName().toString());
             Item equipped = heldItem.getItem();
             TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
 
             if (!world.isRemote && equipped instanceof ItemMagCard) {
-                world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
-                if (tile.doRead(heldItem, player, side)) {
-                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
+                if (tile.swipeInd) {
+                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
+                    if (tile.doRead(heldItem, player, side) && tile.swipeInd) {
+                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
+                    } else {
+                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
+                    }
                 } else {
-                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
+                    tile.doRead(heldItem, player, side)
                 }
             }
             return true;
@@ -116,7 +120,25 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+        TileEntityMagReader tile = (TileEntityMagReader) worldIn.getTileEntity(pos);
+        if (tile.swipeInd) {
+            worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+        } else { //Simple way I solved it
+            switch (tile.doorState) {
+                case 1:
+                worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
+                break;
+                case 2:
+                worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
+                break;
+                case 3:
+                worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
+                break;
+                default:
+                worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+                break;
+            }
+        }
     }
 
     public enum EnumType implements IVariant {

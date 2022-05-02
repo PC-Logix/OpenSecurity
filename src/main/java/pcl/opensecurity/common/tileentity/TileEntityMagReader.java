@@ -21,6 +21,8 @@ import java.util.UUID;
 
 public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner {
 	public String data;
+	public Boolean swipeInd = true;
+	public int doorState = 0;
 	private String eventName = "magData";
 	private UUID ownerUUID;
 	
@@ -43,6 +45,20 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 	@Callback(doc = "function(String:name):boolean; Sets the name of the event that gets sent when a card is swipped", direct = true)
 	public Object[] setEventName(Context context, Arguments args) {
 		eventName = args.checkString(0);
+		return new Object[]{ true };
+	}
+	@Callback
+	public Object[] setLightState(Context context, Arguments args) {
+		if (!swipeInd) {
+			doorState = Integer.parseInt(args.checkString(0));
+			return new Object[]{ true };
+		} else {
+			return new Object[]{ false };
+		}
+	}
+	@Callback
+	public Object[] swipeIndicator(Context context, Arguments args) {
+		swipeInd = Boolean.parseBoolean(args.checkString(0));
 		return new Object[]{ true };
 	}
 
