@@ -47,7 +47,7 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
-	@Callback
+	@Callback(doc = "function(int:meta):boolean; Sets the light state based on a number from 0 to 3. Only works if swipeIndicator is false", direct = true)
 	public Object[] setLightState(Context context, Arguments args) {
 		if (!swipeInd) {
 			doorState = Integer.parseInt(args.checkString(0));
@@ -56,7 +56,7 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 			return new Object[]{ false };
 		}
 	}
-	@Callback
+	@Callback(doc = "function(Boolean:active):boolean; Sets whether the lights are automatic or if determined by setLightState", direct = true)
 	public Object[] swipeIndicator(Context context, Arguments args) {
 		swipeInd = Boolean.parseBoolean(args.checkString(0));
 		return new Object[]{ true };
@@ -83,6 +83,14 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 			this.ownerUUID = UUID.fromString(nbt.getString("owner"));
 		else
 			this.ownerUUID = null;
+		if(nbt.hasUniqueId("doorState"))
+			this.doorState = nbt.getUniqueId("doorState")
+		else
+			this.doorState = 0
+		if(nbt.hasUniqueId("swipeInd"))
+			this.swipeInd = nbt.getUniqueId("swipeInd")
+		else
+			this.swipeInd = true
 	}
 
 	@Override
@@ -90,6 +98,10 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 		super.writeToNBT(nbt);
 		if(ownerUUID != null)
 			nbt.setUniqueId("owner", this.ownerUUID);
+		if(doorState != null)
+			nbt.setUniqueId("doorState", this.doorState)
+		if(swipeInd != null)
+			nbt.setUniqueId("swipeInd", this.swipeInd)
 
 		return nbt;
 	}
