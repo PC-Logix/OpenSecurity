@@ -105,9 +105,9 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
             TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
 
             if (!world.isRemote && equipped instanceof ItemMagCard) {
+                if (!runningTick)
+                    world.scheduleBlockUpdate(pos, this, 1, 1);
                 if (tile.swipeInd) {
-                    if (!runningTick)
-                        world.scheduleBlockUpdate(pos, this, 1, 1);
                     timer = 20;
                     world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
                     if (tile.doRead(heldItem, player, side) && tile.swipeInd) {
