@@ -7,6 +7,13 @@ OpenSecurity
 
 Security addon for OpenComputers
 
+## What's Different?
+
+This fork is a modified version for my own needs. So far, it only has 2 differences:
+1. The Mag Reader can now have the automatic lights enabled/disabled (normally when swiped, it blinks green)
+2. If automatic lights are disabled on magreader, you can select which lights to enable (0=off,1=red,2=yellow,3=green)
+3. Another security door, which is going to have a scp door texture (for my modpack)
+
 ## build notes
 
 before building run the gradle task `syncGitWiki` once to sync the Wiki to your project

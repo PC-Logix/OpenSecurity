@@ -50,7 +50,10 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 	@Callback(doc = "function(int:meta):boolean; Sets the light state based on a number from 0 to 3. Only works if swipeIndicator is false", direct = true)
 	public Object[] setLightState(Context context, Arguments args) {
 		if (!swipeInd) {
-			doorState = Integer.parseInt(args.checkString(0));
+			doorState = args.checkInteger(0);
+			this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+			getUpdateTag();
+			markDirty();
 			return new Object[]{ true };
 		} else {
 			return new Object[]{ false };
@@ -58,7 +61,10 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 	}
 	@Callback(doc = "function(Boolean:active):boolean; Sets whether the lights are automatic or if determined by setLightState", direct = true)
 	public Object[] swipeIndicator(Context context, Arguments args) {
-		swipeInd = Boolean.parseBoolean(args.checkString(0));
+		swipeInd = args.checkBoolean(0);
+		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+		getUpdateTag();
+		markDirty();
 		return new Object[]{ true };
 	}
 
@@ -83,14 +89,14 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 			this.ownerUUID = UUID.fromString(nbt.getString("owner"));
 		else
 			this.ownerUUID = null;
-		if(nbt.hasUniqueId("doorState"))
-			this.doorState = nbt.getUniqueId("doorState")
+		if(nbt.hasKey("doorState"))
+			this.doorState = nbt.getInteger("doorState");
 		else
-			this.doorState = 0
-		if(nbt.hasUniqueId("swipeInd"))
-			this.swipeInd = nbt.getUniqueId("swipeInd")
+			this.doorState = 0;
+		if(nbt.hasKey("swipeInd"))
+			this.swipeInd = nbt.getBoolean("swipeInd");
 		else
-			this.swipeInd = true
+			this.swipeInd = true;
 	}
 
 	@Override
@@ -98,10 +104,9 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 		super.writeToNBT(nbt);
 		if(ownerUUID != null)
 			nbt.setUniqueId("owner", this.ownerUUID);
-		if(doorState != null)
-			nbt.setUniqueId("doorState", this.doorState)
+			nbt.setInteger("doorState", this.doorState);
 		if(swipeInd != null)
-			nbt.setUniqueId("swipeInd", this.swipeInd)
+			nbt.setBoolean("swipeInd", this.swipeInd);
 
 		return nbt;
 	}

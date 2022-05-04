@@ -1,8 +1,8 @@
 [
 {
   "modid": "opensecurity",
-  "name": "OpenSecurity",
-  "description": "OpenSecurity an addon for OpenComputers",
+  "name": "OpenSecurity (modified)",
+  "description": "OpenSecurity an addon for OpenComputers. This one was modified by cadergator10",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

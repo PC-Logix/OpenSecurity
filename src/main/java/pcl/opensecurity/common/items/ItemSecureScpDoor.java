@@ -1,14 +1,14 @@
 package pcl.opensecurity.common.items;
 
 import net.minecraft.item.ItemStack;
-import pcl.opensecurity.common.blocks.BlockSecurePrivateDoor;
+import pcl.opensecurity.common.blocks.BlockSecureScpDoor;
 
 import javax.annotation.Nonnull;
 
 public class ItemSecureScpDoor extends ItemSecureDoor {
     public static ItemStack DEFAULTSTACK;
 
-    public ItemSecurePrivateDoor() {
+    public ItemSecureScpDoor() {
         super(BlockSecureScpDoor.DEFAULTITEM);
     }
 

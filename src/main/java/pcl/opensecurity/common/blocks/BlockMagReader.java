@@ -32,6 +32,8 @@ import java.util.stream.Stream;
 public class BlockMagReader extends Block implements ITileEntityProvider {
     public static final String NAME = "mag_reader";
     public static Block DEFAULTITEM;
+    private int timer = 0;
+    private int thisState = 0;
 
     public BlockMagReader() {
         super(Material.IRON);
@@ -48,6 +50,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
         TileEntity te = worldIn.getTileEntity(pos);
         ((IOwner) te).setOwner(placer.getUniqueID());
+        worldIn.scheduleBlockUpdate(pos, this, 20, 1);
     }
 
     public static final IProperty<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
@@ -85,7 +88,6 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        world.scheduleBlockUpdate(pos, this, 20, 1);
         ItemStack heldItem;
 
         if (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ItemMagCard) {
@@ -103,6 +105,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
             if (!world.isRemote && equipped instanceof ItemMagCard) {
                 if (tile.swipeInd) {
+                    timer = 20;
                     world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
                     if (tile.doRead(heldItem, player, side) && tile.swipeInd) {
                         world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
@@ -122,23 +125,30 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
         TileEntityMagReader tile = (TileEntityMagReader) worldIn.getTileEntity(pos);
         if (tile.swipeInd) {
-            worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
-        } else { //Simple way I solved it
-            switch (tile.doorState) {
-                case 1:
-                worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
-                break;
-                case 2:
-                worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
-                break;
-                case 3:
-                worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
-                break;
-                default:
+            if(timer == 0)
                 worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
-                break;
+            else
+                timer--;
+        } else { //Simple way I solved it
+            if (thisState != tile.doorState) {
+                switch (tile.doorState) {
+                    case 1:
+                        worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
+                        break;
+                    case 2:
+                        worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
+                        break;
+                    case 3:
+                        worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
+                        break;
+                    default:
+                        worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+                        break;
+                }
+                thisState = tile.doorState;
             }
         }
+        worldIn.scheduleBlockUpdate(pos, this, 20, 1);
     }
 
     public enum EnumType implements IVariant {

@@ -48,7 +48,7 @@ public class TileEntitySecureDoor extends TileEntityOSBase implements IProtectio
 
 	@Override
 	public void validate(){
-		super`validate();
+		super.validate();
 		Protection.addArea(getWorld(), new AxisAlignedBB(getPos()), getPos());
 	}
 
