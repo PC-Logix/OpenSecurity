@@ -34,6 +34,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
     public static Block DEFAULTITEM;
     private int timer = 0;
     private int thisState = 0;
+    private Boolean runningTick = false;
 
     public BlockMagReader() {
         super(Material.IRON);
@@ -50,7 +51,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
         TileEntity te = worldIn.getTileEntity(pos);
         ((IOwner) te).setOwner(placer.getUniqueID());
-        worldIn.scheduleBlockUpdate(pos, this, 20, 1);
+        worldIn.scheduleBlockUpdate(pos, this, 1, 1);
     }
 
     public static final IProperty<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
@@ -105,6 +106,8 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
             if (!world.isRemote && equipped instanceof ItemMagCard) {
                 if (tile.swipeInd) {
+                    if (!runningTick)
+                        world.scheduleBlockUpdate(pos, this, 1, 1);
                     timer = 20;
                     world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
                     if (tile.doRead(heldItem, player, side) && tile.swipeInd) {
@@ -123,6 +126,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+        runningTick = true;
         TileEntityMagReader tile = (TileEntityMagReader) worldIn.getTileEntity(pos);
         if (tile.swipeInd) {
             if(timer == 0)
@@ -148,7 +152,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
                 thisState = tile.doorState;
             }
         }
-        worldIn.scheduleBlockUpdate(pos, this, 20, 1);
+        worldIn.scheduleBlockUpdate(pos, this, 1, 1);
     }
 
     public enum EnumType implements IVariant {
