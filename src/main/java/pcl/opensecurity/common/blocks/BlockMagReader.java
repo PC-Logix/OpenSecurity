@@ -108,7 +108,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
                 if (!runningTick)
                     world.scheduleBlockUpdate(pos, this, 1, 1);
                 if (tile.swipeInd) {
-                    timer = 20;
+                    timer = 40;
                     world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
                     if (tile.doRead(heldItem, player, side) && tile.swipeInd) {
                         world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
@@ -135,24 +135,24 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
                 timer--;
         } else { //Simple way I solved it
             if (thisState != tile.doorState) {
+                thisState = tile.doorState;
                 switch (tile.doorState) {
-                    case 1:
+                    case 2:
                         worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
                         break;
-                    case 2:
+                    case 3:
                         worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
                         break;
-                    case 3:
+                    case 4:
                         worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
                         break;
-                    case 0:
+                    case 1:
                         worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
                         break;
                     default:
                         worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
                         break;
                 }
-                thisState = tile.doorState;
             }
         }
         worldIn.scheduleBlockUpdate(pos, this, 1, 1);
