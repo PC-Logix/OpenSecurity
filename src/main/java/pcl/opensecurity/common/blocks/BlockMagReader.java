@@ -145,6 +145,9 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
                     case 3:
                         worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
                         break;
+                    case 0:
+                        worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+                        break;
                     default:
                         worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
                         break;
