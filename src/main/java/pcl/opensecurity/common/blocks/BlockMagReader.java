@@ -129,7 +129,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
         runningTick = true;
         TileEntityMagReader tile = (TileEntityMagReader) worldIn.getTileEntity(pos);
         if (tile.swipeInd) {
-            if(timer == 0)
+            if(timer <= 0)
                 worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
             else
                 timer--;

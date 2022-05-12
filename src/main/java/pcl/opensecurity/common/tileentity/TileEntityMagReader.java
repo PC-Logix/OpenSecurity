@@ -19,7 +19,7 @@ import java.util.UUID;
 
 //import net.minecraft.client.audio.SoundCategory;
 
-public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner {
+public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner, ITickable {
 	public String data;
 	public Boolean swipeInd = true;
 	public int doorState = 0;
