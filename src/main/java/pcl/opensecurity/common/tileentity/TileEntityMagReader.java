@@ -52,7 +52,7 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner,
 		if (!swipeInd) {
 			if (args.checkInteger(0) > 0 && args.checkInteger(0) < 5) {
 				doorState = args.checkInteger(0);
-				this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+				this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 1);
 				getUpdateTag();
 				markDirty();
 				return new Object[]{true};
@@ -66,7 +66,7 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner,
 	@Callback(doc = "function(Boolean:active):boolean; Sets whether the lights are automatic or if determined by setLightState", direct = true)
 	public Object[] swipeIndicator(Context context, Arguments args) {
 		swipeInd = args.checkBoolean(0);
-		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 1);
 		getUpdateTag();
 		markDirty();
 		return new Object[]{ true };
