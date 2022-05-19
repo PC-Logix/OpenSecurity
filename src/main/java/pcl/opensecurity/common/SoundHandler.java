@@ -18,7 +18,6 @@ public class SoundHandler {
 	public static SoundEvent scanner2;
 	public static SoundEvent scanner3;
 	public static SoundEvent card_swipe;
-	//public static SoundEvent scp_security_door;
 	
 	public static void registerSounds() {
         turretMove 	= registerSound("turretmove");
@@ -29,7 +28,6 @@ public class SoundHandler {
         scanner2 	= registerSound("scanner2");
         scanner3 	= registerSound("scanner3");
         card_swipe 	= registerSound("card_swipe");
-		//scp_security_door = registerSound("scp_security_door");
 	}
 	
     /**
@@ -58,7 +56,6 @@ public class SoundHandler {
 					scanner2,
 					scanner3,
 					card_swipe
-					//scp_security_door
 			);
 		}
 }

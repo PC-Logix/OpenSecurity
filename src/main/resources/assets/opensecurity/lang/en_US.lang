@@ -22,7 +22,6 @@ tile.opensecurity.rolldoor.name=Rolldoor
 tile.opensecurity.rolldoor_controller.name=Rolldoor Controller
 tile.opensecurity.rolldoor_element.name=Rolldoor Element
 tile.opensecurity.security_terminal.name=Security Terminal
-tile.opensecurity.scp_secure_door.name=SCP Security Door 1
 //items
 item.opensecurity.manual.name=OpenSecurity Manual
 item.opensecurity.rfid_card.name=RFID Card
