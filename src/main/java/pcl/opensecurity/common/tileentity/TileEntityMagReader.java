@@ -19,7 +19,7 @@ import java.util.UUID;
 
 //import net.minecraft.client.audio.SoundCategory;
 
-public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner, ITickable {
+public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner {
 	public String data;
 	public Boolean swipeInd = true;
 	public int doorState = 0;
@@ -52,7 +52,8 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner,
 		if (!swipeInd) {
 			if (args.checkInteger(0) > 0 && args.checkInteger(0) < 5) {
 				doorState = args.checkInteger(0);
-				this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 1);
+				this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 3);
+				this.world.scheduleBlockUpdate(this.pos, this.world.getBlockState(this.pos).getBlock(),1,1);
 				getUpdateTag();
 				markDirty();
 				return new Object[]{true};
@@ -66,7 +67,8 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner,
 	@Callback(doc = "function(Boolean:active):boolean; Sets whether the lights are automatic or if determined by setLightState", direct = true)
 	public Object[] swipeIndicator(Context context, Arguments args) {
 		swipeInd = args.checkBoolean(0);
-		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 1);
+		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 3);
+		this.world.scheduleBlockUpdate(this.pos, this.world.getBlockState(this.pos).getBlock(),1,1);
 		getUpdateTag();
 		markDirty();
 		return new Object[]{ true };
