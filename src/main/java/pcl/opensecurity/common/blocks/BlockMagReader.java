@@ -126,30 +126,47 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
             worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
         } else { //Simple way I solved it
             switch (tile.doorState) {
+                case 0:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ZERO));
+                    break;
                 case 1:
-                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ONE));
                     break;
                 case 2:
-                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.TWO));
                     break;
                 case 3:
-                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.THREE));
                     break;
                 case 4:
-                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.FOUR));
+                    break;
+                case 5:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.FIVE));
+                    break;
+                case 6:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SIX));
+                    break;
+                case 7:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SEVEN));
                     break;
                 default:
-                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ZERO));
                     break;
             }
         }
     }
 
     public enum EnumType implements IVariant {
-        IDLE(0, "idle"),
-        ACTIVE(1, "active"),
-        SUCCESS(2, "success"),
-        ERROR(3, "error");
+        ZERO(0, "idle"),
+        TWO(1, "active"),
+        FOUR(2, "success"),
+        ONE(3, "error"),
+        THREE(4, "three"),
+        FIVE(5, "five"),
+        SIX(6, "six"),
+        SEVEN(7, "seven");
+
 
         private static final EnumType[] META_LOOKUP = Stream.of(values()).sorted(Comparator.comparing(EnumType::getMeta)).toArray(EnumType[]::new);
 

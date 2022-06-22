@@ -47,10 +47,10 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
-	@Callback(doc = "function(int:meta):boolean; Sets the light state based on a number from 1 to 4. Only works if swipeIndicator is false", direct = true)
+	@Callback(doc = "function(int:meta):boolean; Sets the light state of magreader using binary counting. 0=no lights, 1=red, 2=yellow, 4=green Only works if swipeIndicator is false", direct = true)
 	public Object[] setLightState(Context context, Arguments args) {
 		if (!swipeInd) {
-			if (args.checkInteger(0) > 0 && args.checkInteger(0) < 5) {
+			if (args.checkInteger(0) >= 0 && args.checkInteger(0) <= 7) {
 				doorState = args.checkInteger(0);
 				this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 3);
 				this.world.scheduleBlockUpdate(this.pos, this.world.getBlockState(this.pos).getBlock(),1,1);
