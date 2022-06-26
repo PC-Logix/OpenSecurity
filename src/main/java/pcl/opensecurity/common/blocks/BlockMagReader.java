@@ -103,11 +103,11 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
             if (!world.isRemote && equipped instanceof ItemMagCard) {
                 if (tile.swipeInd) {
-                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
+                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.TWO));
                     if (tile.doRead(heldItem, player, side) && tile.swipeInd) {
-                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
+                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.FOUR));
                     } else {
-                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
+                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ONE));
                     }
                     world.scheduleBlockUpdate(pos, this, 20, 1);
                 } else {
@@ -123,7 +123,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
         TileEntityMagReader tile = (TileEntityMagReader) worldIn.getTileEntity(pos);
         if (tile.swipeInd) {
-            worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+            worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ZERO));
         } else { //Simple way I solved it
             switch (tile.doorState) {
                 case 0:
