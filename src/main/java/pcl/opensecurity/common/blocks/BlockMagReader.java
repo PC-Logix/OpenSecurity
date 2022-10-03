@@ -48,6 +48,7 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
         TileEntity te = worldIn.getTileEntity(pos);
         ((IOwner) te).setOwner(placer.getUniqueID());
+        worldIn.scheduleBlockUpdate(pos, this, 1, 1);
     }
 
     public static final IProperty<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
@@ -85,7 +86,6 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        world.scheduleBlockUpdate(pos, this, 20, 1);
         ItemStack heldItem;
 
         if (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ItemMagCard) {
@@ -102,11 +102,16 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
             TileEntityMagReader tile = (TileEntityMagReader) world.getTileEntity(pos);
 
             if (!world.isRemote && equipped instanceof ItemMagCard) {
-                world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ACTIVE));
-                if (tile.doRead(heldItem, player, side)) {
-                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.SUCCESS));
+                if (tile.swipeInd) {
+                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.TWO));
+                    if (tile.doRead(heldItem, player, side) && tile.swipeInd) {
+                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.FOUR));
+                    } else {
+                        world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ONE));
+                    }
+                    world.scheduleBlockUpdate(pos, this, 20, 1);
                 } else {
-                    world.setBlockState(pos, state.withProperty(VARIANT, EnumType.ERROR));
+                    tile.doRead(heldItem, player, side);
                 }
             }
             return true;
@@ -116,14 +121,52 @@ public class BlockMagReader extends Block implements ITileEntityProvider {
 
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.IDLE));
+        TileEntityMagReader tile = (TileEntityMagReader) worldIn.getTileEntity(pos);
+        if (tile.swipeInd) {
+            worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ZERO));
+        } else { //Simple way I solved it
+            switch (tile.doorState) {
+                case 0:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ZERO));
+                    break;
+                case 1:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ONE));
+                    break;
+                case 2:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.TWO));
+                    break;
+                case 3:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.THREE));
+                    break;
+                case 4:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.FOUR));
+                    break;
+                case 5:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.FIVE));
+                    break;
+                case 6:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SIX));
+                    break;
+                case 7:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.SEVEN));
+                    break;
+                default:
+                    worldIn.setBlockState(pos, state.withProperty(VARIANT, EnumType.ZERO));
+                    break;
+            }
+        }
     }
 
     public enum EnumType implements IVariant {
-        IDLE(0, "idle"),
-        ACTIVE(1, "active"),
-        SUCCESS(2, "success"),
-        ERROR(3, "error");
+        ZERO(0, "idle"),
+        TWO(1, "active"),
+        FOUR(2, "success"),
+        ONE(3, "error"),
+        THREE(4, "three"),
+        FIVE(5, "five"),
+        SIX(6, "six"),
+        SEVEN(7, "seven");
+
 
         private static final EnumType[] META_LOOKUP = Stream.of(values()).sorted(Comparator.comparing(EnumType::getMeta)).toArray(EnumType[]::new);
 

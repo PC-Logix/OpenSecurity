@@ -37,6 +37,30 @@
 					"front": "opensecurity:blocks/magreader_error",
 					"side": "opensecurity:blocks/magreader_error"
 				}
+			},
+			"three": {
+				"textures": {
+					"front": "opensecurity:blocks/magreader_three",
+					"side": "opensecurity:blocks/magreader_three"
+				}
+			},
+			"five": {
+				"textures": {
+					"front": "opensecurity:blocks/magreader_five",
+					"side": "opensecurity:blocks/magreader_five"
+				}
+			},
+			"six": {
+				"textures": {
+					"front": "opensecurity:blocks/magreader_six",
+					"side": "opensecurity:blocks/magreader_six"
+				}
+			},
+			"seven": {
+				"textures": {
+					"front": "opensecurity:blocks/magreader_seven",
+					"side": "opensecurity:blocks/magreader_seven"
+				}
 			}
 		}
 	}

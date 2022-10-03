@@ -21,6 +21,8 @@ import java.util.UUID;
 
 public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner {
 	public String data;
+	public Boolean swipeInd = true;
+	public int doorState = 0;
 	private String eventName = "magData";
 	private UUID ownerUUID;
 	
@@ -45,6 +47,32 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 		eventName = args.checkString(0);
 		return new Object[]{ true };
 	}
+	@Callback(doc = "function(int:meta):boolean; Sets the light state of magreader using binary counting. 0=no lights, 1=red, 2=yellow, 4=green Only works if swipeIndicator is false", direct = true)
+	public Object[] setLightState(Context context, Arguments args) {
+		if (!swipeInd) {
+			if (args.checkInteger(0) >= 0 && args.checkInteger(0) <= 7) {
+				doorState = args.checkInteger(0);
+				this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 3);
+				this.world.scheduleBlockUpdate(this.pos, this.world.getBlockState(this.pos).getBlock(),1,1);
+				getUpdateTag();
+				markDirty();
+				return new Object[]{true};
+			}
+			else
+				return new Object[]{false};
+		} else {
+			return new Object[]{ false };
+		}
+	}
+	@Callback(doc = "function(Boolean:active):boolean; Sets whether the lights are automatic or if determined by setLightState", direct = true)
+	public Object[] swipeIndicator(Context context, Arguments args) {
+		swipeInd = args.checkBoolean(0);
+		this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 3);
+		this.world.scheduleBlockUpdate(this.pos, this.world.getBlockState(this.pos).getBlock(),1,1);
+		getUpdateTag();
+		markDirty();
+		return new Object[]{ true };
+	}
 
 
 	@Override //IOwner
@@ -67,6 +95,14 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 			this.ownerUUID = UUID.fromString(nbt.getString("owner"));
 		else
 			this.ownerUUID = null;
+		if(nbt.hasKey("doorState"))
+			this.doorState = nbt.getInteger("doorState");
+		else
+			this.doorState = 0;
+		if(nbt.hasKey("swipeInd"))
+			this.swipeInd = nbt.getBoolean("swipeInd");
+		else
+			this.swipeInd = true;
 	}
 
 	@Override
@@ -74,6 +110,9 @@ public class TileEntityMagReader extends TileEntityOSCamoBase implements IOwner 
 		super.writeToNBT(nbt);
 		if(ownerUUID != null)
 			nbt.setUniqueId("owner", this.ownerUUID);
+			nbt.setInteger("doorState", this.doorState);
+		if(swipeInd != null)
+			nbt.setBoolean("swipeInd", this.swipeInd);
 
 		return nbt;
 	}
