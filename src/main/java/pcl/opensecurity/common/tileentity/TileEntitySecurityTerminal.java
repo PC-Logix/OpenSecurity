@@ -85,11 +85,15 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     public Object[] isEnabled(Context context, Arguments args) {
         return new Object[] { isEnabled() };
     }
+    
+    private bool isUUID(String input){
+        return input.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"); // not sure if this could be passed to the UUID class... input.matches("[0-9a-f]{32}");
+    }
 
     @Callback(doc = "function(String:Password, String:Username):boolean; Adds the Minecraft User as an allowed user.", direct = true)
     public Object[] addUser(Context context, Arguments args) {
         if (args.checkString(0).equals(getPass())) {
-            if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
+            if (isUUID(args.checkString(1))) {
                 allowedUsers.add(UUID.fromString(args.checkString(1)));
             } else {
                 GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
@@ -110,7 +114,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
     @Callback(doc = "function(String:Username):boolean; Removes the Minecraft User as an allowed user.", direct = true)
     public Object[] delUser(Context context, Arguments args) {
         if (args.checkString(0).equals(getPass())) {
-            if (args.checkString(1).matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")) {
+            if (isUUID(args.checkString(1))) {
                 allowedUsers.remove(UUID.fromString(args.checkString(1)));
             } else {
                 GameProfile gameprofile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args.checkString(1));
