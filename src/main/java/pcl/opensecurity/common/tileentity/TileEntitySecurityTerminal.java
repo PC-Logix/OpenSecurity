@@ -86,7 +86,7 @@ public class TileEntitySecurityTerminal extends TileEntityOSBase implements IPro
         return new Object[] { isEnabled() };
     }
     
-    private bool isUUID(String input){
+    private boolean isUUID(String input){
         return input.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"); // not sure if this could be passed to the UUID class... input.matches("[0-9a-f]{32}");
     }
 
