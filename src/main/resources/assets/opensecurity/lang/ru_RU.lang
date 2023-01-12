@@ -17,6 +17,7 @@ tile.opensecurity.nanofog.name=Нано туман
 tile.opensecurity.biometric_reader.name=Биометрический считыватель
 tile.opensecurity.secure_door.name=Дверь безопасности
 tile.opensecurity.private_secure_door.name=Личная дверь безопасности
+tile.opensecurity.mag_secure_door.name=Дверь безопасности с считывателем магнитных карт
 tile.opensecurity.rolldoor.name=Подъемная дверь
 tile.opensecurity.rolldoor_controller.name=Контроллер подъемной двери
 tile.opensecurity.rolldoor_element.name=Элемент подъемной двери
