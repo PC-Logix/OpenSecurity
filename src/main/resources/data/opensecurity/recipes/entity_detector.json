@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["MRM", "BC "],
+  "key": {
+    "M": { "item": "opencomputers:chip2" },
+    "R": { "item": "opencomputers:ram1" },
+    "B": { "item": "opencomputers:cardbase" },
+    "C": { "item": "opencomputers:cu" }
+  },
+  "result": { "item": "opensecurity:entity_detector" }
+}

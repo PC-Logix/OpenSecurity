@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" D ", "PRT", " C "],
+  "key": {
+    "D": { "item": "opencomputers:datacard1" },
+    "P": { "item": "opencomputers:printedcircuitboard" },
+    "R": { "item": "minecraft:redstone" },
+    "T": { "item": "opencomputers:chip2" },
+    "C": { "item": "opencomputers:cable" }
+  },
+  "result": { "item": "opensecurity:data_block" }
+}

@@ -1,0 +1,11 @@
+{
+  "type":"minecraft:crafting_shaped",
+  "pattern":["TOT","ODO","SOS"],
+  "key":{
+    "T":{"item":"opencomputers:chip2"},
+    "O":{"item":"minecraft:obsidian"},
+    "D":{"item":"minecraft:iron_door"},
+    "S":{"item":"opencomputers:transistor"}
+  },
+  "result":{"item":"opensecurity:private_secure_door"}
+}

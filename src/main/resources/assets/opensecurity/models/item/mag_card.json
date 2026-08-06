@@ -1,7 +1,1 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "opensecurity:items/mag_card",
-		"layer1": "opensecurity:items/mag_card_color"
-    }
-}
+{"parent":"minecraft:item/generated","textures":{"layer0":"opensecurity:item/mag_card","layer1":"opensecurity:item/mag_card_color"}}

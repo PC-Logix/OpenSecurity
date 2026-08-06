@@ -1,0 +1,1 @@
+{"parent":"minecraft:block/orientable","textures":{"top":"opensecurity:block/machine_side","front":"opensecurity:block/rolldoor_controller","side":"opensecurity:block/rolldoor_controller","particle":"opensecurity:block/rolldoor_controller"}}

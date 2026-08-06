@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" R ", "PNC", " T "],
+  "key": {
+    "R": { "item": "minecraft:redstone" },
+    "P": { "item": "opencomputers:printedcircuitboard" },
+    "N": { "item": "minecraft:note_block" },
+    "C": { "item": "opencomputers:cable" },
+    "T": { "item": "opencomputers:chip2" }
+  },
+  "result": { "item": "opensecurity:alarm" }
+}

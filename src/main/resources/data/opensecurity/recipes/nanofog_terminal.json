@@ -1,0 +1,12 @@
+{
+  "type":"minecraft:crafting_shaped",
+  "pattern":["SWS","CTC","KKK"],
+  "key":{
+    "S":{"item":"opencomputers:transistor"},
+    "W":{"item":"opencomputers:wlancard2"},
+    "C":{"item":"opencomputers:chip2"},
+    "T":{"item":"opencomputers:cu"},
+    "K":{"item":"opencomputers:capacitor"}
+  },
+  "result":{"item":"opensecurity:nanofog_terminal"}
+}

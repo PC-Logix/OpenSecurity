@@ -1,7 +1,0 @@
-{
-    "parent": "block/door_bottom",
-    "textures": {
-        "bottom": "opensecurity:blocks/door_secure_lower",
-        "top": "opensecurity:blocks/door_secure_upper_nowindow"
-    }
-}

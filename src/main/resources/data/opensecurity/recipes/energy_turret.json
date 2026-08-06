@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","pattern":["ABA","BCB","ABA"],"key":{"A":{"item":"minecraft:iron_ingot"},"B":{"item":"opencomputers:chip2"},"C":{"item":"minecraft:diamond"}},"result":{"item":"opensecurity:energy_turret"}}

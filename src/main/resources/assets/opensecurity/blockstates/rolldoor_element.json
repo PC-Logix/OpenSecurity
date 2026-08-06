@@ -1,16 +1,1 @@
-{
-  "forge_marker": 1,
-  "defaults": {
-    "textures": {
-      "top": "opensecurity:blocks/rolldoor",
-      "front": "opensecurity:blocks/rolldoor",
-      "side": "opensecurity:blocks/rolldoor",
-      "particle": "opensecurity:blocks/machine_side"
-    },
-    "model": "minecraft:orientable"
-  },
-  "variants": {
-    "normal": [{ }],
-    "inventory": [{ }]
-  }
-}
+{"variants":{"facing=north":{"model":"opensecurity:block/rolldoor_element"},"facing=east":{"model":"opensecurity:block/rolldoor_element","y":90},"facing=south":{"model":"opensecurity:block/rolldoor_element","y":180},"facing=west":{"model":"opensecurity:block/rolldoor_element","y":270}}}

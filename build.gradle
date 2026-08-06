@@ -1,170 +1,98 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'com.palominolabs.gradle.task:gradle-git-clone-task:0.0.3'
-    }
-}
 plugins {
-  id "com.matthewprenger.cursegradle" version "1.0.7"
+    id 'java'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.141'
+    id 'idea'
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
+group = mod_group_id
+version = mod_version
 
-def getGitRef() {
-  try {
-    def stdout = new ByteArrayOutputStream()
-    exec {
-      commandLine 'git', 'rev-parse', '--short', 'HEAD'
-      standardOutput = stdout
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neoforge_version
+
+    parchment {
+        mappingsVersion = project.mapping_version
+        minecraftVersion = project.minecraft_version
     }
-    return stdout.toString().trim()
-  } catch (Throwable e) {
-    return "unknown"
-  }
+
+    mods {
+        opensecurity {
+            sourceSet sourceSets.main
+        }
+    }
+
+    runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+        client { client() }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+        gameTestServer { type = 'gameTestServer' }
+        data {
+            data()
+            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').absolutePath,
+                    '--existing', file('src/main/resources/').absolutePath
+        }
+    }
 }
 
-if (System.getenv("PROMOTED_NUMBER") != null)
-    buildNumber = "${System.getenv("PROMOTED_NUMBER")}"
-else if (System.getenv("BUILD_NUMBER") != null)
-    buildNumber = "${System.getenv("BUILD_NUMBER")}"
-else
-    buildNumber = "+" + getGitRef()
-
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
-compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
-}
-
-
-version = modVersion
-group = modGroup
-archivesBaseName = modBaseName
-
-minecraft {
-    version = "${minecraftVersion}-${forge_version}"
-    runDir = "run"
-    mappings = mcp_mappings
-    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    replace "@VERSION@", project.version
-	replace "@BUILD@", project.buildNumber
+sourceSets {
+    main {
+        java.setSrcDirs(['src/main/java'])
+        resources.setSrcDirs(['src/main/resources', 'src/generated/resources', 'src/main/templates'])
+    }
 }
 
 repositories {
-    maven {
-        name = "OpenComputers"
-        url = "http://maven.cil.li/"
-    }
-    maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
-    maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "http://dvs1.progwml6.com/files/maven"
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "modmaven.k-4u.nl"
-    }
-
-    maven { url "https://maven.tehnut.info" }
+    mavenCentral()
+    maven { url = 'https://maven.neoforged.net/releases' }
 }
+
+def openComputersRoot = file('../OpenComputers')
+def openComputersApi = file("${openComputersRoot}/build/libs/opencomputers-${opencomputers_version}-api.jar")
+def openComputersRuntime = file("${openComputersRoot}/build/libs/opencomputers-${opencomputers_version}.jar")
+def scalaLoaderRuntime = file("${openComputersRoot}/build/libs/scalablecatsforce-neoforge-${scala_loader_version}-with-library.jar")
 
 dependencies {
-    deobfCompile "li.cil.oc:OpenComputers:${openComputersVersion}"
+    compileOnly files(openComputersApi, openComputersRuntime)
+    runtimeOnly files(openComputersRuntime, scalaLoaderRuntime)
+    implementation 'org.mindrot:jbcrypt:0.4'
+}
 
-    compileOnly "li.cil.manual:RTFM:${rtfmVersion}"
-    
-    compile 'org.mindrot:jbcrypt:0.3m'
-    deobfCompile "advanced-rocketry:AdvancedRocketry-${advancedRocketryVersion}:deobf"
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    deobfCompile "mezz.jei:jei_${jei_version}:api"
-    // at runtime, use the full JEI jar
-    runtime "mezz.jei:jei_${jei_version}"
-    // runtime "libVulpes:libVulpes-1.12.2-0.4.0:51:deobf"
+tasks.named('processResources', ProcessResources).configure {
+    def properties = [
+            mod_id: mod_id,
+            mod_name: mod_name,
+            mod_version: mod_version,
+            mod_license: mod_license,
+            mod_authors: mod_authors,
+            mod_description: mod_description,
+            minecraft_version_range: minecraft_version_range,
+            neoforge_version_range: neoforge_version_range,
+            loader_version_range: loader_version_range,
+            opencomputers_version_range: opencomputers_version_range
+    ]
+    inputs.properties properties
+    filesMatching('META-INF/neoforge.mods.toml') { expand properties }
+}
 
-    deobfCompile ("mcp.mobius.waila:Hwyla:1.8.26-B41_1.12.2:api")
+tasks.named('jar', Jar).configure {
+    from('LICENSE') { into 'META-INF' }
+}
 
-    provided ("mrtjp:ProjectRed:${projredVersion}:Base") {
-        exclude module: "NotEnoughItems"
-        exclude module: "CodeChickenLib"
-        exclude module: "jei_1.12"
-        exclude module: "ForgeMultipart"
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) { from components.java }
     }
 }
-
-if (project.hasProperty('curseforge_key')) {
-	curseforge_key = project.curseforge_key
-	curse_changelog = project.promochangelog
-}
-
-curseforge {
-	apiKey = curseforge_key
-	project {
-		id = curse_projectId
-		releaseType = curse_releaseType
-		changelog = file('changelog.txt')
-	}
-}
-
-processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version + "-" + project.buildNumber, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-jar {
-    classifier = buildNumber
-
-    manifest { attributes(
-            "FMLCorePlugin": "pcl.opensecurity.util.SoundUnpack",
-            "FMLCorePluginContainsFMLMod": "icanhazfmlmodpweeze"
-    ) }
-}
-
-task flushWiki(type: Delete) {
-    delete "src/main/resources/assets/opensecurity/doc"
-}
-
-task syncGitWiki(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
-    dir = file("src/main/resources/assets/opensecurity/doc")
-    uri = 'https://github.com/PC-Logix/OpenSecurity.wiki.git'
-    treeish = "origin/master"
-    forceFetch = true
-}
-
-task devJar(type: Jar) {
-    from sourceSets.main.output
-    from sourceSets.main.allJava
-    classifier = 'dev'
-}
-
-artifacts {
-    archives devJar
-}
-
-
-
-syncGitWiki.dependsOn(flushWiki)
-build.dependsOn(syncGitWiki)

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TOT",
+    "OCO",
+    "SBS"
+  ],
+  "key": {
+    "T": { "item": "opencomputers:chip2" },
+    "O": { "item": "minecraft:obsidian" },
+    "C": { "item": "opencomputers:cu" },
+    "S": { "item": "opencomputers:transistor" },
+    "B": { "item": "opencomputers:cable" }
+  },
+  "result": { "item": "opensecurity:door_controller" }
+}

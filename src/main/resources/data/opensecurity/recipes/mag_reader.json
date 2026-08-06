@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "T T",
+    "S S",
+    "PC "
+  ],
+  "key": {
+    "T": { "item": "opencomputers:chip2" },
+    "S": { "item": "opencomputers:transistor" },
+    "P": { "item": "opencomputers:printedcircuitboard" },
+    "C": { "item": "opencomputers:cable" }
+  },
+  "result": { "item": "opensecurity:mag_reader" }
+}

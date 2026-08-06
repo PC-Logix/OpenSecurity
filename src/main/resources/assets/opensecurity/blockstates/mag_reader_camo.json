@@ -1,21 +1,36 @@
 {
-	"forge_marker": 1,
-	"defaults": {
-		"textures": {
-			"top": "opensecurity:blocks/machine_side",
-			"front": "opensecurity:blocks/mag_reader",
-			"side": "opensecurity:blocks/mag_reader"
-		},
-		"model": "minecraft:orientable"
-	},
-	"variants": {
-		"normal": [{ }],
-		"inventory": [{ }],
-		"facing": {
-			"north": {"model": "minecraft:orientable", "y": 180},
-			"south": {"model": "minecraft:orientable"},
-			"west": {"model": "minecraft:orientable", "y": 90},
-			"east": {"model": "minecraft:orientable", "y": 270}
-		}
-	}
+  "variants": {
+    "facing=north,light=0":{"model":"opensecurity:block/mag_reader"},
+    "facing=east,light=0":{"model":"opensecurity:block/mag_reader","y":90},
+    "facing=south,light=0":{"model":"opensecurity:block/mag_reader","y":180},
+    "facing=west,light=0":{"model":"opensecurity:block/mag_reader","y":270},
+    "facing=north,light=1":{"model":"opensecurity:block/mag_reader_error"},
+    "facing=east,light=1":{"model":"opensecurity:block/mag_reader_error","y":90},
+    "facing=south,light=1":{"model":"opensecurity:block/mag_reader_error","y":180},
+    "facing=west,light=1":{"model":"opensecurity:block/mag_reader_error","y":270},
+    "facing=north,light=2":{"model":"opensecurity:block/mag_reader_active"},
+    "facing=east,light=2":{"model":"opensecurity:block/mag_reader_active","y":90},
+    "facing=south,light=2":{"model":"opensecurity:block/mag_reader_active","y":180},
+    "facing=west,light=2":{"model":"opensecurity:block/mag_reader_active","y":270},
+    "facing=north,light=3":{"model":"opensecurity:block/mag_reader_three"},
+    "facing=east,light=3":{"model":"opensecurity:block/mag_reader_three","y":90},
+    "facing=south,light=3":{"model":"opensecurity:block/mag_reader_three","y":180},
+    "facing=west,light=3":{"model":"opensecurity:block/mag_reader_three","y":270},
+    "facing=north,light=4":{"model":"opensecurity:block/mag_reader_success"},
+    "facing=east,light=4":{"model":"opensecurity:block/mag_reader_success","y":90},
+    "facing=south,light=4":{"model":"opensecurity:block/mag_reader_success","y":180},
+    "facing=west,light=4":{"model":"opensecurity:block/mag_reader_success","y":270},
+    "facing=north,light=5":{"model":"opensecurity:block/mag_reader_five"},
+    "facing=east,light=5":{"model":"opensecurity:block/mag_reader_five","y":90},
+    "facing=south,light=5":{"model":"opensecurity:block/mag_reader_five","y":180},
+    "facing=west,light=5":{"model":"opensecurity:block/mag_reader_five","y":270},
+    "facing=north,light=6":{"model":"opensecurity:block/mag_reader_six"},
+    "facing=east,light=6":{"model":"opensecurity:block/mag_reader_six","y":90},
+    "facing=south,light=6":{"model":"opensecurity:block/mag_reader_six","y":180},
+    "facing=west,light=6":{"model":"opensecurity:block/mag_reader_six","y":270},
+    "facing=north,light=7":{"model":"opensecurity:block/mag_reader_seven"},
+    "facing=east,light=7":{"model":"opensecurity:block/mag_reader_seven","y":90},
+    "facing=south,light=7":{"model":"opensecurity:block/mag_reader_seven","y":180},
+    "facing=west,light=7":{"model":"opensecurity:block/mag_reader_seven","y":270}
+  }
 }

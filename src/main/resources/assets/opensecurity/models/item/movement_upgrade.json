@@ -1,6 +1,1 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "opensecurity:items/movement_upgrade"
-    }
-}
+{"parent":"minecraft:item/generated","textures":{"layer0":"opensecurity:item/movement_upgrade"}}

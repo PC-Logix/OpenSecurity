@@ -1,0 +1,1 @@
+{"parent":"minecraft:block/orientable","textures":{"top":"opensecurity:block/machine_side","front":"opensecurity:block/rfid_reader","side":"opensecurity:block/rfid_reader","particle":"opensecurity:block/rfid_reader"}}

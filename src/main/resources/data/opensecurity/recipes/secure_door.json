@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TGT",
+    "ODO",
+    "SOS"
+  ],
+  "key": {
+    "T": { "item": "opencomputers:chip2" },
+    "G": { "item": "minecraft:glass" },
+    "O": { "item": "minecraft:obsidian" },
+    "D": { "item": "minecraft:iron_door" },
+    "S": { "item": "opencomputers:transistor" }
+  },
+  "result": { "item": "opensecurity:secure_door" }
+}

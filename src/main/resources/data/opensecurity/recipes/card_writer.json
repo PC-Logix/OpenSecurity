@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TRT",
+    "SUS",
+    "PC "
+  ],
+  "key": {
+    "T": { "item": "opencomputers:chip2" },
+    "R": { "item": "opencomputers:ram2" },
+    "S": { "item": "opencomputers:transistor" },
+    "U": { "item": "opencomputers:cu" },
+    "P": { "item": "opencomputers:printedcircuitboard" },
+    "C": { "item": "opencomputers:cable" }
+  },
+  "result": { "item": "opensecurity:card_writer" }
+}

@@ -1,0 +1,1 @@
+{"parent":"minecraft:block/orientable","textures":{"top":"opensecurity:block/machine_side","front":"opensecurity:block/magreader_active","side":"opensecurity:block/magreader_active","particle":"opensecurity:block/magreader_active"}}

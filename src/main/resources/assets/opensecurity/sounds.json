@@ -1,10 +1,7 @@
 {
-    "turretMove": {"category": "block","sounds": [{"name": "opensecurity:turretMove","stream": false}]},
-    "turretFire": {"category": "block","sounds": [{"name": "opensecurity:turretFire","stream": false}]},
-	"keypad_press": {"category": "block","sounds": [{"name": "opensecurity:keypad_press","stream": false}]},
-	"security_door": {"category": "block","sounds": [{"name": "opensecurity:security_door","stream": false}]},
-	"scanner1": {"category": "block","sounds": [{"name": "opensecurity:scanner1","stream": false}]},
-	"scanner2": {"category": "block","sounds": [{"name": "opensecurity:scanner2","stream": false}]},
-	"scanner3": {"category": "block","sounds": [{"name": "opensecurity:scanner3","stream": false}]},
-	"card_swipe": {"category": "block","sounds": [{"name": "opensecurity:card_swipe","stream": false}]}
+  "klaxon1": {"subtitle": "subtitles.opensecurity.alarm", "sounds": ["opensecurity:alarms/klaxon1"]},
+  "klaxon2": {"subtitle": "subtitles.opensecurity.alarm", "sounds": ["opensecurity:alarms/klaxon2"]},
+  "card_swipe": {"sounds": ["opensecurity:card_swipe"]},
+  "keypad_press": {"sounds": ["opensecurity:keypad_press"]}
+  ,"turretfire": {"sounds": ["opensecurity:turretfire"]}
 }

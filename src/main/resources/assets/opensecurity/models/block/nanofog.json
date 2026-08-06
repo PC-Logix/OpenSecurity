@@ -1,7 +1,1 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "opensecurity:blocks/nanofog",
-    "particle": "opensecurity:blocks/nanofog"
-  }
-}
+{"parent":"minecraft:block/cube_all","render_type":"minecraft:translucent","textures":{"all":"opensecurity:block/nanofog","particle":"opensecurity:block/nanofog"}}

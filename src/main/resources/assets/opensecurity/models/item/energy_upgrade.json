@@ -1,6 +1,1 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "opensecurity:items/energy_upgrade"
-    }
-}
+{"parent":"minecraft:item/generated","textures":{"layer0":"opensecurity:item/energy_upgrade"}}

@@ -1,0 +1,11 @@
+{
+  "type":"minecraft:crafting_shaped",
+  "pattern":["KIK","KTK","KCK"],
+  "key":{
+    "K":{"item":"opencomputers:capacitor"},
+    "I":{"item":"minecraft:iron_ingot"},
+    "T":{"item":"opencomputers:transistor"},
+    "C":{"item":"opencomputers:chip2"}
+  },
+  "result":{"item":"opensecurity:security_terminal"}
+}

@@ -7,14 +7,32 @@ OpenSecurity
 
 Security addon for OpenComputers
 
-## build notes
+## Minecraft 1.21.1 port
 
-before building run the gradle task `syncGitWiki` once to sync the Wiki to your project
+The `1.21.1` branch is an in-progress NeoForge port for the sibling OpenComputers
+1.21.1 port. The modern source set includes the Alarm, Biometric Reader, Card
+Writer, Data Block, Door Controller, Entity Detector, Mag Readers, RFID Reader,
+RFID and Mag Cards, all Secure Door variants, Keypad, Security Terminal, Roll
+Door, Energy Turret and upgrades, and NanoFog Terminal. Their OpenComputers
+components, recipes, models, sounds, and survival drops are included. The
 
-### how to build
-clone the project to your local machine with `git clone https://github.com/PC-Logix/OpenSecurity.git`
+Requirements:
 
-setup workspace with `gradlew setupDecompWorkspace` and build with `gradlew build`
+* Java 21
+* NeoForge 21.1.233
+* a built sibling checkout at `../OpenComputers`
+
+Build OpenComputers first, then run `gradlew build` in this repository. Use
+`gradlew runClient` for visual/integration testing and `gradlew runServer` for a
+dedicated-server smoke test.
+
+### IntelliJ IDEA
+
+Open the repository's `settings.gradle` as a Gradle project and select a Java
+21 SDK. Shared Gradle run configurations are included for building, launching
+the Minecraft client or dedicated server, running GameTests, and generating
+data. IntelliJ's local `.idea` workspace files and generated `.iml`/`.ipr`/`.iws`
+files remain ignored.
 
 
 ## Credits
