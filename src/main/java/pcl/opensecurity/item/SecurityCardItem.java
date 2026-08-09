@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public final class SecurityCardItem extends Item {
@@ -42,7 +43,7 @@ public final class SecurityCardItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         CardData card = CardData.read(stack);
-        if (card.valid()) tooltip.add(Component.literal(card.data()).withStyle(ChatFormatting.GRAY));
+        if (card.valid()) tooltip.add(Component.literal(new String(card.data(), StandardCharsets.UTF_8)).withStyle(ChatFormatting.GRAY));
         if (card.locked()) tooltip.add(Component.translatable("tooltip.opensecurity.card.locked").withStyle(ChatFormatting.RED));
         super.appendHoverText(stack, context, tooltip, flag);
     }

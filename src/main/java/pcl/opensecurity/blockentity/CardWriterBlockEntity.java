@@ -67,7 +67,7 @@ public final class CardWriterBlockEntity extends SecurityBlockEntity {
         }
     }
 
-    @Callback(direct = true, doc = "function(data:string[,label:string,locked:boolean,color:number]):boolean,string -- Writes the inserted card.")
+    @Callback(direct = true, doc = "function(data:string|byte[],label:string,locked:boolean,color:number):boolean,string -- Writes the inserted card.")
     public Object[] write(Context context, Arguments args) {
         if (!consumeEnergy(5)) return new Object[]{false, "not enough energy"};
         ItemStack input = inventory.getStackInSlot(INPUT);
@@ -77,8 +77,8 @@ public final class CardWriterBlockEntity extends SecurityBlockEntity {
         CardData previous = CardData.read(input);
         if (previous.locked()) return new Object[]{false, "card is locked"};
         int limit = input.is(OpenSecurity.RFID_CARD.get()) ? 64 : 128;
-        String data = args.checkString(0);
-        if (data.length() > limit) data = data.substring(0, limit);
+        byte[] data = args.checkByteArray(0);
+        if (data.length > limit) data = java.util.Arrays.copyOf(data, limit);
         String label = args.optString(1, "");
         boolean locked = args.optBoolean(2, false);
         int colorIndex = Math.max(0, Math.min(15, args.optInteger(3, 0)));
