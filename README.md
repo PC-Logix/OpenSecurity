@@ -26,6 +26,11 @@ Run `gradlew build` in this repository. Use `gradlew runClient` for
 visual/integration testing and `gradlew runServer` for a dedicated-server smoke
 test.
 
+Versioning uses `2.0.0` as the release line. A tag such as `v2.0.0` produces
+`2.0.0`, CI builds produce `2.0.0-dev.<build number>`, and local builds produce
+`2.0.0-dev.local`. The build number can also be supplied with
+`-Pbuild_number=<number>`.
+
 ### IntelliJ IDEA
 
 Open the repository's `settings.gradle` as a Gradle project and select a Java

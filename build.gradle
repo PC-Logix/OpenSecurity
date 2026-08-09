@@ -6,7 +6,19 @@ plugins {
 }
 
 group = mod_group_id
-version = mod_version
+
+// GitHub tags are the canonical release versions. Development builds retain
+// the release line and append their CI or local build number.
+def githubTag = System.getenv('GITHUB_REF_TYPE') == 'tag'
+        ? System.getenv('GITHUB_REF_NAME')?.replaceFirst(/^v/, '')
+        : null
+
+def ciBuildNumber = findProperty('build_number') ?:
+        System.getenv('BUILD_NUMBER') ?:
+        System.getenv('GITHUB_RUN_NUMBER') ?:
+        'local'
+
+version = githubTag ?: "${mod_version}-dev.${ciBuildNumber}"
 
 base {
     archivesName = mod_id
@@ -72,7 +84,7 @@ tasks.named('processResources', ProcessResources).configure {
     def properties = [
             mod_id: mod_id,
             mod_name: mod_name,
-            mod_version: mod_version,
+            mod_version: project.version,
             mod_license: mod_license,
             mod_authors: mod_authors,
             mod_description: mod_description,

@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Verify release version
+        shell: bash
+        run: |
+          expected_version="${GITHUB_REF_NAME#v}"
+          actual_version="$(./gradlew --no-daemon -q properties | awk -F': ' '$1 == "version" { print $2; exit }')"
+
+          if [[ "$actual_version" != "$expected_version" ]]; then
+            echo "Tag ${GITHUB_REF_NAME} resolves to ${actual_version}, expected ${expected_version}."
+            exit 1
+          fi
+
+      - name: Build release
+        run: ./gradlew --no-daemon clean build
+
+      - name: Create checksums
+        shell: bash
+        run: |
+          release_jar="$(find build/libs -maxdepth 1 -type f -name 'opensecurity-*.jar' ! -name '*-plain.jar' -print -quit)"
+
+          if [[ -z "$release_jar" ]]; then
+            echo "No OpenSecurity release JAR was produced."
+            exit 1
+          fi
+
+          echo "release_jar=$release_jar" >> "$GITHUB_ENV"
+          sha256sum "$release_jar" > "$release_jar.sha256"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "OpenSecurity ${GITHUB_REF_NAME#v}" \
+            --generate-notes \
+            "$release_jar" \
+            "$release_jar.sha256"
