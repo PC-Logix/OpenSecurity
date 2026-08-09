@@ -57,16 +57,14 @@ sourceSets {
 repositories {
     mavenCentral()
     maven { url = 'https://maven.neoforged.net/releases' }
+    maven { url = 'https://maven.michiyo.me/releases/' }
+    maven { url = 'https://maven.kotori316.com' }
 }
 
-def openComputersRoot = file('../OpenComputers')
-def openComputersApi = file("${openComputersRoot}/build/libs/opencomputers-${opencomputers_version}-api.jar")
-def openComputersRuntime = file("${openComputersRoot}/build/libs/opencomputers-${opencomputers_version}.jar")
-def scalaLoaderRuntime = file("${openComputersRoot}/build/libs/scalablecatsforce-neoforge-${scala_loader_version}-with-library.jar")
-
 dependencies {
-    compileOnly files(openComputersApi, openComputersRuntime)
-    runtimeOnly files(openComputersRuntime, scalaLoaderRuntime)
+    compileOnly "li.cil.oc:opencomputers:${opencomputers_version}"
+    runtimeOnly "li.cil.oc:opencomputers:${opencomputers_version}"
+    runtimeOnly "com.kotori316:scalablecatsforce-neoforge:${scala_loader_version}:with-library"
     implementation 'org.mindrot:jbcrypt:0.4'
 }
 

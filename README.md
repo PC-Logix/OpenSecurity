@@ -20,11 +20,11 @@ Requirements:
 
 * Java 21
 * NeoForge 21.1.233
-* a built sibling checkout at `../OpenComputers`
+* network access to the OpenComputers and ScalableCatsForce Maven repositories
 
-Build OpenComputers first, then run `gradlew build` in this repository. Use
-`gradlew runClient` for visual/integration testing and `gradlew runServer` for a
-dedicated-server smoke test.
+Run `gradlew build` in this repository. Use `gradlew runClient` for
+visual/integration testing and `gradlew runServer` for a dedicated-server smoke
+test.
 
 ### IntelliJ IDEA
 
