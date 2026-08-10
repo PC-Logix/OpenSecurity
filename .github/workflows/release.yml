@@ -4,21 +4,31 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing v-prefixed tag to build and publish
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
   cancel-in-progress: true
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
 
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -31,18 +41,49 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Verify release version
+        id: release_metadata
         shell: bash
         run: |
-          expected_version="${GITHUB_REF_NAME#v}"
-          actual_version="$(./gradlew --no-daemon -q properties | awk -F': ' '$1 == "version" { print $2; exit }')"
+          if [[ ! "$RELEASE_TAG" =~ ^v.+ ]]; then
+            echo "Release tag must start with v: $RELEASE_TAG"
+            exit 1
+          fi
+
+          expected_version="${RELEASE_TAG#v}"
+          actual_version="$(GITHUB_REF_TYPE=tag GITHUB_REF_NAME="$RELEASE_TAG" ./gradlew --no-daemon -q properties | awk -F': ' '$1 == "version" { print $2; exit }')"
 
           if [[ "$actual_version" != "$expected_version" ]]; then
-            echo "Tag ${GITHUB_REF_NAME} resolves to ${actual_version}, expected ${expected_version}."
+            echo "Tag ${RELEASE_TAG} resolves to ${actual_version}, expected ${expected_version}."
+            exit 1
+          fi
+
+          normalized_tag="${RELEASE_TAG,,}"
+          case "$normalized_tag" in
+            *alpha*) release_type="alpha" ;;
+            *beta*|*pre*|*rc*) release_type="beta" ;;
+            *) release_type="release" ;;
+          esac
+
+          echo "version=$expected_version" >> "$GITHUB_OUTPUT"
+          echo "release_type=$release_type" >> "$GITHUB_OUTPUT"
+          curseforge_project_id="$(sed -n 's/^curse_project_id=//p' gradle.properties)"
+          opencomputers_curse_project_id="$(sed -n 's/^opencomputers_curse_project_id=//p' gradle.properties)"
+          echo "curseforge_project_id=${curseforge_project_id:-231687}" >> "$GITHUB_OUTPUT"
+          echo "opencomputers_curse_project_id=${opencomputers_curse_project_id:-1634364}" >> "$GITHUB_OUTPUT"
+          echo "minecraft_version=$(sed -n 's/^minecraft_version=//p' gradle.properties)" >> "$GITHUB_OUTPUT"
+
+      - name: Verify CurseForge credentials
+        shell: bash
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          if [[ -z "$CURSEFORGE_TOKEN" ]]; then
+            echo "::error::Add a CURSEFORGE_TOKEN repository secret before publishing a release."
             exit 1
           fi
 
       - name: Build release
-        run: ./gradlew --no-daemon clean build
+        run: GITHUB_REF_TYPE=tag GITHUB_REF_NAME="$RELEASE_TAG" ./gradlew --no-daemon clean build
 
       - name: Create checksums
         shell: bash
@@ -57,13 +98,55 @@ jobs:
           echo "release_jar=$release_jar" >> "$GITHUB_ENV"
           sha256sum "$release_jar" > "$release_jar.sha256"
 
-      - name: Create GitHub Release
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TYPE: ${{ steps.release_metadata.outputs.release_type }}
+        run: |
+          release_flags=()
+          if [[ "$RELEASE_TYPE" != "release" ]]; then
+            release_flags+=(--prerelease)
+          fi
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" \
+              --clobber \
+              "$release_jar" \
+              "$release_jar.sha256"
+          else
+            gh release create "$RELEASE_TAG" \
+              --verify-tag \
+              --title "OpenSecurity ${RELEASE_TAG#v}" \
+              --generate-notes \
+              "${release_flags[@]}" \
+              "$release_jar" \
+              "$release_jar.sha256"
+          fi
+
+      - name: Read GitHub release notes
+        id: changelog
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            --verify-tag \
-            --title "OpenSecurity ${GITHUB_REF_NAME#v}" \
-            --generate-notes \
-            "$release_jar" \
-            "$release_jar.sha256"
+          delimiter="CHANGELOG_$(date +%s)_$RANDOM"
+          echo "text<<$delimiter" >> "$GITHUB_OUTPUT"
+          gh release view "$RELEASE_TAG" --json body --jq .body >> "$GITHUB_OUTPUT"
+          echo "$delimiter" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to CurseForge
+        uses: Kira-NT/mc-publish@v3
+        with:
+          curseforge-id: ${{ steps.release_metadata.outputs.curseforge_project_id }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          curseforge-files: ${{ env.release_jar }}
+          name: OpenSecurity ${{ steps.release_metadata.outputs.version }}
+          version: ${{ steps.release_metadata.outputs.version }}
+          version-type: ${{ steps.release_metadata.outputs.release_type }}
+          changelog: ${{ steps.changelog.outputs.text }}
+          loaders: neoforge
+          game-versions: ${{ steps.release_metadata.outputs.minecraft_version }}
+          java: 21
+          environment: client | server
+          curseforge-dependencies: |
+            ${{ steps.release_metadata.outputs.opencomputers_curse_project_id }}(required)
