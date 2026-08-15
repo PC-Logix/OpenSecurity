@@ -20,6 +20,7 @@ import pcl.opensecurity.blockentity.NanoFogBlockEntity;
 import pcl.opensecurity.blockentity.NanoFogTerminalBlockEntity;
 import pcl.opensecurity.blockentity.RFIDReaderBlockEntity;
 import pcl.opensecurity.blockentity.RollDoorControllerBlockEntity;
+import pcl.opensecurity.blockentity.RollDoorBlockEntity;
 import pcl.opensecurity.blockentity.SecureDoorBlockEntity;
 import pcl.opensecurity.blockentity.SecurityTerminalBlockEntity;
 import pcl.opensecurity.entity.EnergyBoltEntity;
@@ -157,6 +158,9 @@ public final class OpenSecurity {
             BLOCK_ENTITIES.register("security_terminal", () -> BlockEntityType.Builder.of(SecurityTerminalBlockEntity::new, SECURITY_TERMINAL.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RollDoorControllerBlockEntity>> ROLLDOOR_CONTROLLER_BE =
             BLOCK_ENTITIES.register("rolldoor_controller", () -> BlockEntityType.Builder.of(RollDoorControllerBlockEntity::new, ROLLDOOR_CONTROLLER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RollDoorBlockEntity>> ROLLDOOR_BE =
+            BLOCK_ENTITIES.register("rolldoor", () -> BlockEntityType.Builder.of(RollDoorBlockEntity::new,
+                    ROLLDOOR.get(), ROLLDOOR_ELEMENT.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NanoFogTerminalBlockEntity>> NANOFOG_TERMINAL_BE =
             BLOCK_ENTITIES.register("nanofog_terminal", () -> BlockEntityType.Builder.of(NanoFogTerminalBlockEntity::new, NANOFOG_TERMINAL.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NanoFogBlockEntity>> NANOFOG_BE =

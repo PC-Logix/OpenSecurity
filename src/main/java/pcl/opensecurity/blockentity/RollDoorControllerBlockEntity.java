@@ -86,6 +86,18 @@ public final class RollDoorControllerBlockEntity extends SecurityBlockEntity {
         return new Object[]{true};
     }
 
+    @Callback(doc = "function([password:string]):number -- Raises the roll door by one panel.")
+    public Object[] moveUp(Context context, Arguments args) {
+        if (!password.equals(args.optString(0, ""))) return new Object[]{false, "invalid password"};
+        return moveBy(-1);
+    }
+
+    @Callback(doc = "function([password:string]):number -- Lowers the roll door by one panel.")
+    public Object[] moveDown(Context context, Arguments args) {
+        if (!password.equals(args.optString(0, ""))) return new Object[]{false, "invalid password"};
+        return moveBy(1);
+    }
+
     @Callback(direct = true, doc = "function(speed:number[,password:string]):number -- Sets movement speed.")
     public Object[] setSpeed(Context context, Arguments args) {
         if (!password.equals(args.optString(1, ""))) return new Object[]{false, "invalid password"};
@@ -121,6 +133,12 @@ public final class RollDoorControllerBlockEntity extends SecurityBlockEntity {
         target = requested;
         if (Math.abs(target - position) < 0.0001) target = -1;
         setChanged();
+    }
+
+    private Object[] moveBy(int panels) {
+        double base = target < 0 ? position : target;
+        setTarget(Math.max(0, Math.min(maxHeight(), base + panels)));
+        return new Object[]{target < 0 ? position : target};
     }
 
     private int maxHeight() {
@@ -177,6 +195,10 @@ public final class RollDoorControllerBlockEntity extends SecurityBlockEntity {
                 if (offset <= visible && (state.isAir() || state.is(OpenSecurity.ROLLDOOR_ELEMENT.get()))) {
                     level.setBlock(element, OpenSecurity.ROLLDOOR_ELEMENT.get().defaultBlockState()
                             .setValue(RollDoorElementBlock.FACING, facing), 3);
+                    if (level.getBlockEntity(element) instanceof RollDoorBlockEntity elementDoor
+                            && level.getBlockEntity(header) instanceof RollDoorBlockEntity headerDoor) {
+                        elementDoor.copyPanelAppearanceFrom(headerDoor);
+                    }
                 } else if (offset > visible && state.is(OpenSecurity.ROLLDOOR_ELEMENT.get())) {
                     level.removeBlock(element, false);
                 }

@@ -9,9 +9,18 @@ import li.cil.oc.api.machine.Context;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -20,7 +29,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public final class DoorControllerBlockEntity extends SecurityBlockEntity {
+    private static final String CAMOUFLAGE_TAG = "camouflage";
     private UUID owner;
+    private BlockState camouflage;
 
     public DoorControllerBlockEntity(BlockPos pos, BlockState state) {
         super(OpenSecurity.DOOR_CONTROLLER_BE.get(), pos, state, "os_doorcontroller", 32);
@@ -33,6 +44,37 @@ public final class DoorControllerBlockEntity extends SecurityBlockEntity {
 
     public boolean canModify(UUID player) {
         return owner == null || owner.equals(player);
+    }
+
+    public BlockState getCamouflage() {
+        return camouflage;
+    }
+
+    public void setCamouflage(BlockState state) {
+        if (state.isAir() || state.is(OpenSecurity.DOOR_CONTROLLER.get())) {
+            clearCamouflage();
+            return;
+        }
+        camouflage = state;
+        syncCamouflage();
+    }
+
+    public void clearCamouflage() {
+        camouflage = null;
+        syncCamouflage();
+    }
+
+    private void syncCamouflage() {
+        setChanged();
+        requestModelDataUpdate();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    @Override
+    public ModelData getModelData() {
+        return camouflage == null ? ModelData.EMPTY : ModelData.of(RollDoorBlockEntity.CAMOUFLAGE, camouflage);
     }
 
     @Callback(direct = true, doc = "function():table -- Returns the open state of adjacent secure doors.")
@@ -129,11 +171,44 @@ public final class DoorControllerBlockEntity extends SecurityBlockEntity {
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         if (owner != null) tag.putUUID("owner", owner);
+        if (camouflage != null) tag.put(CAMOUFLAGE_TAG, NbtUtils.writeBlockState(camouflage));
     }
 
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         owner = tag.hasUUID("owner") ? tag.getUUID("owner") : null;
+        camouflage = null;
+        if (tag.contains(CAMOUFLAGE_TAG, Tag.TAG_COMPOUND)) {
+            try {
+                BlockState state = NbtUtils.readBlockState(provider.lookupOrThrow(Registries.BLOCK), tag.getCompound(CAMOUFLAGE_TAG));
+                if (!state.isAir() && !state.is(OpenSecurity.DOOR_CONTROLLER.get())) camouflage = state;
+            } catch (RuntimeException ignored) {
+                // Ignore invalid or removed camouflage blocks and use the normal controller model.
+            }
+        }
+        requestModelDataUpdate();
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, provider);
+        return tag;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
+        CompoundTag tag = packet.getTag();
+        if (!tag.isEmpty()) loadWithComponents(tag, provider);
+        requestModelDataUpdate();
+        if (level != null && level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
     }
 }

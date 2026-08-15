@@ -66,6 +66,39 @@ sourceSets {
     }
 }
 
+def wikiSourceDirectory = file('src/main/resources/assets/opensecurity/doc')
+def wikiStagingDirectory = file("${System.getProperty('java.io.tmpdir')}/opensecurity-wiki-source")
+
+tasks.register('syncGitWiki') {
+    description = 'Fetches the OpenSecurity wiki for the in-game manual.'
+    group = 'documentation'
+
+    doLast {
+        def stagingDirectory = wikiStagingDirectory
+        delete stagingDirectory
+
+        exec {
+            commandLine 'git', 'clone', '--depth', '1', '--branch', 'master',
+                    'https://github.com/PC-Logix/OpenSecurity.wiki.git', stagingDirectory.absolutePath
+        }
+
+        delete wikiSourceDirectory
+        copy {
+            from stagingDirectory
+            into wikiSourceDirectory
+            exclude '.git/**'
+        }
+    }
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    dependsOn tasks.named('syncGitWiki')
+}
+
+tasks.named('runClient').configure {
+    dependsOn tasks.named('syncGitWiki')
+}
+
 repositories {
     mavenCentral()
     maven { url = 'https://maven.neoforged.net/releases' }

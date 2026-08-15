@@ -87,6 +87,7 @@ pip-log.txt
 # Gradle
 /.gradle/
 /build/
+/src/main/resources/assets/opensecurity/doc/
 /run/
 /runclient/
 /run_client/

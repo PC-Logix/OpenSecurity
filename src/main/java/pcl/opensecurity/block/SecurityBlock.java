@@ -23,6 +23,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -78,6 +79,13 @@ public final class SecurityBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (kind == Kind.DOOR_CONTROLLER && player.isShiftKeyDown()
+                && level.getBlockEntity(pos) instanceof DoorControllerBlockEntity controller) {
+            if (!level.isClientSide && (player.getAbilities().instabuild || controller.canModify(player.getUUID()))) {
+                controller.clearCamouflage();
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
         if (!level.isClientSide && kind == Kind.BIOMETRIC_READER
                 && level.getBlockEntity(pos) instanceof BiometricReaderBlockEntity reader) {
             reader.read(player);
@@ -106,6 +114,19 @@ public final class SecurityBlock extends Block implements EntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
+        if (kind == Kind.DOOR_CONTROLLER && stack.getItem() instanceof BlockItem blockItem
+                && blockItem.getBlock() != OpenSecurity.DOOR_CONTROLLER.get()) {
+            boolean success = level.isClientSide;
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof DoorControllerBlockEntity controller) {
+                if (!player.getAbilities().instabuild && !controller.canModify(player.getUUID())) {
+                    return ItemInteractionResult.sidedSuccess(false);
+                }
+                controller.setCamouflage(blockItem.getBlock().defaultBlockState());
+                success = true;
+            }
+            if (success && !level.isClientSide && !player.getAbilities().instabuild) stack.shrink(1);
+            return success ? ItemInteractionResult.sidedSuccess(level.isClientSide) : ItemInteractionResult.FAIL;
+        }
         if (kind == Kind.CARD_WRITER && (stack.is(OpenSecurity.RFID_CARD.get()) || stack.is(OpenSecurity.MAG_CARD.get()))) {
             boolean success = level.isClientSide || level.getBlockEntity(pos) instanceof CardWriterBlockEntity writer
                     && writer.insert(stack);
