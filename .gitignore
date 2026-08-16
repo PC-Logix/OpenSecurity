@@ -99,3 +99,5 @@ output.txt
 /bin
 out.log
 gradle/wrapper/gradle-wrapper.properties
+/reference
+/src/main/resources/assets/opensecurity/doc

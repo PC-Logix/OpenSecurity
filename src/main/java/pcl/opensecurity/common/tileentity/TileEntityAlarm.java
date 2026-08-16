@@ -49,10 +49,7 @@ public class TileEntityAlarm extends TileEntityOSSound {
 
 		setSound(sound);
 
-		if(!isUpgrade) {
-			getUpdateTag();
-			markDirty();
-		}
+		markSoundStateDirty();
 		return new Object[] { true };
 	}
 

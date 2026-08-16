@@ -23,9 +23,7 @@ import pcl.opensecurity.common.items.ItemRFIDCard;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.UUID;
 
 public class TileEntityCardWriter extends TileEntityOSBase implements ITickable {
     public static final int SIZE = 2;
@@ -129,12 +127,9 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
     }
 
 
-    @Callback(doc = "function(string: data, string: displayName, boolean: locked, int: color):string; writes data to the card, (64 characters for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data, the 4th argument will set the color of the card, use OC's color api.", direct = true)
-    public Object[] write(Context context, Arguments args) {
-        String data = args.checkString(0);
-
-        if (data == null)
-            return new Object[] { false, "Data is Null" };
+	@Callback(doc = "function(string: data, string: displayName, boolean: locked, int: color):string; writes data to the card, (64 bytes for RFID, or 128 for MagStripe), the rest is silently discarded, 2nd argument will change the displayed name of the card in your inventory. if you pass true to the 3rd argument you will not be able to erase, or rewrite data, the 4th argument will set the color of the card, use OC's color api.", direct = true)
+	public Object[] write(Context context, Arguments args) {
+		byte[] data = args.checkByteArray(0);
 
         if (node.changeBuffer(-5) != 0)
             return new Object[] { false, "Not enough power in OC Network." };
@@ -154,15 +149,15 @@ public class TileEntityCardWriter extends TileEntityOSBase implements ITickable 
 
         ItemStack outStack;
 
-        if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
-            outStack = new ItemStack(ItemRFIDCard.DEFAULTSTACK.getItem());
-            if (data.length() > 64) {
-                data = data.substring(0, 64);
-            }
-        } else if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemMagCard) {
-            outStack = new ItemStack(ItemMagCard.DEFAULTSTACK.getItem());
-            if (data.length() > 128) {
-                data = data.substring(0, 128);
+		if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemRFIDCard) {
+			outStack = new ItemStack(ItemRFIDCard.DEFAULTSTACK.getItem());
+			if (data.length > 64) {
+				data = Arrays.copyOf(data, 64);
+			}
+		} else if (inventoryInput.getStackInSlot(0).getItem() instanceof ItemMagCard) {
+			outStack = new ItemStack(ItemMagCard.DEFAULTSTACK.getItem());
+			if (data.length > 128) {
+				data = Arrays.copyOf(data, 128);
             }
         } else
             return new Object[] { false, "Wrong item in input slot" };

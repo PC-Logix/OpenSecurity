@@ -36,7 +36,7 @@ public class TileEntityRFIDReader extends TileEntityOSBase {
 	}
 	
 	// Thanks gamax92 from #oc for the following 2 methods...
-	private HashMap<String, Object> info(Entity entity, String data, String uuid, boolean locked) {
+	private HashMap<String, Object> info(Entity entity, byte[] data, String uuid, boolean locked) {
 		HashMap<String, Object> value = new HashMap<String, Object>();
 
 		double rangeToEntity = entity.getDistance(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ());

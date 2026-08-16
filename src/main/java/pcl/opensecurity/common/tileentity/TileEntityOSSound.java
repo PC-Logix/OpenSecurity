@@ -28,12 +28,20 @@ public class TileEntityOSSound extends TileEntityOSBase {
 
     @Override
     public void invalidate(){
+        if(getWorld() != null && getWorld().isRemote)
+            stopSound();
+
         setShouldPlay(false);
 
-        if(getWorld().isRemote)
-            updateSound();
-
         super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        if(getWorld() != null && getWorld().isRemote)
+            stopSound();
+
+        super.onChunkUnload();
     }
 
     @Override
@@ -51,7 +59,13 @@ public class TileEntityOSSound extends TileEntityOSBase {
 
         if (getShouldPlay()) {
             playSoundNow();
-        } else if (sound != null) {
+        } else
+            stopSound();
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void stopSound() {
+        if(sound != null) {
             sound.endPlaying();
             sound = null;
         }
@@ -67,11 +81,16 @@ public class TileEntityOSSound extends TileEntityOSBase {
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
+        float oldVolume = volume;
         super.readFromNBT(tag);
         isUpgrade = tag.getBoolean("isUpgrade");
         setSound(tag.getString("soundName"));
         setVolume(tag.getFloat("volume"));
         setShouldPlay(tag.getBoolean("shouldPlay"));
+
+        if(getWorld() != null && getWorld().isRemote && sound != null &&
+                (!getShouldPlay() || oldVolume != volume))
+            stopSound();
     }
 
     @Override
@@ -84,8 +103,12 @@ public class TileEntityOSSound extends TileEntityOSBase {
     }
 
     void setSound(String sound) {
+        boolean changed = !soundName.equals(sound);
         soundName = sound;
         soundRes = new ResourceLocation(OpenSecurity.MODID, sound);
+
+        if(changed && getWorld() != null && getWorld().isRemote)
+            stopSound();
     }
 
     String getSoundName() {
@@ -105,9 +128,17 @@ public class TileEntityOSSound extends TileEntityOSBase {
             return;
 
         shouldPlay = b;
+        if(!b && getWorld() != null && getWorld().isRemote)
+            stopSound();
+
+        if(!isUpgrade && getWorld() != null && !getWorld().isRemote) {
+            markSoundStateDirty();
+        }
+    }
+
+    void markSoundStateDirty() {
         if(!isUpgrade && getWorld() != null && !getWorld().isRemote) {
             getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
-            getUpdateTag();
             markDirty();
         }
     }

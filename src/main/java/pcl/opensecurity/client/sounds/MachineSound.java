@@ -25,6 +25,10 @@ public class MachineSound extends PositionedSound implements ITickableSound {
 		this.volume = volume;
 		this.pitch = pitch;
 		this.repeat = repeat;
+		// Dynamic alarm resources do not always loop reliably through OpenAL's
+		// native loop flag. A one-tick repeat delay uses SoundManager's explicit
+		// repeat path instead and still keeps the sound continuously active.
+		this.repeatDelay = repeat ? 1 : 0;
 	}
 
 	@Override

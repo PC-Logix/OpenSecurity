@@ -29,7 +29,7 @@ public class ItemRFIDCard extends ItemCard {
                 rfidData = entityData.getCompoundTag("rfidData");
             }
 
-            rfidData.setString("data", stack.getTagCompound().getString("data"));
+            rfidData.setByteArray("data", new ItemCard.CardTag(stack).dataTag);
             rfidData.setString("uuid", stack.getTagCompound().getString("uuid"));
             stack.setCount((stack.getCount() - 1));
             return true;

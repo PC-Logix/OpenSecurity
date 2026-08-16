@@ -78,6 +78,7 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
             return;
 
         ArrayList<BlockPos> addElements = new ArrayList<>(elementsPos);
+        boolean missingElement = false;
 
         resetRolldoorData();
 
@@ -85,10 +86,16 @@ public class TileEntityRolldoorController extends TileEntityOSCamoBase implement
             TileEntity tile = getWorld().getTileEntity(pos);
             if(tile instanceof TileEntityRolldoor)
                 addElement((TileEntityRolldoor) tile);
+            else
+                missingElement = true;
         }
 
-        needsListUpdate = false;
-        markDirtyClient();
+        // Tile entities in adjacent chunks can be restored after the
+        // controller. Keep retrying until all persisted elements are loaded;
+        // otherwise the renderer permanently loses the door after chunk reload.
+        needsListUpdate = missingElement;
+        if(!missingElement)
+            markDirtyClient();
     }
 
     // OC Callbacks

@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pcl.opensecurity.OpenSecurity;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 public abstract class ItemCard extends ItemOSBase {
@@ -26,7 +28,7 @@ public abstract class ItemCard extends ItemOSBase {
 	public static class CardTag{
 		public boolean locked = false;
 		public String localUUID = UUID.randomUUID().toString();
-		public String dataTag = "";
+		public byte[] dataTag = new byte[0];
 		public int color = 0xFFFFFF;
 
 		public boolean isValid;
@@ -45,8 +47,10 @@ public abstract class ItemCard extends ItemOSBase {
 				if (nbt.hasKey("uuid"))
 					localUUID = OpenSecurity.ignoreUUIDs ? "-1" : nbt.getString("uuid");
 
-				if (nbt.hasKey("data"))
-					dataTag = nbt.getString("data");
+				if (nbt.hasKey("data", 7))
+					dataTag = nbt.getByteArray("data");
+				else if (nbt.hasKey("data", 8))
+					dataTag = nbt.getString("data").getBytes(StandardCharsets.UTF_8);
 
 				if (nbt.hasKey("locked"))
 					locked = nbt.getBoolean("locked");
@@ -59,11 +63,11 @@ public abstract class ItemCard extends ItemOSBase {
 				}
 			}
 
-			isValid = dataTag.length() > 0;
+			isValid = dataTag.length > 0;
 		}
 
 		public NBTTagCompound writeToNBT(NBTTagCompound nbt){
-			nbt.setString("data", dataTag);
+			nbt.setByteArray("data", Arrays.copyOf(dataTag, dataTag.length));
 			nbt.setString("uuid", localUUID);
 			nbt.setBoolean("locked", locked);
 
