@@ -35,6 +35,37 @@ item.opensecurity.cooldown_upgrade.name=Cooldown Upgrade
 item.opensecurity.nanodna.name=NanoDNA
 item.opensecurity.doorcontroller_upgrade.name=Door Controller Upgrade
 
+//tooltips
+tile.opensecurity.alarm.tooltip=Computer- or redstone-controlled alarm.
+tile.opensecurity.rfid_reader.tooltip=Reads RFID cards from nearby players.
+tile.opensecurity.card_writer.tooltip=Writes RFID cards, magnetic cards, and EEPROMs.
+tile.opensecurity.mag_reader.tooltip=Reads magnetic cards when right-clicked.
+tile.opensecurity.mag_reader_camo.tooltip=Camouflaged magnetic card reader.
+tile.opensecurity.entity_detector.tooltip=Reports nearby entities to connected computers.
+tile.opensecurity.door_controller.tooltip=Controls connected security doors.
+tile.opensecurity.data_block.tooltip=Stores and processes data through OpenComputers.
+tile.opensecurity.energy_turret.tooltip=Computer-controlled defensive energy turret.
+tile.opensecurity.keypad.tooltip=Triggers computer callbacks from keypad input.
+tile.opensecurity.nanofog_terminal.tooltip=Deploys configurable NanoFog defenses.
+tile.opensecurity.nanofog.tooltip=Camouflaged NanoFog shield block.
+tile.opensecurity.biometric_reader.tooltip=Reads the identity of nearby players.
+tile.opensecurity.secure_door.tooltip=Security door controlled by its owner or password.
+tile.opensecurity.private_secure_door.tooltip=Private security door with owner-only access.
+tile.opensecurity.mag_secure_door.tooltip=Security door controlled by a magnetic card.
+tile.opensecurity.rolldoor.tooltip=Camouflaged roll-up security door.
+tile.opensecurity.rolldoor_controller.tooltip=Controls connected roll-up door elements.
+tile.opensecurity.rolldoor_element.tooltip=Forms the moving part of a roll-up door.
+tile.opensecurity.security_terminal.tooltip=Protects an area from unauthorized block access.
+item.opensecurity.manual.tooltip=OpenSecurity documentation and reference manual.
+item.opensecurity.rfid_card.tooltip=Stores data for RFID readers and entities.
+item.opensecurity.mag_card.tooltip=Stores data for magnetic card readers.
+item.opensecurity.rfid_reader_card.tooltip=Reads RFID cards from a tablet or computer.
+item.opensecurity.damage_upgrade.tooltip=Increases the damage of compatible devices.
+item.opensecurity.movement_upgrade.tooltip=Increases the movement of compatible devices.
+item.opensecurity.energy_upgrade.tooltip=Improves the energy capacity of compatible devices.
+item.opensecurity.cooldown_upgrade.tooltip=Reduces the cooldown of compatible devices.
+item.opensecurity.nanodna.tooltip=Material used to create NanoFog blocks.
+
 itemGroup.OpenSecurity.tabOpenSecurity=OpenSecurity
 //guis
 opensecurity.gui.string.cardwriter=Card Writer

@@ -3,15 +3,19 @@ package pcl.opensecurity.client;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,6 +49,21 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void renderWorldLastEvent(RenderWorldLastEvent evt) {
         SecurityTerminalRender.showFoundTerminals(evt);
+    }
+
+    @SubscribeEvent
+    public void itemTooltipEvent(ItemTooltipEvent event) {
+        if (!GuiScreen.isShiftKeyDown())
+            return;
+
+        ItemStack stack = event.getItemStack();
+        if (stack.isEmpty() || stack.getItem().getRegistryName() == null
+                || !OpenSecurity.MODID.equals(stack.getItem().getRegistryName().getResourceDomain()))
+            return;
+
+        String key = stack.getItem().getUnlocalizedName() + ".tooltip";
+        if (I18n.hasKey(key))
+            event.getToolTip().add(TextFormatting.GRAY + I18n.format(key));
     }
 
     @SubscribeEvent

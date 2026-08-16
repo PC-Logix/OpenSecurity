@@ -141,7 +141,7 @@ public class Protection extends WorldSavedData {
                 areaList.add(new ProtectionAreaChunk(chunkTag.getCompoundTag("area" + iA)));
 
 
-            chunkAreas.put(new ChunkPos(nbt.getInteger("x"), nbt.getInteger("z")), areaList);
+            chunkAreas.put(new ChunkPos(chunkTag.getInteger("x"), chunkTag.getInteger("z")), areaList);
         }
     }
 
