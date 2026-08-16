@@ -185,7 +185,7 @@ public class EnergyTurret {
 
     private float getMaxAvailableShaftLength(float newExt) {
         newExt = Math.max(0, Math.min(newExt, 2));
-        return newExt <= maxShaftLengthForOneBlock /* && canExtendShaft() */ ? newExt : maxShaftLengthForOneBlock;
+        return newExt <= maxShaftLengthForOneBlock || canExtendShaft() ? newExt : maxShaftLengthForOneBlock;
     }
 
     public float setShaft(float newlen) {
