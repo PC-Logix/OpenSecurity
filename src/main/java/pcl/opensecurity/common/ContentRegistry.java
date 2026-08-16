@@ -112,6 +112,9 @@ public class ContentRegistry {
         li.cil.oc.api.Driver.add((EnvironmentProvider) DoorControllerDriver.driver);
         li.cil.oc.api.Driver.add((DriverItem) DoorControllerDriver.driver);
 
+        li.cil.oc.api.Driver.add((EnvironmentProvider) RolldoorControllerDriver.driver);
+        li.cil.oc.api.Driver.add((DriverItem) RolldoorControllerDriver.driver);
+
         li.cil.oc.api.Driver.add((EnvironmentProvider) EntityDetectorDriver.driver);
         li.cil.oc.api.Driver.add((DriverItem) EntityDetectorDriver.driver);
 
