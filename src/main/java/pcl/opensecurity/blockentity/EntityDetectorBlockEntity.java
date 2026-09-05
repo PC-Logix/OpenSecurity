@@ -1,6 +1,7 @@
 package pcl.opensecurity.blockentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -15,11 +16,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class EntityDetectorBlockEntity extends SecurityBlockEntity {
-    private static final int MAX_RANGE = 16;
-    private int range = MAX_RANGE;
+    private int range = 16;
 
     public EntityDetectorBlockEntity(BlockPos pos, BlockState state) {
-        super(OpenSecurity.ENTITY_DETECTOR_BE.get(), pos, state, "os_entdetector", 5.0 * MAX_RANGE);
+        super(OpenSecurity.ENTITY_DETECTOR_BE.get(), pos, state, "os_entdetector", 5.0 * 64);
     }
 
     @Callback(doc = "function([range:number]):table -- Scans for players and emits entityDetect signals.")
@@ -34,7 +34,8 @@ public final class EntityDetectorBlockEntity extends SecurityBlockEntity {
 
     private Object[] scan(Arguments args, boolean players) {
         if (level == null) return new Object[]{false, "world is unavailable"};
-        range = Math.max(1, Math.min(MAX_RANGE, args.optInteger(0, range)));
+        int maxRange = Config.entityDetectorMaxRange();
+        range = Math.max(1, Math.min(maxRange, args.optInteger(0, Math.min(range, maxRange))));
         if (!consumeEnergy(5.0 * range)) return new Object[]{false, "not enough energy"};
 
         Map<Integer, Map<String, Object>> output = new LinkedHashMap<>();

@@ -24,6 +24,7 @@ import pcl.opensecurity.blockentity.RollDoorBlockEntity;
 import pcl.opensecurity.blockentity.SecureDoorBlockEntity;
 import pcl.opensecurity.blockentity.SecurityTerminalBlockEntity;
 import pcl.opensecurity.entity.EnergyBoltEntity;
+import pcl.opensecurity.entity.NanoFogSwarmEntity;
 import pcl.opensecurity.integration.opencomputers.RFIDReaderCardDriver;
 import pcl.opensecurity.item.SecurityCardItem;
 import pcl.opensecurity.item.TurretUpgradeItem;
@@ -48,6 +49,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -177,6 +180,9 @@ public final class OpenSecurity {
     public static final DeferredHolder<EntityType<?>, EntityType<EnergyBoltEntity>> ENERGY_BOLT = ENTITIES.register("energy_bolt", () ->
             EntityType.Builder.of(EnergyBoltEntity::new, MobCategory.MISC).sized(0.5F, 0.5F)
                     .clientTrackingRange(64).updateInterval(1).build("energy_bolt"));
+    public static final DeferredHolder<EntityType<?>, EntityType<NanoFogSwarmEntity>> NANO_FOG_SWARM = ENTITIES.register("nanofog_swarm", () ->
+            EntityType.Builder.<NanoFogSwarmEntity>of(NanoFogSwarmEntity::new, MobCategory.MISC).sized(0.25F, 0.25F)
+                    .clientTrackingRange(64).updateInterval(1).build("nanofog_swarm"));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = TABS.register("main", () ->
             CreativeModeTab.builder().title(Component.translatable("itemGroup.opensecurity"))
@@ -210,7 +216,9 @@ public final class OpenSecurity {
                         output.accept(NANODNA.get());
                     }).build());
 
-    public OpenSecurity(IEventBus modBus) {
+    public OpenSecurity(IEventBus modBus, ModContainer container) {
+        container.registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC, "opensecurity-common.toml");
+        container.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC, "opensecurity-client.toml");
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
@@ -258,6 +266,7 @@ public final class OpenSecurity {
     }
 
     private static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (!Config.registerBlockBreak()) return;
         if (event.getPlayer().getAbilities().instabuild) return;
         if (SecurityTerminalBlockEntity.isProtected(event.getPlayer().level(), event.getPos(), event.getPlayer().getUUID())) {
             event.getPlayer().displayClientMessage(Component.literal("This block is protected"), true);

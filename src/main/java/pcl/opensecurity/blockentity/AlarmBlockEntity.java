@@ -1,6 +1,7 @@
 package pcl.opensecurity.blockentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -12,18 +13,18 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class AlarmBlockEntity extends SecurityBlockEntity {
-    private static final float MAX_RANGE = 15.0F;
     private static final String DEFAULT_SOUND = "klaxon1";
-    private static final String[] BUNDLED_SOUNDS = {"klaxon1", "klaxon2"};
 
     private boolean active;
     // Preserve the old alarm semantics: this is really the sound volume value used
     // by Minecraft to extend audible range, with the OC-facing range being volume - 0.5.
-    private float volume = MAX_RANGE;
+    private float volume = 15.0F;
     private String sound = DEFAULT_SOUND;
 
     // Client-only runtime state, deliberately typed to a common nested interface so
@@ -40,7 +41,7 @@ public final class AlarmBlockEntity extends SecurityBlockEntity {
             return new Object[]{false, "missing arguments"};
         }
 
-        volume = Math.max(0.0F, Math.min(args.checkInteger(0) + 0.5F, MAX_RANGE));
+        volume = Math.max(0.0F, Math.min(args.checkInteger(0) + 0.5F, Config.alarmMaxRange()));
         syncState();
         return new Object[]{true, volume - 0.5F};
     }
@@ -52,7 +53,7 @@ public final class AlarmBlockEntity extends SecurityBlockEntity {
         }
 
         String requested = args.checkString(0).trim();
-        if (requested.isEmpty() || resolveSound(requested) == null) {
+        if (requested.isEmpty() || resolveSound(requested) == null || !Config.isAllowedAlarmSound(requested)) {
             return new Object[]{false, "invalid sound name"};
         }
 
@@ -81,9 +82,29 @@ public final class AlarmBlockEntity extends SecurityBlockEntity {
         return new Object[]{true};
     }
 
-    @Callback(direct = true, doc = "function():table -- Lists sounds bundled with OpenSecurity. setAlarm also accepts other resource-pack sound event IDs.")
+    @Callback(direct = true, doc = "function():table -- Lists bundled and configured custom alarm sounds available on this server.")
     public Object[] listSounds(Context context, Arguments args) {
-        return new Object[]{BUNDLED_SOUNDS.clone()};
+        return new Object[]{Config.availableAlarmSounds().toArray(String[]::new)};
+    }
+
+    @Callback(direct = true, doc = "function(x:number,y:number,z:number[,sound:string,range:number]):boolean,string -- Plays a configured sound relative to the alarm when enabled in the common config.")
+    public Object[] playSoundAt(Context context, Arguments args) {
+        if (!Config.enablePlaySoundAt()) return new Object[]{false, "Feature disabled in configuration"};
+        if (args.count() < 3) return new Object[]{false, "missing arguments"};
+        if (level == null) return new Object[]{false, "world is unavailable"};
+
+        BlockPos position = worldPosition.offset(
+                (int) Math.floor(args.checkDouble(0)),
+                (int) Math.floor(args.checkDouble(1)),
+                (int) Math.floor(args.checkDouble(2)));
+        String requested = args.optString(3, sound).trim();
+        ResourceLocation soundId = resolveSound(requested);
+        if (soundId == null || !Config.isAllowedAlarmSound(requested)) return new Object[]{false, "invalid or unconfigured sound name"};
+
+        float requestedRange = (float) args.optDouble(4, Math.max(0.0F, volume - 0.5F));
+        float playVolume = Math.max(0.0F, Math.min(requestedRange + 0.5F, Config.alarmMaxRange()));
+        level.playSound(null, position, SoundEvent.createVariableRangeEvent(soundId), SoundSource.BLOCKS, playVolume, 1.0F);
+        return new Object[]{true};
     }
 
     public boolean isActive() {
@@ -159,11 +180,12 @@ public final class AlarmBlockEntity extends SecurityBlockEntity {
         super.loadAdditional(tag, provider);
         active = tag.getBoolean("active");
         volume = tag.contains("volume")
-                ? Math.max(0.0F, Math.min(MAX_RANGE, tag.getFloat("volume")))
-                : MAX_RANGE;
+                ? Math.max(0.0F, Math.min(Config.alarmMaxRange(), tag.getFloat("volume")))
+                : Config.alarmMaxRange();
 
         String loadedSound = tag.getString("sound");
-        sound = loadedSound.isBlank() || resolveSound(loadedSound) == null ? DEFAULT_SOUND : loadedSound;
+        sound = loadedSound.isBlank() || resolveSound(loadedSound) == null || !Config.isAllowedAlarmSound(loadedSound)
+                ? DEFAULT_SOUND : loadedSound;
     }
 
     /**

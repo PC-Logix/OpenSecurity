@@ -1,6 +1,8 @@
 package pcl.opensecurity.blockentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
+import pcl.opensecurity.entity.NanoFogSwarmEntity;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -178,11 +180,33 @@ public final class NanoFogTerminalBlockEntity extends SecurityBlockEntity {
         if (!consumeEnergy(BUILD_COST)) return new Object[]{false, "not enough energy"};
         dna.shrink(1);
         inventory.setStackInSlot(0, dna);
+        if (!Config.instantNanoFog()) {
+            NanoFogSwarmEntity swarm = new NanoFogSwarmEntity(OpenSecurity.NANO_FOG_SWARM.get(), level);
+            swarm.configure(worldPosition, pos, mimic);
+            level.addFreshEntity(swarm);
+            return new Object[]{true};
+        }
+        finishSwarmBuild(pos, mimic);
+        return new Object[]{true};
+    }
+
+    public void finishSwarmBuild(BlockPos pos, ResourceLocation mimic) {
+        if (level == null || !level.getBlockState(pos).isAir() || fogBlocks.size() >= BLOCK_LIMIT) {
+            refundNanoDna();
+            return;
+        }
         level.setBlock(pos, OpenSecurity.NANOFOG.get().defaultBlockState(), 3);
         if (level.getBlockEntity(pos) instanceof NanoFogBlockEntity fog) fog.initialize(worldPosition, mimic);
         fogBlocks.add(pos.immutable());
         setChanged();
-        return new Object[]{true};
+    }
+
+    private void refundNanoDna() {
+        if (level == null) return;
+        ItemStack remainder = inventory.insertItem(0, new ItemStack(OpenSecurity.NANODNA.get()), false);
+        if (!remainder.isEmpty()) remainder = inventory.insertItem(1, remainder, false);
+        if (!remainder.isEmpty()) level.addFreshEntity(new ItemEntity(level, worldPosition.getX() + 0.5,
+                worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, remainder));
     }
 
     private boolean removeBlock(BlockPos pos) {

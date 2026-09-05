@@ -1,6 +1,7 @@
 package pcl.opensecurity.blockentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.data.CardData;
 
 import li.cil.oc.api.machine.Arguments;
@@ -48,7 +49,7 @@ public final class SecureDoorBlockEntity extends SecurityBlockEntity {
         CardData card = CardData.read(stack);
         if (!card.valid() || !consumeEnergy(5)) return false;
         node.sendToReachable("computer.signal", eventName, player.getName().getString(),
-                card.data(), card.uuid(), card.locked(), side.get3DDataValue());
+                card.data(), Config.exposedUuid(card.uuid()), card.locked(), side.get3DDataValue());
         if (level != null) level.playSound(null, worldPosition, OpenSecurity.CARD_SWIPE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         return true;
     }

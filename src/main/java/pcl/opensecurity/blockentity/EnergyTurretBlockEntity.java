@@ -1,6 +1,7 @@
 package pcl.opensecurity.blockentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.block.EnergyTurretBlock;
 import pcl.opensecurity.entity.EnergyBoltEntity;
 import pcl.opensecurity.item.TurretUpgradeItem;
@@ -167,7 +168,8 @@ public final class EnergyTurretBlockEntity extends SecurityBlockEntity {
     }
 
     public float getRenderYaw(float partialTick) {
-        return lerpDegrees(previousYaw, yaw, partialTick);
+        float renderedYaw = lerpDegrees(previousYaw, yaw, partialTick);
+        return Config.turretReverseRotation() ? -renderedYaw : renderedYaw;
     }
 
     public float getRenderPitch(float partialTick) {

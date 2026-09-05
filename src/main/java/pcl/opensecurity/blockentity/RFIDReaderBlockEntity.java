@@ -1,6 +1,7 @@
 package pcl.opensecurity.blockentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.data.CardData;
 
 import li.cil.oc.api.machine.Arguments;
@@ -20,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class RFIDReaderBlockEntity extends SecurityBlockEntity {
-    private static final int MAX_RANGE = 16;
     private String eventName = "rfidData";
 
     public RFIDReaderBlockEntity(BlockPos pos, BlockState state) {
@@ -39,7 +39,8 @@ public final class RFIDReaderBlockEntity extends SecurityBlockEntity {
     @Callback(doc = "function([range:number]):table -- Scans nearby inventories and implanted RFID tags.")
     public Object[] scan(Context context, Arguments args) {
         if (level == null) return new Object[]{false, "world is unavailable"};
-        int range = Math.max(1, Math.min(MAX_RANGE, args.optInteger(0, MAX_RANGE)));
+        int maxRange = Config.rfidMaxRange();
+        int range = Math.max(1, Math.min(maxRange, args.optInteger(0, maxRange)));
         if (!consumeEnergy(5.0 * range)) return new Object[]{false, "not enough energy"};
 
         Map<Integer, Map<String, Object>> found = new LinkedHashMap<>();
@@ -69,12 +70,13 @@ public final class RFIDReaderBlockEntity extends SecurityBlockEntity {
         double distance = Math.sqrt(entity.distanceToSqr(worldPosition.getX() + 0.5,
                 worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5));
         String name = entity.getName().getString();
-        node.sendToReachable("computer.signal", eventName, name, distance, card.data(), card.uuid());
+        String uuid = Config.exposedUuid(card.uuid());
+        node.sendToReachable("computer.signal", eventName, name, distance, card.data(), uuid);
         Map<String, Object> value = new LinkedHashMap<>();
         value.put("name", name);
         value.put("range", distance);
         value.put("data", card.data());
-        value.put("uuid", card.uuid());
+        value.put("uuid", uuid);
         value.put("locked", card.locked());
         return value;
     }

@@ -1,6 +1,7 @@
 package pcl.opensecurity.blockentity;
 
 import pcl.opensecurity.OpenSecurity;
+import pcl.opensecurity.Config;
 import pcl.opensecurity.block.MagReaderBlock;
 import pcl.opensecurity.data.CardData;
 
@@ -37,7 +38,7 @@ public final class MagReaderBlockEntity extends SecurityBlockEntity {
             return false;
         }
         String user = player.getName().getString();
-        node.sendToReachable("computer.signal", eventName, user, card.data(), card.uuid(), card.locked(), side.get3DDataValue());
+        node.sendToReachable("computer.signal", eventName, user, card.data(), Config.exposedUuid(card.uuid()), card.locked(), side.get3DDataValue());
         if (level != null) level.playSound(null, worldPosition, OpenSecurity.CARD_SWIPE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         if (swipeIndicator) setVisualState(4);
         scheduleReset();

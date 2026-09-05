@@ -70,6 +70,7 @@ public final class ClientRegistration {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(OpenSecurity.ENERGY_BOLT.get(), context -> new ThrownItemRenderer<>(context, 1.0F, true));
+        event.registerEntityRenderer(OpenSecurity.NANO_FOG_SWARM.get(), NanoFogSwarmRenderer::new);
         event.registerBlockEntityRenderer(OpenSecurity.ENERGY_TURRET_BE.get(), EnergyTurretRenderer::new);
     }
 

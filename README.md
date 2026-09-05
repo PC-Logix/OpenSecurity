@@ -31,6 +31,26 @@ Versioning uses `2.0.0` as the release line. A tag such as `v2.0.0` produces
 `2.0.0-dev.local`. The build number can also be supplied with
 `-Pbuild_number=<number>`.
 
+### Configuration and custom alarm sounds
+
+OpenSecurity writes its shared settings to `config/opensecurity-common.toml` and
+client-only settings to `config/opensecurity-client.toml`. The shared file must
+be configured independently on the server and on each client; OpenSecurity does
+not transfer arbitrary sound files over the network.
+
+To add an alarm sound, place a lowercase Ogg Vorbis file such as `evacuation.ogg`
+in this directory on the server and every client:
+
+```
+mods/OpenSecurity/assets/opensecurity/sounds/alarms
+```
+
+Then add its name (without `.ogg`) to the `customAlarms` array in the `general`
+section of `opensecurity-common.toml`. Keep `klaxon1` and `klaxon2` in that array
+if the bundled alarms should remain available. Restart Minecraft after changing
+the array or sound files. The alarm component's `listSounds()` method reports
+only configured names whose files are available locally.
+
 ### IntelliJ IDEA
 
 Open the repository's `settings.gradle` as a Gradle project and select a Java

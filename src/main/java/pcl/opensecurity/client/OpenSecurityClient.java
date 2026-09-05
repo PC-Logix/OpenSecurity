@@ -12,5 +12,6 @@ import net.neoforged.fml.common.Mod;
 public final class OpenSecurityClient {
     public OpenSecurityClient(IEventBus modBus) {
         AlarmClientHooks.install(AlarmSoundManager::tick);
+        modBus.addListener(CustomAlarmSoundPack::addPackFinder);
     }
 }
