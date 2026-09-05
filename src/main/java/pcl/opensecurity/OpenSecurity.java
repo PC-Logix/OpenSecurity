@@ -58,6 +58,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import pcl.opensecurity.network.OpenSecurityNetwork;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
@@ -227,10 +230,14 @@ public final class OpenSecurity {
         ENTITIES.register(modBus);
         modBus.addListener(this::registerCapabilities);
         modBus.addListener(OpenSecurity::commonSetup);
+        modBus.addListener(OpenSecurityNetwork::register);
         NeoForge.EVENT_BUS.addListener(OpenSecurity::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(OpenSecurity::onBlockPlace);
         NeoForge.EVENT_BUS.addListener(OpenSecurity::onBlockUse);
         NeoForge.EVENT_BUS.addListener(OpenSecurity::onExplosion);
+        NeoForge.EVENT_BUS.addListener((ServerStartedEvent event) -> AlarmOggServer.start(event));
+        NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> AlarmOggServer.stop(event));
+        NeoForge.EVENT_BUS.addListener(AlarmOggServer::playerLoggedIn);
     }
 
     private static DeferredHolder<Block, SecurityBlock> block(String name, SecurityBlock.Kind kind) {

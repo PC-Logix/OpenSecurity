@@ -24,12 +24,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /** Always-active client resource pack backed by the legacy external alarm sound directory. */
 public final class CustomAlarmSoundPack extends AbstractPackResources {
     private static final String PACK_ID = "opensecurity/custom_alarm_sounds";
     private static final ResourceLocation SOUNDS_JSON = OpenSecurity.id("sounds.json");
+    private static volatile Path streamedSoundDirectory;
+    private static volatile List<String> streamedSoundNames = List.of();
 
     private CustomAlarmSoundPack(PackLocationInfo location) {
         super(location);
@@ -70,8 +74,8 @@ public final class CustomAlarmSoundPack extends AbstractPackResources {
         String prefix = "sounds/alarms/";
         if (!path.startsWith(prefix) || !path.endsWith(".ogg")) return null;
         String name = path.substring(prefix.length(), path.length() - 4);
-        if (!Config.customAlarms().contains(name)) return null;
-        Path file = Config.customSoundDirectory().resolve(name + ".ogg");
+        if (!allAlarmNames().contains(name)) return null;
+        Path file = soundFile(name);
         return Files.isRegularFile(file) ? IoSupplier.create(file) : null;
     }
 
@@ -79,10 +83,10 @@ public final class CustomAlarmSoundPack extends AbstractPackResources {
     public void listResources(PackType type, String namespace, String path, ResourceOutput output) {
         if (type != PackType.CLIENT_RESOURCES || !OpenSecurity.MOD_ID.equals(namespace)) return;
         if (path.isEmpty() || "sounds.json".startsWith(path)) output.accept(SOUNDS_JSON, bytes(createSoundsJson()));
-        for (String name : Config.customAlarms()) {
+        for (String name : allAlarmNames()) {
             if (Config.isBundledAlarm(name)) continue;
             ResourceLocation id = OpenSecurity.id("sounds/alarms/" + name + ".ogg");
-            Path file = Config.customSoundDirectory().resolve(name + ".ogg");
+            Path file = soundFile(name);
             if (id.getPath().startsWith(path) && Files.isRegularFile(file)) output.accept(id, IoSupplier.create(file));
         }
     }
@@ -95,15 +99,14 @@ public final class CustomAlarmSoundPack extends AbstractPackResources {
 
     private static String createSoundsJson() {
         JsonObject root = new JsonObject();
-        Path directory = Config.customSoundDirectory();
-        for (String name : Config.customAlarms()) {
+        for (String name : allAlarmNames()) {
             if (Config.isBundledAlarm(name)) continue;
-            if (!Files.isRegularFile(directory.resolve(name + ".ogg"))) continue;
+            if (!Files.isRegularFile(soundFile(name))) continue;
             JsonObject event = new JsonObject();
             event.addProperty("category", "block");
             JsonObject sound = new JsonObject();
             sound.addProperty("name", OpenSecurity.MOD_ID + ":alarms/" + name);
-            sound.addProperty("stream", false);
+            sound.addProperty("stream", true);
             JsonArray sounds = new JsonArray();
             sounds.add(sound);
             event.add("sounds", sounds);
@@ -115,5 +118,25 @@ public final class CustomAlarmSoundPack extends AbstractPackResources {
     private static IoSupplier<InputStream> bytes(String value) {
         byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
         return () -> new ByteArrayInputStream(bytes);
+    }
+
+    public static void useStreamedSounds(Path directory, List<String> names) {
+        streamedSoundDirectory = directory;
+        streamedSoundNames = List.copyOf(names);
+    }
+
+    private static List<String> allAlarmNames() {
+        LinkedHashSet<String> names = new LinkedHashSet<>(Config.customAlarms());
+        names.addAll(streamedSoundNames);
+        return List.copyOf(names);
+    }
+
+    private static Path soundFile(String name) {
+        Path streamed = streamedSoundDirectory;
+        if (streamed != null) {
+            Path file = streamed.resolve(name + ".ogg");
+            if (Files.isRegularFile(file)) return file;
+        }
+        return Config.customSoundDirectory().resolve(name + ".ogg");
     }
 }

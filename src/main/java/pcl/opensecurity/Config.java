@@ -25,6 +25,11 @@ public final class Config {
     private static final ModConfigSpec.IntValue ALARM_MAX_RANGE;
     private static final ModConfigSpec.BooleanValue INSTANT_NANO_FOG;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> CUSTOM_ALARMS;
+    private static final ModConfigSpec.BooleanValue STREAM_CUSTOM_ALARMS;
+    private static final ModConfigSpec.ConfigValue<String> ALARM_STREAM_BIND_ADDRESS;
+    private static final ModConfigSpec.IntValue ALARM_STREAM_PORT;
+    private static final ModConfigSpec.ConfigValue<String> ALARM_STREAM_PUBLIC_URL;
+    private static final ModConfigSpec.IntValue ALARM_STREAM_MAX_FILE_MIB;
 
     private static final ModConfigSpec.IntValue NANO_FOG_SWARM_RESOLUTION;
 
@@ -62,8 +67,23 @@ public final class Config {
                 .comment("Build NanoFog blocks immediately instead of using the legacy swarm animation.")
                 .define("instantNanoFog", false);
         CUSTOM_ALARMS = server
-                .comment("Alarm sound names exposed by listSounds. For names other than klaxon1 and klaxon2, put matching <name>.ogg files in mods/OpenSecurity/assets/opensecurity/sounds/alarms on both the server and every client.")
+                .comment("Alarm sound names exposed by listSounds. Put matching <name>.ogg files in mods/OpenSecurity/assets/opensecurity/sounds/alarms on the server. Clients fetch them automatically when streaming is enabled.")
                 .defineListAllowEmpty("customAlarms", List.of("klaxon1", "klaxon2"), () -> "custom_alarm", Config::validCustomAlarmEntry);
+        STREAM_CUSTOM_ALARMS = server
+                .comment("Serve allowlisted custom alarm OGG files to modded clients over a small embedded HTTP server.")
+                .define("streamCustomAlarms", true);
+        ALARM_STREAM_BIND_ADDRESS = server
+                .comment("Local address used by the embedded alarm HTTP server. 0.0.0.0 listens on every interface.")
+                .define("alarmStreamBindAddress", "0.0.0.0");
+        ALARM_STREAM_PORT = server
+                .comment("TCP port used by the embedded alarm HTTP server.")
+                .defineInRange("alarmStreamPort", 8765, 1, 65535);
+        ALARM_STREAM_PUBLIC_URL = server
+                .comment("Optional externally reachable base URL, for example https://minecraft.example.com/opensecurity. Leave empty to use the Minecraft server host and alarmStreamPort.")
+                .define("alarmStreamPublicUrl", "");
+        ALARM_STREAM_MAX_FILE_MIB = server
+                .comment("Maximum size of one custom alarm served to clients, in MiB.")
+                .defineInRange("alarmStreamMaxFileMiB", 16, 1, 128);
         server.pop();
         COMMON_SPEC = server.build();
 
@@ -92,6 +112,11 @@ public final class Config {
     public static int entityDetectorMaxRange() { return ENTITY_DETECTOR_MAX_RANGE.get(); }
     public static int alarmMaxRange() { return ALARM_MAX_RANGE.get(); }
     public static boolean instantNanoFog() { return INSTANT_NANO_FOG.get(); }
+    public static boolean streamCustomAlarms() { return STREAM_CUSTOM_ALARMS.get(); }
+    public static String alarmStreamBindAddress() { return ALARM_STREAM_BIND_ADDRESS.get().trim(); }
+    public static int alarmStreamPort() { return ALARM_STREAM_PORT.get(); }
+    public static String alarmStreamPublicUrl() { return ALARM_STREAM_PUBLIC_URL.get().trim(); }
+    public static long alarmStreamMaxFileBytes() { return ALARM_STREAM_MAX_FILE_MIB.get() * 1024L * 1024L; }
     public static int nanoFogSwarmResolution() { return NANO_FOG_SWARM_RESOLUTION.get(); }
 
     public static List<String> customAlarms() {

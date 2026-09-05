@@ -34,12 +34,10 @@ Versioning uses `2.0.0` as the release line. A tag such as `v2.0.0` produces
 ### Configuration and custom alarm sounds
 
 OpenSecurity writes its shared settings to `config/opensecurity-common.toml` and
-client-only settings to `config/opensecurity-client.toml`. The shared file must
-be configured independently on the server and on each client; OpenSecurity does
-not transfer arbitrary sound files over the network.
+client-only settings to `config/opensecurity-client.toml`.
 
 To add an alarm sound, place a lowercase Ogg Vorbis file such as `evacuation.ogg`
-in this directory on the server and every client:
+in this directory on the server:
 
 ```
 mods/OpenSecurity/assets/opensecurity/sounds/alarms
@@ -47,9 +45,23 @@ mods/OpenSecurity/assets/opensecurity/sounds/alarms
 
 Then add its name (without `.ogg`) to the `customAlarms` array in the `general`
 section of `opensecurity-common.toml`. Keep `klaxon1` and `klaxon2` in that array
-if the bundled alarms should remain available. Restart Minecraft after changing
-the array or sound files. The alarm component's `listSounds()` method reports
-only configured names whose files are available locally.
+if the bundled alarms should remain available.
+
+With `streamCustomAlarms = true` (the default), OpenSecurity starts a small,
+read-only HTTP server only when at least one external custom alarm exists. It
+serves allowlisted OGG files on `alarmStreamPort` (default `8765`) with a random
+per-start access token. Modded clients receive a SHA-256 manifest when they log
+in, download and verify the files into `config/opensecurity/alarm-cache`, reload
+the sound pack, and play them through the normal positional alarm system. The
+client no longer needs a manually copied OGG.
+
+The port must be reachable anywhere the Minecraft port is reachable. Direct
+connections automatically reuse the Minecraft server hostname. Behind NAT or a
+reverse proxy, set `alarmStreamPublicUrl` to the externally reachable URL ending
+in `/opensecurity`, such as `https://minecraft.example.com/opensecurity`. Restart
+the server after changing the array, files, bind address, port, or public URL.
+The alarm component's `listSounds()` method reports only configured names whose
+files are available on the server.
 
 ### IntelliJ IDEA
 
