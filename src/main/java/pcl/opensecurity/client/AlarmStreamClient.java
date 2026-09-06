@@ -53,7 +53,7 @@ public final class AlarmStreamClient {
 
     public static void clear() {
         GENERATION.incrementAndGet();
-        CustomAlarmSoundPack.useStreamedSounds(null, List.of());
+        if (!CustomAlarmSoundPack.clearStreamedSounds()) return;
         Minecraft.getInstance().reloadResourcePacks().exceptionally(exception -> {
             OpenSecurity.LOGGER.error("Could not unload streamed custom alarm sounds", exception);
             return null;

@@ -22,7 +22,7 @@ public final class BiometricReaderBlockEntity extends SecurityBlockEntity {
         node.sendToReachable("computer.signal", eventName, player.getUUID().toString(), player.getName().getString());
     }
 
-    @Callback(direct = true, doc = "function(name:string):boolean -- Sets the emitted signal name.")
+    @Callback(doc = "function(name:string):boolean -- Sets the emitted signal name.")
     public Object[] setEventName(Context context, Arguments args) {
         String requested = args.checkString(0).trim();
         if (requested.isEmpty()) return new Object[]{false, "event name cannot be empty"};

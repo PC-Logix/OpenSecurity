@@ -54,7 +54,7 @@ public final class SecureDoorBlockEntity extends SecurityBlockEntity {
         return true;
     }
 
-    @Callback(direct = true, doc = "function(name:string):boolean -- Sets the built-in reader signal name.")
+    @Callback(doc = "function(name:string):boolean -- Sets the built-in reader signal name.")
     public Object[] setEventName(Context context, Arguments args) {
         String requested = args.checkString(0).trim();
         if (requested.isEmpty()) return new Object[]{false, "event name cannot be empty"};

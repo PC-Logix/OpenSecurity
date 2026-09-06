@@ -16,6 +16,10 @@ public final class OpenSecurityClient {
         AlarmClientHooks.install(AlarmSoundManager::tick);
         modBus.addListener(CustomAlarmSoundPack::addPackFinder);
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingIn event) -> AlarmStreamClient.clear());
-        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> AlarmStreamClient.clear());
+        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> {
+            // NeoForge also fires this event with no connection while creating an integrated server.
+            // Starting a resource reload there leaves Minecraft waiting for an overlay it cannot render.
+            if (event.getConnection() != null) AlarmStreamClient.clear();
+        });
     }
 }

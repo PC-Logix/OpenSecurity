@@ -27,7 +27,7 @@ public final class RFIDReaderBlockEntity extends SecurityBlockEntity {
         super(OpenSecurity.RFID_READER_BE.get(), pos, state, "os_rfidreader", 32);
     }
 
-    @Callback(direct = true, doc = "function(name:string):boolean -- Sets the scan signal name.")
+    @Callback(doc = "function(name:string):boolean -- Sets the scan signal name.")
     public Object[] setEventName(Context context, Arguments args) {
         String requested = args.checkString(0).trim();
         if (requested.isEmpty()) return new Object[]{false, "event name cannot be empty"};

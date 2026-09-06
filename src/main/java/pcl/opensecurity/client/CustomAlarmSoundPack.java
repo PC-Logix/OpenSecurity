@@ -125,6 +125,13 @@ public final class CustomAlarmSoundPack extends AbstractPackResources {
         streamedSoundNames = List.copyOf(names);
     }
 
+    public static boolean clearStreamedSounds() {
+        boolean changed = streamedSoundDirectory != null || !streamedSoundNames.isEmpty();
+        streamedSoundDirectory = null;
+        streamedSoundNames = List.of();
+        return changed;
+    }
+
     private static List<String> allAlarmNames() {
         LinkedHashSet<String> names = new LinkedHashSet<>(Config.customAlarms());
         names.addAll(streamedSoundNames);
